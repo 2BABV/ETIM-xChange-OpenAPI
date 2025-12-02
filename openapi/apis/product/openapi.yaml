@@ -48,6 +48,15 @@ paths:
   /products/{manufacturerIdGln}/{manufacturerProductNumber}:
     $ref: paths/products.yaml
   
+  /products/{manufacturerIdGln}/{manufacturerProductNumber}/identification:
+    $ref: paths/product-identification.yaml
+  
+  /products/{manufacturerIdGln}/{manufacturerProductNumber}/details:
+    $ref: paths/product-details.yaml
+  
+  /products/{manufacturerIdGln}/{manufacturerProductNumber}/descriptions:
+    $ref: paths/product-descriptions.yaml
+  
   /products/{manufacturerIdGln}/{manufacturerProductNumber}/etim-classifications:
     $ref: paths/product-etim-classifications.yaml
   
@@ -124,6 +133,12 @@ components:
     # Response schemas
     ProductResponse:
       $ref: schemas/responses/ProductResponse.yaml
+    ProductIdentificationResponse:
+      $ref: schemas/responses/ProductIdentificationResponse.yaml
+    ProductDetailsResponse:
+      $ref: schemas/responses/ProductDetailsResponse.yaml
+    ProductDescriptionsResponse:
+      $ref: schemas/responses/ProductDescriptionsResponse.yaml
     ProductEtimClassificationsResponse:
       $ref: schemas/responses/ProductEtimClassificationsResponse.yaml
     BulkProductsResponse:

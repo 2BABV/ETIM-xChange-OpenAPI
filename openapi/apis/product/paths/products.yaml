@@ -7,9 +7,23 @@ get:
     Retrieve the complete product information for a specific manufacturer product combination.
     
     This endpoint returns a single product identified by the composite key of
-    `manufacturerIdGln` and `manufacturerProductNumber`. The response includes all
-    product details, identifications, classifications, legislation data, LCA information,
-    attachments, and related products.
+    `manufacturerIdGln` and `manufacturerProductNumber`. The response includes the
+    product composed from reusable model parts:
+    
+    - **identification**: Manufacturer details, GTINs, brand, dates, customs data
+    - **details**: Status, type, warranties, product groups
+    - **descriptions**: Multilingual product descriptions (nested array)
+    - **etimClassifications**: ETIM classifications with embedded features (nested array)
+    
+    **Model alignment**: The response structure aligns with the bulk endpoints,
+    using the same domain models (`ProductIdentificationSummary`, `ProductDetailsSummary`,
+    `ProductDescription`, `EtimClassification`).
+    
+    **Subresources**: Each component is also available as a dedicated subresource:
+    - `/identification` - Product identification only
+    - `/details` - Product details only
+    - `/descriptions` - Multilingual descriptions with language filtering
+    - `/etim-classifications` - ETIM classifications with features
     
     **ETIM Classification Filtering**: Use the optional `etimReleaseCode` query parameter
     to filter ETIM classifications to a specific release version (e.g., "9.0", "10.0").
@@ -31,23 +45,33 @@ get:
             $ref: ../schemas/responses/ProductResponse.yaml
           examples:
             fullProduct:
-              summary: Complete product with all details
+              summary: Complete product with all components
               value:
                 data:
-                  manufacturerIdGln: "1234567890123"
-                  manufacturerProductNumber: "929002376910"
-                  manufacturerName: "Philips Lighting B.V."
-                  manufacturerShortname: "Philips"
-                  productGtins:
-                    - "8718699673826"
-                  brandName: "Hue"
-                  productStatus: "ACTIVE"
-                  productType: "PHYSICAL"
-                  customisableProduct: false
-                  hasSerialNumber: true
-                  warrantyConsumer: 24
-                  warrantyBusiness: 36
-                  productDescriptions:
+                  identification:
+                    manufacturerIdGln: "1234567890123"
+                    manufacturerName: "Philips Lighting B.V."
+                    manufacturerShortname: "Philips"
+                    manufacturerProductNumber: "929002376910"
+                    productGtins:
+                      - "8718699673826"
+                    brandName: "Hue"
+                    productAnnouncementDate: "2024-01-15"
+                    productValidityDate: "2024-03-01"
+                    productObsolescenceDate: null
+                    customsCommodityCode: "8539502090"
+                    countryOfOrigin:
+                      - "NL"
+                  details:
+                    manufacturerIdGln: "1234567890123"
+                    manufacturerProductNumber: "929002376910"
+                    productStatus: "ACTIVE"
+                    productType: "PHYSICAL"
+                    customisableProduct: false
+                    hasSerialNumber: true
+                    warrantyConsumer: 24
+                    warrantyBusiness: 36
+                  descriptions:
                     - descriptionLanguage: "en-GB"
                       minimalProductDescription: "LED Smart Bulb"
                       uniqueMainProductDescription: "Philips Hue White and Color Ambiance E27 LED Smart Bulb"
@@ -64,12 +88,17 @@ get:
               summary: Minimal product with required fields only
               value:
                 data:
-                  manufacturerIdGln: "1234567890123"
-                  manufacturerProductNumber: "LED-12345-A"
-                  manufacturerName: "OSRAM GmbH"
-                  productDescriptions:
+                  identification:
+                    manufacturerIdGln: "1234567890123"
+                    manufacturerName: "OSRAM GmbH"
+                    manufacturerProductNumber: "LED-12345-A"
+                  details:
+                    manufacturerIdGln: "1234567890123"
+                    manufacturerProductNumber: "LED-12345-A"
+                  descriptions:
                     - descriptionLanguage: "en-GB"
                       minimalProductDescription: "LED Lamp"
+                  etimClassifications: null
     '400':
       $ref: ../../../shared/responses/400-bad-request.yaml
     '401':

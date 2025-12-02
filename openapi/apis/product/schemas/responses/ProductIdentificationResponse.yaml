@@ -1,0 +1,28 @@
+type: object
+description: |
+  Response containing product identification information for a single product.
+  Uses the same `ProductIdentificationSummary` model as the bulk endpoint `/bulk/product-identifications`.
+additionalProperties: false
+required:
+  - data
+properties:
+  data:
+    $ref: ../domain/ProductIdentificationSummary.yaml
+    description: |
+      Product identification information including manufacturer details, GTINs, brand,
+      dates, and customs data.
+examples:
+  - data:
+      manufacturerIdGln: "1234567890123"
+      manufacturerName: "Philips Lighting B.V."
+      manufacturerShortname: "Philips"
+      manufacturerProductNumber: "929002376910"
+      productGtins:
+        - "8718699673826"
+      brandName: "Hue"
+      productAnnouncementDate: "2024-01-15"
+      productValidityDate: "2024-03-01"
+      productObsolescenceDate: null
+      customsCommodityCode: "8539502090"
+      countryOfOrigin:
+        - "NL"

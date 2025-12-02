@@ -1,0 +1,66 @@
+type: object
+description: |
+  Response containing multilingual product descriptions for a single product.
+  Returns the product identification keys and a nested array of `ProductDescription` objects,
+  each containing descriptions in a specific language.
+  
+  Unlike the bulk endpoint `/bulk/product-descriptions` which uses a flattened structure
+  optimized for ETL, this single-product endpoint returns descriptions in their natural
+  nested format for easier consumption.
+  
+  **Language Filtering**: Use the optional `language` query parameter to filter
+  descriptions to specific language(s).
+additionalProperties: false
+required:
+  - data
+properties:
+  data:
+    type: object
+    additionalProperties: false
+    required:
+      - manufacturerIdGln
+      - manufacturerProductNumber
+    properties:
+      manufacturerIdGln:
+        type: string
+        pattern: "^[0-9]{13}$"
+        description: Global Location Number (GLN) uniquely identifying the manufacturer
+        examples:
+          - "1234567890123"
+      manufacturerProductNumber:
+        type: string
+        minLength: 1
+        maxLength: 35
+        description: Manufacturer's unique product number/code
+        examples:
+          - "929002376910"
+      descriptions:
+        type: ["array", "null"]
+        description: |
+          Array of product descriptions. Each item contains descriptions in a specific language.
+          Returns null if no descriptions are available, or an empty array if filtering
+          by language yields no matches.
+        items:
+          $ref: ../domain/ProductDescription.yaml
+examples:
+  - data:
+      manufacturerIdGln: "1234567890123"
+      manufacturerProductNumber: "929002376910"
+      descriptions:
+        - descriptionLanguage: "en-GB"
+          minimalProductDescription: "LED Smart Bulb E27 White & Color"
+          uniqueMainProductDescription: "Philips Hue White and Color Ambiance E27 LED Smart Bulb, 806 lumens, Bluetooth"
+          fullProductDescription: "The Philips Hue White and Color Ambiance E27 LED Smart Bulb offers 16 million colors and 50,000 shades of white light. Control it with your smartphone or voice using Alexa, Google Assistant, or Apple HomeKit."
+          productKeyword:
+            - "smart lighting"
+            - "LED"
+            - "color"
+            - "Bluetooth"
+          productPageUrl: "https://www.philips.com/products/hue-white-color-e27"
+        - descriptionLanguage: "de-DE"
+          minimalProductDescription: "LED Smart-Lampe E27 Weiß & Farbe"
+          uniqueMainProductDescription: "Philips Hue White and Color Ambiance E27 LED Smart-Lampe, 806 Lumen, Bluetooth"
+  - data:
+      manufacturerIdGln: "1234567890123"
+      manufacturerProductNumber: "929002376910"
+      descriptions: null

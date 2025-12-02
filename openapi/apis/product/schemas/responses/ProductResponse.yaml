@@ -1,41 +1,88 @@
 type: object
+description: |
+  Response containing a single product with all its components.
+  The product is composed from reusable model parts that align with the bulk endpoints:
+  - `identification`: Product identification fields (same as `/bulk/product-identifications`)
+  - `details`: Product status, type, warranties (same as `/bulk/product-details`)
+  - `descriptions`: Array of multilingual descriptions (nested, not flattened)
+  - `etimClassifications`: Array of ETIM classifications with embedded features (nested)
 additionalProperties: false
 required:
   - data
 properties:
   data:
-    $ref: ../domain/Product.yaml
-    description: |
-      The complete product object with all details, identifications, classifications,
-      legislation, LCA data, and related information.
+    type: object
+    additionalProperties: false
+    required:
+      - identification
+      - details
+    properties:
+      identification:
+        $ref: ../domain/ProductIdentificationSummary.yaml
+        description: |
+          Product identification information including manufacturer details, GTINs, brand, 
+          dates, and customs data. Matches the structure used in `/bulk/product-identifications`.
+      details:
+        $ref: ../domain/ProductDetailsSummary.yaml
+        description: |
+          Product details including status, type, warranties, and product groups.
+          Matches the structure used in `/bulk/product-details`.
+          Note: `manufacturerIdGln` and `manufacturerProductNumber` are duplicated here
+          for consistency with the bulk endpoint structure.
+      descriptions:
+        type: ["array", "null"]
+        description: |
+          Array of multilingual product descriptions. Each item contains descriptions
+          in a specific language. Returns null if no descriptions are available.
+        items:
+          $ref: ../domain/ProductDescription.yaml
+      etimClassifications:
+        type: ["array", "null"]
+        description: |
+          Array of ETIM classifications for this product with embedded features.
+          Returns null if the product has no ETIM classifications.
+          Multiple classifications can exist across different ETIM releases.
+        items:
+          $ref: ../domain/EtimClassification.yaml
 examples:
   - data:
-      manufacturerIdGln: "1234567890123"
-      manufacturerProductNumber: "929002376910"
-      manufacturerName: "Philips Lighting B.V."
-      manufacturerShortname: "Philips"
-      productGtins: 
-        - "8718699673826"
-      brandName: "Hue"
-      productStatus: "ACTIVE"
-      productType: "PHYSICAL"
-      customisableProduct: false
-      hasSerialNumber: true
-      warrantyConsumer: 24
-      warrantyBusiness: 36
-      productDescriptions:
+      identification:
+        manufacturerIdGln: "1234567890123"
+        manufacturerName: "Philips Lighting B.V."
+        manufacturerShortname: "Philips"
+        manufacturerProductNumber: "929002376910"
+        productGtins:
+          - "8718699673826"
+        brandName: "Hue"
+        productAnnouncementDate: "2024-01-15"
+        productValidityDate: "2024-03-01"
+        productObsolescenceDate: null
+        customsCommodityCode: "8539502090"
+        countryOfOrigin:
+          - "NL"
+      details:
+        manufacturerIdGln: "1234567890123"
+        manufacturerProductNumber: "929002376910"
+        productStatus: "ACTIVE"
+        productType: "PHYSICAL"
+        customisableProduct: false
+        hasSerialNumber: true
+        warrantyConsumer: 24
+        warrantyBusiness: 36
+      descriptions:
         - descriptionLanguage: "en-GB"
           minimalProductDescription: "LED Smart Bulb E27"
           uniqueMainProductDescription: "Philips Hue White and Color Ambiance E27 LED Smart Bulb with Bluetooth"
-      productAnnouncementDate: "2024-01-15"
-      productValidityDate: "2024-03-01"
-      productObsolescenceDate: null
-      customsCommodityCode: "8539502090"
-      countryOfOrigin:
-        - "NL"
+          productKeyword:
+            - "smart lighting"
+            - "LED"
+            - "color"
       etimClassifications:
         - etimClassCode: "EC002745"
           etimClassVersion: 1
           etimReleaseVersions:
             - "9.0"
             - "10.0"
+          etimFeatures:
+            - etimFeatureCode: "EF012345"
+              etimValueNumeric: 10

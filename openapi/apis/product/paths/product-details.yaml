@@ -1,0 +1,73 @@
+get:
+  operationId: getProductDetails
+  tags:
+    - Products single
+  summary: Retrieve product details
+  description: |
+    Retrieve details for a specific manufacturer product combination.
+    
+    This endpoint returns product details including status, type, warranties, and
+    product groups for a single product identified by the composite key of
+    `manufacturerIdGln` and `manufacturerProductNumber`.
+    
+    **Model alignment**: Uses the same `ProductDetailsSummary` model as the
+    bulk endpoint `/bulk/product-details`.
+    
+    **Product descriptions**: For multilingual product descriptions, use the dedicated
+    `/descriptions` subresource which supports language filtering.
+    
+    **No pagination** - Returns exactly one product's details or 404 if not found.
+  parameters:
+    - $ref: ../../../shared/parameters/path/manufacturer-id-gln.yaml
+    - $ref: ../../../shared/parameters/path/manufacturer-product-number.yaml
+  responses:
+    '200':
+      description: Successfully retrieved product details
+      content:
+        application/json:
+          schema:
+            $ref: ../schemas/responses/ProductDetailsResponse.yaml
+          examples:
+            fullDetails:
+              summary: Complete product details
+              value:
+                data:
+                  manufacturerIdGln: "1234567890123"
+                  manufacturerProductNumber: "929002376910"
+                  productStatus: "ACTIVE"
+                  productType: "PHYSICAL"
+                  customisableProduct: false
+                  hasSerialNumber: true
+                  warrantyConsumer: 24
+                  warrantyBusiness: 36
+                  relatedManufacturerProductGroup:
+                    - "Smart Lighting"
+                    - "LED Bulbs"
+            minimalDetails:
+              summary: Minimal product details
+              value:
+                data:
+                  manufacturerIdGln: "1234567890123"
+                  manufacturerProductNumber: "LED-12345-A"
+                  productStatus: "ACTIVE"
+                  productType: "PHYSICAL"
+    '400':
+      $ref: ../../../shared/responses/400-bad-request.yaml
+    '401':
+      $ref: ../../../shared/responses/401-unauthorized.yaml
+    '403':
+      $ref: ../../../shared/responses/403-forbidden.yaml
+    '404':
+      description: Product not found
+      content:
+        application/json:
+          schema:
+            $ref: ../../../shared/schemas/common/ProblemDetails.yaml
+          example:
+            type: "https://api.product.2ba.nl/problems/not-found"
+            title: "Product Not Found"
+            status: 404
+            detail: "No product found with manufacturer GLN '1234567890123' and product number '929002376910'"
+            instance: "https://api.product.2ba.nl/v1/products/1234567890123/929002376910/details"
+    '500':
+      $ref: ../../../shared/responses/500-internal-server-error.yaml
