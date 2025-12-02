@@ -1,0 +1,75 @@
+type: object
+description: |
+  Simplified product identification information for bulk retrieval.
+  Contains only key identification fields without complex nested structures.
+additionalProperties: false
+required:
+  - manufacturerIdGln
+  - manufacturerName
+  - manufacturerProductNumber
+properties:
+  manufacturerIdGln:
+    type: string
+    pattern: "^[0-9]{13}$"
+  manufacturerIdDuns:
+    type: ["string", "null"]
+    pattern: "^[0-9]{9}$"
+  manufacturerName:
+    type: string
+    minLength: 1
+    maxLength: 80
+  manufacturerShortname:
+    type: ["string", "null"]
+    minLength: 1
+    maxLength: 15
+  manufacturerProductNumber:
+    type: string
+    minLength: 1
+    maxLength: 35
+  productGtins:
+    type: ["array", "null"]
+    uniqueItems: true
+    items:
+      type: string
+      pattern: "^[0-9]{8,14}$"
+  unbrandedProduct:
+    type: ["boolean", "null"]
+  brandName:
+    type: ["string", "null"]
+    minLength: 1
+    maxLength: 50
+  productAnnouncementDate:
+    type: ["string", "null"]
+    format: date
+  productValidityDate:
+    type: ["string", "null"]
+    format: date
+  productObsolescenceDate:
+    type: ["string", "null"]
+    format: date
+  customsCommodityCode:
+    type: ["string", "null"]
+    minLength: 6
+    maxLength: 16
+  factorCustomsCommodityCode:
+    type: ["number", "null"]
+    format: decimal
+    minimum: 0
+    multipleOf: 0.0001
+    maximum: 99999999999.9999
+  countryOfOrigin:
+    type: ["array", "null"]
+    uniqueItems: true
+    items:
+      type: string
+      pattern: "^[A-Z]{2}$"
+
+examples:
+  - manufacturerIdGln: "1234567890123"
+    manufacturerName: "Philips Lighting B.V."
+    manufacturerShortname: "Philips"
+    manufacturerProductNumber: "929002376910"
+    productGtins: ["8718699673826"]
+    brandName: "Hue"
+    productValidityDate: "2024-03-01"
+    countryOfOrigin: ["NL"]

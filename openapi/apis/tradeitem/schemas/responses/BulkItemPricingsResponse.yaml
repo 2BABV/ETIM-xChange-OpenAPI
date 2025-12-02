@@ -1,0 +1,62 @@
+type: object
+description: |
+  Bulk response containing trade item pricing information with cursor-based pagination.
+  Provides pricing details including net prices, gross prices, and applicable allowances/surcharges.
+  
+  **ETIM xChange**: Response wrapper for flattened `Pricing[]` data
+  **Path**: `Supplier[].Product[].TradeItem[].Pricing[]`
+additionalProperties: false
+required:
+  - data
+  - meta
+properties:
+  data:
+    type: array
+    description: |
+      Array of trade item pricing records. Items may have multiple pricing entries
+      for different conditions, customer groups, or validity periods.
+    items:
+      type: object
+      additionalProperties: false
+      required:
+        - supplierIdGln
+        - supplierItemNumber
+        - pricings
+      properties:
+        supplierIdGln:
+          description: Global Location Number (GLN) of the supplier
+          $ref: ../../../../shared/schemas/identifiers/Gln.yaml
+        supplierItemNumber:
+          type: string
+          minLength: 1
+          maxLength: 35
+          description: Supplier's unique item number
+        pricings:
+          type: array
+          description: Array of pricing information for this trade item
+          items:
+            $ref: ../domain/ItemPricing.yaml
+  meta:
+    $ref: ../../../../shared/schemas/common/CursorPaginationMetadata.yaml
+examples:
+  - data:
+      - supplierIdGln: "8712423012485"
+        supplierItemNumber: "SKU-LAMP-001"
+        pricings:
+          - priceUnit: C62
+            priceUnitFactor: null
+            priceQuantity: 1
+            priceOnRequest: false
+            grossListPrice: 12.99
+            netPrice: 9.99
+            recommendedRetailPrice: 15.99
+            vat: 21.0
+            priceValidityDate: "2025-01-01"
+            priceExpiryDate: "2025-12-31"
+            allowanceSurcharges: null
+    meta:
+      cursor: "eyJzdXBwbGllcklkR2xuIjoiODcxMjQyMzAxMjQ4NSIsInN1cHBsaWVySXRlbU51bWJlciI6IlNLVS1MQU1QLTA0MSJ9"
+      hasNext: true
+      hasPrev: false
+      limit: 100
+      estimatedTotal: 15420

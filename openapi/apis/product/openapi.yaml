@@ -1,0 +1,179 @@
+openapi: 3.1.0
+info:
+  title: Product API
+  version: 1.0.0
+  description: |
+    API for managing product information, specifications, and categories based on ETIM xChange V2.0.
+    
+    ## Features
+    
+    - Individual product operations via `/products`
+    - Bulk data retrieval via `/bulk/*` endpoints with cursor-based pagination
+    
+    ## Data Model
+    
+    Based on ETIM xChange V2.0 Product schema (excluding TradeItem).
+    Flattened structure with minimal nesting for efficient API consumption.
+  contact:
+    name: Product API Support
+    email: support@product.2ba.nl
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+
+servers:
+  - url: https://api.product.2ba.nl/v1
+    description: Production server
+  - url: https://api-staging.product.2ba.nl/v1
+    description: Staging server
+
+tags:
+  - name: Products
+    description: Product operations
+    x-displayName: Products
+  - name: Products single
+    description: Product management operations
+    x-displayName: Single Product
+  - name: Products bulk
+    description: Bulk data retrieval operations for products with cursor-based pagination
+    x-displayName: Bulk Products
+
+x-tagGroups:
+  - name: Products
+    tags:
+      - Products single
+      - Products bulk
+
+paths:
+  /products/{manufacturerIdGln}/{manufacturerProductNumber}:
+    $ref: paths/products.yaml
+  
+  /products/{manufacturerIdGln}/{manufacturerProductNumber}/etim-classifications:
+    $ref: paths/product-etim-classifications.yaml
+  
+  # /bulk/products:
+  #   $ref: paths/bulk/products.yaml
+  
+  # /bulk/product-identifications:
+  #   $ref: paths/bulk/product-identifications.yaml
+  
+  # /bulk/product-details:
+  #   $ref: paths/bulk/product-details.yaml
+  
+  /bulk/product-etim-classifications:
+    $ref: paths/bulk/product-etim-classifications.yaml
+  
+  /bulk/product-etim-classification-features:
+    $ref: paths/bulk/product-etim-classification-features.yaml
+
+components:
+  schemas:
+    # Domain schemas
+    Product:
+      $ref: schemas/domain/Product.yaml
+    ProductIdentificationSummary:
+      $ref: schemas/domain/ProductIdentificationSummary.yaml
+    ProductDetailsSummary:
+      $ref: schemas/domain/ProductDetailsSummary.yaml
+    ProductEtimClassificationsSummary:
+      $ref: schemas/domain/ProductEtimClassificationsSummary.yaml
+    ProductDescription:
+      $ref: schemas/domain/ProductDescription.yaml
+    ProductRelation:
+      $ref: schemas/domain/ProductRelation.yaml
+    RelatedProduct:
+      $ref: schemas/domain/RelatedProduct.yaml
+    ProductAttachment:
+      $ref: schemas/domain/ProductAttachment.yaml
+    AttachmentDetails:
+      $ref: schemas/domain/AttachmentDetails.yaml
+    EtimClassification:
+      $ref: schemas/domain/EtimClassification.yaml
+    EtimFeature:
+      $ref: schemas/domain/EtimFeature.yaml
+    ProductEtimClassificationFeature:
+      $ref: schemas/domain/ProductEtimClassificationFeature.yaml
+    Legislation:
+      $ref: schemas/domain/Legislation.yaml
+    LcaEnvironmental:
+      $ref: schemas/domain/LcaEnvironmental.yaml
+    LcaDeclaration:
+      $ref: schemas/domain/LcaDeclaration.yaml
+    ProductCountrySpecificField:
+      $ref: schemas/domain/ProductCountrySpecificField.yaml
+    
+    # Enum schemas
+    ProductStatus:
+      $ref: schemas/enums/ProductStatus.yaml
+    ProductType:
+      $ref: schemas/enums/ProductType.yaml
+    ProductRelationType:
+      $ref: schemas/enums/ProductRelationType.yaml
+    AttachmentType:
+      $ref: schemas/enums/AttachmentType.yaml
+    AttachmentTypeSpecification:
+      $ref: schemas/enums/AttachmentTypeSpecification.yaml
+    WeeeCategory:
+      $ref: schemas/enums/WeeeCategory.yaml
+    
+    # Response schemas
+    ProductResponse:
+      $ref: schemas/responses/ProductResponse.yaml
+    ProductEtimClassificationsResponse:
+      $ref: schemas/responses/ProductEtimClassificationsResponse.yaml
+    BulkProductsResponse:
+      $ref: schemas/responses/BulkProductsResponse.yaml
+    BulkProductIdentificationsResponse:
+      $ref: schemas/responses/BulkProductIdentificationsResponse.yaml
+    BulkProductDetailsResponse:
+      $ref: schemas/responses/BulkProductDetailsResponse.yaml
+    BulkProductEtimClassificationsResponse:
+      $ref: schemas/responses/BulkProductEtimClassificationsResponse.yaml
+    BulkProductEtimClassificationFeaturesResponse:
+      $ref: schemas/responses/BulkProductEtimClassificationFeaturesResponse.yaml
+    
+    # Shared schemas
+    ProblemDetails:
+      $ref: ../../shared/schemas/common/ProblemDetails.yaml
+    CursorPaginationMetadata:
+      $ref: ../../shared/schemas/common/CursorPaginationMetadata.yaml
+
+  parameters:
+    # Path parameters
+    ManufacturerIdGlnPath:
+      $ref: ../../shared/parameters/path/manufacturer-id-gln.yaml
+    ManufacturerProductNumberPath:
+      $ref: ../../shared/parameters/path/manufacturer-product-number.yaml
+    
+    # Query parameters
+    Cursor:
+      $ref: ../../shared/parameters/query/cursor.yaml
+    Limit:
+      $ref: ../../shared/parameters/query/limit.yaml
+    SelectionId:
+      $ref: ../../shared/parameters/query/selection-id.yaml
+    ManufacturerIdGln:
+      $ref: ../../shared/parameters/query/manufacturer-id-gln.yaml
+    MutationDate:
+      $ref: ../../shared/parameters/query/mutation-date.yaml
+
+  responses:
+    BadRequest:
+      $ref: ../../shared/responses/400-bad-request.yaml
+    Unauthorized:
+      $ref: ../../shared/responses/401-unauthorized.yaml
+    Forbidden:
+      $ref: ../../shared/responses/403-forbidden.yaml
+    NotFound:
+      $ref: ../../shared/responses/404-not-found.yaml
+    InternalServerError:
+      $ref: ../../shared/responses/500-internal-server-error.yaml
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - bearerAuth: []

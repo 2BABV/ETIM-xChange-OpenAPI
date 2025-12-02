@@ -1,0 +1,14 @@
+description: Forbidden - Insufficient permissions
+content:
+  application/problem+json:
+    schema:
+      $ref: '../schemas/common/ProblemDetails.yaml'
+    examples:
+      forbidden:
+        summary: Forbidden access example
+        value:
+          type: https://example.com/probs/forbidden
+          title: Forbidden
+          status: 403
+          detail: You do not have permission to access this resource.
+          instance: https://api.example.com/v1/resource/example

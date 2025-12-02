@@ -1,0 +1,213 @@
+type: object
+additionalProperties: false
+required:
+  - declaredUnitUnit
+  - declaredUnitQuantity
+  - lcaReferenceLifetime
+  - thirdPartyVerification
+  - lcaDeclaration
+properties:
+  declaredUnitUnit:
+    type: string
+    enum:
+      - "KGM"
+      - "LTR"
+      - "MTK"
+      - "MTQ"
+      - "MTR"
+      - "PCE"
+      - "TNE"
+      - "FOT"
+      - "FTK"
+      - "FTQ"
+      - "LBR"
+      - "LTN"
+      - "YDK"
+      - "YRD"
+    description: |
+      Unit of measurement for the declared/functional unit in LCA.
+      
+      Metric units:
+      - `KGM`: Kilogram
+      - `LTR`: Liter
+      - `MTK`: Square meter
+      - `MTQ`: Cubic meter
+      - `MTR`: Meter
+      - `PCE`: Piece/unit
+      - `TNE`: Tonne
+      
+      Imperial units:
+      - `FOT`: Foot
+      - `FTK`: Square foot
+      - `FTQ`: Cubic foot
+      - `LBR`: Pound
+      - `LTN`: Long ton
+      - `YDK`: Square yard
+      - `YRD`: Yard
+      
+      **ETIM xChange**: `DeclaredUnitUnit`  
+      **Path**: `Supplier[].Product[].LcaEnvironmental.DeclaredUnitUnit`
+    examples:
+      - "KGM"
+      - "PCE"
+      - "MTK"
+  
+  declaredUnitQuantity:
+    type: number
+    format: decimal
+    minimum: 0
+    multipleOf: 0.0001
+    maximum: 99999999999.9999
+    description: |
+      Quantity of the declared/functional unit for LCA calculations.
+      Converted from ETIM xChange string pattern to number type.
+      
+      **ETIM xChange**: `DeclaredUnitQuantity` (string with pattern)  
+      **Path**: `Supplier[].Product[].LcaEnvironmental.DeclaredUnitQuantity`
+    examples:
+      - 1
+      - 10.5
+      - 100
+  
+  functionalUnitDescription:
+    type: ["array", "null"]
+    items:
+      type: object
+      additionalProperties: false
+      required:
+        - functionalUnitDescription
+      properties:
+        language:
+          type: ["string", "null"]
+          pattern: "^[a-z]{2}[-][A-Z]{2}$"
+          description: Language code for the description
+          examples:
+            - "en-GB"
+        functionalUnitDescription:
+          type: string
+          minLength: 1
+          maxLength: 10000
+          description: Description of the functional unit
+          examples:
+            - "One LED bulb providing 806 lumens for 25,000 hours"
+    description: |
+      Multilingual descriptions of the functional unit for LCA.
+      
+      **ETIM xChange**: `FunctionalUnitDescription`  
+      **Path**: `Supplier[].Product[].LcaEnvironmental.FunctionalUnitDescription[]`
+    examples:
+      - - language: "en-GB"
+          functionalUnitDescription: "One LED bulb providing 806 lumens for 25,000 hours"
+      - null
+  
+  lcaReferenceLifetime:
+    type: integer
+    minimum: 0
+    description: |
+      Reference service life/lifetime for LCA calculations in years.
+      
+      **ETIM xChange**: `LcaReferenceLifetime`  
+      **Path**: `Supplier[].Product[].LcaEnvironmental.LcaReferenceLifetime`
+    examples:
+      - 25
+      - 10
+      - 50
+  
+  thirdPartyVerification:
+    type: string
+    enum:
+      - "NONE"
+      - "INT"
+      - "EXT"
+    description: |
+      Type of third-party verification for LCA/EPD data.
+      
+      - `NONE`: No third-party verification
+      - `INT`: Internal verification
+      - `EXT`: External independent verification
+      
+      **ETIM xChange**: `ThirdPartyVerification`  
+      **Path**: `Supplier[].Product[].LcaEnvironmental.ThirdPartyVerification`
+    examples:
+      - "EXT"
+      - "NONE"
+  
+  epdRegistrationNumber:
+    type: ["string", "null"]
+    minLength: 1
+    maxLength: 100
+    description: |
+      Environmental Product Declaration (EPD) registration number.
+      
+      **ETIM xChange**: `EpdRegistrationNumber`  
+      **Path**: `Supplier[].Product[].LcaEnvironmental.EpdRegistrationNumber`
+    examples:
+      - "EPD-PHI-20240001"
+      - null
+  
+  epdValidityStartDate:
+    type: ["string", "null"]
+    format: date
+    description: |
+      Start date of EPD validity period. ISO 8601 date format (YYYY-MM-DD).
+      
+      **ETIM xChange**: `EpdValidityStartDate`  
+      **Path**: `Supplier[].Product[].LcaEnvironmental.EpdValidityStartDate`
+    examples:
+      - "2024-01-01"
+      - null
+  
+  epdValidityExpiryDate:
+    type: ["string", "null"]
+    format: date
+    description: |
+      Expiry date of EPD validity period. ISO 8601 date format (YYYY-MM-DD).
+      
+      **ETIM xChange**: `EpdValidityExpiryDate`  
+      **Path**: `Supplier[].Product[].LcaEnvironmental.EpdValidityExpiryDate`
+    examples:
+      - "2029-12-31"
+      - null
+  
+  epdUri:
+    type: ["string", "null"]
+    format: uri
+    description: |
+      URI/URL to access the full Environmental Product Declaration document.
+      
+      **ETIM xChange**: `EpdUri`  
+      **Path**: `Supplier[].Product[].LcaEnvironmental.EpdUri`
+    examples:
+      - "https://epd.manufacturer.com/products/LED-12345-EPD.pdf"
+      - null
+  
+  lcaDeclaration:
+    type: array
+    minItems: 1
+    items:
+      $ref: ./LcaDeclaration.yaml
+    description: |
+      Array of LCA declarations for different life cycle stages.
+      
+      **ETIM xChange**: `LcaDeclaration`  
+      **Path**: `Supplier[].Product[].LcaEnvironmental.LcaDeclaration[]`
+
+examples:
+  - declaredUnitUnit: "PCE"
+    declaredUnitQuantity: 1
+    lcaReferenceLifetime: 25
+    thirdPartyVerification: "EXT"
+    epdRegistrationNumber: "EPD-PHI-20240001"
+    epdValidityStartDate: "2024-01-01"
+    epdValidityExpiryDate: "2029-12-31"
+    functionalUnitDescription:
+      - language: "en-GB"
+        functionalUnitDescription: "One LED bulb providing 806 lumens for 25,000 hours"
+    lcaDeclaration:
+      - lifeCycleStage: "A1-A3"
+        lcaDeclarationIndicator: "MDE"
+        declaredUnitGwpTotal: 15.75
+        declaredUnitGwpFossil: 14.25
+      - lifeCycleStage: "C1-C4"
+        lcaDeclarationIndicator: "AGG"
+        declaredUnitGwpTotal: 2.5

@@ -1,0 +1,49 @@
+type: object
+description: |
+  Item description in a specific language.
+  Extracted from ETIM xChange `TradeItem.ItemDetails.ItemDescriptions[]` structure.
+additionalProperties: false
+required:
+  - minimalItemDescription
+properties:
+  descriptionLanguage:
+    type: ["string", "null"]
+    description: |
+      Language code for the description (e.g., 'en-US', 'de-DE', 'nl-NL').
+      **ETIM xChange**: `DescriptionLanguage`
+      **Path**: `Supplier[].Product[].TradeItem[].ItemDetails.ItemDescriptions[].DescriptionLanguage`
+    pattern: "^[a-z]{2}[-][A-Z]{2}$"
+    examples:
+      - "en-US"
+      - "de-DE"
+      - "nl-NL"
+      - null
+  minimalItemDescription:
+    type: string
+    description: |
+      Minimal description of the trade item (short description).
+      **ETIM xChange**: `MinimalItemDescription`
+      **Path**: `Supplier[].Product[].TradeItem[].ItemDetails.ItemDescriptions[].MinimalItemDescription`
+    minLength: 1
+    maxLength: 80
+    examples:
+      - "Hammer 500g"
+      - "Screwdriver Phillips"
+  uniqueMainItemDescription:
+    type: ["string", "null"]
+    description: |
+      Extended unique description of the trade item (long description).
+      **ETIM xChange**: `UniqueMainItemDescription`
+      **Path**: `Supplier[].Product[].TradeItem[].ItemDetails.ItemDescriptions[].UniqueMainItemDescription`
+    minLength: 1
+    maxLength: 255
+    examples:
+      - "Professional claw hammer with fiberglass handle, 500g head weight, ergonomic grip"
+      - null
+examples:
+  - descriptionLanguage: "en-US"
+    minimalItemDescription: "Hammer 500g"
+    uniqueMainItemDescription: "Professional claw hammer with fiberglass handle, 500g head weight"
+  - descriptionLanguage: "de-DE"
+    minimalItemDescription: "Hammer 500g"
+    uniqueMainItemDescription: null

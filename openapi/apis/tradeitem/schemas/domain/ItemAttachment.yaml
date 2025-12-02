@@ -1,0 +1,192 @@
+type: object
+description: |
+  Attachment information for trade items (images, documents, certificates, etc.).
+  Extracted from ETIM xChange `TradeItem.ItemAttachments[]` structure.
+additionalProperties: false
+required:
+  - attachmentType
+  - attachmentUri
+properties:
+  attachmentType:
+    type: string
+    description: |
+      Type of attachment (image, document, certificate, etc.).
+      **ETIM xChange**: `AttachmentType`
+      **Path**: `Supplier[].Product[].TradeItem[].ItemAttachments[].AttachmentType`
+    enum:
+      - ATX001  # Product image
+      - ATX002  # Technical drawing
+      - ATX003  # Safety data sheet
+      - ATX004  # Certificate
+      - ATX010  # User manual
+      - ATX011  # Installation guide
+      - ATX012  # Maintenance manual
+      - ATX013  # Spare parts list
+      - ATX014  # Assembly instructions
+      - ATX015  # Product brochure
+      - ATX016  # Product video
+      - ATX017  # Energy label
+      - ATX018  # EU declaration of conformity
+      - ATX019  # Test report
+      - ATX020  # Packaging image
+      - ATX021  # Dimension drawing
+      - ATX022  # Circuit diagram
+      - ATX023  # Application example
+      - ATX024  # CAD file
+      - ATX025  # BIM model
+      - ATX026  # Product presentation
+      - ATX099  # Other
+    examples:
+      - ATX001
+      - ATX003
+      - ATX010
+  attachmentTypeSpecification:
+    type: ["string", "null"]
+    description: |
+      Specification of the attachment type (file format, media type).
+      **ETIM xChange**: `AttachmentTypeSpecification`
+      **Path**: `Supplier[].Product[].TradeItem[].ItemAttachments[].AttachmentTypeSpecification`
+    enum:
+      - MDX002  # JPEG
+      - MDX005  # PDF
+      - MDX007  # PNG
+      - MDX008  # TIFF
+      - MDX010  # GIF
+      - MDX012  # BMP
+      - MDX013  # EPS
+      - MDX014  # MP4
+      - MDX015  # AVI
+      - MDX016  # MOV
+      - MDX017  # WMV
+      - MDX018  # FLV
+      - MDX019  # MPEG
+      - MDX020  # DOC
+      - MDX021  # DOCX
+      - MDX022  # XLS
+      - MDX023  # XLSX
+      - MDX024  # PPT
+      - MDX025  # PPTX
+      - MDX026  # TXT
+      - MDX027  # RTF
+      - MDX028  # HTML
+      - MDX029  # XML
+      - MDX030  # ZIP
+      - MDX033  # DWG
+      - MDX034  # DXF
+      - MDX035  # DWF
+      - MDX037  # IFC
+      - MDX038  # RVT
+      - MDX039  # SKP
+      - MDX041  # STP
+      - MDX042  # STL
+      - MDX045  # IGES
+      - MDX047  # 3DS
+      - MDX048  # OBJ
+      - MDX049  # FBX
+      - MDX050  # COLLADA
+      - MDX051  # glTF
+      - MDX052  # USD
+      - MDX053  # STEP
+      - MDX054  # SAT
+      - MDX055  # PRT
+      - MDX057  # JT
+      - MDX058  # U3D
+      - MDX059  # 3DXML
+      - MDX060  # CGM
+      - MDX061  # SVG
+      - MDX062  # AI
+      - MDX063  # PSD
+      - MDX064  # CDR
+      - MDX065  # INDD
+      - MDX100  # MP3
+      - MDX101  # WAV
+      - MDX102  # AAC
+      - MDX103  # FLAC
+      - MDX104  # OGG
+      - MDX105  # M4A
+      - MDX106  # WMA
+      - MDX107  # AIFF
+      - MDX108  # APE
+      - MDX109  # WEBM
+      - MDX999  # Other
+      - null
+    examples:
+      - MDX002
+      - MDX005
+      - null
+  attachmentLanguages:
+    type: ["array", "null"]
+    description: |
+      Languages for which the attachment is applicable (e.g., 'en-US', 'de-DE').
+      **ETIM xChange**: `AttachmentLanguage[]`
+      **Path**: `Supplier[].Product[].TradeItem[].ItemAttachments[].AttachmentDetails[].AttachmentLanguage[]`
+    uniqueItems: true
+    items:
+      type: string
+      pattern: "^[a-z]{2}[-][A-Z]{2}$"
+    examples:
+      - ["en-US", "de-DE"]
+      - null
+  attachmentFilename:
+    type: ["string", "null"]
+    description: |
+      Filename of the attachment.
+      **ETIM xChange**: `AttachmentFilename`
+      **Path**: `Supplier[].Product[].TradeItem[].ItemAttachments[].AttachmentDetails[].AttachmentFilename`
+    minLength: 1
+    maxLength: 100
+    examples:
+      - "product_image.jpg"
+      - "manual_en.pdf"
+      - null
+  attachmentUri:
+    type: string
+    format: uri
+    description: |
+      URI/URL to the attachment file.
+      **ETIM xChange**: `AttachmentUri`
+      **Path**: `Supplier[].Product[].TradeItem[].ItemAttachments[].AttachmentDetails[].AttachmentUri`
+    examples:
+      - "https://example.com/attachments/product_image.jpg"
+      - "https://cdn.supplier.com/manuals/manual_en.pdf"
+  attachmentDescription:
+    type: ["string", "null"]
+    description: |
+      Human-readable description of the attachment. Flattened from multilingual array.
+      **ETIM xChange**: `AttachmentDescription[].AttachmentDescription`
+      **Path**: `Supplier[].Product[].TradeItem[].ItemAttachments[].AttachmentDetails[].AttachmentDescription[].AttachmentDescription`
+    minLength: 1
+    maxLength: 255
+    examples:
+      - "Front view product image"
+      - "User manual in English"
+      - null
+  attachmentIssueDate:
+    type: ["string", "null"]
+    format: date
+    description: |
+      Date when the attachment was issued. ISO 8601 date format (YYYY-MM-DD).
+      **ETIM xChange**: `AttachmentIssueDate`
+      **Path**: `Supplier[].Product[].TradeItem[].ItemAttachments[].AttachmentDetails[].AttachmentIssueDate`
+    examples:
+      - "2024-01-15"
+      - null
+  attachmentExpiryDate:
+    type: ["string", "null"]
+    format: date
+    description: |
+      Date when the attachment expires. ISO 8601 date format (YYYY-MM-DD).
+      **ETIM xChange**: `AttachmentExpiryDate`
+      **Path**: `Supplier[].Product[].TradeItem[].ItemAttachments[].AttachmentDetails[].AttachmentExpiryDate`
+    examples:
+      - "2026-12-31"
+      - null
+examples:
+  - attachmentType: ATX001
+    attachmentTypeSpecification: MDX002
+    attachmentLanguages: null
+    attachmentFilename: "product_image.jpg"
+    attachmentUri: "https://example.com/images/product.jpg"
+    attachmentDescription: "Front view product image"
+    attachmentIssueDate: "2024-01-15"
+    attachmentExpiryDate: null

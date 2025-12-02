@@ -1,0 +1,127 @@
+type: object
+additionalProperties: false
+required:
+  - etimClassCode
+  - etimClassVersion
+properties:
+  etimClassCode:
+    type: string
+    pattern: "^EC[0-9]{6}$"
+    description: |
+      ETIM class code identifying the product category. Format: EC followed by 6 digits.
+      
+      **ETIM xChange**: `EtimClassCode`  
+      **Path**: `Supplier[].Product[].EtimClassification[].EtimClassCode`
+    examples:
+      - "EC000123"
+      - "EC002745"
+  
+  etimClassVersion:
+    type: integer
+    minimum: 1
+    description: |
+      Version number of the ETIM class. Incremented when class definition changes.
+      
+      **ETIM xChange**: `EtimClassVersion`  
+      **Path**: `Supplier[].Product[].EtimClassification[].EtimClassVersion`
+      
+      **RESTRUCTURING DEVIATION**: Made required (was optional in ETIM xChange).
+    examples:
+      - 1
+      - 2
+  
+  etimReleaseVersions:
+    type: ["array", "null"]
+    uniqueItems: true
+    items:
+      type: string
+      pattern: "^[0-9]{1,2}[.]{1}[0-9]{1}|DYNAMIC$"
+    description: |
+      Array of ETIM release versions where this classification is valid.
+      Each version is a release number (e.g., "9.0", "10.0", "11.0") or "DYNAMIC" for dynamic ETIM classes.
+      
+      **ETIM xChange**: `EtimReleaseVersion` (single value)  
+      **Path**: `Supplier[].Product[].EtimClassification[].EtimReleaseVersion`
+      
+      **RESTRUCTURING DEVIATION**: Changed from single required `etimReleaseVersion` to optional array `etimReleaseVersions`.
+      This allows representing that a classification is valid across multiple ETIM releases.
+    examples:
+      - ["9.0", "10.0"]
+      - ["11.0"]
+      - ["DYNAMIC"]
+      - null
+  
+  etimDynamicReleaseDate:
+    type: ["string", "null"]
+    format: date
+    description: |
+      Release date for dynamic ETIM classes. ISO 8601 date format (YYYY-MM-DD).
+      Only applicable when `etimReleaseVersions` contains "DYNAMIC".
+      
+      **ETIM xChange**: `EtimDynamicReleaseDate`  
+      **Path**: `Supplier[].Product[].EtimClassification[].EtimDynamicReleaseDate`
+    examples:
+      - "2024-06-15"
+      - null
+  
+  etimFeatures:
+    type: ["array", "null"]
+    items:
+      $ref: ./EtimFeature.yaml
+    description: |
+      Array of ETIM feature values that characterize the product according to the ETIM class.
+      Features define standardized technical specifications and characteristics.
+      
+      **ETIM xChange**: `EtimFeatures`  
+      **Path**: `Supplier[].Product[].EtimClassification[].EtimFeatures[]`
+    examples:
+      - - etimFeatureCode: "EF000123"
+          etimValueCode: "EV000789"
+        - etimFeatureCode: "EF000456"
+          etimValueNumeric: 230.0
+      - null
+  
+  etimModellingClassCode:
+    type: ["string", "null"]
+    pattern: "^MC[0-9]{6}$"
+    description: |
+      ETIM modelling class code for advanced product modeling. Format: MC followed by 6 digits.
+      
+      **ETIM xChange**: `EtimModellingClassCode`  
+      **Path**: `Supplier[].Product[].EtimClassification[].EtimModellingClassCode`
+    examples:
+      - "MC000123"
+      - null
+  
+  etimModellingClassVersion:
+    type: ["integer", "null"]
+    minimum: 1
+    description: |
+      Version number of the ETIM modelling class.
+      
+      **ETIM xChange**: `EtimModellingClassVersion`  
+      **Path**: `Supplier[].Product[].EtimClassification[].EtimModellingClassVersion`
+    examples:
+      - 1
+      - null
+
+examples:
+  - etimClassCode: "EC002745"
+    etimClassVersion: 1
+    etimReleaseVersions:
+      - "9.0"
+      - "10.0"
+    etimFeatures:
+      - etimFeatureCode: "EF000123"
+        etimValueCode: "EV000789"
+      - etimFeatureCode: "EF000456"
+        etimValueNumeric: 230.0
+      - etimFeatureCode: "EF000789"
+        etimValueLogical: true
+  - etimClassCode: "EC000123"
+    etimClassVersion: 2
+    etimReleaseVersions:
+      - "11.0"
+  - etimClassCode: "EC001234"
+    etimClassVersion: 1
+    etimReleaseVersions: null

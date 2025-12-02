@@ -1,0 +1,100 @@
+openapi: 3.1.0
+info:
+  title: Trade Item API
+  version: 1.0.0
+  description: |
+    API for managing trade item information, specifications based on ETIM xChange V2.0.
+    
+    ## Features
+
+    - Individual trade item operations via `/trade-items`
+    - Bulk data retrieval via `/bulk/*` endpoints with cursor-based pagination
+    
+    ## Data Model
+
+    Based on ETIM xChange V2.0 Trade Item schema.
+    Flattened structure with minimal nesting for efficient API consumption.
+  contact:
+    name: Trade Item API Support
+    email: support@tradeitem.2ba.nl
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+
+servers:
+  - url: https://api.tradeitem.2ba.nl/v1
+    description: Production server
+  - url: https://api-staging.tradeitem.2ba.nl/v1
+    description: Staging server
+
+tags:
+  - name: TradeItems
+    description: Trade item management operations
+  - name: BulkOperations
+    description: Bulk data retrieval operations with cursor-based pagination for high-volume data exchange
+
+paths:
+  # Single trade item endpoint
+  /trade-items/{supplierIdGln}/{supplierItemNumber}:
+    $ref: './paths/trade-items.yaml'
+  
+  # Bulk operations
+  /bulk/trade-items:
+    $ref: './paths/bulk/trade-items.yaml'
+  /bulk/item-identifications:
+    $ref: './paths/bulk/item-identifications.yaml'
+  /bulk/item-orderings:
+    $ref: './paths/bulk/item-orderings.yaml'
+  /bulk/item-pricings:
+    $ref: './paths/bulk/item-pricings.yaml'
+    
+components:
+  schemas:
+    # Shared components from other domains
+    ErrorResponse:
+      $ref: ../../shared/schemas/common/ProblemDetails.yaml
+    
+    # Response schemas
+    TradeItemResponse:
+      $ref: './schemas/responses/TradeItemResponse.yaml'
+
+  parameters:
+    SupplierIdGln:
+      $ref: ../../shared/parameters/query/supplier-id-gln.yaml
+    SupplierIdGlnPath:
+      $ref: ../../shared/parameters/path/supplier-id-gln.yaml
+    SupplierItemNumberPath:
+      $ref: ../../shared/parameters/path/supplier-item-number.yaml
+    Cursor:
+      $ref: ../../shared/parameters/query/cursor.yaml
+    Limit:
+      $ref: ../../shared/parameters/query/limit.yaml
+    SelectionId:
+      $ref: ../../shared/parameters/query/selection-id.yaml
+    MutationDate:
+      $ref: ../../shared/parameters/query/mutation-date.yaml
+
+  responses:
+    BadRequest:
+      $ref: '../../shared/responses/400-bad-request.yaml'
+    Unauthorized:
+      $ref: '../../shared/responses/401-unauthorized.yaml'
+    Forbidden:
+      $ref: '../../shared/responses/403-forbidden.yaml'
+    NotFound:
+      $ref: '../../shared/responses/404-not-found.yaml'
+    InternalServerError:
+      $ref: '../../shared/responses/500-internal-server-error.yaml'
+
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows: 
+        clientCredentials: 
+          tokenUrl: https://authorize.2ba.nl/connect/token
+          scopes:
+            read:tradeitems: Grants read access to trade items
+            write:tradeitems: Grants write access to trade items
+
+security:
+  - oauth2: []

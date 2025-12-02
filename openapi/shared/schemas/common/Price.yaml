@@ -1,0 +1,10 @@
+type: number
+format: decimal # hint only, ignored by many tools
+minimum: 0
+multipleOf: 0.0001
+maximum: 9999999.9999
+description: Price amount with up to 4 decimal places. Maximum value of 9,999,999.9999 accommodates high-value orders while maintaining realistic business constraints.
+examples:
+  - 12345.67
+  - 99.99
+  - 0.01

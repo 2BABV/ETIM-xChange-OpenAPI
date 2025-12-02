@@ -1,0 +1,51 @@
+type: object
+additionalProperties: false
+description: Paginated response containing a list of trade items with cursor-based pagination support
+required:
+  - data
+  - meta
+properties:
+  data:
+    type: array
+    description: Array of trade items (top-level properties only)
+    items:
+      type: object
+      additionalProperties: false
+      required:
+        - supplierIdGln
+        - supplierItemNumber
+      properties:
+        supplierIdGln:
+          $ref: ../../../../shared/schemas/identifiers/Gln.yaml
+        supplierItemNumber:
+          type: string
+          description: Supplier's unique item number
+          minLength: 1
+          maxLength: 35
+          examples:
+            - "SKU-12345"
+            - "ITEM-ABC-789"
+        itemGtins:
+          type: array
+          description: Array of Global Trade Item Numbers (GTIN)
+          items:
+            $ref: ../../../../shared/schemas/identifiers/gtin.yaml
+          examples:
+            - ["12345678", "4012345678901"]
+  meta:
+    $ref: ../../../../shared/schemas/common/CursorPaginationMetadata.yaml
+examples:
+  - data:
+      - supplierIdGln: "1234567890123"
+        supplierItemNumber: "SKU-12345"
+        itemGtins: ["12345678", "4012345678901"]
+      - supplierIdGln: "1234567890123"
+        supplierItemNumber: "SKU-67890"
+        itemGtins: ["87654321"]
+    meta:
+      cursor: "eyJpZCI6MTIzNDU2Nzg5MCwic29ydCI6ImFzYyJ9"
+      prevCursor: null
+      hasNext: true
+      hasPrev: false
+      limit: 100
+      estimatedTotal: 245

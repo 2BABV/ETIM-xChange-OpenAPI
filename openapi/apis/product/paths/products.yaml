@@ -1,0 +1,92 @@
+get:
+  operationId: getProduct
+  tags:
+    - Products single
+  summary: Retrieve a single product
+  description: |
+    Retrieve the complete product information for a specific manufacturer product combination.
+    
+    This endpoint returns a single product identified by the composite key of
+    `manufacturerIdGln` and `manufacturerProductNumber`. The response includes all
+    product details, identifications, classifications, legislation data, LCA information,
+    attachments, and related products.
+    
+    **ETIM Classification Filtering**: Use the optional `etimReleaseCode` query parameter
+    to filter ETIM classifications to a specific release version (e.g., "9.0", "10.0").
+    
+    **No pagination** - Returns exactly one product document or 404 if not found.
+    
+    **Composite Key**: The combination of manufacturer GLN and product number uniquely
+    identifies a product in the system.
+  parameters:
+    - $ref: ../../../shared/parameters/path/manufacturer-id-gln.yaml
+    - $ref: ../../../shared/parameters/path/manufacturer-product-number.yaml
+    - $ref: ../../../shared/parameters/query/etim-release-code.yaml
+  responses:
+    '200':
+      description: Successfully retrieved the product
+      content:
+        application/json:
+          schema:
+            $ref: ../schemas/responses/ProductResponse.yaml
+          examples:
+            fullProduct:
+              summary: Complete product with all details
+              value:
+                data:
+                  manufacturerIdGln: "1234567890123"
+                  manufacturerProductNumber: "929002376910"
+                  manufacturerName: "Philips Lighting B.V."
+                  manufacturerShortname: "Philips"
+                  productGtins:
+                    - "8718699673826"
+                  brandName: "Hue"
+                  productStatus: "ACTIVE"
+                  productType: "PHYSICAL"
+                  customisableProduct: false
+                  hasSerialNumber: true
+                  warrantyConsumer: 24
+                  warrantyBusiness: 36
+                  productDescriptions:
+                    - descriptionLanguage: "en-GB"
+                      minimalProductDescription: "LED Smart Bulb"
+                      uniqueMainProductDescription: "Philips Hue White and Color Ambiance E27 LED Smart Bulb"
+                  etimClassifications:
+                    - etimClassCode: "EC002745"
+                      etimClassVersion: 1
+                      etimReleaseVersions:
+                        - "9.0"
+                        - "10.0"
+                      etimFeatures:
+                        - etimFeatureCode: "EF012345"
+                          etimValueNumeric: 10
+            minimalProduct:
+              summary: Minimal product with required fields only
+              value:
+                data:
+                  manufacturerIdGln: "1234567890123"
+                  manufacturerProductNumber: "LED-12345-A"
+                  manufacturerName: "OSRAM GmbH"
+                  productDescriptions:
+                    - descriptionLanguage: "en-GB"
+                      minimalProductDescription: "LED Lamp"
+    '400':
+      $ref: ../../../shared/responses/400-bad-request.yaml
+    '401':
+      $ref: ../../../shared/responses/401-unauthorized.yaml
+    '403':
+      $ref: ../../../shared/responses/403-forbidden.yaml
+    '404':
+      description: Product not found
+      content:
+        application/json:
+          schema:
+            $ref: ../../../shared/schemas/common/ProblemDetails.yaml
+          example:
+            type: "https://api.product.2ba.nl/problems/not-found"
+            title: "Product Not Found"
+            status: 404
+            detail: "No product found with manufacturer GLN '1234567890123' and product number '929002376910'"
+            instance: "https://api.product.2ba.nl/v1/products/1234567890123/929002376910"
+    '500':
+      $ref: ../../../shared/responses/500-internal-server-error.yaml

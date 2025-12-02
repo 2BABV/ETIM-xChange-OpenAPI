@@ -1,0 +1,58 @@
+get:
+  operationId: getTradeItemStock
+  description: Get the stock availability and quantity for a specific trade item by supplierIdGln and supplierItemNumber
+  parameters:
+    - name: supplierIdGln
+      in: path
+      description: The supplier GLN (Global Location Number)
+      required: true
+      schema:
+        $ref: ../../../shared/schemas/identifiers/Gln.yaml
+    - name: supplierItemNumber
+      in: path
+      description: Supplier's unique item number
+      required: true
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 35
+  summary: Get stock information for trade item by supplierIdGln and supplierItemNumber
+  tags:
+    - Stock
+  security:
+      - oauth2:
+          - 'read:stock'
+      - apiKeyAuth: []
+  responses:
+    '200':
+      description: Stock information found
+      content:
+        application/json:
+          schema:
+            $ref: ../schemas/responses/StockResponse.yaml
+          examples:
+            inStock:
+              summary: Item in stock with available quantity
+              value:
+                quantity: 150.50
+                available: true
+            outOfStock:
+              summary: Item out of stock
+              value:
+                quantity: 0
+                available: false
+            lowStock:
+              summary: Item with low stock quantity
+              value:
+                quantity: 2.5
+                available: true
+    '400':
+      $ref: ../../../shared/responses/400-bad-request.yaml
+    '401':
+      $ref: ../../../shared/responses/401-unauthorized.yaml
+    '403':
+      $ref: ../../../shared/responses/403-forbidden.yaml
+    '404':
+      $ref: ../../../shared/responses/404-not-found.yaml
+    '500':
+      $ref: ../../../shared/responses/500-internal-server-error.yaml

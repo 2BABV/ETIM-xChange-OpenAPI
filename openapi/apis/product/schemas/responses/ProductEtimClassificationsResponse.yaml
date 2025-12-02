@@ -1,0 +1,59 @@
+type: object
+description: |
+  Response containing all ETIM classifications for a single product.
+  Returns the product identification keys and all associated ETIM classifications.
+additionalProperties: false
+required:
+  - data
+properties:
+  data:
+    type: object
+    additionalProperties: false
+    required:
+      - manufacturerIdGln
+      - manufacturerProductNumber
+    properties:
+      manufacturerIdGln:
+        type: string
+        pattern: "^[0-9]{13}$"
+        description: Global Location Number (GLN) uniquely identifying the manufacturer
+        examples:
+          - "1234567890123"
+      manufacturerProductNumber:
+        type: string
+        minLength: 1
+        maxLength: 35
+        description: Manufacturer's unique product number/code
+        examples:
+          - "929002376910"
+      etimClassifications:
+        type: ["array", "null"]
+        description: |
+          Array of ETIM classifications for this product.
+          May be null if the product has no ETIM classifications.
+          Multiple classifications can exist across different ETIM releases.
+        items:
+          $ref: ../domain/EtimClassification.yaml
+
+examples:
+  - data:
+      manufacturerIdGln: "1234567890123"
+      manufacturerProductNumber: "929002376910"
+      etimClassifications:
+        - etimClassCode: "EC002745"
+          etimClassVersion: 1
+          etimReleaseVersions:
+            - "9.0"
+            - "10.0"
+          etimFeatures:
+            - etimFeatureCode: "EF000123"
+              etimValueCode: "EV000789"
+            - etimFeatureCode: "EF000456"
+              etimValueNumeric: 230.0
+        - etimClassCode: "EC001234"
+          etimClassVersion: 2
+          etimReleaseVersions:
+            - "11.0"
+          etimFeatures:
+            - etimFeatureCode: "EF000789"
+              etimValueLogical: true

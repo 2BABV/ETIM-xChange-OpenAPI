@@ -1,0 +1,60 @@
+openapi: 3.1.0
+info:
+  title: Net Price API
+  version: 1.0.0
+  description: |
+    API for retrieving net prices of trade items based on allowance conditions. The net price is the price after applying any relevant discounts or allowances for the specified quantity and currency.
+    The returned netPrice is the netPriceInOrderUnit. If the priceUnitFactor or the priceQuantity in the related tradeitem pricing object is other than 1, this value may differ from the netPrice within that pricing object.
+  contact:
+    name: Net Price API Support
+    email: support@netprice.2ba.nl
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+
+servers:
+  - url: https://api.2ba.nl/v1
+    description: Production server
+  - url: https://api-staging.2ba.nl/v1
+    description: Staging server
+
+paths:
+  /netprices/{supplierIdGln}/item-number/{supplierItemNumber}:
+    $ref: './paths/netprices-by-item-number.yaml'
+  /netprices/{supplierIdGln}/item-gtin/{itemGtin}:
+    $ref: './paths/netprices-by-item-gtin.yaml'
+
+components:
+  schemas:
+    # Shared components from other domains
+    ErrorResponse:
+      $ref: ../../shared/schemas/common/ProblemDetails.yaml
+    
+  responses:
+    BadRequest:
+      $ref: '../../shared/responses/400-bad-request.yaml'
+    Unauthorized:
+      $ref: '../../shared/responses/401-unauthorized.yaml'
+    Forbidden:
+      $ref: '../../shared/responses/403-forbidden.yaml'
+    NotFound:
+      $ref: '../../shared/responses/404-not-found.yaml'
+    InternalServerError:
+      $ref: '../../shared/responses/500-internal-server-error.yaml'
+
+  securitySchemes:
+    apiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+    oauth2:
+      type: oauth2
+      flows: 
+        clientCredentials: 
+          tokenUrl: https://authorize.2ba.nl/connect/token
+          scopes:
+            read:netprices: Grants read access to net prices
+
+security:
+  - oauth2: []
+  - apiKeyAuth: []

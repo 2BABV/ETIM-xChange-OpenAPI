@@ -1,0 +1,9 @@
+name: selectionId
+in: query
+description: Filter results by selection identifier. Used to retrieve a specific subset of items based on a predefined selection.
+required: false
+schema:
+  type: string
+  minLength: 1
+  maxLength: 50
+example: "SELECTION-2024-Q1"

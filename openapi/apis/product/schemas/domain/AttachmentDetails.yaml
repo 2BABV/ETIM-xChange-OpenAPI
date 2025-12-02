@@ -1,0 +1,111 @@
+type: object
+additionalProperties: false
+required:
+  - attachmentUri
+properties:
+  attachmentLanguage:
+    type: ["array", "null"]
+    uniqueItems: true
+    items:
+      type: string
+      pattern: "^[a-z]{2}[-][A-Z]{2}$"
+    description: |
+      Languages applicable to this attachment in ISO 639-1 and ISO 3166-1 format (e.g., "en-GB", "de-DE").
+      Multiple languages can be specified if the attachment is multilingual.
+      
+      **ETIM xChange**: `AttachmentLanguage`  
+      **Path**: `Supplier[].Product[].ProductAttachments[].AttachmentDetails[].AttachmentLanguage[]`
+    examples:
+      - ["en-GB", "de-DE"]
+      - null
+  
+  attachmentFilename:
+    type: ["string", "null"]
+    minLength: 1
+    maxLength: 100
+    description: |
+      Original filename of the attachment (maximum 100 characters).
+      
+      **ETIM xChange**: `AttachmentFilename`  
+      **Path**: `Supplier[].Product[].ProductAttachments[].AttachmentDetails[].AttachmentFilename`
+    examples:
+      - "product-datasheet-v2.pdf"
+      - "LED-bulb-front-view.jpg"
+      - null
+  
+  attachmentUri:
+    type: string
+    format: uri
+    description: |
+      URI/URL to access the attachment file. This is the direct link to download or view the document, image, or video.
+      
+      **ETIM xChange**: `AttachmentUri`  
+      **Path**: `Supplier[].Product[].ProductAttachments[].AttachmentDetails[].AttachmentUri`
+    examples:
+      - "https://cdn.manufacturer.com/products/datasheets/LED-12345.pdf"
+      - "https://images.manufacturer.com/products/LED-12345-front.jpg"
+  
+  attachmentDescription:
+    type: ["array", "null"]
+    items:
+      type: object
+      additionalProperties: false
+      required:
+        - attachmentDescription
+      properties:
+        language:
+          type: ["string", "null"]
+          pattern: "^[a-z]{2}[-][A-Z]{2}$"
+          description: Language code for the description
+          examples:
+            - "en-GB"
+            - "de-DE"
+        attachmentDescription:
+          type: string
+          minLength: 1
+          maxLength: 255
+          description: Description of the attachment
+          examples:
+            - "Technical datasheet with electrical specifications"
+    description: |
+      Multilingual descriptions of the attachment (maximum 255 characters per description).
+      
+      **ETIM xChange**: `AttachmentDescription`  
+      **Path**: `Supplier[].Product[].ProductAttachments[].AttachmentDetails[].AttachmentDescription[]`
+    examples:
+      - - language: "en-GB"
+          attachmentDescription: "Technical datasheet with electrical specifications"
+      - null
+  
+  attachmentIssueDate:
+    type: ["string", "null"]
+    format: date
+    description: |
+      Date when the attachment was issued or published. ISO 8601 date format (YYYY-MM-DD).
+      
+      **ETIM xChange**: `AttachmentIssueDate`  
+      **Path**: `Supplier[].Product[].ProductAttachments[].AttachmentDetails[].AttachmentIssueDate`
+    examples:
+      - "2024-06-15"
+      - null
+  
+  attachmentExpiryDate:
+    type: ["string", "null"]
+    format: date
+    description: |
+      Date when the attachment expires or becomes obsolete. ISO 8601 date format (YYYY-MM-DD).
+      
+      **ETIM xChange**: `AttachmentExpiryDate`  
+      **Path**: `Supplier[].Product[].ProductAttachments[].AttachmentDetails[].AttachmentExpiryDate`
+    examples:
+      - "2026-12-31"
+      - null
+
+examples:
+  - attachmentUri: "https://cdn.manufacturer.com/products/datasheets/LED-12345.pdf"
+    attachmentFilename: "LED-12345-datasheet.pdf"
+    attachmentLanguage: ["en-GB"]
+    attachmentDescription:
+      - language: "en-GB"
+        attachmentDescription: "Complete technical specifications and electrical characteristics"
+    attachmentIssueDate: "2024-06-15"

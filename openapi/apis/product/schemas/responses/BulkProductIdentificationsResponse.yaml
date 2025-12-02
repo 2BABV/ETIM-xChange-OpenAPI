@@ -1,0 +1,31 @@
+type: object
+additionalProperties: false
+required:
+  - data
+  - meta
+properties:
+  data:
+    type: array
+    items:
+      $ref: ../domain/ProductIdentificationSummary.yaml
+    description: Array of product identification summaries
+  meta:
+    $ref: ../../../../shared/schemas/common/CursorPaginationMetadata.yaml
+    description: Cursor-based pagination metadata
+
+examples:
+  - data:
+      - manufacturerIdGln: "1234567890123"
+        manufacturerName: "Philips Lighting B.V."
+        manufacturerShortname: "Philips"
+        manufacturerProductNumber: "929002376910"
+        productGtins: ["8718699673826"]
+        brandName: "Hue"
+        productValidityDate: "2024-03-01"
+        countryOfOrigin: ["NL"]
+    meta:
+      cursor: "eyJpZCI6MTIzfQ=="
+      hasNext: true
+      hasPrev: false
+      limit: 100
+      estimatedTotal: 1523

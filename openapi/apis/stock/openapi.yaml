@@ -1,0 +1,42 @@
+openapi: 3.1.0
+info:
+  title: Stock API
+  version: 1.0.0
+  description: |
+    API for retrieving stock availability and quantity information for trade items.
+    
+    This API provides real-time stock information including available quantity and availability status.
+  contact:
+    name: 2BA API Support
+    email: api-support@2ba.nl
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+  - url: https://api.2ba.nl/stock/v1
+    description: Production server
+  - url: https://api-staging.2ba.nl/stock/v1
+    description: Staging server
+tags:
+  - name: Stock
+    description: Stock availability and quantity operations
+paths:
+  /suppliers/{supplierIdGln}/items/{supplierItemNumber}/stock:
+    $ref: paths/stock.yaml
+security:
+  - oauth2:
+      - 'read:stock'
+  - apiKeyAuth: []
+components:
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://auth.2ba.nl/oauth/token
+          scopes:
+            'read:stock': Read stock information
+    apiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key

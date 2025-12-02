@@ -1,0 +1,41 @@
+type: object
+additionalProperties: false
+required:
+  - data
+properties:
+  data:
+    $ref: ../domain/Product.yaml
+    description: |
+      The complete product object with all details, identifications, classifications,
+      legislation, LCA data, and related information.
+examples:
+  - data:
+      manufacturerIdGln: "1234567890123"
+      manufacturerProductNumber: "929002376910"
+      manufacturerName: "Philips Lighting B.V."
+      manufacturerShortname: "Philips"
+      productGtins: 
+        - "8718699673826"
+      brandName: "Hue"
+      productStatus: "ACTIVE"
+      productType: "PHYSICAL"
+      customisableProduct: false
+      hasSerialNumber: true
+      warrantyConsumer: 24
+      warrantyBusiness: 36
+      productDescriptions:
+        - descriptionLanguage: "en-GB"
+          minimalProductDescription: "LED Smart Bulb E27"
+          uniqueMainProductDescription: "Philips Hue White and Color Ambiance E27 LED Smart Bulb with Bluetooth"
+      productAnnouncementDate: "2024-01-15"
+      productValidityDate: "2024-03-01"
+      productObsolescenceDate: null
+      customsCommodityCode: "8539502090"
+      countryOfOrigin:
+        - "NL"
+      etimClassifications:
+        - etimClassCode: "EC002745"
+          etimClassVersion: 1
+          etimReleaseVersions:
+            - "9.0"
+            - "10.0"

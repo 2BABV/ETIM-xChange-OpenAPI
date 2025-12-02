@@ -1,0 +1,165 @@
+type: object
+additionalProperties: false
+required:
+  - lifeCycleStage
+  - lcaDeclarationIndicator
+properties:
+  lifeCycleStage:
+    type: string
+    enum:
+      - "A1"
+      - "A2"
+      - "A3"
+      - "A1-A3"
+      - "A4"
+      - "A5"
+      - "B1"
+      - "B2"
+      - "B3"
+      - "B4"
+      - "B5"
+      - "B6"
+      - "B7"
+      - "B1-B7"
+      - "C1"
+      - "C2"
+      - "C3"
+      - "C4"
+      - "C1-C4"
+      - "D"
+    description: |
+      Life cycle assessment stage according to EN 15804.
+      
+      Product stage (A):
+      - `A1`: Raw material supply
+      - `A2`: Transport to manufacturer
+      - `A3`: Manufacturing
+      - `A1-A3`: Combined product stage
+      - `A4`: Transport to building site
+      - `A5`: Installation into building
+      
+      Use stage (B):
+      - `B1`: Use/Application
+      - `B2`: Maintenance
+      - `B3`: Repair
+      - `B4`: Replacement
+      - `B5`: Refurbishment
+      - `B6`: Operational energy use
+      - `B7`: Operational water use
+      - `B1-B7`: Combined use stage
+      
+      End of life stage (C):
+      - `C1`: Deconstruction/demolition
+      - `C2`: Transport to waste processing
+      - `C3`: Waste processing
+      - `C4`: Disposal
+      - `C1-C4`: Combined end of life stage
+      
+      Beyond life cycle (D):
+      - `D`: Reuse, recovery, recycling potential
+      
+      **ETIM xChange**: `LifeCycleStage`  
+      **Path**: `Supplier[].Product[].LcaEnvironmental.LcaDeclaration[].LifeCycleStage`
+    examples:
+      - "A1-A3"
+      - "B6"
+      - "C1-C4"
+  
+  lcaDeclarationIndicator:
+    type: string
+    enum:
+      - "MDE"
+      - "MND"
+      - "MNR"
+      - "AGG"
+    description: |
+      Type of LCA declaration data.
+      
+      - `MDE`: Manufacturer-specific data with external verification
+      - `MND`: Manufacturer-specific data without external verification
+      - `MNR`: Manufacturer-specific data not representative
+      - `AGG`: Industry average/aggregated data
+      
+      **ETIM xChange**: `LcaDeclarationIndicator`  
+      **Path**: `Supplier[].Product[].LcaEnvironmental.LcaDeclaration[].LcaDeclarationIndicator`
+    examples:
+      - "MDE"
+      - "AGG"
+  
+  declaredUnitGwpTotal:
+    type: ["number", "null"]
+    description: |
+      Total Global Warming Potential (GWP) in kg CO2 equivalent per declared unit.
+      
+      **ETIM xChange**: `DeclaredUnitGwpTotal`  
+      **Path**: `Supplier[].Product[].LcaEnvironmental.LcaDeclaration[].DeclaredUnitGwpTotal`
+    examples:
+      - 15.75
+      - 0.85
+      - null
+  
+  declaredUnitGwpFossil:
+    type: ["number", "null"]
+    description: |
+      Fossil Global Warming Potential in kg CO2 equivalent per declared unit.
+      
+      **ETIM xChange**: `DeclaredUnitGwpFossil`  
+      **Path**: `Supplier[].Product[].LcaEnvironmental.LcaDeclaration[].DeclaredUnitGwpFossil`
+    examples:
+      - 14.25
+      - null
+  
+  declaredUnitGwpBiogenic:
+    type: ["number", "null"]
+    description: |
+      Biogenic Global Warming Potential in kg CO2 equivalent per declared unit.
+      
+      **ETIM xChange**: `DeclaredUnitGwpBiogenic`  
+      **Path**: `Supplier[].Product[].LcaEnvironmental.LcaDeclaration[].DeclaredUnitGwpBiogenic`
+    examples:
+      - 1.2
+      - null
+  
+  declaredUnitAp:
+    type: ["number", "null"]
+    description: |
+      Acidification Potential (AP) in kg SO2 equivalent per declared unit.
+      
+      **ETIM xChange**: `DeclaredUnitAp`  
+      **Path**: `Supplier[].Product[].LcaEnvironmental.LcaDeclaration[].DeclaredUnitAp`
+    examples:
+      - 0.05
+      - null
+  
+  declaredUnitEpFreshwater:
+    type: ["number", "null"]
+    description: |
+      Eutrophication Potential for freshwater in kg PO4 equivalent per declared unit.
+      
+      **ETIM xChange**: `DeclaredUnitEpFreshwater`  
+      **Path**: `Supplier[].Product[].LcaEnvironmental.LcaDeclaration[].DeclaredUnitEpFreshwater`
+    examples:
+      - 0.002
+      - null
+  
+  declaredUnitOdp:
+    type: ["number", "null"]
+    description: |
+      Ozone Depletion Potential (ODP) in kg CFC-11 equivalent per declared unit.
+      
+      **ETIM xChange**: `DeclaredUnitOdp`  
+      **Path**: `Supplier[].Product[].LcaEnvironmental.LcaDeclaration[].DeclaredUnitOdp`
+    examples:
+      - 0.0000012
+      - null
+
+examples:
+  - lifeCycleStage: "A1-A3"
+    lcaDeclarationIndicator: "MDE"
+    declaredUnitGwpTotal: 15.75
+    declaredUnitGwpFossil: 14.25
+    declaredUnitGwpBiogenic: 1.2
+    declaredUnitAp: 0.05
+  - lifeCycleStage: "C1-C4"
+    lcaDeclarationIndicator: "AGG"
+    declaredUnitGwpTotal: 2.5

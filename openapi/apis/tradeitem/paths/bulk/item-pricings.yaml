@@ -1,0 +1,61 @@
+get:
+  operationId: getBulkItemPricings
+  summary: Retrieve item pricing information in bulk
+  description: |
+    Retrieve trade item pricing information in bulk with cursor-based pagination.
+    Returns pricing details including net prices, gross list prices, recommended retail prices,
+    VAT, price validity periods, and allowances/surcharges.
+    
+    Items may have multiple pricing entries for different conditions, customer groups,
+    or validity periods. This endpoint is optimized for price synchronization scenarios.
+    
+    **ETIM xChange**: Bulk retrieval of `Pricing[]` data  
+    **Path**: `Supplier[].Product[].TradeItem[].Pricing[]`
+  tags:
+    - BulkOperations
+  parameters:
+    - $ref: ../../../../shared/parameters/query/cursor.yaml
+    - $ref: ../../../../shared/parameters/query/limit.yaml
+    - $ref: ../../../../shared/parameters/query/selection-id.yaml
+    - $ref: ../../../../shared/parameters/query/mutation-date.yaml
+    - $ref: ../../../../shared/parameters/query/supplier-id-gln.yaml
+  responses:
+    '200':
+      description: Successfully retrieved item pricing information
+      content:
+        application/json:
+          schema:
+            $ref: ../../schemas/responses/BulkItemPricingsResponse.yaml
+          examples:
+            success:
+              summary: Successful bulk retrieval
+              value:
+                data:
+                  - supplierIdGln: "8712423012485"
+                    supplierItemNumber: "SKU-LAMP-001"
+                    pricings:
+                      - priceUnit: "C62"
+                        priceUnitFactor: null
+                        priceQuantity: 1
+                        priceOnRequest: false
+                        grossListPrice: 12.99
+                        netPrice: 9.99
+                        recommendedRetailPrice: 15.99
+                        vat: 21.0
+                        priceValidityDate: "2025-01-01"
+                        priceExpiryDate: "2025-12-31"
+                        allowanceSurcharges: null
+                meta:
+                  cursor: "eyJzdXBwbGllcklkR2xuIjoiODcxMjQyMzAxMjQ4NSJ9"
+                  hasNext: true
+                  hasPrev: false
+                  limit: 100
+                  estimatedTotal: 15420
+    '400':
+      $ref: ../../../../shared/responses/400-bad-request.yaml
+    '401':
+      $ref: ../../../../shared/responses/401-unauthorized.yaml
+    '403':
+      $ref: ../../../../shared/responses/403-forbidden.yaml
+    '500':
+      $ref: ../../../../shared/responses/500-internal-server-error.yaml

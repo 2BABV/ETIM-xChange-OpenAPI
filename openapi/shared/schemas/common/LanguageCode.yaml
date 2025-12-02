@@ -1,0 +1,18 @@
+type: string
+description: ISO 639-1 language code
+enum:
+  - en
+  - de
+  - fr
+  - nl
+  - es
+  - it
+  - sv
+  - no
+  - da
+  - pl
+  - cs
+examples:
+  - en
+  - nl
+  - de
