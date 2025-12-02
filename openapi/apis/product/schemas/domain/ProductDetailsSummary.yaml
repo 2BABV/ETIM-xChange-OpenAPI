@@ -1,36 +1,71 @@
 type: object
 description: |
   Product details information for bulk retrieval.
-  Contains descriptions, status, warranties, and product groups.
+  Contains status, type, warranties, and product groups.
+  
+  For product descriptions (text content), use the dedicated `/bulk/product-descriptions` endpoint
+  which supports language filtering.
 additionalProperties: false
 required:
   - manufacturerIdGln
   - manufacturerProductNumber
-  - productDescriptions
 properties:
   manufacturerIdGln:
     type: string
     pattern: "^[0-9]{13}$"
+    description: |
+      Global Location Number (GLN) identifying the manufacturer.
+      13-digit GS1 identifier.
+    examples:
+      - "1234567890123"
   manufacturerProductNumber:
     type: string
     minLength: 1
     maxLength: 35
+    description: |
+      Manufacturer's unique product identifier.
+      
+      **ETIM xChange**: `ManufacturerProductNumber`  
+      **Path**: `Supplier[].Product[].ProductIdentification.ManufacturerProductNumber`
+    examples:
+      - "929002376910"
+      - "ABC-12345-XYZ"
   productStatus:
     $ref: ../enums/ProductStatus.yaml
   productType:
     $ref: ../enums/ProductType.yaml
   customisableProduct:
     type: ["boolean", "null"]
+    description: |
+      Indicates whether the product can be customised.
+      
+      **ETIM xChange**: `CustomisableProduct`  
+      **Path**: `Supplier[].Product[].ProductDetails.CustomisableProduct`
   hasSerialNumber:
     type: ["boolean", "null"]
+    description: |
+      Indicates whether the product has a serial number.
+      
+      **ETIM xChange**: `HasSerialNumber`  
+      **Path**: `Supplier[].Product[].ProductDetails.HasSerialNumber`
   warrantyConsumer:
     type: ["integer", "null"]
     minimum: 0
     exclusiveMaximum: 1000
+    description: |
+      Consumer warranty period in months.
+      
+      **ETIM xChange**: `WarrantyConsumer`  
+      **Path**: `Supplier[].Product[].ProductDetails.WarrantyConsumer`
   warrantyBusiness:
     type: ["integer", "null"]
     minimum: 0
     exclusiveMaximum: 1000
+    description: |
+      Business/B2B warranty period in months.
+      
+      **ETIM xChange**: `WarrantyBusiness`  
+      **Path**: `Supplier[].Product[].ProductDetails.WarrantyBusiness`
   relatedManufacturerProductGroup:
     type: ["array", "null"]
     uniqueItems: true
@@ -38,19 +73,19 @@ properties:
       type: string
       minLength: 1
       maxLength: 50
-  productDescriptions:
-    type: array
-    minItems: 1
-    items:
-      $ref: ./ProductDescription.yaml
+    description: |
+      Related manufacturer product groups for categorization.
+      
+      **ETIM xChange**: `RelatedManufacturerProductGroup`  
+      **Path**: `Supplier[].Product[].ProductDetails.RelatedManufacturerProductGroup[]`
 
 examples:
   - manufacturerIdGln: "1234567890123"
     manufacturerProductNumber: "929002376910"
     productStatus: "ACTIVE"
     productType: "PHYSICAL"
+    customisableProduct: false
+    hasSerialNumber: true
     warrantyConsumer: 24
-    productDescriptions:
-      - descriptionLanguage: "en-GB"
-        minimalProductDescription: "LED Smart Bulb E27"
-        uniqueMainProductDescription: "Philips Hue White and Color Ambiance E27 LED Smart Bulb"
+    warrantyBusiness: 12
+    relatedManufacturerProductGroup: ["Smart Lighting", "LED Bulbs"]

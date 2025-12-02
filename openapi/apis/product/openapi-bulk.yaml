@@ -22,8 +22,15 @@ info:
     GTINs, brand info, lifecycle dates, customs codes. Use for quick product lookup tables.
     
     ### `/bulk/product-details`
-    Product descriptions, status, warranties, and product groups. Use for product 
-    catalog and marketing content synchronization.
+    Product status, type, warranties, and product groups (excludes descriptions).
+    Use for lightweight product metadata synchronization.
+    
+    ### `/bulk/product-descriptions`
+    Product descriptions with optional language filtering (flattened structure).
+    Each row represents a single language description with the product identifier.
+    Contains minimal, unique, full descriptions, marketing text, specifications,
+    application instructions, keywords, and product page URLs.
+    Optimized for ETL/data warehouse ingestion and streaming.
     
     ### `/bulk/product-etim-classifications`
     ETIM classification system data (nested structure). Use for technical specification 
@@ -80,6 +87,9 @@ paths:
   /bulk/product-details:
     $ref: paths/bulk/product-details.yaml
   
+  /bulk/product-descriptions:
+    $ref: paths/bulk/product-descriptions.yaml
+  
   /bulk/product-etim-classifications:
     $ref: paths/bulk/product-etim-classifications.yaml
   
@@ -95,6 +105,8 @@ components:
       $ref: schemas/domain/ProductIdentificationSummary.yaml
     ProductDetailsSummary:
       $ref: schemas/domain/ProductDetailsSummary.yaml
+    ProductDescriptionsSummary:
+      $ref: schemas/domain/ProductDescriptionsSummary.yaml
     ProductEtimClassificationsSummary:
       $ref: schemas/domain/ProductEtimClassificationsSummary.yaml
     ProductDescription:
@@ -143,6 +155,8 @@ components:
       $ref: schemas/responses/BulkProductIdentificationsResponse.yaml
     BulkProductDetailsResponse:
       $ref: schemas/responses/BulkProductDetailsResponse.yaml
+    BulkProductDescriptionsResponse:
+      $ref: schemas/responses/BulkProductDescriptionsResponse.yaml
     BulkProductEtimClassificationsResponse:
       $ref: schemas/responses/BulkProductEtimClassificationsResponse.yaml
     BulkProductEtimClassificationFeaturesResponse:
@@ -165,6 +179,8 @@ components:
       $ref: ../../shared/parameters/query/manufacturer-id-gln.yaml
     MutationDate:
       $ref: ../../shared/parameters/query/mutation-date.yaml
+    Language:
+      $ref: ../../shared/parameters/query/language.yaml
 
   responses:
     BadRequest:

@@ -60,6 +60,9 @@ paths:
   /bulk/product-details:
     $ref: paths/bulk/product-details.yaml
   
+  /bulk/product-descriptions:
+    $ref: paths/bulk/product-descriptions.yaml
+  
   # /bulk/product-etim-classifications:
   #   $ref: paths/bulk/product-etim-classifications.yaml
   
@@ -75,6 +78,8 @@ components:
       $ref: schemas/domain/ProductIdentificationSummary.yaml
     ProductDetailsSummary:
       $ref: schemas/domain/ProductDetailsSummary.yaml
+    ProductDescriptionsSummary:
+      $ref: schemas/domain/ProductDescriptionsSummary.yaml
     ProductEtimClassificationsSummary:
       $ref: schemas/domain/ProductEtimClassificationsSummary.yaml
     ProductDescription:
@@ -127,6 +132,8 @@ components:
       $ref: schemas/responses/BulkProductIdentificationsResponse.yaml
     BulkProductDetailsResponse:
       $ref: schemas/responses/BulkProductDetailsResponse.yaml
+    BulkProductDescriptionsResponse:
+      $ref: schemas/responses/BulkProductDescriptionsResponse.yaml
     BulkProductEtimClassificationsResponse:
       $ref: schemas/responses/BulkProductEtimClassificationsResponse.yaml
     BulkProductEtimClassificationFeaturesResponse:
@@ -156,6 +163,8 @@ components:
       $ref: ../../shared/parameters/query/manufacturer-id-gln.yaml
     MutationDate:
       $ref: ../../shared/parameters/query/mutation-date.yaml
+    Language:
+      $ref: ../../shared/parameters/query/language.yaml
 
   responses:
     BadRequest:
