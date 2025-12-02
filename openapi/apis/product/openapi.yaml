@@ -81,8 +81,8 @@ paths:
 components:
   schemas:
     # Domain schemas
-    Product:
-      $ref: schemas/domain/Product.yaml
+    # Product:
+    #   $ref: schemas/domain/Product.yaml
     ProductIdentification:
       $ref: schemas/domain/ProductIdentification.yaml
     ProductDetails:
@@ -93,44 +93,44 @@ components:
       $ref: schemas/domain/ProductDetailsSummary.yaml
     ProductDescriptionsSummary:
       $ref: schemas/domain/ProductDescriptionsSummary.yaml
-    ProductEtimClassificationsSummary:
-      $ref: schemas/domain/ProductEtimClassificationsSummary.yaml
+    # ProductEtimClassificationsSummary:
+    #   $ref: schemas/domain/ProductEtimClassificationsSummary.yaml
     ProductDescription:
       $ref: schemas/domain/ProductDescription.yaml
-    ProductRelation:
-      $ref: schemas/domain/ProductRelation.yaml
-    RelatedProduct:
-      $ref: schemas/domain/RelatedProduct.yaml
-    ProductAttachment:
-      $ref: schemas/domain/ProductAttachment.yaml
-    AttachmentDetails:
-      $ref: schemas/domain/AttachmentDetails.yaml
+    # ProductRelation:
+    #   $ref: schemas/domain/ProductRelation.yaml
+    # RelatedProduct:
+    #   $ref: schemas/domain/RelatedProduct.yaml
+    # ProductAttachment:
+    #   $ref: schemas/domain/ProductAttachment.yaml
+    # AttachmentDetails:
+    #   $ref: schemas/domain/AttachmentDetails.yaml
     EtimClassification:
       $ref: schemas/domain/EtimClassification.yaml
     EtimFeature:
       $ref: schemas/domain/EtimFeature.yaml
     ProductEtimClassificationFeature:
       $ref: schemas/domain/ProductEtimClassificationFeature.yaml
-    Legislation:
-      $ref: schemas/domain/Legislation.yaml
-    LcaEnvironmental:
-      $ref: schemas/domain/LcaEnvironmental.yaml
-    LcaDeclaration:
-      $ref: schemas/domain/LcaDeclaration.yaml
-    ProductCountrySpecificField:
-      $ref: schemas/domain/ProductCountrySpecificField.yaml
+    # Legislation:
+    #   $ref: schemas/domain/Legislation.yaml
+    # LcaEnvironmental:
+    #   $ref: schemas/domain/LcaEnvironmental.yaml
+    # LcaDeclaration:
+    #   $ref: schemas/domain/LcaDeclaration.yaml
+    # ProductCountrySpecificField:
+    #   $ref: schemas/domain/ProductCountrySpecificField.yaml
     
     # Enum schemas
     ProductStatus:
       $ref: schemas/enums/ProductStatus.yaml
     ProductType:
       $ref: schemas/enums/ProductType.yaml
-    ProductRelationType:
-      $ref: schemas/enums/ProductRelationType.yaml
-    AttachmentType:
-      $ref: schemas/enums/AttachmentType.yaml
-    AttachmentTypeSpecification:
-      $ref: schemas/enums/AttachmentTypeSpecification.yaml
+    # ProductRelationType:
+    #   $ref: schemas/enums/ProductRelationType.yaml
+    # AttachmentType:
+    #   $ref: schemas/enums/AttachmentType.yaml
+    # AttachmentTypeSpecification:
+    #   $ref: schemas/enums/AttachmentTypeSpecification.yaml
     WeeeCategory:
       $ref: schemas/enums/WeeeCategory.yaml
     
@@ -145,16 +145,16 @@ components:
       $ref: schemas/responses/ProductDescriptionsResponse.yaml
     ProductEtimClassificationsResponse:
       $ref: schemas/responses/ProductEtimClassificationsResponse.yaml
-    BulkProductsResponse:
-      $ref: schemas/responses/BulkProductsResponse.yaml
+    # BulkProductsResponse:
+    #   $ref: schemas/responses/BulkProductsResponse.yaml
     BulkProductIdentificationsResponse:
       $ref: schemas/responses/BulkProductIdentificationsResponse.yaml
     BulkProductDetailsResponse:
       $ref: schemas/responses/BulkProductDetailsResponse.yaml
     BulkProductDescriptionsResponse:
       $ref: schemas/responses/BulkProductDescriptionsResponse.yaml
-    BulkProductEtimClassificationsResponse:
-      $ref: schemas/responses/BulkProductEtimClassificationsResponse.yaml
+    # BulkProductEtimClassificationsResponse:
+    #   $ref: schemas/responses/BulkProductEtimClassificationsResponse.yaml
     BulkProductEtimClassificationFeaturesResponse:
       $ref: schemas/responses/BulkProductEtimClassificationFeaturesResponse.yaml
     
