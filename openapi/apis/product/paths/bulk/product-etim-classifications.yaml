@@ -16,7 +16,7 @@ get:
     - $ref: ../../../../shared/parameters/query/limit.yaml
     - $ref: ../../../../shared/parameters/query/selection-id.yaml
     - $ref: ../../../../shared/parameters/query/manufacturer-id-gln.yaml
-    - $ref: ../../../../shared/parameters/query/mutation-date.yaml
+    - $ref: ../../../../shared/parameters/query/mutation-date-time.yaml
     - $ref: ../../../../shared/parameters/query/etim-release-code.yaml
   responses:
     '200':

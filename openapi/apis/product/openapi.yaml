@@ -161,8 +161,8 @@ components:
       $ref: ../../shared/parameters/query/selection-id.yaml
     ManufacturerIdGln:
       $ref: ../../shared/parameters/query/manufacturer-id-gln.yaml
-    MutationDate:
-      $ref: ../../shared/parameters/query/mutation-date.yaml
+    MutationDateTime:
+      $ref: ../../shared/parameters/query/mutation-date-time.yaml
     Language:
       $ref: ../../shared/parameters/query/language.yaml
 

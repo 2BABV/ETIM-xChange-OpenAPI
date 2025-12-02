@@ -7,13 +7,13 @@ get:
     Retrieve product detail information in bulk with cursor-based pagination.
     Returns product status, type, descriptions, warranties, and product groups.
     
-    Use this endpoint for product description and status synchronization.
+    Use this endpoint for product status synchronization.
   parameters:
     - $ref: ../../../../shared/parameters/query/cursor.yaml
     - $ref: ../../../../shared/parameters/query/limit.yaml
     - $ref: ../../../../shared/parameters/query/selection-id.yaml
     - $ref: ../../../../shared/parameters/query/manufacturer-id-gln.yaml
-    - $ref: ../../../../shared/parameters/query/mutation-date.yaml
+    - $ref: ../../../../shared/parameters/query/mutation-date-time.yaml
   responses:
     '200':
       description: Successfully retrieved product details

@@ -163,8 +163,8 @@ components:
       $ref: ../../shared/parameters/query/limit.yaml
     SelectionId:
       $ref: ../../shared/parameters/query/selection-id.yaml
-    MutationDate:
-      $ref: ../../shared/parameters/query/mutation-date.yaml
+    MutationDateTime:
+      $ref: ../../shared/parameters/query/mutation-date-time.yaml
     SupplierIdGln:
       $ref: ../../shared/parameters/query/supplier-id-gln.yaml
   

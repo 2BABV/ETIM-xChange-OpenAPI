@@ -1,8 +1,0 @@
-name: mutationDate
-in: query
-description: Filter results by mutation date (ISO 8601 date format YYYY-MM-DD). Returns items that were created or modified on or after this date.
-required: false
-schema:
-  type: string
-  format: date
-example: "2024-10-15"
