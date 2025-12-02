@@ -10,8 +10,8 @@ get:
     GTINs, brand information, lifecycle dates, and customs data for a single product
     identified by the composite key of `manufacturerIdGln` and `manufacturerProductNumber`.
     
-    **Model alignment**: Uses the same `ProductIdentificationSummary` model as the
-    bulk endpoint `/bulk/product-identifications`.
+    The product key is at the root level, with identification details nested inside.
+    This structure aligns with other single-product subresource responses.
     
     **No pagination** - Returns exactly one product's identification or 404 if not found.
   parameters:
@@ -30,25 +30,27 @@ get:
               value:
                 data:
                   manufacturerIdGln: "1234567890123"
-                  manufacturerName: "Philips Lighting B.V."
-                  manufacturerShortname: "Philips"
                   manufacturerProductNumber: "929002376910"
-                  productGtins:
-                    - "8718699673826"
-                  brandName: "Hue"
-                  productAnnouncementDate: "2024-01-15"
-                  productValidityDate: "2024-03-01"
-                  productObsolescenceDate: null
-                  customsCommodityCode: "8539502090"
-                  countryOfOrigin:
-                    - "NL"
+                  identification:
+                    manufacturerName: "Philips Lighting B.V."
+                    manufacturerShortname: "Philips"
+                    productGtins:
+                      - "8718699673826"
+                    brandName: "Hue"
+                    productAnnouncementDate: "2024-01-15"
+                    productValidityDate: "2024-03-01"
+                    productObsolescenceDate: null
+                    customsCommodityCode: "8539502090"
+                    countryOfOrigin:
+                      - "NL"
             minimalIdentification:
               summary: Minimal product identification
               value:
                 data:
                   manufacturerIdGln: "1234567890123"
-                  manufacturerName: "OSRAM GmbH"
                   manufacturerProductNumber: "LED-12345-A"
+                  identification:
+                    manufacturerName: "OSRAM GmbH"
     '400':
       $ref: ../../../shared/responses/400-bad-request.yaml
     '401':

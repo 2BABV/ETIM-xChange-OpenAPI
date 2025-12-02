@@ -10,8 +10,8 @@ get:
     product groups for a single product identified by the composite key of
     `manufacturerIdGln` and `manufacturerProductNumber`.
     
-    **Model alignment**: Uses the same `ProductDetailsSummary` model as the
-    bulk endpoint `/bulk/product-details`.
+    The product key is at the root level, with details nested inside.
+    This structure aligns with other single-product subresource responses.
     
     **Product descriptions**: For multilingual product descriptions, use the dedicated
     `/descriptions` subresource which supports language filtering.
@@ -34,23 +34,25 @@ get:
                 data:
                   manufacturerIdGln: "1234567890123"
                   manufacturerProductNumber: "929002376910"
-                  productStatus: "ACTIVE"
-                  productType: "PHYSICAL"
-                  customisableProduct: false
-                  hasSerialNumber: true
-                  warrantyConsumer: 24
-                  warrantyBusiness: 36
-                  relatedManufacturerProductGroup:
-                    - "Smart Lighting"
-                    - "LED Bulbs"
+                  details:
+                    productStatus: "ACTIVE"
+                    productType: "PHYSICAL"
+                    customisableProduct: false
+                    hasSerialNumber: true
+                    warrantyConsumer: 24
+                    warrantyBusiness: 36
+                    relatedManufacturerProductGroup:
+                      - "Smart Lighting"
+                      - "LED Bulbs"
             minimalDetails:
               summary: Minimal product details
               value:
                 data:
                   manufacturerIdGln: "1234567890123"
                   manufacturerProductNumber: "LED-12345-A"
-                  productStatus: "ACTIVE"
-                  productType: "PHYSICAL"
+                  details:
+                    productStatus: "ACTIVE"
+                    productType: "PHYSICAL"
     '400':
       $ref: ../../../shared/responses/400-bad-request.yaml
     '401':

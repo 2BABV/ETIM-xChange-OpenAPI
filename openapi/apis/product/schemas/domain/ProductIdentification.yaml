@@ -1,0 +1,97 @@
+type: object
+description: |
+  Product identification information without the composite key fields.
+  Used in single-product responses where the key is provided at the root level.
+  
+  For bulk retrieval with embedded keys, use `ProductIdentificationSummary`.
+additionalProperties: false
+required:
+  - manufacturerName
+properties:
+  manufacturerIdDuns:
+    type: ["string", "null"]
+    pattern: "^[0-9]{9}$"
+    description: |
+      DUNS number identifying the manufacturer.
+      9-digit Dun & Bradstreet identifier.
+  manufacturerName:
+    type: string
+    minLength: 1
+    maxLength: 80
+    description: |
+      Official name of the manufacturer.
+  manufacturerShortname:
+    type: ["string", "null"]
+    minLength: 1
+    maxLength: 15
+    description: |
+      Short name or abbreviation of the manufacturer.
+  productGtins:
+    type: ["array", "null"]
+    uniqueItems: true
+    items:
+      type: string
+      pattern: "^[0-9]{8,14}$"
+    description: |
+      Global Trade Item Numbers (GTINs) for the product.
+      Can include GTIN-8, GTIN-12, GTIN-13, or GTIN-14.
+  unbrandedProduct:
+    type: ["boolean", "null"]
+    description: |
+      Indicates whether this is an unbranded/white-label product.
+  brandName:
+    type: ["string", "null"]
+    minLength: 1
+    maxLength: 50
+    description: |
+      Brand name of the product.
+  productAnnouncementDate:
+    type: ["string", "null"]
+    format: date
+    description: |
+      Date when the product was announced. ISO 8601 date format (YYYY-MM-DD).
+  productValidityDate:
+    type: ["string", "null"]
+    format: date
+    description: |
+      Date when the product becomes valid/available. ISO 8601 date format (YYYY-MM-DD).
+  productObsolescenceDate:
+    type: ["string", "null"]
+    format: date
+    description: |
+      Date when the product becomes obsolete. ISO 8601 date format (YYYY-MM-DD).
+  customsCommodityCode:
+    type: ["string", "null"]
+    minLength: 6
+    maxLength: 16
+    description: |
+      Customs/HS commodity code for the product.
+  factorCustomsCommodityCode:
+    type: ["number", "null"]
+    format: decimal
+    minimum: 0
+    multipleOf: 0.0001
+    maximum: 99999999999.9999
+    description: |
+      Factor for customs commodity code calculation.
+  countryOfOrigin:
+    type: ["array", "null"]
+    uniqueItems: true
+    items:
+      type: string
+      pattern: "^[A-Z]{2}$"
+    description: |
+      ISO 3166-1 alpha-2 country codes for country of origin.
+
+examples:
+  - manufacturerName: "Philips Lighting B.V."
+    manufacturerShortname: "Philips"
+    productGtins:
+      - "8718699673826"
+    brandName: "Hue"
+    productAnnouncementDate: "2024-01-15"
+    productValidityDate: "2024-03-01"
+    productObsolescenceDate: null
+    customsCommodityCode: "8539502090"
+    countryOfOrigin:
+      - "NL"

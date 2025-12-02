@@ -1,11 +1,16 @@
 type: object
 description: |
   Response containing a single product with all its components.
-  The product is composed from reusable model parts that align with the bulk endpoints:
-  - `identification`: Product identification fields (same as `/bulk/product-identifications`)
-  - `details`: Product status, type, warranties (same as `/bulk/product-details`)
+  
+  The product key (`manufacturerIdGln` + `manufacturerProductNumber`) is at the root level,
+  with nested objects for each component:
+  - `identification`: Manufacturer details, GTINs, brand, dates, customs data
+  - `details`: Status, type, warranties, product groups
   - `descriptions`: Array of multilingual descriptions (nested, not flattened)
   - `etimClassifications`: Array of ETIM classifications with embedded features (nested)
+  
+  This structure aligns with the subresource endpoints (`/identification`, `/details`, 
+  `/descriptions`, `/etim-classifications`) which all include the key at the root level.
 additionalProperties: false
 required:
   - data
@@ -14,21 +19,32 @@ properties:
     type: object
     additionalProperties: false
     required:
+      - manufacturerIdGln
+      - manufacturerProductNumber
       - identification
-      - details
     properties:
+      manufacturerIdGln:
+        type: string
+        pattern: "^[0-9]{13}$"
+        description: Global Location Number (GLN) uniquely identifying the manufacturer
+        examples:
+          - "1234567890123"
+      manufacturerProductNumber:
+        type: string
+        minLength: 1
+        maxLength: 35
+        description: Manufacturer's unique product number/code
+        examples:
+          - "929002376910"
       identification:
-        $ref: ../domain/ProductIdentificationSummary.yaml
+        $ref: ../domain/ProductIdentification.yaml
         description: |
           Product identification information including manufacturer details, GTINs, brand, 
-          dates, and customs data. Matches the structure used in `/bulk/product-identifications`.
+          dates, and customs data.
       details:
-        $ref: ../domain/ProductDetailsSummary.yaml
+        $ref: ../domain/ProductDetails.yaml
         description: |
           Product details including status, type, warranties, and product groups.
-          Matches the structure used in `/bulk/product-details`.
-          Note: `manufacturerIdGln` and `manufacturerProductNumber` are duplicated here
-          for consistency with the bulk endpoint structure.
       descriptions:
         type: ["array", "null"]
         description: |
@@ -46,11 +62,11 @@ properties:
           $ref: ../domain/EtimClassification.yaml
 examples:
   - data:
+      manufacturerIdGln: "1234567890123"
+      manufacturerProductNumber: "929002376910"
       identification:
-        manufacturerIdGln: "1234567890123"
         manufacturerName: "Philips Lighting B.V."
         manufacturerShortname: "Philips"
-        manufacturerProductNumber: "929002376910"
         productGtins:
           - "8718699673826"
         brandName: "Hue"
@@ -61,8 +77,6 @@ examples:
         countryOfOrigin:
           - "NL"
       details:
-        manufacturerIdGln: "1234567890123"
-        manufacturerProductNumber: "929002376910"
         productStatus: "ACTIVE"
         productType: "PHYSICAL"
         customisableProduct: false

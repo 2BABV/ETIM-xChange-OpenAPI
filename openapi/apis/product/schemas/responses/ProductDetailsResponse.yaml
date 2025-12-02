@@ -1,7 +1,10 @@
 type: object
 description: |
   Response containing product details for a single product.
-  Uses the same `ProductDetailsSummary` model as the bulk endpoint `/bulk/product-details`.
+  The product key is at the root level, with details nested inside.
+  
+  This structure aligns with other single-product subresource responses
+  (`/identification`, `/descriptions`, `/etim-classifications`).
   
   Note: Product descriptions are available through the dedicated `/descriptions` subresource
   which supports language filtering.
@@ -10,19 +13,40 @@ required:
   - data
 properties:
   data:
-    $ref: ../domain/ProductDetailsSummary.yaml
-    description: |
-      Product details including status, type, warranties, and product groups.
+    type: object
+    additionalProperties: false
+    required:
+      - manufacturerIdGln
+      - manufacturerProductNumber
+    properties:
+      manufacturerIdGln:
+        type: string
+        pattern: "^[0-9]{13}$"
+        description: Global Location Number (GLN) uniquely identifying the manufacturer
+        examples:
+          - "1234567890123"
+      manufacturerProductNumber:
+        type: string
+        minLength: 1
+        maxLength: 35
+        description: Manufacturer's unique product number/code
+        examples:
+          - "929002376910"
+      details:
+        $ref: ../domain/ProductDetails.yaml
+        description: |
+          Product details including status, type, warranties, and product groups.
 examples:
   - data:
       manufacturerIdGln: "1234567890123"
       manufacturerProductNumber: "929002376910"
-      productStatus: "ACTIVE"
-      productType: "PHYSICAL"
-      customisableProduct: false
-      hasSerialNumber: true
-      warrantyConsumer: 24
-      warrantyBusiness: 36
-      relatedManufacturerProductGroup:
-        - "Smart Lighting"
-        - "LED Bulbs"
+      details:
+        productStatus: "ACTIVE"
+        productType: "PHYSICAL"
+        customisableProduct: false
+        hasSerialNumber: true
+        warrantyConsumer: 24
+        warrantyBusiness: 36
+        relatedManufacturerProductGroup:
+          - "Smart Lighting"
+          - "LED Bulbs"

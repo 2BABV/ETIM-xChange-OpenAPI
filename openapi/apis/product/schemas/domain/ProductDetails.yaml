@@ -1,0 +1,71 @@
+type: object
+description: |
+  Product details information without the composite key fields.
+  Contains status, type, warranties, and product groups.
+  Used in single-product responses where the key is provided at the root level.
+  
+  For bulk retrieval with embedded keys, use `ProductDetailsSummary`.
+  
+  For product descriptions (text content), use the dedicated `/descriptions` subresource
+  which supports language filtering.
+additionalProperties: false
+properties:
+  productStatus:
+    $ref: ../enums/ProductStatus.yaml
+  productType:
+    $ref: ../enums/ProductType.yaml
+  customisableProduct:
+    type: ["boolean", "null"]
+    description: |
+      Indicates whether the product can be customised.
+      
+      **ETIM xChange**: `CustomisableProduct`  
+      **Path**: `Supplier[].Product[].ProductDetails.CustomisableProduct`
+  hasSerialNumber:
+    type: ["boolean", "null"]
+    description: |
+      Indicates whether the product has a serial number.
+      
+      **ETIM xChange**: `HasSerialNumber`  
+      **Path**: `Supplier[].Product[].ProductDetails.HasSerialNumber`
+  warrantyConsumer:
+    type: ["integer", "null"]
+    minimum: 0
+    exclusiveMaximum: 1000
+    description: |
+      Consumer warranty period in months.
+      
+      **ETIM xChange**: `WarrantyConsumer`  
+      **Path**: `Supplier[].Product[].ProductDetails.WarrantyConsumer`
+  warrantyBusiness:
+    type: ["integer", "null"]
+    minimum: 0
+    exclusiveMaximum: 1000
+    description: |
+      Business/B2B warranty period in months.
+      
+      **ETIM xChange**: `WarrantyBusiness`  
+      **Path**: `Supplier[].Product[].ProductDetails.WarrantyBusiness`
+  relatedManufacturerProductGroup:
+    type: ["array", "null"]
+    uniqueItems: true
+    items:
+      type: string
+      minLength: 1
+      maxLength: 50
+    description: |
+      Related manufacturer product groups for categorization.
+      
+      **ETIM xChange**: `RelatedManufacturerProductGroup`  
+      **Path**: `Supplier[].Product[].ProductDetails.RelatedManufacturerProductGroup[]`
+
+examples:
+  - productStatus: "ACTIVE"
+    productType: "PHYSICAL"
+    customisableProduct: false
+    hasSerialNumber: true
+    warrantyConsumer: 24
+    warrantyBusiness: 12
+    relatedManufacturerProductGroup:
+      - "Smart Lighting"
+      - "LED Bulbs"

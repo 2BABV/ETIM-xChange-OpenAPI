@@ -83,6 +83,10 @@ components:
     # Domain schemas
     Product:
       $ref: schemas/domain/Product.yaml
+    ProductIdentification:
+      $ref: schemas/domain/ProductIdentification.yaml
+    ProductDetails:
+      $ref: schemas/domain/ProductDetails.yaml
     ProductIdentificationSummary:
       $ref: schemas/domain/ProductIdentificationSummary.yaml
     ProductDetailsSummary:
