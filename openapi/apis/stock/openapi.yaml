@@ -21,7 +21,7 @@ tags:
   - name: Stock
     description: Stock availability and quantity operations
 paths:
-  /suppliers/{supplierIdGln}/items/{supplierItemNumber}/stock:
+  /stock/{supplierIdGln}/{supplierItemNumber}:
     $ref: paths/stock.yaml
 security:
   - oauth2:
