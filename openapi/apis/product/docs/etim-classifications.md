@@ -1,4 +1,4 @@
-# ETIM xChange OpenAPI 3.1 ETIM Classification Model
+# ETIM Classifications
 
 **Version**: 1.0  
 **Date**: November 6, 2025  

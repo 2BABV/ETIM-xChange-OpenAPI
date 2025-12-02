@@ -20,6 +20,7 @@ The repository is organized into domain-specific API specifications with shared 
 ### Getting Started
 - [Initial Setup](docs/initial-setup.md) - How to set up and work with the OpenAPI specifications
 - [Best Practices](docs/best-practices.md) - Guidelines for maintaining and extending the specifications
+- [Design decisions](docs/etim-xchange-openapi-design-decisions.md) - General design decisions API vs ETIM xChange
 
 ### API Documentation
 - [Product API](openapi/apis/product/README.md) - Core product information and catalog management

@@ -54,11 +54,11 @@ paths:
   # /bulk/products:
   #   $ref: paths/bulk/products.yaml
   
-  # /bulk/product-identifications:
-  #   $ref: paths/bulk/product-identifications.yaml
+  /bulk/product-identifications:
+    $ref: paths/bulk/product-identifications.yaml
   
-  # /bulk/product-details:
-  #   $ref: paths/bulk/product-details.yaml
+  /bulk/product-details:
+    $ref: paths/bulk/product-details.yaml
   
   # /bulk/product-etim-classifications:
   #   $ref: paths/bulk/product-etim-classifications.yaml
