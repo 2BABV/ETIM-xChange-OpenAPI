@@ -17,6 +17,13 @@ Products are uniquely identified by the composite key:
 
 [Decision details](docs/product-key.md)
 
+### Product details
+
+Product descriptions (multilingual texts, marketing content, keywords) are intentionally excluded from the product details endpoint. Instead, descriptions are available through a dedicated `/bulk/product-descriptions` endpoint with:
+- Flattened structure (one row per language per product)
+- Language filtering support
+- Optimized payload sizes for ETL/data warehouse ingestion
+
 ### ETIM classifications
 
 An ETIM product classification is uniquely identified by the composite key:
