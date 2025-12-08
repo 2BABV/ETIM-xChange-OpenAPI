@@ -2,7 +2,7 @@ get:
   operationId: getBulkProductEtimClassificationFeatures
   tags:
     - Products bulk
-  summary: Retrieve product ETIM classification features in bulk (flattened)
+  summary: Retrieve product ETIM classifications in bulk
   description: |
     Retrieve product ETIM classification feature data in a flattened format with cursor-based pagination.
     
