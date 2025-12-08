@@ -8,7 +8,7 @@ info:
     ## Features
 
     - Individual product operations via `/products`
-    - Bulk data retrieval via `/bulk/*` endpoints with cursor-based pagination
+    - Bulk data retrieval via `/products/bulk/*` endpoints with cursor-based pagination
 
     ## Data Model
 
@@ -21,10 +21,10 @@ info:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
 servers:
-  - url: https://api.product.2ba.nl/v1
+  - url: https://rest.2ba.nl/v1/products
     description: Production server
-  - url: https://api-staging.product.2ba.nl/v1
-    description: Staging server
+  - url: https://rest.accept.2ba.nl/v1/products
+    description: Acceptance server
 security:
   - bearerAuth: []
 tags:
@@ -38,7 +38,7 @@ tags:
     description: Bulk data retrieval operations for products with cursor-based pagination
     x-displayName: Bulk Products
 paths:
-  /products/{manufacturerIdGln}/{manufacturerProductNumber}:
+  /{manufacturerIdGln}/{manufacturerProductNumber}:
     get:
       operationId: getProduct
       tags:
@@ -151,7 +151,7 @@ paths:
                 instance: https://api.product.2ba.nl/v1/products/1234567890123/929002376910
         '500':
           $ref: '#/components/responses/500-internal-server-error'
-  /products/{manufacturerIdGln}/{manufacturerProductNumber}/identification:
+  /{manufacturerIdGln}/{manufacturerProductNumber}/identification:
     get:
       operationId: getProductIdentification
       tags:
@@ -225,7 +225,7 @@ paths:
                 instance: https://api.product.2ba.nl/v1/products/1234567890123/929002376910/identification
         '500':
           $ref: '#/components/responses/500-internal-server-error'
-  /products/{manufacturerIdGln}/{manufacturerProductNumber}/details:
+  /{manufacturerIdGln}/{manufacturerProductNumber}/details:
     get:
       operationId: getProductDetails
       tags:
@@ -301,7 +301,7 @@ paths:
                 instance: https://api.product.2ba.nl/v1/products/1234567890123/929002376910/details
         '500':
           $ref: '#/components/responses/500-internal-server-error'
-  /products/{manufacturerIdGln}/{manufacturerProductNumber}/descriptions:
+  /{manufacturerIdGln}/{manufacturerProductNumber}/descriptions:
     get:
       operationId: getProductDescriptions
       tags:
@@ -390,7 +390,7 @@ paths:
                 instance: https://api.product.2ba.nl/v1/products/1234567890123/929002376910/descriptions
         '500':
           $ref: '#/components/responses/500-internal-server-error'
-  /products/{manufacturerIdGln}/{manufacturerProductNumber}/etim-classifications:
+  /{manufacturerIdGln}/{manufacturerProductNumber}/etim-classifications:
     get:
       operationId: getProductEtimClassifications
       tags:

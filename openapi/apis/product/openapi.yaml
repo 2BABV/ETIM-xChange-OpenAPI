@@ -8,7 +8,7 @@ info:
     ## Features
     
     - Individual product operations via `/products`
-    - Bulk data retrieval via `/bulk/*` endpoints with cursor-based pagination
+    - Bulk data retrieval via `/products/bulk/*` endpoints with cursor-based pagination
     
     ## Data Model
     
@@ -22,10 +22,10 @@ info:
     url: https://www.apache.org/licenses/LICENSE-2.0.html
 
 servers:
-  - url: https://api.product.2ba.nl/v1
+  - url: https://rest.2ba.nl/v1/products
     description: Production server
-  - url: https://api-staging.product.2ba.nl/v1
-    description: Staging server
+  - url: https://rest.accept.2ba.nl/v1/products
+    description: Acceptance server
 
 tags:
   - name: Products
@@ -45,19 +45,19 @@ x-tagGroups:
       - Products bulk
 
 paths:
-  /products/{manufacturerIdGln}/{manufacturerProductNumber}:
+  /{manufacturerIdGln}/{manufacturerProductNumber}:
     $ref: paths/products.yaml
   
-  /products/{manufacturerIdGln}/{manufacturerProductNumber}/identification:
+  /{manufacturerIdGln}/{manufacturerProductNumber}/identification:
     $ref: paths/product-identification.yaml
   
-  /products/{manufacturerIdGln}/{manufacturerProductNumber}/details:
+  /{manufacturerIdGln}/{manufacturerProductNumber}/details:
     $ref: paths/product-details.yaml
   
-  /products/{manufacturerIdGln}/{manufacturerProductNumber}/descriptions:
+  /{manufacturerIdGln}/{manufacturerProductNumber}/descriptions:
     $ref: paths/product-descriptions.yaml
   
-  /products/{manufacturerIdGln}/{manufacturerProductNumber}/etim-classifications:
+  /{manufacturerIdGln}/{manufacturerProductNumber}/etim-classifications:
     $ref: paths/product-etim-classifications.yaml
   
   # /bulk/products:
