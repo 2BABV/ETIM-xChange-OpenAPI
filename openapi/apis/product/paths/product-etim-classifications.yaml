@@ -10,8 +10,8 @@ get:
     for a single product identified by the composite key of `manufacturerIdGln` and
     `manufacturerProductNumber`.
     
-    **ETIM Classification Filtering**: Use the optional `etimReleaseCode` query parameter
-    to filter classifications to a specific release version (e.g., "9.0", "10.0").
+    **ETIM Classification Filtering**: Use the optional `etimReleaseVersion` query parameter
+    to filter classifications to a specific release version (e.g., "9.0", "10.0"). If omitted, the latest etimReleaseVersion is returned.
     
     **No pagination** - Returns all ETIM classifications for the specified product.
     A product can have multiple ETIM classifications across different releases.
@@ -21,7 +21,7 @@ get:
   parameters:
     - $ref: ../../../shared/parameters/path/manufacturer-id-gln.yaml
     - $ref: ../../../shared/parameters/path/manufacturer-product-number.yaml
-    - $ref: ../../../shared/parameters/query/etim-release-code.yaml
+    - $ref: ../../../shared/parameters/query/etim-release-version.yaml
   responses:
     '200':
       description: Successfully retrieved product ETIM classifications
@@ -39,9 +39,7 @@ get:
                   etimClassifications:
                     - etimClassCode: "EC002745"
                       etimClassVersion: 1
-                      etimReleaseVersions:
-                        - "9.0"
-                        - "10.0"
+                      etimReleaseVersion: "9.0"
                       etimFeatures:
                         - etimFeatureCode: "EF000123"
                           etimValueCode: "EV000789"
@@ -49,8 +47,7 @@ get:
                           etimValueNumeric: 230.0
                     - etimClassCode: "EC001234"
                       etimClassVersion: 2
-                      etimReleaseVersions:
-                        - "11.0"
+                      etimReleaseVersion: "11.0"
                       etimFeatures:
                         - etimFeatureCode: "EF000789"
                           etimValueLogical: true

@@ -20,9 +20,7 @@ examples:
         etimClassifications:
           - etimClassCode: "EC002745"
             etimClassVersion: 1
-            etimReleaseVersions:
-              - "9.0"
-              - "10.0"
+            etimReleaseVersion: "9.0"
             etimFeatures:
               - etimFeatureCode: "EF000123"
                 etimValueCode: "EV000789"

@@ -21,7 +21,7 @@ get:
     - `/descriptions` - Multilingual descriptions with language filtering
     - `/etim-classifications` - ETIM classifications with features
     
-    **ETIM Classification Filtering**: Use the optional `etimReleaseCode` query parameter
+    **ETIM Classification Filtering**: Use the optional `etimReleaseVersion` query parameter
     to filter ETIM classifications to a specific release version (e.g., "9.0", "10.0").
     
     **No pagination** - Returns exactly one product document or 404 if not found.
@@ -31,7 +31,7 @@ get:
   parameters:
     - $ref: ../../../shared/parameters/path/manufacturer-id-gln.yaml
     - $ref: ../../../shared/parameters/path/manufacturer-product-number.yaml
-    - $ref: ../../../shared/parameters/query/etim-release-code.yaml
+    - $ref: ../../../shared/parameters/query/etim-release-version.yaml
   responses:
     '200':
       description: Successfully retrieved the product
@@ -72,9 +72,7 @@ get:
                   etimClassifications:
                     - etimClassCode: "EC002745"
                       etimClassVersion: 1
-                      etimReleaseVersions:
-                        - "9.0"
-                        - "10.0"
+                      etimReleaseVersion: "9.0"
                       etimFeatures:
                         - etimFeatureCode: "EF012345"
                           etimValueNumeric: 10

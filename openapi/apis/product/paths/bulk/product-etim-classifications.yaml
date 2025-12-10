@@ -7,7 +7,7 @@ get:
     Retrieve product ETIM classification information in bulk with cursor-based pagination.
     Returns ETIM class codes, features, and version information.
     
-    **ETIM Release Filtering**: Use the optional `etimReleaseCode` query parameter
+    **ETIM Release Filtering**: Use the optional `etimReleaseVersion` query parameter
     to filter classifications to a specific ETIM release version (e.g., "9.0", "10.0").
     
     Use this endpoint for ETIM classification synchronization.
@@ -17,7 +17,7 @@ get:
     - $ref: ../../../../shared/parameters/query/selection-id.yaml
     - $ref: ../../../../shared/parameters/query/manufacturer-id-gln.yaml
     - $ref: ../../../../shared/parameters/query/mutation-date-time.yaml
-    - $ref: ../../../../shared/parameters/query/etim-release-code.yaml
+    - $ref: ../../../../shared/parameters/query/etim-release-version.yaml
   responses:
     '200':
       description: Successfully retrieved product ETIM classifications

@@ -1,4 +1,4 @@
-name: etimReleaseCode
+name: etimReleaseVersion
 in: query
 required: false
 schema:

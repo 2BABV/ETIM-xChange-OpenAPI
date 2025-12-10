@@ -52,9 +52,7 @@ examples:
         manufacturerProductNumber: "929002376910"
         etimClassCode: "EC002745"
         etimClassVersion: 1
-        etimReleaseVersions:
-          - "9.0"
-          - "10.0"
+        etimReleaseVersion: "9.0"
         etimFeatureCode: "EF000123"
         etimValueCode: "EV000789"
       # Product 1, Classification 1, Feature 2 (Numeric)
@@ -62,9 +60,7 @@ examples:
         manufacturerProductNumber: "929002376910"
         etimClassCode: "EC002745"
         etimClassVersion: 1
-        etimReleaseVersions:
-          - "9.0"
-          - "10.0"
+        etimReleaseVersion: "9.0"
         etimFeatureCode: "EF000456"
         etimValueNumeric: 230.0
       # Product 1, Classification 1, Feature 3 (Logical)
@@ -72,9 +68,7 @@ examples:
         manufacturerProductNumber: "929002376910"
         etimClassCode: "EC002745"
         etimClassVersion: 1
-        etimReleaseVersions:
-          - "9.0"
-          - "10.0"
+        etimReleaseVersion: "10.0"
         etimFeatureCode: "EF000789"
         etimValueLogical: true
       # Product 2, Classification without features
@@ -82,8 +76,7 @@ examples:
         manufacturerProductNumber: "LED-12345-A"
         etimClassCode: "EC001234"
         etimClassVersion: 2
-        etimReleaseVersions:
-          - "11.0"
+        etimReleaseVersion: "11.0"
     meta:
       cursor: "eyJtYW51ZmFjdHVyZXJJZEdsbkgiOiI5ODc2NTQzMjEwOTg3IiwibWFudWZhY3R1cmVyUHJvZHVjdE51bWJlciI6IkxFRC0xMjM0NS1BIiwiZXRpbUNsYXNzQ29kZSI6IkVDMDAxMjM0IiwiZXRpbUZlYXR1cmVDb2RlIjpudWxsfQ=="
       hasNext: true

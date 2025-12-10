@@ -42,9 +42,7 @@ examples:
       etimClassifications:
         - etimClassCode: "EC002745"
           etimClassVersion: 1
-          etimReleaseVersions:
-            - "9.0"
-            - "10.0"
+          etimReleaseVersion: "9.0"
           etimFeatures:
             - etimFeatureCode: "EF000123"
               etimValueCode: "EV000789"
@@ -52,8 +50,7 @@ examples:
               etimValueNumeric: 230.0
         - etimClassCode: "EC001234"
           etimClassVersion: 2
-          etimReleaseVersions:
-            - "11.0"
+          etimReleaseVersion: "11.0"
           etimFeatures:
             - etimFeatureCode: "EF000789"
               etimValueLogical: true

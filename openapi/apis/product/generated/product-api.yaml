@@ -62,7 +62,7 @@ paths:
         - `/descriptions` - Multilingual descriptions with language filtering
         - `/etim-classifications` - ETIM classifications with features
 
-        **ETIM Classification Filtering**: Use the optional `etimReleaseCode` query parameter
+        **ETIM Classification Filtering**: Use the optional `etimReleaseVersion` query parameter
         to filter ETIM classifications to a specific release version (e.g., "9.0", "10.0").
 
         **No pagination** - Returns exactly one product document or 404 if not found.
@@ -72,7 +72,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/manufacturer-id-gln'
         - $ref: '#/components/parameters/manufacturer-product-number'
-        - $ref: '#/components/parameters/etim-release-code'
+        - $ref: '#/components/parameters/etim-release-version'
       responses:
         '200':
           description: Successfully retrieved the product
@@ -113,9 +113,7 @@ paths:
                       etimClassifications:
                         - etimClassCode: EC002745
                           etimClassVersion: 1
-                          etimReleaseVersions:
-                            - '9.0'
-                            - '10.0'
+                          etimReleaseVersion: '9.0'
                           etimFeatures:
                             - etimFeatureCode: EF012345
                               etimValueNumeric: 10
@@ -403,8 +401,8 @@ paths:
         for a single product identified by the composite key of `manufacturerIdGln` and
         `manufacturerProductNumber`.
 
-        **ETIM Classification Filtering**: Use the optional `etimReleaseCode` query parameter
-        to filter classifications to a specific release version (e.g., "9.0", "10.0").
+        **ETIM Classification Filtering**: Use the optional `etimReleaseVersion` query parameter
+        to filter classifications to a specific release version (e.g., "9.0", "10.0"). If omitted, the latest etimReleaseVersion is returned.
 
         **No pagination** - Returns all ETIM classifications for the specified product.
         A product can have multiple ETIM classifications across different releases.
@@ -414,7 +412,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/manufacturer-id-gln'
         - $ref: '#/components/parameters/manufacturer-product-number'
-        - $ref: '#/components/parameters/etim-release-code'
+        - $ref: '#/components/parameters/etim-release-version'
       responses:
         '200':
           description: Successfully retrieved product ETIM classifications
@@ -432,9 +430,7 @@ paths:
                       etimClassifications:
                         - etimClassCode: EC002745
                           etimClassVersion: 1
-                          etimReleaseVersions:
-                            - '9.0'
-                            - '10.0'
+                          etimReleaseVersion: '9.0'
                           etimFeatures:
                             - etimFeatureCode: EF000123
                               etimValueCode: EV000789
@@ -442,8 +438,7 @@ paths:
                               etimValueNumeric: 230
                         - etimClassCode: EC001234
                           etimClassVersion: 2
-                          etimReleaseVersions:
-                            - '11.0'
+                          etimReleaseVersion: '11.0'
                           etimFeatures:
                             - etimFeatureCode: EF000789
                               etimValueLogical: true
@@ -593,14 +588,14 @@ paths:
 
         **Data Reconstruction**: To reconstruct the hierarchical structure:
         1. Group rows by `manufacturerIdGln` + `manufacturerProductNumber` for products
-        2. Within each product, group by `etimClassCode` + `etimClassVersion` for classifications
+        2. Within each product, group by `etimClassCode` + `etimReleaseVersion` for classifications
         3. Features are individual rows within each classification group
 
         **Classification-Only Rows**: Products with classifications but no features are represented
         with `etimFeatureCode` omitted to ensure all classifications are included in the response.
 
-        **ETIM Release Filtering**: Use the optional `etimReleaseCode` query parameter
-        to filter classifications to a specific ETIM release version (e.g., "9.0", "10.0").
+        **ETIM Release Filtering**: Use the optional `etimReleaseVersion` query parameter
+        to filter classifications to a specific ETIM release version (e.g., "9.0", "10.0"). If omitted, latest etimReleaseVersion is returned.
 
         **Use case**: Ideal for bulk synchronization of ETIM classification data to external systems,
         data warehouses, or analytics platforms.
@@ -610,7 +605,7 @@ paths:
         - $ref: '#/components/parameters/selection-id'
         - $ref: '#/components/parameters/manufacturer-id-gln-2'
         - $ref: '#/components/parameters/mutation-date-time'
-        - $ref: '#/components/parameters/etim-release-code'
+        - $ref: '#/components/parameters/etim-release-version'
       responses:
         '200':
           description: Successfully retrieved product ETIM classification features
@@ -627,35 +622,28 @@ paths:
                         manufacturerProductNumber: '929002376910'
                         etimClassCode: EC002745
                         etimClassVersion: 1
-                        etimReleaseVersions:
-                          - '9.0'
-                          - '10.0'
+                        etimReleaseVersion: '9.0'
                         etimFeatureCode: EF000123
                         etimValueCode: EV000789
                       - manufacturerIdGln: '1234567890123'
                         manufacturerProductNumber: '929002376910'
                         etimClassCode: EC002745
                         etimClassVersion: 1
-                        etimReleaseVersions:
-                          - '9.0'
-                          - '10.0'
+                        etimReleaseVersion: '9.0'
                         etimFeatureCode: EF000456
                         etimValueNumeric: 230
                       - manufacturerIdGln: '1234567890123'
                         manufacturerProductNumber: '929002376910'
                         etimClassCode: EC002745
                         etimClassVersion: 1
-                        etimReleaseVersions:
-                          - '9.0'
-                          - '10.0'
+                        etimReleaseVersion: '9.0'
                         etimFeatureCode: EF000789
                         etimValueLogical: true
                       - manufacturerIdGln: '9876543210987'
                         manufacturerProductNumber: LED-12345-A
                         etimClassCode: EC001234
                         etimClassVersion: 2
-                        etimReleaseVersions:
-                          - '11.0'
+                        etimReleaseVersion: '9.0'
                     meta:
                       cursor: eyJtYW51ZmFjdHVyZXJJZEdsbkgiOiI5ODc2NTQzMjEwOTg3IiwibWFudWZhY3R1cmVyUHJvZHVjdE51bWJlciI6IkxFRC0xMjM0NS1BIn0=
                       hasNext: true
@@ -1448,7 +1436,7 @@ components:
       additionalProperties: false
       required:
         - etimClassCode
-        - etimClassVersion
+        - etimReleaseVersion
       properties:
         etimClassCode:
           type: string
@@ -1462,41 +1450,34 @@ components:
             - EC000123
             - EC002745
         etimClassVersion:
-          type: integer
+          type:
+            - integer
+            - 'null'
           minimum: 1
           description: |
             Version number of the ETIM class. Incremented when class definition changes.
+            Optional field matching ETIM xChange specification.
 
             **ETIM xChange**: `EtimClassVersion`  
             **Path**: `Supplier[].Product[].EtimClassification[].EtimClassVersion`
-
-            **RESTRUCTURING DEVIATION**: Made required (was optional in ETIM xChange).
           examples:
             - 1
             - 2
-        etimReleaseVersions:
-          type:
-            - array
-            - 'null'
-          uniqueItems: true
-          items:
-            type: string
-            pattern: ^[0-9]{1,2}[.]{1}[0-9]{1}|DYNAMIC$
-          description: |
-            Array of ETIM release versions where this classification is valid.
-            Each version is a release number (e.g., "9.0", "10.0", "11.0") or "DYNAMIC" for dynamic ETIM classes.
-
-            **ETIM xChange**: `EtimReleaseVersion` (single value)  
-            **Path**: `Supplier[].Product[].EtimClassification[].EtimReleaseVersion`
-
-            **RESTRUCTURING DEVIATION**: Changed from single required `etimReleaseVersion` to optional array `etimReleaseVersions`.
-            This allows representing that a classification is valid across multiple ETIM releases.
-          examples:
-            - - '9.0'
-              - '10.0'
-            - - '11.0'
-            - - DYNAMIC
             - null
+        etimReleaseVersion:
+          type: string
+          pattern: ^[0-9]{1,2}[.]{1}[0-9]{1}|DYNAMIC$
+          description: |
+            ETIM release version where this classification is valid.
+            Release number (e.g., "9.0", "10.0", "11.0") or "DYNAMIC" for dynamic ETIM classes.
+
+            **ETIM xChange**: `EtimReleaseVersion`  
+            **Path**: `Supplier[].Product[].EtimClassification[].EtimReleaseVersion`
+          examples:
+            - '9.0'
+            - '10.0'
+            - '11.0'
+            - DYNAMIC
         etimDynamicReleaseDate:
           type:
             - string
@@ -1504,7 +1485,7 @@ components:
           format: date
           description: |
             Release date for dynamic ETIM classes. ISO 8601 date format (YYYY-MM-DD).
-            Only applicable when `etimReleaseVersions` contains "DYNAMIC".
+            Only applicable when `etimReleaseVersion` is "DYNAMIC".
 
             **ETIM xChange**: `EtimDynamicReleaseDate`  
             **Path**: `Supplier[].Product[].EtimClassification[].EtimDynamicReleaseDate`
@@ -1558,9 +1539,7 @@ components:
       examples:
         - etimClassCode: EC002745
           etimClassVersion: 1
-          etimReleaseVersions:
-            - '9.0'
-            - '10.0'
+          etimReleaseVersion: '9.0'
           etimFeatures:
             - etimFeatureCode: EF000123
               etimValueCode: EV000789
@@ -1570,11 +1549,10 @@ components:
               etimValueLogical: true
         - etimClassCode: EC000123
           etimClassVersion: 2
-          etimReleaseVersions:
-            - '11.0'
+          etimReleaseVersion: '11.0'
         - etimClassCode: EC001234
-          etimClassVersion: 1
-          etimReleaseVersions: null
+          etimClassVersion: null
+          etimReleaseVersion: '10.0'
     EtimFeature:
       type: object
       additionalProperties: false
@@ -1764,7 +1742,7 @@ components:
         - manufacturerIdGln
         - manufacturerProductNumber
         - etimClassCode
-        - etimClassVersion
+        - etimReleaseVersion
       properties:
         manufacturerIdGln:
           type: string
@@ -1796,36 +1774,33 @@ components:
             - EC000123
             - EC002745
         etimClassVersion:
-          type: integer
+          type:
+            - integer
+            - 'null'
           minimum: 1
           description: |
             Version number of the ETIM class. Incremented when class definition changes.
+            Optional field matching ETIM xChange specification. Omitted when not applicable.
 
             **ETIM xChange**: `EtimClassVersion`
             **Path**: `Supplier[].Product[].EtimClassification[].EtimClassVersion`
           examples:
             - 1
             - 2
-        etimReleaseVersions:
-          type:
-            - array
-            - 'null'
-          uniqueItems: true
-          items:
-            type: string
-            pattern: ^[0-9]{1,2}[.]{1}[0-9]{1}|DYNAMIC$
+        etimReleaseVersion:
+          type: string
+          pattern: ^[0-9]{1,2}[.]{1}[0-9]{1}|DYNAMIC$
           description: |
-            Array of ETIM release versions where this classification is valid.
-            Each version is a release number (e.g., "9.0", "10.0", "11.0") or "DYNAMIC".
-            Omitted when not applicable.
+            ETIM release version where this classification is valid.
+            Release number (e.g., "9.0", "10.0", "11.0") or "DYNAMIC".
 
             **ETIM xChange**: `EtimReleaseVersion`
             **Path**: `Supplier[].Product[].EtimClassification[].EtimReleaseVersion`
           examples:
-            - - '9.0'
-              - '10.0'
-            - - '11.0'
-            - - DYNAMIC
+            - '9.0'
+            - '10.0'
+            - '11.0'
+            - DYNAMIC
         etimDynamicReleaseDate:
           type:
             - string
@@ -1833,7 +1808,7 @@ components:
           format: date
           description: |
             Release date for dynamic ETIM classes. ISO 8601 date format (YYYY-MM-DD).
-            Only present when `etimReleaseVersions` contains "DYNAMIC". Omitted when not applicable.
+            Only present when `etimReleaseVersion` is "DYNAMIC". Omitted when not applicable.
 
             **ETIM xChange**: `EtimDynamicReleaseDate`
             **Path**: `Supplier[].Product[].EtimClassification[].EtimDynamicReleaseDate`
@@ -2021,27 +1996,21 @@ components:
           manufacturerProductNumber: '929002376910'
           etimClassCode: EC002745
           etimClassVersion: 1
-          etimReleaseVersions:
-            - '9.0'
-            - '10.0'
+          etimReleaseVersion: '9.0'
           etimFeatureCode: EF000123
           etimValueCode: EV000789
         - manufacturerIdGln: '1234567890123'
           manufacturerProductNumber: '929002376910'
           etimClassCode: EC002745
           etimClassVersion: 1
-          etimReleaseVersions:
-            - '9.0'
-            - '10.0'
+          etimReleaseVersion: '9.0'
           etimFeatureCode: EF000456
           etimValueNumeric: 230
         - manufacturerIdGln: '1234567890123'
           manufacturerProductNumber: '929002376910'
           etimClassCode: EC002745
           etimClassVersion: 1
-          etimReleaseVersions:
-            - '9.0'
-            - '10.0'
+          etimReleaseVersion: '10.0'
           etimFeatureCode: EF000789
           etimValueRangeLower: 100
           etimValueRangeUpper: 240
@@ -2049,24 +2018,19 @@ components:
           manufacturerProductNumber: '929002376910'
           etimClassCode: EC002745
           etimClassVersion: 1
-          etimReleaseVersions:
-            - '9.0'
-            - '10.0'
+          etimReleaseVersion: '10.0'
           etimFeatureCode: EF001234
           etimValueLogical: true
         - manufacturerIdGln: '9876543210987'
           manufacturerProductNumber: LED-12345-A
           etimClassCode: EC001234
           etimClassVersion: 2
-          etimReleaseVersions:
-            - '11.0'
+          etimReleaseVersion: '11.0'
         - manufacturerIdGln: '1234567890123'
           manufacturerProductNumber: '929002376910'
           etimClassCode: EC002745
           etimClassVersion: 1
-          etimReleaseVersions:
-            - '9.0'
-            - '10.0'
+          etimReleaseVersion: '9.0'
           etimFeatureCode: EF005678
           reasonNoValue: NA
     ProductStatus:
@@ -2251,9 +2215,7 @@ components:
             etimClassifications:
               - etimClassCode: EC002745
                 etimClassVersion: 1
-                etimReleaseVersions:
-                  - '9.0'
-                  - '10.0'
+                etimReleaseVersion: '9.0'
                 etimFeatures:
                   - etimFeatureCode: EF012345
                     etimValueNumeric: 10
@@ -2479,9 +2441,7 @@ components:
             etimClassifications:
               - etimClassCode: EC002745
                 etimClassVersion: 1
-                etimReleaseVersions:
-                  - '9.0'
-                  - '10.0'
+                etimReleaseVersion: '9.0'
                 etimFeatures:
                   - etimFeatureCode: EF000123
                     etimValueCode: EV000789
@@ -2489,8 +2449,7 @@ components:
                     etimValueNumeric: 230
               - etimClassCode: EC001234
                 etimClassVersion: 2
-                etimReleaseVersions:
-                  - '11.0'
+                etimReleaseVersion: '11.0'
                 etimFeatures:
                   - etimFeatureCode: EF000789
                     etimValueLogical: true
@@ -2660,35 +2619,28 @@ components:
               manufacturerProductNumber: '929002376910'
               etimClassCode: EC002745
               etimClassVersion: 1
-              etimReleaseVersions:
-                - '9.0'
-                - '10.0'
+              etimReleaseVersion: '9.0'
               etimFeatureCode: EF000123
               etimValueCode: EV000789
             - manufacturerIdGln: '1234567890123'
               manufacturerProductNumber: '929002376910'
               etimClassCode: EC002745
               etimClassVersion: 1
-              etimReleaseVersions:
-                - '9.0'
-                - '10.0'
+              etimReleaseVersion: '9.0'
               etimFeatureCode: EF000456
               etimValueNumeric: 230
             - manufacturerIdGln: '1234567890123'
               manufacturerProductNumber: '929002376910'
               etimClassCode: EC002745
               etimClassVersion: 1
-              etimReleaseVersions:
-                - '9.0'
-                - '10.0'
+              etimReleaseVersion: '10.0'
               etimFeatureCode: EF000789
               etimValueLogical: true
             - manufacturerIdGln: '9876543210987'
               manufacturerProductNumber: LED-12345-A
               etimClassCode: EC001234
               etimClassVersion: 2
-              etimReleaseVersions:
-                - '11.0'
+              etimReleaseVersion: '11.0'
           meta:
             cursor: eyJtYW51ZmFjdHVyZXJJZEdsbkgiOiI5ODc2NTQzMjEwOTg3IiwibWFudWZhY3R1cmVyUHJvZHVjdE51bWJlciI6IkxFRC0xMjM0NS1BIiwiZXRpbUNsYXNzQ29kZSI6IkVDMDAxMjM0IiwiZXRpbUZlYXR1cmVDb2RlIjpudWxsfQ==
             hasNext: true
@@ -2870,8 +2822,8 @@ components:
         maxLength: 35
         description: Manufacturer product number (1-35 characters)
       example: '929002376910'
-    etim-release-code:
-      name: etimReleaseCode
+    etim-release-version:
+      name: etimReleaseVersion
       in: query
       required: false
       schema:

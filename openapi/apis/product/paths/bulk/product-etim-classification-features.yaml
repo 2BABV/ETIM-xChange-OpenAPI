@@ -18,14 +18,14 @@ get:
     
     **Data Reconstruction**: To reconstruct the hierarchical structure:
     1. Group rows by `manufacturerIdGln` + `manufacturerProductNumber` for products
-    2. Within each product, group by `etimClassCode` + `etimClassVersion` for classifications
+    2. Within each product, group by `etimClassCode` + `etimReleaseVersion` for classifications
     3. Features are individual rows within each classification group
     
     **Classification-Only Rows**: Products with classifications but no features are represented
     with `etimFeatureCode` omitted to ensure all classifications are included in the response.
     
-    **ETIM Release Filtering**: Use the optional `etimReleaseCode` query parameter
-    to filter classifications to a specific ETIM release version (e.g., "9.0", "10.0").
+    **ETIM Release Filtering**: Use the optional `etimReleaseVersion` query parameter
+    to filter classifications to a specific ETIM release version (e.g., "9.0", "10.0"). If omitted, latest etimReleaseVersion is returned.
     
     **Use case**: Ideal for bulk synchronization of ETIM classification data to external systems,
     data warehouses, or analytics platforms.
@@ -35,7 +35,7 @@ get:
     - $ref: ../../../../shared/parameters/query/selection-id.yaml
     - $ref: ../../../../shared/parameters/query/manufacturer-id-gln.yaml
     - $ref: ../../../../shared/parameters/query/mutation-date-time.yaml
-    - $ref: ../../../../shared/parameters/query/etim-release-code.yaml
+    - $ref: ../../../../shared/parameters/query/etim-release-version.yaml
   responses:
     '200':
       description: Successfully retrieved product ETIM classification features
@@ -53,9 +53,7 @@ get:
                     manufacturerProductNumber: "929002376910"
                     etimClassCode: "EC002745"
                     etimClassVersion: 1
-                    etimReleaseVersions:
-                      - "9.0"
-                      - "10.0"
+                    etimReleaseVersion: "9.0"
                     etimFeatureCode: "EF000123"
                     etimValueCode: "EV000789"
                   # Numeric feature
@@ -63,9 +61,7 @@ get:
                     manufacturerProductNumber: "929002376910"
                     etimClassCode: "EC002745"
                     etimClassVersion: 1
-                    etimReleaseVersions:
-                      - "9.0"
-                      - "10.0"
+                    etimReleaseVersion: "9.0"
                     etimFeatureCode: "EF000456"
                     etimValueNumeric: 230.0
                   # Logical feature
@@ -73,9 +69,7 @@ get:
                     manufacturerProductNumber: "929002376910"
                     etimClassCode: "EC002745"
                     etimClassVersion: 1
-                    etimReleaseVersions:
-                      - "9.0"
-                      - "10.0"
+                    etimReleaseVersion: "9.0"
                     etimFeatureCode: "EF000789"
                     etimValueLogical: true
                   # Classification-only (no features)
@@ -83,8 +77,7 @@ get:
                     manufacturerProductNumber: "LED-12345-A"
                     etimClassCode: "EC001234"
                     etimClassVersion: 2
-                    etimReleaseVersions:
-                      - "11.0"
+                    etimReleaseVersion: "9.0"
                 meta:
                   cursor: "eyJtYW51ZmFjdHVyZXJJZEdsbkgiOiI5ODc2NTQzMjEwOTg3IiwibWFudWZhY3R1cmVyUHJvZHVjdE51bWJlciI6IkxFRC0xMjM0NS1BIn0="
                   hasNext: true

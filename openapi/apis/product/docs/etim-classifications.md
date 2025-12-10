@@ -1,8 +1,8 @@
 # ETIM Classifications
 
-**Version**: 1.0  
-**Date**: November 6, 2025  
-**Source**: ETIM xChange V2.0 Beta Schema (2025-10-13)  
+**Version**: 2.0  
+**Date**: December 10, 2025  
+**Source**: ETIM xChange V2.0 Schema (2025-11-27)  
 **Target**: OpenAPI 3.1 / JSON Schema 2020-12
 
 ## Table of Contents
@@ -11,16 +11,15 @@
 - [Structural Changes from File Format to API](#structural-changes-from-file-format-to-api)
   - [1. Removal of OtherClassifications](#1-removal-of-otherclassifications)
   - [2. Single Classification Structure](#2-single-classification-structure)
-  - [3. Key Field Changes](#3-key-field-changes)
-  - [4. ETIM Release Version Array](#4-etim-release-version-array)
-  - [5. Release Version Filtering](#5-release-version-filtering)
+  - [3. ETIM Release Version Alignment](#3-etim-release-version-alignment)
+  - [4. Release Version Filtering](#4-release-version-filtering)
 - [API Model Structure](#api-model-structure)
 
 ---
 
 ## Overview
 
-This document describes the transformation of the ETIM Classification structure from the ETIM xChange V2.0 file format to the ETIM xChange API format. The API model has been optimized for REST services and includes several key improvements to address data redundancy and support better filtering capabilities.
+This document describes the transformation of the ETIM Classification structure from the ETIM xChange V2.0 file format to the ETIM xChange API format. The API model follows the ETIM xChange schema structure closely while being optimized for REST service delivery.
 
 ---
 
@@ -61,15 +60,17 @@ The API provides a focused, standardized approach with only ETIM classifications
 
 ---
 
-### 3. Key Field Changes
+### 3. ETIM Release Version Alignment
 
-#### File Format Key Fields (ETIM xChange)
+The API model aligns with the ETIM xChange V2.0 schema structure for classification versioning.
+
+#### ETIM xChange Schema Fields
 ```json
 {
   "EtimClassification": [
     {
-      "EtimReleaseVersion": "9.0",    // Required - Part of composite key
-      "EtimClassCode": "EC002745",     // Required - Part of composite key
+      "EtimReleaseVersion": "9.0",     // Required - Single string value
+      "EtimClassCode": "EC002745",     // Required
       "EtimClassVersion": 1            // Optional
     }
   ]
@@ -78,110 +79,72 @@ The API provides a focused, standardized approach with only ETIM classifications
 
 **Composite Key**: `EtimReleaseVersion` + `EtimClassCode`
 
-**Problem**: An ETIM class with the same `EtimClassVersion` can exist in multiple ETIM releases. Using `EtimReleaseVersion` + `EtimClassCode` as the key results in redundant `EtimClassVersion` entries across releases.
-
-#### API Format Key Fields
+#### API Format Fields
 ```yaml
 EtimClassification:
   required:
     - etimClassCode
-    - etimClassVersion
+    - etimReleaseVersion
   properties:
     etimClassCode:
       type: string
       pattern: "^EC[0-9]{6}$"
+      
+    etimReleaseVersion:
+      type: string
+      pattern: "^[0-9]{1,2}[.]{1}[0-9]{1}|DYNAMIC$"
+      description: |
+        ETIM release version where this classification is valid.
+        Release number (e.g., "9.0", "10.0", "11.0") or "DYNAMIC" 
+        for dynamic ETIM classes.
+      
     etimClassVersion:
-      type: integer
+      type: ["integer", "null"]
       minimum: 1
-    etimReleaseVersions:
-      type: ["array", "null"]
-      items:
-        type: string
-        pattern: "^[0-9]{1,2}[.]{1}[0-9]{1}|DYNAMIC$"
+      description: |
+        Version number of the ETIM class. Optional field matching 
+        ETIM xChange specification.
 ```
 
-**Composite Key**: `etimClassCode` + `etimClassVersion`
+**Alignment Details**:
+1. **`etimReleaseVersion`**: Single required string (matches ETIM xChange `EtimReleaseVersion`)
+2. **`etimClassVersion`**: Optional nullable integer (matches ETIM xChange `EtimClassVersion`)
+3. **Composite Key**: Uses `etimReleaseVersion` + `etimClassCode` as per ETIM xChange design
 
-**Improvements**:
-1. **Eliminates Redundancy**: Each unique class version appears once, with an array of applicable release versions
-2. **Better Normalization**: Single source of truth for each class version
-3. **Required Version**: `etimClassVersion` is now required (was optional in file format). This also aligns with ETIM Modelling Classes, which have only one release ("DYNAMIC") with multiple versions, where the version was already required.
-4. **Multi-Release Support**: `etimReleaseVersions` array captures all releases where the classification is valid
+**Data Representation**:
+If the same class version exists in releases 9.0, 10.0, and 11.0, the API represents this with separate classification entries (matching the ETIM xChange file format):
 
----
-
-### 4. ETIM Release Version Array
-
-#### File Format
 ```json
 {
-  "EtimReleaseVersion": "9.0"  // Single required string
-}
-```
-
-Each classification entry represents one class in one release. If the same class version exists in releases 9.0, 10.0, and 11.0, it requires three separate entries.
-
-#### API Format
-```yaml
-etimReleaseVersions:
-  type: ["array", "null"]
-  uniqueItems: true
-  items:
-    type: string
-    pattern: "^[0-9]{1,2}[.]{1}[0-9]{1}|DYNAMIC$"
-  examples:
-    - ["9.0", "10.0", "11.0"]
-    - ["DYNAMIC"]
-    - null
-```
-
-**Benefits**:
-- **Single Entry**: One classification entry represents the class across all applicable releases
-- **Explicit Release Coverage**: Clear visibility of which releases support this class version
-- **Nullable**: Supports cases where release information may not be tracked or is irrelevant
-- **Unique Items**: Prevents duplicate release versions in the array
-
-**Example Comparison**:
-
-File Format (3 entries for the same class version):
-```json
-[
-  {
-    "EtimReleaseVersion": "9.0",
-    "EtimClassCode": "EC002745",
-    "EtimClassVersion": 1
-  },
-  {
-    "EtimReleaseVersion": "10.0",
-    "EtimClassCode": "EC002745",
-    "EtimClassVersion": 1
-  },
-  {
-    "EtimReleaseVersion": "11.0",
-    "EtimClassCode": "EC002745",
-    "EtimClassVersion": 1
-  }
-]
-```
-
-API Format (1 entry):
-```json
-{
-  "etimClassCode": "EC002745",
-  "etimClassVersion": 1,
-  "etimReleaseVersions": ["9.0", "10.0", "11.0"]
+  "etimClassifications": [
+    {
+      "etimClassCode": "EC002745",
+      "etimClassVersion": 1,
+      "etimReleaseVersion": "9.0"
+    },
+    {
+      "etimClassCode": "EC002745",
+      "etimClassVersion": 1,
+      "etimReleaseVersion": "10.0"
+    },
+    {
+      "etimClassCode": "EC002745",
+      "etimClassVersion": 1,
+      "etimReleaseVersion": "11.0"
+    }
+  ]
 }
 ```
 
 ---
 
-### 5. Release Version Filtering
+### 4. Release Version Filtering
 
 Both the generic product service and the bulk ETIM classifications endpoint support filtering by ETIM release version:
 
 #### Query Parameter
 ```yaml
-name: etimReleaseCode
+name: etimReleaseVersion
 in: query
 schema:
   type: string
@@ -205,8 +168,7 @@ examples:
    - Use for ETIM classification synchronization
 
 **Filter Behavior**:
-- Returns only classifications where `etimReleaseVersions` contains the specified release
-- If `etimReleaseVersions` is `null`, the classification is included regardless of filter
+- Returns only classifications where `etimReleaseVersion` matches the specified release
 - Supports "DYNAMIC" for dynamic ETIM classes
 
 ---
@@ -220,24 +182,22 @@ EtimClassification:
   type: object
   required:
     - etimClassCode
-    - etimClassVersion
+    - etimReleaseVersion
   properties:
     etimClassCode:
       type: string
       pattern: "^EC[0-9]{6}$"
       description: ETIM class code (EC + 6 digits)
       
-    etimClassVersion:
-      type: integer
-      minimum: 1
-      description: Version of the ETIM class (required in API, optional in file)
+    etimReleaseVersion:
+      type: string
+      pattern: "^[0-9]{1,2}[.]{1}[0-9]{1}|DYNAMIC$"
+      description: ETIM release version (e.g., "9.0", "10.0", "DYNAMIC")
       
-    etimReleaseVersions:
-      type: ["array", "null"]
-      uniqueItems: true
-      items:
-        type: string
-      description: Array of ETIM releases where classification is valid
+    etimClassVersion:
+      type: ["integer", "null"]
+      minimum: 1
+      description: Version of the ETIM class (optional)
       
     etimDynamicReleaseDate:
       type: ["string", "null"]
@@ -260,17 +220,16 @@ EtimClassification:
 
 ---
 
-## Summary of Deviations
+## Summary of Key Changes
 
 | Aspect | ETIM xChange File Format | ETIM xChange API Format |
 |--------|-------------------------|------------------------|
 | **Classification Structures** | `EtimClassification[]` + `OtherClassifications[]` | `etimClassifications[]` only |
-| **Composite Key** | `EtimReleaseVersion` + `EtimClassCode` | `etimClassCode` + `etimClassVersion` |
-| **Release Version** | Single required string | Optional array of strings |
-| **Class Version** | Optional | Required |
-| **Redundancy** | Same class version duplicated per release | Single entry with release array |
-| **Release Filtering** | Not applicable | Supported via `etimReleaseCode` query parameter |
+| **Release Version** | Single required string (`EtimReleaseVersion`) | Single required string (`etimReleaseVersion`) |
+| **Class Version** | Optional integer | Optional nullable integer |
+| **Composite Key** | `EtimReleaseVersion` + `EtimClassCode` | `etimReleaseVersion` + `etimClassCode` |
+| **Release Filtering** | Not applicable | Supported via `etimReleaseVersion` query parameter |
 | **Bulk Endpoint** | Not applicable | `/bulk/product-etim-classifications` |
 
-These changes optimize the API for efficient data retrieval, reduce redundancy, and provide better filtering capabilities while maintaining full compatibility with ETIM classification standards.
+The API format maintains alignment with ETIM xChange V2.0 schema structure while providing enhanced filtering capabilities and REST-optimized endpoints for efficient data retrieval.
 

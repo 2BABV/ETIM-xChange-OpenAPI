@@ -19,7 +19,7 @@ required:
   - manufacturerIdGln
   - manufacturerProductNumber
   - etimClassCode
-  - etimClassVersion
+  - etimReleaseVersion
 properties:
   manufacturerIdGln:
     type: string
@@ -54,10 +54,11 @@ properties:
       - "EC002745"
   
   etimClassVersion:
-    type: integer
+    type: ["integer", "null"]
     minimum: 1
     description: |
       Version number of the ETIM class. Incremented when class definition changes.
+      Optional field matching ETIM xChange specification. Omitted when not applicable.
       
       **ETIM xChange**: `EtimClassVersion`
       **Path**: `Supplier[].Product[].EtimClassification[].EtimClassVersion`
@@ -65,30 +66,27 @@ properties:
       - 1
       - 2
   
-  etimReleaseVersions:
-    type: ["array", "null"]
-    uniqueItems: true
-    items:
-      type: string
-      pattern: "^[0-9]{1,2}[.]{1}[0-9]{1}|DYNAMIC$"
+  etimReleaseVersion:
+    type: string
+    pattern: "^[0-9]{1,2}[.]{1}[0-9]{1}|DYNAMIC$"
     description: |
-      Array of ETIM release versions where this classification is valid.
-      Each version is a release number (e.g., "9.0", "10.0", "11.0") or "DYNAMIC".
-      Omitted when not applicable.
+      ETIM release version where this classification is valid.
+      Release number (e.g., "9.0", "10.0", "11.0") or "DYNAMIC".
       
       **ETIM xChange**: `EtimReleaseVersion`
       **Path**: `Supplier[].Product[].EtimClassification[].EtimReleaseVersion`
     examples:
-      - ["9.0", "10.0"]
-      - ["11.0"]
-      - ["DYNAMIC"]
+      - "9.0"
+      - "10.0"
+      - "11.0"
+      - "DYNAMIC"
   
   etimDynamicReleaseDate:
     type: ["string", "null"]
     format: date
     description: |
       Release date for dynamic ETIM classes. ISO 8601 date format (YYYY-MM-DD).
-      Only present when `etimReleaseVersions` contains "DYNAMIC". Omitted when not applicable.
+      Only present when `etimReleaseVersion` is "DYNAMIC". Omitted when not applicable.
       
       **ETIM xChange**: `EtimDynamicReleaseDate`
       **Path**: `Supplier[].Product[].EtimClassification[].EtimDynamicReleaseDate`
@@ -266,9 +264,7 @@ examples:
     manufacturerProductNumber: "929002376910"
     etimClassCode: "EC002745"
     etimClassVersion: 1
-    etimReleaseVersions:
-      - "9.0"
-      - "10.0"
+    etimReleaseVersion: "9.0"
     etimFeatureCode: "EF000123"
     etimValueCode: "EV000789"
   
@@ -277,9 +273,7 @@ examples:
     manufacturerProductNumber: "929002376910"
     etimClassCode: "EC002745"
     etimClassVersion: 1
-    etimReleaseVersions:
-      - "9.0"
-      - "10.0"
+    etimReleaseVersion: "9.0"
     etimFeatureCode: "EF000456"
     etimValueNumeric: 230.0
   
@@ -288,9 +282,7 @@ examples:
     manufacturerProductNumber: "929002376910"
     etimClassCode: "EC002745"
     etimClassVersion: 1
-    etimReleaseVersions:
-      - "9.0"
-      - "10.0"
+    etimReleaseVersion: "10.0"
     etimFeatureCode: "EF000789"
     etimValueRangeLower: 100.0
     etimValueRangeUpper: 240.0
@@ -300,9 +292,7 @@ examples:
     manufacturerProductNumber: "929002376910"
     etimClassCode: "EC002745"
     etimClassVersion: 1
-    etimReleaseVersions:
-      - "9.0"
-      - "10.0"
+    etimReleaseVersion: "10.0"
     etimFeatureCode: "EF001234"
     etimValueLogical: true
   
@@ -311,16 +301,13 @@ examples:
     manufacturerProductNumber: "LED-12345-A"
     etimClassCode: "EC001234"
     etimClassVersion: 2
-    etimReleaseVersions:
-      - "11.0"
+    etimReleaseVersion: "11.0"
   
   # Feature with reason no value
   - manufacturerIdGln: "1234567890123"
     manufacturerProductNumber: "929002376910"
     etimClassCode: "EC002745"
     etimClassVersion: 1
-    etimReleaseVersions:
-      - "9.0"
-      - "10.0"
+    etimReleaseVersion: "9.0"
     etimFeatureCode: "EF005678"
     reasonNoValue: "NA"

@@ -89,7 +89,7 @@ openapi/
     ├── parameters/
     │   ├── query/
     │   │   ├── cursor.yaml
-    │   │   ├── etim-release-code.yaml
+    │   │   ├── etim-release-version.yaml
     │   │   ├── limit.yaml
     │   │   ├── manufacturer-id-gln.yaml
     │   │   ├── mutation-date.yaml
@@ -229,7 +229,7 @@ The `redocly.yaml` file defines:
 - `manufacturer-id-gln.yaml` - Manufacturer GLN filter
 - `mutation-date.yaml` - Filter by mutation date
 - `selection-id.yaml` - Selection identifier
-- `etim-release-code.yaml` - ETIM release filter
+- `etim-release-version.yaml` - ETIM release filter
 
 **Path Parameters:**
 - `supplier-id-gln.yaml` - Supplier GLN path parameter
