@@ -139,8 +139,7 @@ properties:
     description: |
       Environmental Product Declaration (EPD) registration number.
       
-      **ETIM xChange**: `EpdRegistrationNumber`  
-      **Path**: `Supplier[].Product[].LcaEnvironmental.EpdRegistrationNumber`
+      **Note**: This is an API extension field, not part of ETIM xChange schema.
     examples:
       - "EPD-PHI-20240001"
       - null
@@ -169,14 +168,119 @@ properties:
       - "2029-12-31"
       - null
   
+  epdOperatorName:
+    type: ["string", "null"]
+    minLength: 1
+    maxLength: 100
+    description: |
+      Name of the EPD program operator that published the Environmental Product Declaration.
+      
+      **ETIM xChange**: `EpdOperatorName`  
+      **Path**: `Supplier[].Product[].LcaEnvironmental.EpdOperatorName`
+    examples:
+      - "IBU - Institut Bauen und Umwelt e.V."
+      - "The International EPD System"
+      - null
+  
+  epdOperatorUri:
+    type: ["string", "null"]
+    format: uri
+    description: |
+      URI/URL to the EPD program operator's website.
+      
+      **ETIM xChange**: `EpdOperatorUri`  
+      **Path**: `Supplier[].Product[].LcaEnvironmental.EpdOperatorUri`
+    examples:
+      - "https://ibu-epd.com"
+      - "https://www.environdec.com"
+      - null
+  
+  operatorEpdId:
+    type: ["string", "null"]
+    minLength: 1
+    maxLength: 35
+    description: |
+      EPD identifier assigned by the program operator.
+      
+      **ETIM xChange**: `OperatorEpdId`  
+      **Path**: `Supplier[].Product[].LcaEnvironmental.OperatorEpdId`
+    examples:
+      - "EPD-IBU-2024-001234"
+      - null
+  
+  manufacturerEpdId:
+    type: ["string", "null"]
+    minLength: 1
+    maxLength: 35
+    description: |
+      EPD identifier assigned by the manufacturer for internal reference.
+      
+      **ETIM xChange**: `ManufacturerEpdId`  
+      **Path**: `Supplier[].Product[].LcaEnvironmental.ManufacturerEpdId`
+    examples:
+      - "MFR-EPD-LED-2024-001"
+      - null
+  
+  productCategoryRulesDescription:
+    type: ["string", "null"]
+    minLength: 1
+    maxLength: 100
+    description: |
+      Description of the Product Category Rules (PCR) used for the LCA/EPD.
+      PCR defines the rules for the environmental assessment of a specific product category.
+      
+      **ETIM xChange**: `ProductCategoryRulesDescription`  
+      **Path**: `Supplier[].Product[].LcaEnvironmental.ProductCategoryRulesDescription`
+    examples:
+      - "PCR 2019:14 Lighting equipment"
+      - "EN 15804+A2 Construction products"
+      - null
+  
+  productCategoryRulesUri:
+    type: ["string", "null"]
+    format: uri
+    description: |
+      URI/URL to the Product Category Rules (PCR) document.
+      
+      **ETIM xChange**: `ProductCategoryRulesUri`  
+      **Path**: `Supplier[].Product[].LcaEnvironmental.ProductCategoryRulesUri`
+    examples:
+      - "https://www.environdec.com/pcr-library/pcr-2019-14"
+      - null
+  
+  productSpecificRulesDescription:
+    type: ["string", "null"]
+    minLength: 1
+    maxLength: 100
+    description: |
+      Description of Product Specific Rules (PSR) applied in addition to PCR.
+      PSR provides additional rules for sub-categories within a PCR.
+      
+      **ETIM xChange**: `ProductSpecificRulesDescription`  
+      **Path**: `Supplier[].Product[].LcaEnvironmental.ProductSpecificRulesDescription`
+    examples:
+      - "PSR for LED lamps and luminaires"
+      - null
+  
+  productSpecificRulesUri:
+    type: ["string", "null"]
+    format: uri
+    description: |
+      URI/URL to the Product Specific Rules (PSR) document.
+      
+      **ETIM xChange**: `ProductSpecificRulesUri`  
+      **Path**: `Supplier[].Product[].LcaEnvironmental.ProductSpecificRulesUri`
+    examples:
+      - "https://www.environdec.com/psr-library/psr-led-lighting"
+      - null
+  
   epdUri:
     type: ["string", "null"]
     format: uri
     description: |
       URI/URL to access the full Environmental Product Declaration document.
       
-      **ETIM xChange**: `EpdUri`  
-      **Path**: `Supplier[].Product[].LcaEnvironmental.EpdUri`
+      **Note**: This is an API extension field, not part of ETIM xChange schema.
     examples:
       - "https://epd.manufacturer.com/products/LED-12345-EPD.pdf"
       - null
@@ -200,6 +304,12 @@ examples:
     epdRegistrationNumber: "EPD-PHI-20240001"
     epdValidityStartDate: "2024-01-01"
     epdValidityExpiryDate: "2029-12-31"
+    epdOperatorName: "The International EPD System"
+    epdOperatorUri: "https://www.environdec.com"
+    operatorEpdId: "S-P-12345"
+    manufacturerEpdId: "MFR-EPD-LED-2024-001"
+    productCategoryRulesDescription: "PCR 2019:14 Lighting equipment"
+    productCategoryRulesUri: "https://www.environdec.com/pcr-library/pcr-2019-14"
     functionalUnitDescription:
       - language: "en-GB"
         functionalUnitDescription: "One LED bulb providing 806 lumens for 25,000 hours"

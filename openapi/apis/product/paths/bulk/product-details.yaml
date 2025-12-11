@@ -12,7 +12,7 @@ get:
     - $ref: ../../../../shared/parameters/query/cursor.yaml
     - $ref: ../../../../shared/parameters/query/limit.yaml
     - $ref: ../../../../shared/parameters/query/selection-id.yaml
-    - $ref: ../../../../shared/parameters/query/manufacturer-id-gln.yaml
+    - $ref: ../../../../shared/parameters/query/manufacturer-id-gln-filter.yaml
     - $ref: ../../../../shared/parameters/query/mutation-date-time.yaml
   responses:
     '200':

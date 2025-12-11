@@ -60,6 +60,9 @@ paths:
   /{manufacturerIdGln}/{manufacturerProductNumber}/etim-classifications:
     $ref: paths/product-etim-classifications.yaml
   
+  /{manufacturerIdGln}/{manufacturerProductNumber}/lca-environmental:
+    $ref: paths/product-lca-environmental.yaml
+  
   # /bulk/products:
   #   $ref: paths/bulk/products.yaml
   
@@ -77,6 +80,9 @@ paths:
   
   /bulk/product-etim-classification-features:
     $ref: paths/bulk/product-etim-classification-features.yaml
+  
+  /bulk/product-lca-declarations:
+    $ref: paths/bulk/product-lca-declarations.yaml
 
 components:
   schemas:
@@ -111,6 +117,12 @@ components:
       $ref: schemas/domain/EtimFeature.yaml
     ProductEtimClassificationFeature:
       $ref: schemas/domain/ProductEtimClassificationFeature.yaml
+    LcaEnvironmental:
+      $ref: schemas/domain/LcaEnvironmental.yaml
+    LcaDeclaration:
+      $ref: schemas/domain/LcaDeclaration.yaml
+    ProductLcaDeclarationSummary:
+      $ref: schemas/domain/ProductLcaDeclarationSummary.yaml
     # Legislation:
     #   $ref: schemas/domain/Legislation.yaml
     # LcaEnvironmental:
@@ -157,6 +169,10 @@ components:
     #   $ref: schemas/responses/BulkProductEtimClassificationsResponse.yaml
     BulkProductEtimClassificationFeaturesResponse:
       $ref: schemas/responses/BulkProductEtimClassificationFeaturesResponse.yaml
+    ProductLcaEnvironmentalResponse:
+      $ref: schemas/responses/ProductLcaEnvironmentalResponse.yaml
+    BulkProductLcaDeclarationsResponse:
+      $ref: schemas/responses/BulkProductLcaDeclarationsResponse.yaml
     
     # Shared schemas
     ProblemDetails:
@@ -179,11 +195,13 @@ components:
     SelectionId:
       $ref: ../../shared/parameters/query/selection-id.yaml
     ManufacturerIdGln:
-      $ref: ../../shared/parameters/query/manufacturer-id-gln.yaml
+      $ref: ../../shared/parameters/query/manufacturer-id-gln-filter.yaml
     MutationDateTime:
       $ref: ../../shared/parameters/query/mutation-date-time.yaml
     Language:
       $ref: ../../shared/parameters/query/language.yaml
+    LifeCycleStage:
+      $ref: ../../shared/parameters/query/life-cycle-stage.yaml
 
   responses:
     BadRequest:
