@@ -92,31 +92,10 @@ properties:
       **Path**: `Supplier[].Product[].EtimClassification[].EtimDynamicReleaseDate`
     examples:
       - "2024-06-15"
-  
-  etimModellingClassCode:
-    type: ["string", "null"]
-    pattern: "^MC[0-9]{6}$"
-    description: |
-      ETIM modelling class code for advanced product modeling. Format: MC followed by 6 digits.
-      Omitted when not applicable.
-      
-      **ETIM xChange**: `EtimModellingClassCode`
-      **Path**: `Supplier[].Product[].EtimClassification[].EtimModellingClassCode`
-    examples:
-      - "MC000123"
-  
-  etimModellingClassVersion:
-    type: ["integer", "null"]
-    minimum: 1
-    description: |
-      Version number of the ETIM modelling class.
-      Omitted when not applicable.
-      
-      **ETIM xChange**: `EtimModellingClassVersion`
-      **Path**: `Supplier[].Product[].EtimClassification[].EtimModellingClassVersion`
-    examples:
-      - 1
-  
+
+  # TODO: ETIM Modelling Classes (etimModellingClassCode, etimModellingClassVersion)
+  # Reserved for future implementation. See EtimClassification.yaml for details.
+
   etimFeatureCode:
     type: ["string", "null"]
     pattern: "^EF([0-9]{6}|I[0-9]{5}|[A-Z]{2}[0-9]{4})$"

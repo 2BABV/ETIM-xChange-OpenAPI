@@ -1510,32 +1510,6 @@ components:
               - etimFeatureCode: EF000456
                 etimValueNumeric: 230
             - null
-        etimModellingClassCode:
-          type:
-            - string
-            - 'null'
-          pattern: ^MC[0-9]{6}$
-          description: |
-            ETIM modelling class code for advanced product modeling. Format: MC followed by 6 digits.
-
-            **ETIM xChange**: `EtimModellingClassCode`  
-            **Path**: `Supplier[].Product[].EtimClassification[].EtimModellingClassCode`
-          examples:
-            - MC000123
-            - null
-        etimModellingClassVersion:
-          type:
-            - integer
-            - 'null'
-          minimum: 1
-          description: |
-            Version number of the ETIM modelling class.
-
-            **ETIM xChange**: `EtimModellingClassVersion`  
-            **Path**: `Supplier[].Product[].EtimClassification[].EtimModellingClassVersion`
-          examples:
-            - 1
-            - null
       examples:
         - etimClassCode: EC002745
           etimClassVersion: 1
@@ -1814,32 +1788,6 @@ components:
             **Path**: `Supplier[].Product[].EtimClassification[].EtimDynamicReleaseDate`
           examples:
             - '2024-06-15'
-        etimModellingClassCode:
-          type:
-            - string
-            - 'null'
-          pattern: ^MC[0-9]{6}$
-          description: |
-            ETIM modelling class code for advanced product modeling. Format: MC followed by 6 digits.
-            Omitted when not applicable.
-
-            **ETIM xChange**: `EtimModellingClassCode`
-            **Path**: `Supplier[].Product[].EtimClassification[].EtimModellingClassCode`
-          examples:
-            - MC000123
-        etimModellingClassVersion:
-          type:
-            - integer
-            - 'null'
-          minimum: 1
-          description: |
-            Version number of the ETIM modelling class.
-            Omitted when not applicable.
-
-            **ETIM xChange**: `EtimModellingClassVersion`
-            **Path**: `Supplier[].Product[].EtimClassification[].EtimModellingClassVersion`
-          examples:
-            - 1
         etimFeatureCode:
           type:
             - string

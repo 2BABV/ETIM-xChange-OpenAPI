@@ -27,7 +27,9 @@ Product descriptions (multilingual texts, marketing content, keywords) are inten
 ### ETIM classifications
 
 An ETIM product classification is uniquely identified by the composite key:
-- `etimClassCode` + `etimClassVersion` 
+- `etimClassCode` + `etimReleaseVersion` 
+- removed: other classifications
+- TODO: modelling classes
 
 [Decision details](docs/etim-classifications.md)
 

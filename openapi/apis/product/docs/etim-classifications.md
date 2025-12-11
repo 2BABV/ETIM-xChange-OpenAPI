@@ -207,16 +207,24 @@ EtimClassification:
     etimFeatures:
       type: ["array", "null"]
       description: ETIM feature values characterizing the product
-      
-    etimModellingClassCode:
-      type: ["string", "null"]
-      pattern: "^MC[0-9]{6}$"
-      description: ETIM modelling class code (MC + 6 digits)
-      
-    etimModellingClassVersion:
-      type: ["integer", "null"]
-      description: Version of the ETIM modelling class
 ```
+
+---
+
+## Future Enhancements
+
+### ETIM Modelling Classes (TODO)
+
+The following fields from ETIM xChange V2.0 are **reserved for future implementation**:
+
+| Field | Pattern | Description |
+|-------|---------|-------------|
+| `etimModellingClassCode` | `^MC[0-9]{6}$` | ETIM modelling class code for advanced product modeling |
+| `etimModellingClassVersion` | integer ≥ 1 | Version number of the ETIM modelling class |
+
+**ETIM xChange Path**: `Supplier[].Product[].EtimClassification[].EtimModellingClassCode` / `EtimModellingClassVersion`
+
+These fields will be added to the API when modelling class support is implemented. The ETIM xChange V2.0 schema defines these fields, but they are not yet exposed through this API.
 
 ---
 

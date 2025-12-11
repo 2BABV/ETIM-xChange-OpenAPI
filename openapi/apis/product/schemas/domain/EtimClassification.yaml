@@ -74,30 +74,11 @@ properties:
         - etimFeatureCode: "EF000456"
           etimValueNumeric: 230.0
       - null
-  
-  etimModellingClassCode:
-    type: ["string", "null"]
-    pattern: "^MC[0-9]{6}$"
-    description: |
-      ETIM modelling class code for advanced product modeling. Format: MC followed by 6 digits.
-      
-      **ETIM xChange**: `EtimModellingClassCode`  
-      **Path**: `Supplier[].Product[].EtimClassification[].EtimModellingClassCode`
-    examples:
-      - "MC000123"
-      - null
-  
-  etimModellingClassVersion:
-    type: ["integer", "null"]
-    minimum: 1
-    description: |
-      Version number of the ETIM modelling class.
-      
-      **ETIM xChange**: `EtimModellingClassVersion`  
-      **Path**: `Supplier[].Product[].EtimClassification[].EtimModellingClassVersion`
-    examples:
-      - 1
-      - null
+
+  # TODO: ETIM Modelling Classes (etimModellingClassCode, etimModellingClassVersion)
+  # These fields are defined in ETIM xChange V2.0 but are reserved for future implementation.
+  # See: Supplier[].Product[].EtimClassification[].EtimModellingClassCode
+  # See: Supplier[].Product[].EtimClassification[].EtimModellingClassVersion
 
 examples:
   - etimClassCode: "EC002745"
