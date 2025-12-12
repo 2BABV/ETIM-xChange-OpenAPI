@@ -116,21 +116,21 @@ properties:
   thirdPartyVerification:
     type: string
     enum:
-      - "NONE"
-      - "INT"
-      - "EXT"
+      - "none"
+      - "internally"
+      - "externally"
     description: |
       Type of third-party verification for LCA/EPD data.
       
-      - `NONE`: No third-party verification
-      - `INT`: Internal verification
-      - `EXT`: External independent verification
+      - `none`: No third-party verification
+      - `internally`: Internal verification
+      - `externally`: External independent verification
       
       **ETIM xChange**: `ThirdPartyVerification`  
       **Path**: `Supplier[].Product[].LcaEnvironmental.ThirdPartyVerification`
     examples:
-      - "EXT"
-      - "NONE"
+      - "externally"
+      - "none"
   
   epdRegistrationNumber:
     type: ["string", "null"]
@@ -300,7 +300,7 @@ examples:
   - declaredUnitUnit: "PCE"
     declaredUnitQuantity: 1
     lcaReferenceLifetime: 25
-    thirdPartyVerification: "EXT"
+    thirdPartyVerification: "externally"
     epdRegistrationNumber: "EPD-PHI-20240001"
     epdValidityStartDate: "2024-01-01"
     epdValidityExpiryDate: "2029-12-31"

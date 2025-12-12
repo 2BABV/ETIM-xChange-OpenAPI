@@ -54,7 +54,7 @@ examples:
         declaredUnitUnit: "PCE"
         declaredUnitQuantity: 1
         lcaReferenceLifetime: 25
-        thirdPartyVerification: "EXT"
+        thirdPartyVerification: "externally"
         lifeCycleStage: "A1-A3"
         lcaDeclarationIndicator: "MDE"
         declaredUnitGwpTotal: 15.75
@@ -68,7 +68,7 @@ examples:
         declaredUnitUnit: "PCE"
         declaredUnitQuantity: 1
         lcaReferenceLifetime: 25
-        thirdPartyVerification: "EXT"
+        thirdPartyVerification: "externally"
         lifeCycleStage: "C1-C4"
         lcaDeclarationIndicator: "AGG"
         declaredUnitGwpTotal: 2.5
@@ -79,7 +79,7 @@ examples:
         declaredUnitUnit: "PCE"
         declaredUnitQuantity: 1
         lcaReferenceLifetime: 25
-        thirdPartyVerification: "EXT"
+        thirdPartyVerification: "externally"
         lifeCycleStage: "D"
         lcaDeclarationIndicator: "MDE"
         declaredUnitGwpTotal: -5.2
@@ -90,7 +90,7 @@ examples:
         declaredUnitUnit: "KGM"
         declaredUnitQuantity: 1
         lcaReferenceLifetime: 50
-        thirdPartyVerification: "INT"
+        thirdPartyVerification: "internally"
         lifeCycleStage: "A1-A3"
         lcaDeclarationIndicator: "MND"
         declaredUnitGwpTotal: 8.5

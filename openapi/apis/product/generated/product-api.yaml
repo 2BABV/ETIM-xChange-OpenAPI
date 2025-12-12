@@ -513,7 +513,7 @@ paths:
                         declaredUnitUnit: PCE
                         declaredUnitQuantity: 1
                         lcaReferenceLifetime: 25
-                        thirdPartyVerification: EXT
+                        thirdPartyVerification: externally
                         epdValidityStartDate: '2024-01-01'
                         epdValidityExpiryDate: '2029-12-31'
                         epdOperatorName: The International EPD System
@@ -824,7 +824,7 @@ paths:
                         declaredUnitUnit: PCE
                         declaredUnitQuantity: 1
                         lcaReferenceLifetime: 25
-                        thirdPartyVerification: EXT
+                        thirdPartyVerification: externally
                         lifeCycleStage: A1-A3
                         lcaDeclarationIndicator: MDE
                         declaredUnitGwpTotal: 15.75
@@ -837,7 +837,7 @@ paths:
                         declaredUnitUnit: PCE
                         declaredUnitQuantity: 1
                         lcaReferenceLifetime: 25
-                        thirdPartyVerification: EXT
+                        thirdPartyVerification: externally
                         lifeCycleStage: C1-C4
                         lcaDeclarationIndicator: AGG
                         declaredUnitGwpTotal: 2.5
@@ -847,7 +847,7 @@ paths:
                         declaredUnitUnit: PCE
                         declaredUnitQuantity: 1
                         lcaReferenceLifetime: 25
-                        thirdPartyVerification: EXT
+                        thirdPartyVerification: externally
                         lifeCycleStage: D
                         lcaDeclarationIndicator: MDE
                         declaredUnitGwpTotal: -5.2
@@ -857,7 +857,7 @@ paths:
                         declaredUnitUnit: KGM
                         declaredUnitQuantity: 1
                         lcaReferenceLifetime: 50
-                        thirdPartyVerification: INT
+                        thirdPartyVerification: internally
                         lifeCycleStage: A1-A3
                         lcaDeclarationIndicator: MND
                         declaredUnitGwpTotal: 8.5
@@ -878,7 +878,7 @@ paths:
                         declaredUnitUnit: PCE
                         declaredUnitQuantity: 1
                         lcaReferenceLifetime: 25
-                        thirdPartyVerification: EXT
+                        thirdPartyVerification: externally
                         lifeCycleStage: A1-A3
                         lcaDeclarationIndicator: MDE
                         declaredUnitGwpTotal: 15.75
@@ -2340,21 +2340,21 @@ components:
         thirdPartyVerification:
           type: string
           enum:
-            - NONE
-            - INT
-            - EXT
+            - none
+            - internally
+            - externally
           description: |
             Type of third-party verification for LCA/EPD data.
 
-            - `NONE`: No third-party verification
-            - `INT`: Internal verification
-            - `EXT`: External independent verification
+            - `none`: No third-party verification
+            - `internally`: Internal verification
+            - `externally`: External independent verification
 
             **ETIM xChange**: `ThirdPartyVerification`  
             **Path**: `Supplier[].Product[].LcaEnvironmental.ThirdPartyVerification`
           examples:
-            - EXT
-            - NONE
+            - externally
+            - none
         epdRegistrationNumber:
           type:
             - string
@@ -2534,7 +2534,7 @@ components:
         - declaredUnitUnit: PCE
           declaredUnitQuantity: 1
           lcaReferenceLifetime: 25
-          thirdPartyVerification: EXT
+          thirdPartyVerification: externally
           epdRegistrationNumber: EPD-PHI-20240001
           epdValidityStartDate: '2024-01-01'
           epdValidityExpiryDate: '2029-12-31'
@@ -3057,21 +3057,21 @@ components:
         thirdPartyVerification:
           type: string
           enum:
-            - NONE
-            - INT
-            - EXT
+            - none
+            - internally
+            - externally
           description: |
             Type of third-party verification for LCA/EPD data.
 
-            - `NONE`: No third-party verification
-            - `INT`: Internal verification
-            - `EXT`: External independent verification
+            - `none`: No third-party verification
+            - `internally`: Internal verification
+            - `externally`: External independent verification
 
             **ETIM xChange**: `ThirdPartyVerification`
             **Path**: `Supplier[].Product[].LcaEnvironmental.ThirdPartyVerification`
           examples:
-            - EXT
-            - NONE
+            - externally
+            - none
         lifeCycleStage:
           type: string
           enum:
@@ -3400,7 +3400,7 @@ components:
           declaredUnitUnit: PCE
           declaredUnitQuantity: 1
           lcaReferenceLifetime: 25
-          thirdPartyVerification: EXT
+          thirdPartyVerification: externally
           lifeCycleStage: A1-A3
           lcaDeclarationIndicator: MDE
           declaredUnitGwpTotal: 15.75
@@ -3419,7 +3419,7 @@ components:
           declaredUnitUnit: PCE
           declaredUnitQuantity: 1
           lcaReferenceLifetime: 25
-          thirdPartyVerification: EXT
+          thirdPartyVerification: externally
           lifeCycleStage: C1-C4
           lcaDeclarationIndicator: AGG
           declaredUnitGwpTotal: 2.5
@@ -3430,7 +3430,7 @@ components:
           declaredUnitUnit: PCE
           declaredUnitQuantity: 1
           lcaReferenceLifetime: 25
-          thirdPartyVerification: EXT
+          thirdPartyVerification: externally
           lifeCycleStage: D
           lcaDeclarationIndicator: MDE
           declaredUnitGwpTotal: -5.2
@@ -3440,7 +3440,7 @@ components:
           declaredUnitUnit: KGM
           declaredUnitQuantity: 1
           lcaReferenceLifetime: 50
-          thirdPartyVerification: INT
+          thirdPartyVerification: internally
           lifeCycleStage: A1-A3
           lcaDeclarationIndicator: MND
           declaredUnitGwpTotal: 8.5
@@ -4112,7 +4112,7 @@ components:
               declaredUnitUnit: PCE
               declaredUnitQuantity: 1
               lcaReferenceLifetime: 25
-              thirdPartyVerification: EXT
+              thirdPartyVerification: externally
               epdValidityStartDate: '2024-01-01'
               epdValidityExpiryDate: '2029-12-31'
               epdOperatorName: The International EPD System
@@ -4186,7 +4186,7 @@ components:
               declaredUnitUnit: PCE
               declaredUnitQuantity: 1
               lcaReferenceLifetime: 25
-              thirdPartyVerification: EXT
+              thirdPartyVerification: externally
               lifeCycleStage: A1-A3
               lcaDeclarationIndicator: MDE
               declaredUnitGwpTotal: 15.75
@@ -4199,7 +4199,7 @@ components:
               declaredUnitUnit: PCE
               declaredUnitQuantity: 1
               lcaReferenceLifetime: 25
-              thirdPartyVerification: EXT
+              thirdPartyVerification: externally
               lifeCycleStage: C1-C4
               lcaDeclarationIndicator: AGG
               declaredUnitGwpTotal: 2.5
@@ -4209,7 +4209,7 @@ components:
               declaredUnitUnit: PCE
               declaredUnitQuantity: 1
               lcaReferenceLifetime: 25
-              thirdPartyVerification: EXT
+              thirdPartyVerification: externally
               lifeCycleStage: D
               lcaDeclarationIndicator: MDE
               declaredUnitGwpTotal: -5.2
@@ -4219,7 +4219,7 @@ components:
               declaredUnitUnit: KGM
               declaredUnitQuantity: 1
               lcaReferenceLifetime: 50
-              thirdPartyVerification: INT
+              thirdPartyVerification: internally
               lifeCycleStage: A1-A3
               lcaDeclarationIndicator: MND
               declaredUnitGwpTotal: 8.5

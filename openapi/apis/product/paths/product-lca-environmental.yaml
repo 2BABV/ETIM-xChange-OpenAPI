@@ -41,7 +41,7 @@ get:
                     declaredUnitUnit: "PCE"
                     declaredUnitQuantity: 1
                     lcaReferenceLifetime: 25
-                    thirdPartyVerification: "EXT"
+                    thirdPartyVerification: "externally"
                     epdValidityStartDate: "2024-01-01"
                     epdValidityExpiryDate: "2029-12-31"
                     epdOperatorName: "The International EPD System"
