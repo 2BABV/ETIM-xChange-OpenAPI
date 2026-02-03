@@ -58,6 +58,9 @@ paths:
   /{supplierIdGln}/{supplierItemNumber}/pricings:
     $ref: './paths/trade-item-pricings.yaml'
   
+  /{supplierIdGln}/{supplierItemNumber}/allowance-surcharges:
+    $ref: './paths/trade-item-allowance-surcharges.yaml'
+  
   # Bulk operations
   # Note: /bulk/trade-item-details consolidates what would have been separate
   # /bulk/trade-items and /bulk/item-identifications endpoints since
@@ -118,6 +121,10 @@ components:
       $ref: './schemas/responses/BulkTradeItemPricingsResponse.yaml'
     BulkAllowanceSurchargesResponse:
       $ref: './schemas/responses/BulkAllowanceSurchargesResponse.yaml'
+    TradeItemAllowanceSurchargesResponse:
+      $ref: './schemas/responses/TradeItemAllowanceSurchargesResponse.yaml'
+    TradeItemAllowanceSurchargeItem:
+      $ref: './schemas/responses/TradeItemAllowanceSurchargeItem.yaml'
 
   parameters:
     SupplierIdGln:

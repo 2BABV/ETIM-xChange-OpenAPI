@@ -337,9 +337,12 @@ openapi/apis/tradeitem/
     │   ├── TradeItemDetailsResponse.yaml       # Single-item details subresource
     │   ├── TradeItemOrderingsResponse.yaml     # Single-item orderings subresource
     │   ├── TradeItemPricingsResponse.yaml      # Single-item pricings subresource
+    │   ├── TradeItemAllowanceSurchargesResponse.yaml  # Single-item allowance-surcharges subresource
+    │   ├── TradeItemAllowanceSurchargeItem.yaml       # Surcharge with pricing join keys
     │   ├── BulkTradeItemDetailsResponse.yaml   # Bulk details
     │   ├── BulkTradeItemOrderingsResponse.yaml # Bulk orderings
-    │   └── BulkTradeItemPricingsResponse.yaml  # Bulk pricings
+    │   ├── BulkTradeItemPricingsResponse.yaml  # Bulk pricings
+    │   └── BulkAllowanceSurchargesResponse.yaml # Bulk allowance-surcharges
     └── enums/
         ├── ItemStatus.yaml
         ├── ItemCondition.yaml
@@ -403,6 +406,12 @@ servers:
 **GET /{supplierIdGln}/{supplierItemNumber}/pricings**
 - **Description**: Retrieve pricing information for a specific trade item
 - **Response**: `TradeItemPricingsResponse` with key at root + nested `pricings` array
+- **Allowances/Surcharges**: Available via separate `/{supplierIdGln}/{supplierItemNumber}/allowance-surcharges` endpoint
+
+**GET /{supplierIdGln}/{supplierItemNumber}/allowance-surcharges**
+- **Description**: Retrieve allowances and surcharges for a specific trade item
+- **Response**: `TradeItemAllowanceSurchargesResponse` with key at root + nested `allowanceSurcharges` array
+- **Join Keys**: Each entry includes `priceUnit`, `priceQuantity`, `priceValidityDate` to correlate with pricing entries
 
 ### 6. Bulk Service Design
 
@@ -1231,45 +1240,48 @@ Generate the following files:
 4. `openapi/apis/tradeitem/paths/trade-item-details.yaml`
 5. `openapi/apis/tradeitem/paths/trade-item-orderings.yaml`
 6. `openapi/apis/tradeitem/paths/trade-item-pricings.yaml`
+7. `openapi/apis/tradeitem/paths/trade-item-allowance-surcharges.yaml`
 
 **Bulk path definitions**:
-7. `openapi/apis/tradeitem/paths/bulk/trade-item-details.yaml`
-8. `openapi/apis/tradeitem/paths/bulk/trade-item-orderings.yaml`
-9. `openapi/apis/tradeitem/paths/bulk/trade-item-pricings.yaml`
-10. `openapi/apis/tradeitem/paths/bulk/trade-item-allowance-surcharges.yaml`
+8. `openapi/apis/tradeitem/paths/bulk/trade-item-details.yaml`
+9. `openapi/apis/tradeitem/paths/bulk/trade-item-orderings.yaml`
+10. `openapi/apis/tradeitem/paths/bulk/trade-item-pricings.yaml`
+11. `openapi/apis/tradeitem/paths/bulk/trade-item-allowance-surcharges.yaml`
 
 **Domain schemas (without keys - for nested single-item)**:
-11. `openapi/apis/tradeitem/schemas/domain/TradeItemDetails.yaml`
-12. `openapi/apis/tradeitem/schemas/domain/TradeItemOrdering.yaml`
-13. `openapi/apis/tradeitem/schemas/domain/ItemPricing.yaml`
-14. `openapi/apis/tradeitem/schemas/domain/ItemLogistics.yaml`
-15. `openapi/apis/tradeitem/schemas/domain/ItemRelation.yaml`
-16. `openapi/apis/tradeitem/schemas/domain/PackagingUnit.yaml`
-17. `openapi/apis/tradeitem/schemas/domain/ItemDescription.yaml`
-18. `openapi/apis/tradeitem/schemas/domain/ItemCountrySpecificField.yaml`
+12. `openapi/apis/tradeitem/schemas/domain/TradeItemDetails.yaml`
+13. `openapi/apis/tradeitem/schemas/domain/TradeItemOrdering.yaml`
+14. `openapi/apis/tradeitem/schemas/domain/ItemPricing.yaml`
+15. `openapi/apis/tradeitem/schemas/domain/ItemLogistics.yaml`
+16. `openapi/apis/tradeitem/schemas/domain/ItemRelation.yaml`
+17. `openapi/apis/tradeitem/schemas/domain/PackagingUnit.yaml`
+18. `openapi/apis/tradeitem/schemas/domain/ItemDescription.yaml`
+19. `openapi/apis/tradeitem/schemas/domain/ItemCountrySpecificField.yaml`
 
 **Domain schemas (WITH keys - for bulk retrieval)**:
-19. `openapi/apis/tradeitem/schemas/domain/TradeItemDetailsSummary.yaml`
-20. `openapi/apis/tradeitem/schemas/domain/TradeItemOrderingsSummary.yaml`
-21. `openapi/apis/tradeitem/schemas/domain/TradeItemPricingSummary.yaml` (flattened - 1 row per price)
-22. `openapi/apis/tradeitem/schemas/domain/AllowanceSurchargeSummary.yaml` (flattened - 1 row per surcharge)
+20. `openapi/apis/tradeitem/schemas/domain/TradeItemDetailsSummary.yaml`
+21. `openapi/apis/tradeitem/schemas/domain/TradeItemOrderingsSummary.yaml`
+22. `openapi/apis/tradeitem/schemas/domain/TradeItemPricingSummary.yaml` (flattened - 1 row per price)
+23. `openapi/apis/tradeitem/schemas/domain/AllowanceSurchargeSummary.yaml` (flattened - 1 row per surcharge)
 
 **Single-item response schemas**:
-23. `openapi/apis/tradeitem/schemas/responses/TradeItemResponse.yaml`
-24. `openapi/apis/tradeitem/schemas/responses/TradeItemDetailsResponse.yaml`
-25. `openapi/apis/tradeitem/schemas/responses/TradeItemOrderingsResponse.yaml`
-26. `openapi/apis/tradeitem/schemas/responses/TradeItemPricingsResponse.yaml`
+24. `openapi/apis/tradeitem/schemas/responses/TradeItemResponse.yaml`
+25. `openapi/apis/tradeitem/schemas/responses/TradeItemDetailsResponse.yaml`
+26. `openapi/apis/tradeitem/schemas/responses/TradeItemOrderingsResponse.yaml`
+27. `openapi/apis/tradeitem/schemas/responses/TradeItemPricingsResponse.yaml`
+28. `openapi/apis/tradeitem/schemas/responses/TradeItemAllowanceSurchargesResponse.yaml`
+29. `openapi/apis/tradeitem/schemas/responses/TradeItemAllowanceSurchargeItem.yaml`
 
 **Bulk response schemas**:
-27. `openapi/apis/tradeitem/schemas/responses/BulkTradeItemDetailsResponse.yaml`
-28. `openapi/apis/tradeitem/schemas/responses/BulkTradeItemOrderingsResponse.yaml`
-29. `openapi/apis/tradeitem/schemas/responses/BulkTradeItemPricingsResponse.yaml`
-30. `openapi/apis/tradeitem/schemas/responses/BulkAllowanceSurchargesResponse.yaml`
+30. `openapi/apis/tradeitem/schemas/responses/BulkTradeItemDetailsResponse.yaml`
+31. `openapi/apis/tradeitem/schemas/responses/BulkTradeItemOrderingsResponse.yaml`
+32. `openapi/apis/tradeitem/schemas/responses/BulkTradeItemPricingsResponse.yaml`
+33. `openapi/apis/tradeitem/schemas/responses/BulkAllowanceSurchargesResponse.yaml`
 
 **Enum schemas**:
-31. `openapi/apis/tradeitem/schemas/enums/ItemStatus.yaml`
-32. `openapi/apis/tradeitem/schemas/enums/ItemCondition.yaml`
-33. `openapi/apis/tradeitem/schemas/enums/RelationType.yaml`
+34. `openapi/apis/tradeitem/schemas/enums/ItemStatus.yaml`
+35. `openapi/apis/tradeitem/schemas/enums/ItemCondition.yaml`
+36. `openapi/apis/tradeitem/schemas/enums/RelationType.yaml`
 
 ### Existing Files to Reuse (DO NOT CREATE)
 - `openapi/shared/parameters/query/selection-id.yaml`

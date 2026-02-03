@@ -1,7 +1,9 @@
 type: object
 description: |
-  Pricing information for a trade item including prices, price unit, and allowances/surcharges.
+  Pricing information for a trade item including prices, price unit, and validity dates.
   Extracted from ETIM xChange `TradeItem.Pricing[]` structure.
+  
+  **Allowances & Surcharges**: Available via separate `/{supplierIdGln}/{supplierItemNumber}/allowance-surcharges` endpoint.
   
   **ETIM xChange**: `Pricing`
   **Path**: `Supplier[].Product[].TradeItem[].Pricing[]`
@@ -138,17 +140,6 @@ properties:
     examples:
       - "2025-12-31"
       - null
-  allowanceSurcharges:
-    type: ["array", "null"]
-    description: |
-      Array of allowances (discounts) or surcharges (additional charges) applied to the price.
-      
-      **ETIM xChange**: `AllowanceSurcharge[]`
-      **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[]`
-    items:
-      $ref: ./AllowanceSurcharge.yaml
-    examples:
-      - null
 
 examples:
   - priceUnit: C62
@@ -161,4 +152,3 @@ examples:
     vat: 21.0
     priceValidityDate: "2025-01-01"
     priceExpiryDate: "2025-12-31"
-    allowanceSurcharges: null

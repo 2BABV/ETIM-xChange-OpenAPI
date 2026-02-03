@@ -11,7 +11,8 @@ get:
     - Gross list price, net price, and recommended retail price
     - VAT percentage
     - Price validity and expiry dates
-    - Allowances and surcharges
+    
+    **Allowances & Surcharges**: Available via separate `/{supplierIdGln}/{supplierItemNumber}/allowance-surcharges` endpoint.
     
     A trade item may have multiple pricing entries for different conditions,
     customer groups, or validity periods.
@@ -51,7 +52,6 @@ get:
                       vat: 21.0
                       priceValidityDate: "2025-01-01"
                       priceExpiryDate: "2025-12-31"
-                      allowanceSurcharges: null
             multiplePricings:
               summary: Trade item with volume pricing
               value:
@@ -69,7 +69,6 @@ get:
                       vat: 21.0
                       priceValidityDate: "2025-01-01"
                       priceExpiryDate: "2025-06-30"
-                      allowanceSurcharges: null
                     - priceUnit: "MTR"
                       priceUnitFactor: 1.0
                       priceQuantity: 100
@@ -80,7 +79,6 @@ get:
                       vat: 21.0
                       priceValidityDate: "2025-01-01"
                       priceExpiryDate: "2025-06-30"
-                      allowanceSurcharges: null
             priceOnRequest:
               summary: Trade item with price on request
               value:
@@ -98,7 +96,6 @@ get:
                       vat: 21.0
                       priceValidityDate: "2025-01-01"
                       priceExpiryDate: null
-                      allowanceSurcharges: null
     '400':
       $ref: '../../../shared/responses/400-bad-request.yaml'
     '401':

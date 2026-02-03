@@ -1,0 +1,151 @@
+type: object
+description: |
+  Allowance or surcharge with pricing join keys for correlating with pricing entries.
+  Includes the pricing identifiers (priceUnit, priceQuantity, priceValidityDate) to enable
+  joining with the corresponding pricing record.
+  
+  **ETIM xChange**: `AllowanceSurcharge`
+  **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[]`
+additionalProperties: false
+required:
+  - priceUnit
+  - priceQuantity
+  - allowanceSurchargeIndicator
+  - allowanceSurchargeType
+properties:
+  # --- Pricing Join Keys ---
+  priceUnit:
+    description: |
+      Unit for which the parent price applies. Join key to pricing entry.
+      **ETIM xChange**: `PriceUnit` (from parent Pricing)
+    $ref: ../../../../shared/schemas/common/UnitCodes.yaml
+    examples:
+      - C62
+      - MTR
+  priceQuantity:
+    type: number
+    description: |
+      Quantity for which the parent price applies. Join key to pricing entry.
+      **ETIM xChange**: `PriceQuantity` (from parent Pricing)
+    minimum: 0
+    multipleOf: 0.0001
+    maximum: 99999.9999
+    examples:
+      - 1
+      - 100
+  priceValidityDate:
+    type: ["string", "null"]
+    format: date
+    description: |
+      Date from which the parent price is valid. Join key to pricing entry.
+      **ETIM xChange**: `PriceValidityDate` (from parent Pricing)
+    examples:
+      - "2025-01-01"
+      - null
+
+  # --- Allowance/Surcharge Fields ---
+  allowanceSurchargeIndicator:
+    type: string
+    description: |
+      Indicates whether this price adjustment is an allowance (discount) or a surcharge (additional charge).
+      **ETIM xChange**: `AllowanceSurchargeIndicator`
+    enum:
+      - ALLOWANCE
+      - SURCHARGE
+    examples:
+      - ALLOWANCE
+      - SURCHARGE
+  allowanceSurchargeValidityDate:
+    type: ["string", "null"]
+    format: date
+    description: |
+      Date from which the allowance or surcharge becomes valid.
+      **ETIM xChange**: `AllowanceSurchargeValidityDate`
+    examples:
+      - "2025-01-01"
+      - null
+  allowanceSurchargeType:
+    description: |
+      Code describing the reason for the allowance or surcharge.
+      **ETIM xChange**: `AllowanceSurchargeType`
+    $ref: ../../../../shared/schemas/common/AllowanceSurchargeTypes.yaml
+  allowanceSurchargeAmount:
+    type: ["number", "null"]
+    description: |
+      Fixed monetary amount of the allowance or surcharge.
+      **ETIM xChange**: `AllowanceSurchargeAmount`
+    minimum: 0
+    multipleOf: 0.0001
+    maximum: 99999999999.9999
+    examples:
+      - 15.5
+      - null
+  allowanceSurchargeSequenceNumber:
+    type: ["integer", "null"]
+    description: |
+      Sequence number used to order multiple allowances or surcharges applied to the same price.
+      **ETIM xChange**: `AllowanceSurchargeSequenceNumber`
+    minimum: 1
+    examples:
+      - 1
+      - null
+  allowanceSurchargePercentage:
+    type: ["number", "null"]
+    description: |
+      Percentage rate of the allowance or surcharge.
+      **ETIM xChange**: `AllowanceSurchargePercentage`
+    minimum: 0
+    multipleOf: 0.001
+    maximum: 999.999
+    examples:
+      - 5.5
+      - null
+  allowanceSurchargeDescription:
+    description: |
+      Multilingual description of the allowance or surcharge.
+      **ETIM xChange**: `AllowanceSurchargeDescription[]`
+    anyOf:
+      - type: array
+        items:
+          type: object
+          additionalProperties: false
+          required:
+            - allowanceSurchargeDescription
+          properties:
+            language:
+              $ref: ../../../../shared/schemas/common/LanguageCode.yaml
+            allowanceSurchargeDescription:
+              type: string
+              minLength: 1
+              maxLength: 35
+      - type: "null"
+    examples:
+      - null
+      - - language: en
+          allowanceSurchargeDescription: Early payment discount
+  allowanceSurchargeMinimumQuantity:
+    type: ["number", "null"]
+    description: |
+      Minimum ordered quantity required for the allowance or surcharge to apply.
+      **ETIM xChange**: `AllowanceSurchargeMinimumQuantity`
+    minimum: 0
+    multipleOf: 0.0001
+    maximum: 999999999999.9999
+    examples:
+      - 10
+      - null
+
+examples:
+  - priceUnit: C62
+    priceQuantity: 1
+    priceValidityDate: "2025-01-01"
+    allowanceSurchargeIndicator: ALLOWANCE
+    allowanceSurchargeValidityDate: "2025-01-01"
+    allowanceSurchargeType: AEQ
+    allowanceSurchargeAmount: null
+    allowanceSurchargeSequenceNumber: 1
+    allowanceSurchargePercentage: 5.5
+    allowanceSurchargeDescription:
+      - language: en
+        allowanceSurchargeDescription: Bulk quantity discount
+    allowanceSurchargeMinimumQuantity: 50

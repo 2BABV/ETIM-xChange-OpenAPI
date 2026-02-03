@@ -367,6 +367,348 @@ paths:
                 instance: https://api.tradeitem.2ba.nl/v1/1234567890123/UNKNOWN-SKU/descriptions
         '500':
           $ref: '#/components/responses/500-internal-server-error'
+  /{supplierIdGln}/{supplierItemNumber}/orderings:
+    get:
+      operationId: getTradeItemOrderings
+      tags:
+        - TradeItems single
+      summary: Retrieve trade item ordering information
+      description: |
+        Retrieve ordering information for a specific trade item.
+
+        This endpoint returns comprehensive ordering details including:
+        - Order unit and quantity constraints (minimum, step size)
+        - Standard lead time for orders
+        - Use unit conversions (for items sold in one unit but used in another)
+        - Alternative use unit conversions
+
+        The trade item key (`supplierIdGln` + `supplierItemNumber`) is at the root level,
+        with ordering details nested inside. This structure aligns with other single-item subresource responses.
+
+        **No pagination** - Returns exactly one trade item's ordering information or 404 if not found.
+
+        **ETIM xChange**: `Ordering`
+        **Path**: `Supplier[].Product[].TradeItem[].Ordering`
+      parameters:
+        - $ref: '#/components/parameters/supplier-id-gln'
+        - $ref: '#/components/parameters/supplier-item-number'
+      responses:
+        '200':
+          description: Successfully retrieved trade item ordering information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TradeItemOrderingsResponse'
+              examples:
+                basicOrdering:
+                  summary: Basic ordering configuration
+                  value:
+                    data:
+                      supplierIdGln: '1234567890123'
+                      supplierItemNumber: SKU-12345
+                      ordering:
+                        orderUnit: C62
+                        minimumOrderQuantity: 1
+                        orderStepSize: 1
+                        standardOrderLeadTime: 5
+                        useUnit: null
+                        useUnitConversionFactor: null
+                        singleUseUnitQuantity: null
+                        alternativeUseUnit: null
+                        alternativeUseUnitConversionFactor: null
+                cableOrdering:
+                  summary: Cable with meter-based ordering
+                  value:
+                    data:
+                      supplierIdGln: '8712423012485'
+                      supplierItemNumber: SKU-CABLE-002
+                      ordering:
+                        orderUnit: MTR
+                        minimumOrderQuantity: 10
+                        orderStepSize: 5
+                        standardOrderLeadTime: 3
+                        useUnit: MTR
+                        useUnitConversionFactor: 1
+                        singleUseUnitQuantity: 1
+                        alternativeUseUnit: null
+                        alternativeUseUnitConversionFactor: null
+                bulkOrdering:
+                  summary: Bulk item with different use unit
+                  value:
+                    data:
+                      supplierIdGln: '9876543210987'
+                      supplierItemNumber: BULK-PAINT-001
+                      ordering:
+                        orderUnit: BX
+                        minimumOrderQuantity: 5
+                        orderStepSize: 1
+                        standardOrderLeadTime: 14
+                        useUnit: LTR
+                        useUnitConversionFactor: 10
+                        singleUseUnitQuantity: 10
+                        alternativeUseUnit: null
+                        alternativeUseUnitConversionFactor: null
+        '400':
+          $ref: '#/components/responses/400-bad-request'
+        '401':
+          $ref: '#/components/responses/401-unauthorized'
+        '403':
+          $ref: '#/components/responses/403-forbidden'
+        '404':
+          description: Trade item not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: https://api.tradeitem.2ba.nl/problems/not-found
+                title: Trade Item Not Found
+                status: 404
+                detail: No trade item found with supplier GLN '1234567890123' and item number 'UNKNOWN-SKU'
+                instance: https://api.tradeitem.2ba.nl/v1/1234567890123/UNKNOWN-SKU/orderings
+        '500':
+          $ref: '#/components/responses/500-internal-server-error'
+  /{supplierIdGln}/{supplierItemNumber}/pricings:
+    get:
+      operationId: getTradeItemPricings
+      tags:
+        - TradeItems single
+      summary: Retrieve trade item pricing information
+      description: |
+        Retrieve pricing information for a specific trade item.
+
+        This endpoint returns comprehensive pricing details including:
+        - Price unit and quantity
+        - Gross list price, net price, and recommended retail price
+        - VAT percentage
+        - Price validity and expiry dates
+
+        **Allowances & Surcharges**: Available via separate `/{supplierIdGln}/{supplierItemNumber}/allowance-surcharges` endpoint.
+
+        A trade item may have multiple pricing entries for different conditions,
+        customer groups, or validity periods.
+
+        The trade item key (`supplierIdGln` + `supplierItemNumber`) is at the root level,
+        with pricings nested inside. This structure aligns with other single-item subresource responses.
+
+        **No pagination** - Returns exactly one trade item's pricing information or 404 if not found.
+
+        **ETIM xChange**: `Pricing[]`
+        **Path**: `Supplier[].Product[].TradeItem[].Pricing[]`
+      parameters:
+        - $ref: '#/components/parameters/supplier-id-gln'
+        - $ref: '#/components/parameters/supplier-item-number'
+      responses:
+        '200':
+          description: Successfully retrieved trade item pricing information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TradeItemPricingsResponse'
+              examples:
+                singlePricing:
+                  summary: Trade item with single pricing entry
+                  value:
+                    data:
+                      supplierIdGln: '1234567890123'
+                      supplierItemNumber: SKU-12345
+                      pricings:
+                        - priceUnit: C62
+                          priceUnitFactor: null
+                          priceQuantity: 1
+                          priceOnRequest: false
+                          grossListPrice: 130
+                          netPrice: 100
+                          recommendedRetailPrice: 150
+                          vat: 21
+                          priceValidityDate: '2025-01-01'
+                          priceExpiryDate: '2025-12-31'
+                multiplePricings:
+                  summary: Trade item with volume pricing
+                  value:
+                    data:
+                      supplierIdGln: '8712423012485'
+                      supplierItemNumber: SKU-CABLE-002
+                      pricings:
+                        - priceUnit: MTR
+                          priceUnitFactor: 1
+                          priceQuantity: 1
+                          priceOnRequest: false
+                          grossListPrice: 2.5
+                          netPrice: 1.99
+                          recommendedRetailPrice: 3.49
+                          vat: 21
+                          priceValidityDate: '2025-01-01'
+                          priceExpiryDate: '2025-06-30'
+                        - priceUnit: MTR
+                          priceUnitFactor: 1
+                          priceQuantity: 100
+                          priceOnRequest: false
+                          grossListPrice: 2
+                          netPrice: 1.59
+                          recommendedRetailPrice: 2.99
+                          vat: 21
+                          priceValidityDate: '2025-01-01'
+                          priceExpiryDate: '2025-06-30'
+                priceOnRequest:
+                  summary: Trade item with price on request
+                  value:
+                    data:
+                      supplierIdGln: '9876543210987'
+                      supplierItemNumber: CUSTOM-BUILD-001
+                      pricings:
+                        - priceUnit: C62
+                          priceUnitFactor: null
+                          priceQuantity: 1
+                          priceOnRequest: true
+                          grossListPrice: null
+                          netPrice: null
+                          recommendedRetailPrice: null
+                          vat: 21
+                          priceValidityDate: '2025-01-01'
+                          priceExpiryDate: null
+        '400':
+          $ref: '#/components/responses/400-bad-request'
+        '401':
+          $ref: '#/components/responses/401-unauthorized'
+        '403':
+          $ref: '#/components/responses/403-forbidden'
+        '404':
+          description: Trade item not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: https://api.tradeitem.2ba.nl/problems/not-found
+                title: Trade Item Not Found
+                status: 404
+                detail: No trade item found with supplier GLN '1234567890123' and item number 'UNKNOWN-SKU'
+                instance: https://api.tradeitem.2ba.nl/v1/1234567890123/UNKNOWN-SKU/pricings
+        '500':
+          $ref: '#/components/responses/500-internal-server-error'
+  /{supplierIdGln}/{supplierItemNumber}/allowance-surcharges:
+    get:
+      operationId: getTradeItemAllowanceSurcharges
+      tags:
+        - TradeItems single
+      summary: Retrieve trade item allowances and surcharges
+      description: |
+        Retrieve allowances (discounts) and surcharges (additional charges) for a specific trade item.
+
+        This endpoint returns all allowances and surcharges associated with the trade item's pricing entries.
+        Each allowance/surcharge includes **pricing join keys** (`priceUnit`, `priceQuantity`, `priceValidityDate`) 
+        to enable correlation with the corresponding pricing record from the `/pricings` endpoint.
+
+        **Design Decision**: Allowances and surcharges are provided in a separate endpoint to:
+        - Enable direct ETL/data warehouse fact table loading
+        - Provide predictable pagination for datasets with varying surcharge counts
+        - Support star schema design patterns (pricing fact table + surcharges fact table)
+
+        **No pagination** - Returns exactly one trade item's allowances/surcharges or 404 if not found.
+
+        **ETIM xChange**: `AllowanceSurcharge[]`
+        **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[]`
+      parameters:
+        - $ref: '#/components/parameters/supplier-id-gln'
+        - $ref: '#/components/parameters/supplier-item-number'
+      responses:
+        '200':
+          description: Successfully retrieved trade item allowances and surcharges
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TradeItemAllowanceSurchargesResponse'
+              examples:
+                withAllowancesAndSurcharges:
+                  summary: Trade item with multiple allowances and surcharges
+                  value:
+                    data:
+                      supplierIdGln: '1234567890123'
+                      supplierItemNumber: SKU-12345
+                      allowanceSurcharges:
+                        - priceUnit: C62
+                          priceQuantity: 1
+                          priceValidityDate: '2025-01-01'
+                          allowanceSurchargeIndicator: ALLOWANCE
+                          allowanceSurchargeValidityDate: '2025-01-01'
+                          allowanceSurchargeType: AEQ
+                          allowanceSurchargeAmount: null
+                          allowanceSurchargeSequenceNumber: 1
+                          allowanceSurchargePercentage: 5.5
+                          allowanceSurchargeDescription:
+                            - language: en
+                              allowanceSurchargeDescription: Bulk quantity discount
+                            - language: nl
+                              allowanceSurchargeDescription: Staffelkorting
+                          allowanceSurchargeMinimumQuantity: 50
+                        - priceUnit: C62
+                          priceQuantity: 1
+                          priceValidityDate: '2025-01-01'
+                          allowanceSurchargeIndicator: SURCHARGE
+                          allowanceSurchargeValidityDate: null
+                          allowanceSurchargeType: DBD
+                          allowanceSurchargeAmount: 25
+                          allowanceSurchargeSequenceNumber: 2
+                          allowanceSurchargePercentage: null
+                          allowanceSurchargeDescription: null
+                          allowanceSurchargeMinimumQuantity: null
+                noSurcharges:
+                  summary: Trade item without allowances or surcharges
+                  value:
+                    data:
+                      supplierIdGln: '8712423012485'
+                      supplierItemNumber: SKU-BASIC-001
+                      allowanceSurcharges: null
+                multiplePricings:
+                  summary: Trade item with surcharges across multiple pricing entries
+                  value:
+                    data:
+                      supplierIdGln: '9876543210987'
+                      supplierItemNumber: SKU-VOLUME-002
+                      allowanceSurcharges:
+                        - priceUnit: MTR
+                          priceQuantity: 1
+                          priceValidityDate: '2025-01-01'
+                          allowanceSurchargeIndicator: ALLOWANCE
+                          allowanceSurchargeValidityDate: '2025-01-01'
+                          allowanceSurchargeType: AEQ
+                          allowanceSurchargeAmount: null
+                          allowanceSurchargeSequenceNumber: 1
+                          allowanceSurchargePercentage: 2
+                          allowanceSurchargeDescription: null
+                          allowanceSurchargeMinimumQuantity: 100
+                        - priceUnit: MTR
+                          priceQuantity: 100
+                          priceValidityDate: '2025-01-01'
+                          allowanceSurchargeIndicator: ALLOWANCE
+                          allowanceSurchargeValidityDate: '2025-01-01'
+                          allowanceSurchargeType: AEQ
+                          allowanceSurchargeAmount: null
+                          allowanceSurchargeSequenceNumber: 1
+                          allowanceSurchargePercentage: 5
+                          allowanceSurchargeDescription: null
+                          allowanceSurchargeMinimumQuantity: 500
+        '400':
+          $ref: '#/components/responses/400-bad-request'
+        '401':
+          $ref: '#/components/responses/401-unauthorized'
+        '403':
+          $ref: '#/components/responses/403-forbidden'
+        '404':
+          description: Trade item not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: https://api.tradeitem.2ba.nl/problems/not-found
+                title: Trade Item Not Found
+                status: 404
+                detail: No trade item found with supplier GLN '1234567890123' and item number 'UNKNOWN-SKU'
+                instance: https://api.tradeitem.2ba.nl/v1/1234567890123/UNKNOWN-SKU/allowance-surcharges
+        '500':
+          $ref: '#/components/responses/500-internal-server-error'
   /bulk/trade-item-details:
     get:
       operationId: getBulkTradeItemDetails
@@ -541,12 +883,15 @@ paths:
           $ref: '#/components/responses/500-internal-server-error'
   /bulk/trade-item-orderings:
     get:
-      operationId: getBulkItemOrderings
-      summary: Retrieve item ordering information in bulk
+      operationId: getBulkTradeItemOrderings
+      summary: Retrieve trade item ordering information in bulk
       description: |
         Retrieve trade item ordering information in bulk with cursor-based pagination.
         Returns ordering details including order units, minimum/maximum quantities, order step sizes,
         lead times, and unit conversions.
+
+        Each item in the response includes its composite key (`supplierIdGln` + `supplierItemNumber`)
+        along with all ordering fields in a flat structure.
 
         This endpoint is optimized for scenarios where only ordering data is needed,
         such as inventory management or order processing systems.
@@ -563,11 +908,11 @@ paths:
         - $ref: '#/components/parameters/supplier-id-gln-filter'
       responses:
         '200':
-          description: Successfully retrieved item ordering information
+          description: Successfully retrieved trade item ordering information
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BulkItemOrderingsResponse'
+                $ref: '#/components/schemas/BulkTradeItemOrderingsResponse'
               examples:
                 success:
                   summary: Successful bulk retrieval
@@ -575,16 +920,26 @@ paths:
                     data:
                       - supplierIdGln: '8712423012485'
                         supplierItemNumber: SKU-LAMP-001
-                        ordering:
-                          orderUnit: C62
-                          minimumOrderQuantity: 1
-                          orderStepSize: 1
-                          standardOrderLeadTime: 5
-                          useUnit: null
-                          useUnitConversionFactor: null
-                          singleUseUnitQuantity: null
-                          alternativeUseUnit: null
-                          alternativeUseUnitConversionFactor: null
+                        orderUnit: C62
+                        minimumOrderQuantity: 1
+                        orderStepSize: 1
+                        standardOrderLeadTime: 5
+                        useUnit: null
+                        useUnitConversionFactor: null
+                        singleUseUnitQuantity: null
+                        alternativeUseUnit: null
+                        alternativeUseUnitConversionFactor: null
+                      - supplierIdGln: '8712423012485'
+                        supplierItemNumber: SKU-CABLE-002
+                        orderUnit: MTR
+                        minimumOrderQuantity: 10
+                        orderStepSize: 5
+                        standardOrderLeadTime: 3
+                        useUnit: MTR
+                        useUnitConversionFactor: 1
+                        singleUseUnitQuantity: 1
+                        alternativeUseUnit: null
+                        alternativeUseUnitConversionFactor: null
                     meta:
                       cursor: eyJzdXBwbGllcklkR2xuIjoiODcxMjQyMzAxMjQ4NSJ9
                       hasNext: true
@@ -601,15 +956,25 @@ paths:
           $ref: '#/components/responses/500-internal-server-error'
   /bulk/trade-item-pricings:
     get:
-      operationId: getBulkItemPricings
-      summary: Retrieve item pricing information in bulk
+      operationId: getBulkTradeItemPricings
+      summary: Retrieve trade item pricing information in bulk
       description: |
         Retrieve trade item pricing information in bulk with cursor-based pagination.
         Returns pricing details including net prices, gross list prices, recommended retail prices,
         VAT, price validity periods, and allowances/surcharges.
 
-        Items may have multiple pricing entries for different conditions, customer groups,
-        or validity periods. This endpoint is optimized for price synchronization scenarios.
+        **Flattened Structure**: Each row represents a single price entry with embedded composite key
+        (`supplierIdGln` + `supplierItemNumber`). This follows the same pattern as 
+        `/bulk/product-etim-classifications` - 1 row per data point.
+
+        A trade item with multiple price tiers (e.g., quantity breaks, validity periods) will have
+        multiple rows with the same composite key but different pricing data.
+
+        This endpoint is optimized for:
+        - Predictable payload sizes per row
+        - Efficient cursor-based pagination
+        - ETL/data warehouse ingestion
+        - Price synchronization scenarios
 
         **ETIM xChange**: Bulk retrieval of `Pricing[]` data  
         **Path**: `Supplier[].Product[].TradeItem[].Pricing[]`
@@ -623,36 +988,133 @@ paths:
         - $ref: '#/components/parameters/supplier-id-gln-filter'
       responses:
         '200':
-          description: Successfully retrieved item pricing information
+          description: Successfully retrieved trade item pricing entries (1 row per price)
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BulkItemPricingsResponse'
+                $ref: '#/components/schemas/BulkTradeItemPricingsResponse'
               examples:
                 success:
-                  summary: Successful bulk retrieval
+                  summary: Successful bulk retrieval (flattened - 1 row per price entry)
                   value:
                     data:
                       - supplierIdGln: '8712423012485'
                         supplierItemNumber: SKU-LAMP-001
-                        pricings:
-                          - priceUnit: C62
-                            priceUnitFactor: null
-                            priceQuantity: 1
-                            priceOnRequest: false
-                            grossListPrice: 12.99
-                            netPrice: 9.99
-                            recommendedRetailPrice: 15.99
-                            vat: 21
-                            priceValidityDate: '2025-01-01'
-                            priceExpiryDate: '2025-12-31'
-                            allowanceSurcharges: null
+                        priceUnit: C62
+                        priceQuantity: 1
+                        priceOnRequest: false
+                        grossListPrice: 12.99
+                        netPrice: 9.99
+                        recommendedRetailPrice: 15.99
+                        vat: 21
+                        priceValidityDate: '2025-01-01'
+                        priceExpiryDate: '2025-12-31'
+                      - supplierIdGln: '8712423012485'
+                        supplierItemNumber: SKU-CABLE-002
+                        priceUnit: MTR
+                        priceQuantity: 1
+                        netPrice: 1.99
+                        priceValidityDate: '2025-01-01'
+                      - supplierIdGln: '8712423012485'
+                        supplierItemNumber: SKU-CABLE-002
+                        priceUnit: MTR
+                        priceQuantity: 100
+                        netPrice: 1.59
+                        priceValidityDate: '2025-01-01'
+                    meta:
+                      cursor: eyJzdXBwbGllcklkR2xuIjoiODcxMjQyMzAxMjQ4NSIsInByaWNlUXVhbnRpdHkiOjEwMH0=
+                      hasNext: true
+                      hasPrev: false
+                      limit: 100
+                      estimatedTotal: 24850
+        '400':
+          $ref: '#/components/responses/400-bad-request'
+        '401':
+          $ref: '#/components/responses/401-unauthorized'
+        '403':
+          $ref: '#/components/responses/403-forbidden'
+        '500':
+          $ref: '#/components/responses/500-internal-server-error'
+  /bulk/trade-item-allowance-surcharges:
+    get:
+      operationId: getBulkAllowanceSurcharges
+      summary: Retrieve trade item allowances and surcharges in bulk
+      description: |
+        Retrieve trade item allowances and surcharges in bulk with cursor-based pagination.
+        Returns discount allowances and additional charge surcharges applied to trade item pricing.
+
+        **Flattened Structure**: Each row represents a single allowance/surcharge entry with embedded 
+        composite key (`supplierIdGln` + `supplierItemNumber`) and pricing reference keys 
+        (`priceUnit` + `priceQuantity` + `priceValidityDate`).
+
+        **Join Pattern**: Use this endpoint in combination with `/bulk/trade-item-pricings` to build
+        a complete pricing picture:
+        ```sql
+        SELECT p.*, a.*
+        FROM pricings p
+        LEFT JOIN allowance_surcharges a
+          ON p.supplierIdGln = a.supplierIdGln
+         AND p.supplierItemNumber = a.supplierItemNumber
+         AND p.priceUnit = a.priceUnit
+         AND p.priceQuantity = a.priceQuantity
+         AND (p.priceValidityDate = a.priceValidityDate OR a.priceValidityDate IS NULL)
+        ```
+
+        This endpoint is optimized for:
+        - Predictable payload sizes per row
+        - Efficient cursor-based pagination
+        - ETL/data warehouse ingestion (star schema: pricing fact + surcharges fact)
+        - Price adjustment synchronization scenarios
+
+        **ETIM xChange**: Bulk retrieval of `AllowanceSurcharge[]` data  
+        **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[]`
+      tags:
+        - TradeItems bulk
+      parameters:
+        - $ref: '#/components/parameters/cursor'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/selection-id'
+        - $ref: '#/components/parameters/mutation-date-time'
+        - $ref: '#/components/parameters/supplier-id-gln-filter'
+      responses:
+        '200':
+          description: Successfully retrieved allowance/surcharge entries (1 row per surcharge)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkAllowanceSurchargesResponse'
+              examples:
+                success:
+                  summary: Successful bulk retrieval (flattened - 1 row per surcharge entry)
+                  value:
+                    data:
+                      - supplierIdGln: '8712423012485'
+                        supplierItemNumber: SKU-LAMP-001
+                        priceUnit: C62
+                        priceQuantity: 1
+                        priceValidityDate: '2025-01-01'
+                        allowanceSurchargeIndicator: ALLOWANCE
+                        allowanceSurchargeType: AEQ
+                        allowanceSurchargeSequenceNumber: 1
+                        allowanceSurchargePercentage: 5.5
+                        allowanceSurchargeMinimumQuantity: 50
+                        allowanceSurchargeDescription: Bulk quantity discount
+                      - supplierIdGln: '8712423012485'
+                        supplierItemNumber: SKU-CABLE-002
+                        priceUnit: MTR
+                        priceQuantity: 1
+                        priceValidityDate: '2025-01-01'
+                        allowanceSurchargeIndicator: SURCHARGE
+                        allowanceSurchargeType: DBD
+                        allowanceSurchargeSequenceNumber: 1
+                        allowanceSurchargeAmount: 25
+                        allowanceSurchargeDescription: Delivery surcharge
                     meta:
                       cursor: eyJzdXBwbGllcklkR2xuIjoiODcxMjQyMzAxMjQ4NSJ9
                       hasNext: true
                       hasPrev: false
                       limit: 100
-                      estimatedTotal: 15420
+                      estimatedTotal: 3250
         '400':
           $ref: '#/components/responses/400-bad-request'
         '401':
@@ -1357,6 +1819,855 @@ components:
           supplierItemNumber: ITEM-67890
           descriptionLanguage: en-GB
           minimalItemDescription: Hammer 500g
+    TradeItemOrdering:
+      type: object
+      description: |
+        Ordering information for the trade item including order unit, minimum quantities, and lead time.
+        Extracted from ETIM xChange `TradeItem.Ordering` structure.
+
+        **ETIM xChange**: `Ordering`
+        **Path**: `Supplier[].Product[].TradeItem[].Ordering`
+      additionalProperties: false
+      required:
+        - orderUnit
+        - minimumOrderQuantity
+        - orderStepSize
+      properties:
+        orderUnit:
+          description: |
+            Unit in which the item can be ordered (e.g., pieces, boxes, meters).
+
+            **ETIM xChange**: `OrderUnit`
+            **Path**: `Supplier[].Product[].TradeItem[].Ordering.OrderUnit`
+          $ref: '#/components/schemas/UnitCodes'
+          examples:
+            - C62
+            - BX
+            - MTR
+        minimumOrderQuantity:
+          type: number
+          description: |
+            Minimum quantity that must be ordered (converted from ETIM xChange string to number).
+
+            **ETIM xChange**: `MinimumOrderQuantity` (string with pattern)
+            **Path**: `Supplier[].Product[].TradeItem[].Ordering.MinimumOrderQuantity`
+          minimum: 0
+          multipleOf: 0.0001
+          maximum: 999999999999.9999
+          examples:
+            - 1
+            - 10
+            - 500
+        orderStepSize:
+          type: number
+          description: |
+            Quantity increment for orders beyond minimum (converted from ETIM xChange string to number).
+            For example, if minimum is 10 and step is 5, you can order 10, 15, 20, etc.
+
+            **ETIM xChange**: `OrderStepSize` (string with pattern)
+            **Path**: `Supplier[].Product[].TradeItem[].Ordering.OrderStepSize`
+          minimum: 0
+          multipleOf: 0.0001
+          maximum: 999999999999.9999
+          examples:
+            - 1
+            - 5
+            - 100
+        standardOrderLeadTime:
+          type:
+            - integer
+            - 'null'
+          description: |
+            Standard lead time for orders in days.
+
+            **ETIM xChange**: `StandardOrderLeadTime`
+            **Path**: `Supplier[].Product[].TradeItem[].Ordering.StandardOrderLeadTime`
+          minimum: 0
+          examples:
+            - 5
+            - 14
+            - null
+        useUnit:
+          description: |
+            Unit in which the item is used or consumed (may differ from order unit, nullable).
+
+            **ETIM xChange**: `UseUnit`
+            **Path**: `Supplier[].Product[].TradeItem[].Ordering.UseUnit`
+          anyOf:
+            - $ref: '#/components/schemas/UnitCodes'
+            - type: 'null'
+          examples:
+            - MTR
+            - KGM
+            - null
+        useUnitConversionFactor:
+          type:
+            - number
+            - 'null'
+          description: |
+            Conversion factor from order unit to use unit (converted from ETIM xChange string to number).
+
+            **ETIM xChange**: `UseUnitConversionFactor` (string with pattern)
+            **Path**: `Supplier[].Product[].TradeItem[].Ordering.UseUnitConversionFactor`
+          minimum: 0
+          multipleOf: 0.0001
+          maximum: 999999999999.9999
+          examples:
+            - 1
+            - 100
+            - null
+        singleUseUnitQuantity:
+          type:
+            - number
+            - 'null'
+          description: |
+            Quantity of use units in a single order unit (converted from ETIM xChange string to number).
+
+            **ETIM xChange**: `SingleUseUnitQuantity` (string with pattern)
+            **Path**: `Supplier[].Product[].TradeItem[].Ordering.SingleUseUnitQuantity`
+          minimum: 0
+          multipleOf: 0.0001
+          maximum: 999999999999.9999
+          examples:
+            - 1
+            - 100
+            - null
+        alternativeUseUnit:
+          description: |
+            Alternative unit in which the item can be used or consumed (nullable).
+
+            **ETIM xChange**: `AlternativeUseUnit`
+            **Path**: `Supplier[].Product[].TradeItem[].Ordering.AlternativeUseUnit`
+          anyOf:
+            - $ref: '#/components/schemas/UnitCodes'
+            - type: 'null'
+          examples:
+            - LTR
+            - null
+        alternativeUseUnitConversionFactor:
+          type:
+            - number
+            - 'null'
+          description: |
+            Conversion factor from order unit to alternative use unit (converted from ETIM xChange string to number).
+
+            **ETIM xChange**: `AlternativeUseUnitConversionFactor` (string with pattern)
+            **Path**: `Supplier[].Product[].TradeItem[].Ordering.AlternativeUseUnitConversionFactor`
+          minimum: 0
+          multipleOf: 0.0001
+          maximum: 999999999999.9999
+          examples:
+            - 1
+            - null
+      examples:
+        - orderUnit: C62
+          minimumOrderQuantity: 1
+          orderStepSize: 1
+          standardOrderLeadTime: 5
+          useUnit: null
+          useUnitConversionFactor: null
+          singleUseUnitQuantity: null
+          alternativeUseUnit: null
+          alternativeUseUnitConversionFactor: null
+    TradeItemOrderingsSummary:
+      type: object
+      description: |
+        Trade item ordering information for bulk retrieval, with embedded composite key fields.
+        Contains ordering details from ETIM xChange `TradeItem.Ordering` section.
+
+        This flat structure is optimized for bulk data retrieval where each item in the response
+        must be self-contained with its own key.
+
+        For single-item responses (where key is at root level), use `TradeItemOrdering`.
+
+        **ETIM xChange**: `Ordering`
+        **Path**: `Supplier[].Product[].TradeItem[].Ordering`
+      additionalProperties: false
+      required:
+        - supplierIdGln
+        - supplierItemNumber
+        - orderUnit
+        - minimumOrderQuantity
+        - orderStepSize
+      properties:
+        supplierIdGln:
+          type: string
+          pattern: ^[0-9]{13}$
+          description: |
+            Global Location Number (GLN) of the supplier. 13-digit GS1 identifier.
+            Part of the composite key for the trade item.
+
+            **ETIM xChange**: `SupplierIdGln`  
+            **Path**: `Supplier[].SupplierId.SupplierIdGln`
+          examples:
+            - '1234567890123'
+            - '8712423012485'
+        supplierItemNumber:
+          type: string
+          minLength: 1
+          maxLength: 35
+          description: |
+            Supplier's unique item number. Part of the composite key for the trade item.
+            This is the primary identifier for items in the supplier's catalog system.
+
+            **ETIM xChange**: `SupplierItemNumber`  
+            **Path**: `Supplier[].Product[].TradeItem[].ItemIdentification.SupplierItemNumber`
+          examples:
+            - SKU-12345
+            - ITEM-ABC-789
+        orderUnit:
+          description: |
+            Unit in which the item can be ordered (e.g., pieces, boxes, meters).
+
+            **ETIM xChange**: `OrderUnit`
+            **Path**: `Supplier[].Product[].TradeItem[].Ordering.OrderUnit`
+          $ref: '#/components/schemas/UnitCodes'
+          examples:
+            - C62
+            - BX
+            - MTR
+        minimumOrderQuantity:
+          type: number
+          description: |
+            Minimum quantity that must be ordered (converted from ETIM xChange string to number).
+
+            **ETIM xChange**: `MinimumOrderQuantity` (string with pattern)
+            **Path**: `Supplier[].Product[].TradeItem[].Ordering.MinimumOrderQuantity`
+          minimum: 0
+          multipleOf: 0.0001
+          maximum: 999999999999.9999
+          examples:
+            - 1
+            - 10
+            - 500
+        orderStepSize:
+          type: number
+          description: |
+            Quantity increment for orders beyond minimum (converted from ETIM xChange string to number).
+            For example, if minimum is 10 and step is 5, you can order 10, 15, 20, etc.
+
+            **ETIM xChange**: `OrderStepSize` (string with pattern)
+            **Path**: `Supplier[].Product[].TradeItem[].Ordering.OrderStepSize`
+          minimum: 0
+          multipleOf: 0.0001
+          maximum: 999999999999.9999
+          examples:
+            - 1
+            - 5
+            - 100
+        standardOrderLeadTime:
+          type:
+            - integer
+            - 'null'
+          description: |
+            Standard lead time for orders in days.
+
+            **ETIM xChange**: `StandardOrderLeadTime`
+            **Path**: `Supplier[].Product[].TradeItem[].Ordering.StandardOrderLeadTime`
+          minimum: 0
+          examples:
+            - 5
+            - 14
+            - null
+        useUnit:
+          description: |
+            Unit in which the item is used or consumed (may differ from order unit, nullable).
+
+            **ETIM xChange**: `UseUnit`
+            **Path**: `Supplier[].Product[].TradeItem[].Ordering.UseUnit`
+          anyOf:
+            - $ref: '#/components/schemas/UnitCodes'
+            - type: 'null'
+          examples:
+            - MTR
+            - KGM
+            - null
+        useUnitConversionFactor:
+          type:
+            - number
+            - 'null'
+          description: |
+            Conversion factor from order unit to use unit (converted from ETIM xChange string to number).
+
+            **ETIM xChange**: `UseUnitConversionFactor` (string with pattern)
+            **Path**: `Supplier[].Product[].TradeItem[].Ordering.UseUnitConversionFactor`
+          minimum: 0
+          multipleOf: 0.0001
+          maximum: 999999999999.9999
+          examples:
+            - 1
+            - 100
+            - null
+        singleUseUnitQuantity:
+          type:
+            - number
+            - 'null'
+          description: |
+            Quantity of use units in a single order unit (converted from ETIM xChange string to number).
+
+            **ETIM xChange**: `SingleUseUnitQuantity` (string with pattern)
+            **Path**: `Supplier[].Product[].TradeItem[].Ordering.SingleUseUnitQuantity`
+          minimum: 0
+          multipleOf: 0.0001
+          maximum: 999999999999.9999
+          examples:
+            - 1
+            - 100
+            - null
+        alternativeUseUnit:
+          description: |
+            Alternative unit in which the item can be used or consumed (nullable).
+
+            **ETIM xChange**: `AlternativeUseUnit`
+            **Path**: `Supplier[].Product[].TradeItem[].Ordering.AlternativeUseUnit`
+          anyOf:
+            - $ref: '#/components/schemas/UnitCodes'
+            - type: 'null'
+          examples:
+            - LTR
+            - null
+        alternativeUseUnitConversionFactor:
+          type:
+            - number
+            - 'null'
+          description: |
+            Conversion factor from order unit to alternative use unit (converted from ETIM xChange string to number).
+
+            **ETIM xChange**: `AlternativeUseUnitConversionFactor` (string with pattern)
+            **Path**: `Supplier[].Product[].TradeItem[].Ordering.AlternativeUseUnitConversionFactor`
+          minimum: 0
+          multipleOf: 0.0001
+          maximum: 999999999999.9999
+          examples:
+            - 1
+            - null
+      examples:
+        - supplierIdGln: '8712423012485'
+          supplierItemNumber: SKU-LAMP-001
+          orderUnit: C62
+          minimumOrderQuantity: 1
+          orderStepSize: 1
+          standardOrderLeadTime: 5
+          useUnit: null
+          useUnitConversionFactor: null
+          singleUseUnitQuantity: null
+          alternativeUseUnit: null
+          alternativeUseUnitConversionFactor: null
+        - supplierIdGln: '8712423012485'
+          supplierItemNumber: SKU-CABLE-002
+          orderUnit: MTR
+          minimumOrderQuantity: 10
+          orderStepSize: 5
+          standardOrderLeadTime: 3
+          useUnit: MTR
+          useUnitConversionFactor: 1
+          singleUseUnitQuantity: 1
+          alternativeUseUnit: null
+          alternativeUseUnitConversionFactor: null
+    TradeItemPricing:
+      type: object
+      description: |
+        Pricing information for a trade item including prices, price unit, and validity dates.
+        Extracted from ETIM xChange `TradeItem.Pricing[]` structure.
+
+        **Allowances & Surcharges**: Available via separate `/{supplierIdGln}/{supplierItemNumber}/allowance-surcharges` endpoint.
+
+        **ETIM xChange**: `Pricing`
+        **Path**: `Supplier[].Product[].TradeItem[].Pricing[]`
+      additionalProperties: false
+      required:
+        - priceUnit
+        - priceQuantity
+      properties:
+        priceUnit:
+          description: |
+            Unit for which the price applies (e.g., pieces, boxes, meters).
+
+            **ETIM xChange**: `PriceUnit`
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceUnit`
+          $ref: '#/components/schemas/UnitCodes'
+          examples:
+            - C62
+            - BX
+            - MTR
+        priceUnitFactor:
+          type:
+            - number
+            - 'null'
+          description: |
+            Factor to convert price unit to order unit (converted from ETIM xChange string to number).
+
+            **ETIM xChange**: `PriceUnitFactor` (string with pattern)
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceUnitFactor`
+          minimum: 0
+          multipleOf: 0.0001
+          maximum: 99999999999.9999
+          examples:
+            - 1
+            - 100
+            - null
+        priceQuantity:
+          type: number
+          description: |
+            Quantity for which the price applies (converted from ETIM xChange string to number).
+
+            **ETIM xChange**: `PriceQuantity` (string with pattern)
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceQuantity`
+          minimum: 0
+          multipleOf: 0.0001
+          maximum: 99999.9999
+          examples:
+            - 1
+            - 10
+            - 100
+        priceOnRequest:
+          type:
+            - boolean
+            - 'null'
+          description: |
+            Indicates whether the price is available only on request.
+
+            **ETIM xChange**: `PriceOnRequest`
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceOnRequest`
+          examples:
+            - false
+            - true
+            - null
+        grossListPrice:
+          type:
+            - number
+            - 'null'
+          description: |
+            Gross list price (before discounts) (converted from ETIM xChange string to number).
+
+            **ETIM xChange**: `GrossListPrice` (string with pattern)
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].GrossListPrice`
+          minimum: 0
+          multipleOf: 0.0001
+          maximum: 99999999999.9999
+          examples:
+            - 130
+            - 1500
+            - null
+        netPrice:
+          type:
+            - number
+            - 'null'
+          description: |
+            Net price (after discounts, before tax) (converted from ETIM xChange string to number).
+
+            **ETIM xChange**: `NetPrice` (string with pattern)
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].NetPrice`
+          minimum: 0
+          multipleOf: 0.0001
+          maximum: 99999999999.9999
+          examples:
+            - 100
+            - 1200
+            - null
+        recommendedRetailPrice:
+          type:
+            - number
+            - 'null'
+          description: |
+            Recommended retail price (MSRP) (converted from ETIM xChange string to number).
+
+            **ETIM xChange**: `RecommendedRetailPrice` (string with pattern)
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].RecommendedRetailPrice`
+          minimum: 0
+          multipleOf: 0.0001
+          maximum: 99999999999.9999
+          examples:
+            - 150
+            - 1800
+            - null
+        vat:
+          type:
+            - number
+            - 'null'
+          description: |
+            VAT/tax percentage (converted from ETIM xChange string to number).
+
+            **ETIM xChange**: `Vat` (string with pattern)
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].Vat`
+          minimum: 0
+          multipleOf: 0.01
+          maximum: 99.99
+          examples:
+            - 21
+            - 19
+            - null
+        priceValidityDate:
+          type:
+            - string
+            - 'null'
+          format: date
+          description: |
+            Date from which the price is valid. ISO 8601 date format (YYYY-MM-DD).
+
+            **ETIM xChange**: `PriceValidityDate`
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceValidityDate`
+          examples:
+            - '2025-01-01'
+            - null
+        priceExpiryDate:
+          type:
+            - string
+            - 'null'
+          format: date
+          description: |
+            Date when the price expires. ISO 8601 date format (YYYY-MM-DD).
+
+            **ETIM xChange**: `PriceExpiryDate`
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceExpiryDate`
+          examples:
+            - '2025-12-31'
+            - null
+      examples:
+        - priceUnit: C62
+          priceUnitFactor: null
+          priceQuantity: 1
+          priceOnRequest: false
+          grossListPrice: 130
+          netPrice: 100
+          recommendedRetailPrice: 150
+          vat: 21
+          priceValidityDate: '2025-01-01'
+          priceExpiryDate: '2025-12-31'
+    TradeItemPricingsSummary:
+      type: object
+      description: |
+        Trade item pricing information for bulk retrieval, with embedded composite key fields.
+        Contains pricing details from ETIM xChange `TradeItem.Pricing[]` structure.
+
+        This structure is optimized for bulk data retrieval where each item in the response
+        must be self-contained with its own key. A trade item may have multiple pricing entries
+        for different conditions, customer groups, or validity periods.
+
+        For single-item responses (where key is at root level), use `TradeItemPricing`.
+
+        **ETIM xChange**: `Pricing[]`
+        **Path**: `Supplier[].Product[].TradeItem[].Pricing[]`
+      additionalProperties: false
+      required:
+        - supplierIdGln
+        - supplierItemNumber
+        - pricings
+      properties:
+        supplierIdGln:
+          type: string
+          pattern: ^[0-9]{13}$
+          description: |
+            Global Location Number (GLN) of the supplier. 13-digit GS1 identifier.
+            Part of the composite key for the trade item.
+
+            **ETIM xChange**: `SupplierIdGln`  
+            **Path**: `Supplier[].SupplierId.SupplierIdGln`
+          examples:
+            - '1234567890123'
+            - '8712423012485'
+        supplierItemNumber:
+          type: string
+          minLength: 1
+          maxLength: 35
+          description: |
+            Supplier's unique item number. Part of the composite key for the trade item.
+            This is the primary identifier for items in the supplier's catalog system.
+
+            **ETIM xChange**: `SupplierItemNumber`  
+            **Path**: `Supplier[].Product[].TradeItem[].ItemIdentification.SupplierItemNumber`
+          examples:
+            - SKU-12345
+            - ITEM-ABC-789
+        pricings:
+          type: array
+          description: |
+            Array of pricing information for this trade item. A trade item may have multiple
+            pricing entries for different conditions, customer groups, or validity periods.
+
+            **ETIM xChange**: `Pricing[]`
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[]`
+          items:
+            $ref: '#/components/schemas/TradeItemPricing'
+      examples:
+        - supplierIdGln: '8712423012485'
+          supplierItemNumber: SKU-LAMP-001
+          pricings:
+            - priceUnit: C62
+              priceUnitFactor: null
+              priceQuantity: 1
+              priceOnRequest: false
+              grossListPrice: 12.99
+              netPrice: 9.99
+              recommendedRetailPrice: 15.99
+              vat: 21
+              priceValidityDate: '2025-01-01'
+              priceExpiryDate: '2025-12-31'
+              allowanceSurcharges: null
+        - supplierIdGln: '8712423012485'
+          supplierItemNumber: SKU-CABLE-002
+          pricings:
+            - priceUnit: MTR
+              priceUnitFactor: 1
+              priceQuantity: 1
+              priceOnRequest: false
+              grossListPrice: 2.5
+              netPrice: 1.99
+              recommendedRetailPrice: 3.49
+              vat: 21
+              priceValidityDate: '2025-01-01'
+              priceExpiryDate: '2025-06-30'
+              allowanceSurcharges: null
+            - priceUnit: MTR
+              priceUnitFactor: 1
+              priceQuantity: 100
+              priceOnRequest: false
+              grossListPrice: 2
+              netPrice: 1.59
+              recommendedRetailPrice: 2.99
+              vat: 21
+              priceValidityDate: '2025-01-01'
+              priceExpiryDate: '2025-06-30'
+              allowanceSurcharges: null
+    AllowanceSurchargeSummary:
+      type: object
+      description: |
+        Flattened allowance or surcharge for bulk retrieval.
+        Each row represents a single allowance/surcharge entry with embedded keys for joining
+        back to the parent trade item and pricing entry.
+
+        This flattened structure is optimized for:
+        - Predictable payload sizes per row
+        - Efficient cursor-based pagination
+        - ETL/data warehouse ingestion (star schema: pricing fact + surcharges fact)
+        - Streaming data processing
+
+        **Join Keys**: Use `supplierIdGln` + `supplierItemNumber` + `priceUnit` + `priceQuantity` 
+        (+ optionally `priceValidityDate`) to join with `/bulk/trade-item-pricings` data.
+
+        **ETIM xChange**: `AllowanceSurcharge`
+        **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[]`
+      additionalProperties: false
+      required:
+        - supplierIdGln
+        - supplierItemNumber
+        - priceUnit
+        - priceQuantity
+        - allowanceSurchargeIndicator
+        - allowanceSurchargeType
+      properties:
+        supplierIdGln:
+          type: string
+          pattern: ^[0-9]{13}$
+          description: |
+            Global Location Number (GLN) of the supplier. 13-digit GS1 identifier.
+            Part of the composite key for the trade item.
+
+            **ETIM xChange**: `SupplierIdGln`  
+            **Path**: `Supplier[].SupplierId.SupplierIdGln`
+          examples:
+            - '1234567890123'
+            - '8712423012485'
+        supplierItemNumber:
+          type: string
+          minLength: 1
+          maxLength: 35
+          description: |
+            Supplier's unique item number. Part of the composite key for the trade item.
+
+            **ETIM xChange**: `SupplierItemNumber`  
+            **Path**: `Supplier[].Product[].TradeItem[].ItemIdentification.SupplierItemNumber`
+          examples:
+            - SKU-12345
+            - ITEM-ABC-789
+        priceUnit:
+          description: |
+            Unit for which the price applies. Part of the pricing composite key for joining.
+
+            **ETIM xChange**: `PriceUnit`
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceUnit`
+          $ref: '#/components/schemas/UnitCodes'
+          examples:
+            - C62
+            - MTR
+        priceQuantity:
+          type: number
+          description: |
+            Quantity for which the price applies. Part of the pricing composite key for joining.
+
+            **ETIM xChange**: `PriceQuantity` (string with pattern)
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceQuantity`
+          minimum: 0
+          multipleOf: 0.0001
+          maximum: 99999.9999
+          examples:
+            - 1
+            - 10
+            - 100
+        priceValidityDate:
+          type:
+            - string
+            - 'null'
+          format: date
+          description: |
+            Date from which the price is valid. Optional join key for distinguishing
+            prices with same unit/quantity but different validity periods.
+            ISO 8601 date format (YYYY-MM-DD).
+
+            **ETIM xChange**: `PriceValidityDate`
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceValidityDate`
+          examples:
+            - '2025-01-01'
+        allowanceSurchargeIndicator:
+          type: string
+          description: |
+            Indicates whether this price adjustment is an allowance (discount) or a surcharge (additional charge).
+
+            **ETIM xChange**: `AllowanceSurchargeIndicator`
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[].AllowanceSurchargeIndicator`
+          enum:
+            - ALLOWANCE
+            - SURCHARGE
+          examples:
+            - ALLOWANCE
+            - SURCHARGE
+        allowanceSurchargeType:
+          description: |
+            Code describing the reason for the allowance or surcharge.
+
+            **ETIM xChange**: `AllowanceSurchargeType`
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[].AllowanceSurchargeType`
+          $ref: '#/components/schemas/AllowanceSurchargeTypes'
+        allowanceSurchargeSequenceNumber:
+          type:
+            - integer
+            - 'null'
+          description: |
+            Sequence number used to order multiple allowances or surcharges applied to the same price.
+
+            **ETIM xChange**: `AllowanceSurchargeSequenceNumber`
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[].AllowanceSurchargeSequenceNumber`
+          minimum: 1
+          examples:
+            - 1
+            - 2
+        allowanceSurchargeValidityDate:
+          type:
+            - string
+            - 'null'
+          format: date
+          description: |
+            Date from which the allowance or surcharge becomes valid. ISO 8601 date format (YYYY-MM-DD).
+
+            **ETIM xChange**: `AllowanceSurchargeValidityDate`
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[].AllowanceSurchargeValidityDate`
+          examples:
+            - '2025-01-01'
+        allowanceSurchargeAmount:
+          type:
+            - number
+            - 'null'
+          description: |
+            Fixed monetary amount of the allowance or surcharge.
+            Mutually exclusive with `allowanceSurchargePercentage` (typically one or the other is set).
+
+            **ETIM xChange**: `AllowanceSurchargeAmount` (string with pattern)
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[].AllowanceSurchargeAmount`
+          minimum: 0
+          multipleOf: 0.0001
+          maximum: 99999999999.9999
+          examples:
+            - 15.5
+            - 250
+        allowanceSurchargePercentage:
+          type:
+            - number
+            - 'null'
+          description: |
+            Percentage rate of the allowance or surcharge.
+            Mutually exclusive with `allowanceSurchargeAmount` (typically one or the other is set).
+
+            **ETIM xChange**: `AllowanceSurchargePercentage` (string with pattern)
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[].AllowanceSurchargePercentage`
+          minimum: 0
+          multipleOf: 0.001
+          maximum: 999.999
+          examples:
+            - 5.5
+            - 12.75
+        allowanceSurchargeMinimumQuantity:
+          type:
+            - number
+            - 'null'
+          description: |
+            Minimum ordered quantity required for the allowance or surcharge to apply.
+
+            **ETIM xChange**: `AllowanceSurchargeMinimumQuantity` (string with pattern)
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[].AllowanceSurchargeMinimumQuantity`
+          minimum: 0
+          multipleOf: 0.0001
+          maximum: 999999999999.9999
+          examples:
+            - 10
+            - 50
+        allowanceSurchargeDescription:
+          type:
+            - string
+            - 'null'
+          minLength: 1
+          maxLength: 35
+          description: |
+            Description of the allowance or surcharge (flattened from multilingual array to primary language).
+
+            **ETIM xChange**: `AllowanceSurchargeDescription[].AllowanceSurchargeDescription`
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[].AllowanceSurchargeDescription[]`
+          examples:
+            - Bulk quantity discount
+            - Early payment discount
+      examples:
+        - supplierIdGln: '8712423012485'
+          supplierItemNumber: SKU-LAMP-001
+          priceUnit: C62
+          priceQuantity: 1
+          priceValidityDate: '2025-01-01'
+          allowanceSurchargeIndicator: ALLOWANCE
+          allowanceSurchargeType: AEQ
+          allowanceSurchargeSequenceNumber: 1
+          allowanceSurchargePercentage: 5.5
+          allowanceSurchargeMinimumQuantity: 50
+          allowanceSurchargeDescription: Bulk quantity discount
+        - supplierIdGln: '8712423012485'
+          supplierItemNumber: SKU-CABLE-002
+          priceUnit: MTR
+          priceQuantity: 1
+          priceValidityDate: '2025-01-01'
+          allowanceSurchargeIndicator: SURCHARGE
+          allowanceSurchargeType: DBD
+          allowanceSurchargeSequenceNumber: 1
+          allowanceSurchargeAmount: 25
+          allowanceSurchargeDescription: Delivery surcharge
+        - supplierIdGln: '8712423012485'
+          supplierItemNumber: SKU-TOOL-003
+          priceUnit: C62
+          priceQuantity: 1
+          priceValidityDate: '2025-01-01'
+          allowanceSurchargeIndicator: ALLOWANCE
+          allowanceSurchargeType: AEQ
+          allowanceSurchargeSequenceNumber: 1
+          allowanceSurchargePercentage: 10
+          allowanceSurchargeMinimumQuantity: 100
+          allowanceSurchargeDescription: Volume discount tier 1
+        - supplierIdGln: '8712423012485'
+          supplierItemNumber: SKU-TOOL-003
+          priceUnit: C62
+          priceQuantity: 1
+          priceValidityDate: '2025-01-01'
+          allowanceSurchargeIndicator: ALLOWANCE
+          allowanceSurchargeType: AEQ
+          allowanceSurchargeSequenceNumber: 2
+          allowanceSurchargePercentage: 15
+          allowanceSurchargeMinimumQuantity: 500
+          allowanceSurchargeDescription: Volume discount tier 2
     TradeItemResponse:
       type: object
       description: |
@@ -1689,6 +3000,627 @@ components:
             hasPrev: false
             limit: 100
             estimatedTotal: 15420
+    TradeItemOrderingsResponse:
+      type: object
+      description: |
+        Response containing trade item ordering information for a single trade item.
+
+        The trade item key (`supplierIdGln` + `supplierItemNumber`) is at the root level,
+        with the `ordering` object containing all ordering fields.
+
+        This structure aligns with other single-item subresource responses
+        (`/details`, `/descriptions`, `/pricings`).
+
+        **ETIM xChange**: `Ordering`
+        **Path**: `Supplier[].Product[].TradeItem[].Ordering`
+      additionalProperties: false
+      required:
+        - data
+      properties:
+        data:
+          type: object
+          additionalProperties: false
+          required:
+            - supplierIdGln
+            - supplierItemNumber
+            - ordering
+          properties:
+            supplierIdGln:
+              type: string
+              pattern: ^[0-9]{13}$
+              description: |
+                Global Location Number (GLN) uniquely identifying the supplier.
+                Part of the composite key for the trade item.
+              examples:
+                - '1234567890123'
+            supplierItemNumber:
+              type: string
+              minLength: 1
+              maxLength: 35
+              description: |
+                Supplier's unique item number/code.
+                Part of the composite key for the trade item.
+              examples:
+                - SKU-12345
+            ordering:
+              $ref: '#/components/schemas/TradeItemOrdering'
+              description: |
+                Trade item ordering details including order unit, minimum quantities,
+                order step size, lead time, and unit conversions.
+      examples:
+        - data:
+            supplierIdGln: '1234567890123'
+            supplierItemNumber: SKU-12345
+            ordering:
+              orderUnit: C62
+              minimumOrderQuantity: 1
+              orderStepSize: 1
+              standardOrderLeadTime: 5
+              useUnit: null
+              useUnitConversionFactor: null
+              singleUseUnitQuantity: null
+              alternativeUseUnit: null
+              alternativeUseUnitConversionFactor: null
+        - data:
+            supplierIdGln: '8712423012485'
+            supplierItemNumber: SKU-CABLE-002
+            ordering:
+              orderUnit: MTR
+              minimumOrderQuantity: 10
+              orderStepSize: 5
+              standardOrderLeadTime: 3
+              useUnit: MTR
+              useUnitConversionFactor: 1
+              singleUseUnitQuantity: 1
+              alternativeUseUnit: null
+              alternativeUseUnitConversionFactor: null
+    BulkTradeItemOrderingsResponse:
+      type: object
+      description: |
+        Bulk response containing trade item ordering information with cursor-based pagination.
+
+        Each item in the `data` array includes its composite key (`supplierIdGln` + `supplierItemNumber`)
+        along with all ordering fields in a flat structure.
+
+        Use the `cursor` from `meta` to retrieve the next page of results.
+
+        **ETIM xChange**: Response wrapper for flattened `Ordering` data
+        **Path**: `Supplier[].Product[].TradeItem[].Ordering`
+      additionalProperties: false
+      required:
+        - data
+        - meta
+      properties:
+        data:
+          type: array
+          description: Array of trade item ordering summaries with embedded keys
+          items:
+            $ref: '#/components/schemas/TradeItemOrderingsSummary'
+        meta:
+          $ref: '#/components/schemas/CursorPaginationMetadata'
+          description: Cursor-based pagination metadata
+      examples:
+        - data:
+            - supplierIdGln: '8712423012485'
+              supplierItemNumber: SKU-LAMP-001
+              orderUnit: C62
+              minimumOrderQuantity: 1
+              orderStepSize: 1
+              standardOrderLeadTime: 5
+              useUnit: null
+              useUnitConversionFactor: null
+              singleUseUnitQuantity: null
+              alternativeUseUnit: null
+              alternativeUseUnitConversionFactor: null
+            - supplierIdGln: '8712423012485'
+              supplierItemNumber: SKU-CABLE-002
+              orderUnit: MTR
+              minimumOrderQuantity: 10
+              orderStepSize: 5
+              standardOrderLeadTime: 3
+              useUnit: MTR
+              useUnitConversionFactor: 1
+              singleUseUnitQuantity: 1
+              alternativeUseUnit: null
+              alternativeUseUnitConversionFactor: null
+          meta:
+            cursor: eyJzdXBwbGllcklkR2xuIjoiODcxMjQyMzAxMjQ4NSIsInN1cHBsaWVySXRlbU51bWJlciI6IlNLVS1DQUJMRS0wMDIifQ==
+            hasNext: true
+            hasPrev: false
+            limit: 100
+            estimatedTotal: 15420
+    TradeItemPricingsResponse:
+      type: object
+      description: |
+        Response containing trade item pricing information for a single trade item.
+
+        The trade item key (`supplierIdGln` + `supplierItemNumber`) is at the root level,
+        with the `pricings` array containing all pricing entries for this trade item.
+
+        A trade item may have multiple pricing entries for different conditions, 
+        customer groups, or validity periods.
+
+        **Allowances & Surcharges**: Available via separate `/{supplierIdGln}/{supplierItemNumber}/allowance-surcharges` endpoint.
+
+        This structure aligns with other single-item subresource responses
+        (`/details`, `/descriptions`, `/orderings`).
+
+        **ETIM xChange**: `Pricing[]`
+        **Path**: `Supplier[].Product[].TradeItem[].Pricing[]`
+      additionalProperties: false
+      required:
+        - data
+      properties:
+        data:
+          type: object
+          additionalProperties: false
+          required:
+            - supplierIdGln
+            - supplierItemNumber
+            - pricings
+          properties:
+            supplierIdGln:
+              type: string
+              pattern: ^[0-9]{13}$
+              description: |
+                Global Location Number (GLN) uniquely identifying the supplier.
+                Part of the composite key for the trade item.
+              examples:
+                - '1234567890123'
+            supplierItemNumber:
+              type: string
+              minLength: 1
+              maxLength: 35
+              description: |
+                Supplier's unique item number/code.
+                Part of the composite key for the trade item.
+              examples:
+                - SKU-12345
+            pricings:
+              type: array
+              description: |
+                Array of pricing information for this trade item. A trade item may have
+                multiple pricing entries for different conditions, customer groups, or
+                validity periods.
+              items:
+                $ref: '#/components/schemas/TradeItemPricing'
+      examples:
+        - data:
+            supplierIdGln: '1234567890123'
+            supplierItemNumber: SKU-12345
+            pricings:
+              - priceUnit: C62
+                priceUnitFactor: null
+                priceQuantity: 1
+                priceOnRequest: false
+                grossListPrice: 130
+                netPrice: 100
+                recommendedRetailPrice: 150
+                vat: 21
+                priceValidityDate: '2025-01-01'
+                priceExpiryDate: '2025-12-31'
+        - data:
+            supplierIdGln: '8712423012485'
+            supplierItemNumber: SKU-CABLE-002
+            pricings:
+              - priceUnit: MTR
+                priceUnitFactor: 1
+                priceQuantity: 1
+                priceOnRequest: false
+                grossListPrice: 2.5
+                netPrice: 1.99
+                recommendedRetailPrice: 3.49
+                vat: 21
+                priceValidityDate: '2025-01-01'
+                priceExpiryDate: '2025-06-30'
+              - priceUnit: MTR
+                priceUnitFactor: 1
+                priceQuantity: 100
+                priceOnRequest: false
+                grossListPrice: 2
+                netPrice: 1.59
+                recommendedRetailPrice: 2.99
+                vat: 21
+                priceValidityDate: '2025-01-01'
+                priceExpiryDate: '2025-06-30'
+    BulkTradeItemPricingsResponse:
+      type: object
+      description: |
+        Bulk response containing trade item pricing information with cursor-based pagination.
+
+        **Flattened Structure**: Each row in the `data` array represents a single price entry
+        with embedded composite key (`supplierIdGln` + `supplierItemNumber`). This follows the
+        same pattern as `ProductEtimClassificationFeature` - 1 row per data point.
+
+        A trade item with multiple price tiers (e.g., quantity breaks) will have multiple rows
+        with the same composite key but different pricing data.
+
+        Use the `cursor` from `meta` to retrieve the next page of results.
+
+        **ETIM xChange**: Response wrapper for `Pricing[]` data
+        **Path**: `Supplier[].Product[].TradeItem[].Pricing[]`
+      additionalProperties: false
+      required:
+        - data
+        - meta
+      properties:
+        data:
+          type: array
+          description: Array of flattened trade item pricing entries (1 row per price)
+          items:
+            $ref: '#/components/schemas/TradeItemPricingSummary'
+        meta:
+          $ref: '#/components/schemas/CursorPaginationMetadata'
+          description: Cursor-based pagination metadata
+      examples:
+        - data:
+            - supplierIdGln: '8712423012485'
+              supplierItemNumber: SKU-LAMP-001
+              priceUnit: C62
+              priceQuantity: 1
+              priceOnRequest: false
+              grossListPrice: 12.99
+              netPrice: 9.99
+              recommendedRetailPrice: 15.99
+              vat: 21
+              priceValidityDate: '2025-01-01'
+              priceExpiryDate: '2025-12-31'
+            - supplierIdGln: '8712423012485'
+              supplierItemNumber: SKU-CABLE-002
+              priceUnit: MTR
+              priceUnitFactor: 1
+              priceQuantity: 1
+              priceOnRequest: false
+              grossListPrice: 2.5
+              netPrice: 1.99
+              recommendedRetailPrice: 3.49
+              vat: 21
+              priceValidityDate: '2025-01-01'
+              priceExpiryDate: '2025-06-30'
+            - supplierIdGln: '8712423012485'
+              supplierItemNumber: SKU-CABLE-002
+              priceUnit: MTR
+              priceUnitFactor: 1
+              priceQuantity: 100
+              priceOnRequest: false
+              grossListPrice: 2
+              netPrice: 1.59
+              recommendedRetailPrice: 2.99
+              vat: 21
+              priceValidityDate: '2025-01-01'
+              priceExpiryDate: '2025-06-30'
+          meta:
+            cursor: eyJzdXBwbGllcklkR2xuIjoiODcxMjQyMzAxMjQ4NSIsInN1cHBsaWVySXRlbU51bWJlciI6IlNLVS1DQUJMRS0wMDIiLCJwcmljZVF1YW50aXR5IjoxMDB9
+            hasNext: true
+            hasPrev: false
+            limit: 100
+            estimatedTotal: 24850
+    BulkAllowanceSurchargesResponse:
+      type: object
+      description: |
+        Bulk response containing trade item allowance and surcharge information with cursor-based pagination.
+
+        **Flattened Structure**: Each row in the `data` array represents a single allowance/surcharge entry
+        with embedded keys for joining back to pricing data. This follows the same pattern as 
+        `ProductEtimClassificationFeature` - 1 row per data point.
+
+        **Join Keys**: Use `supplierIdGln` + `supplierItemNumber` + `priceUnit` + `priceQuantity` 
+        (+ optionally `priceValidityDate`) to join with `/bulk/trade-item-pricings` data.
+
+        Use the `cursor` from `meta` to retrieve the next page of results.
+
+        **ETIM xChange**: Response wrapper for `AllowanceSurcharge[]` data
+        **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[]`
+      additionalProperties: false
+      required:
+        - data
+        - meta
+      properties:
+        data:
+          type: array
+          description: Array of flattened allowance/surcharge entries (1 row per surcharge)
+          items:
+            $ref: '#/components/schemas/AllowanceSurchargeSummary'
+        meta:
+          $ref: '#/components/schemas/CursorPaginationMetadata'
+          description: Cursor-based pagination metadata
+      examples:
+        - data:
+            - supplierIdGln: '8712423012485'
+              supplierItemNumber: SKU-LAMP-001
+              priceUnit: C62
+              priceQuantity: 1
+              priceValidityDate: '2025-01-01'
+              allowanceSurchargeIndicator: ALLOWANCE
+              allowanceSurchargeType: AEQ
+              allowanceSurchargeSequenceNumber: 1
+              allowanceSurchargePercentage: 5.5
+              allowanceSurchargeMinimumQuantity: 50
+              allowanceSurchargeDescription: Bulk quantity discount
+            - supplierIdGln: '8712423012485'
+              supplierItemNumber: SKU-CABLE-002
+              priceUnit: MTR
+              priceQuantity: 1
+              priceValidityDate: '2025-01-01'
+              allowanceSurchargeIndicator: SURCHARGE
+              allowanceSurchargeType: DBD
+              allowanceSurchargeSequenceNumber: 1
+              allowanceSurchargeAmount: 25
+              allowanceSurchargeDescription: Delivery surcharge
+            - supplierIdGln: '8712423012485'
+              supplierItemNumber: SKU-TOOL-003
+              priceUnit: C62
+              priceQuantity: 1
+              priceValidityDate: '2025-01-01'
+              allowanceSurchargeIndicator: ALLOWANCE
+              allowanceSurchargeType: AEQ
+              allowanceSurchargeSequenceNumber: 1
+              allowanceSurchargePercentage: 10
+              allowanceSurchargeMinimumQuantity: 100
+              allowanceSurchargeDescription: Volume discount tier 1
+            - supplierIdGln: '8712423012485'
+              supplierItemNumber: SKU-TOOL-003
+              priceUnit: C62
+              priceQuantity: 1
+              priceValidityDate: '2025-01-01'
+              allowanceSurchargeIndicator: ALLOWANCE
+              allowanceSurchargeType: AEQ
+              allowanceSurchargeSequenceNumber: 2
+              allowanceSurchargePercentage: 15
+              allowanceSurchargeMinimumQuantity: 500
+              allowanceSurchargeDescription: Volume discount tier 2
+          meta:
+            cursor: eyJzdXBwbGllcklkR2xuIjoiODcxMjQyMzAxMjQ4NSIsInNlcXVlbmNlIjoyfQ==
+            hasNext: true
+            hasPrev: false
+            limit: 100
+            estimatedTotal: 3250
+    TradeItemAllowanceSurchargesResponse:
+      type: object
+      description: |
+        Response containing allowances and surcharges for a specific trade item.
+        Returns the trade item key and all associated allowances/surcharges with pricing join keys.
+
+        **Pricing Join Keys**: Each allowance/surcharge includes `priceUnit`, `priceQuantity`, and 
+        `priceValidityDate` to enable joining with the corresponding pricing entry.
+
+        **ETIM xChange**: `AllowanceSurcharge[]`
+        **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[]`
+      additionalProperties: false
+      required:
+        - data
+      properties:
+        data:
+          type: object
+          additionalProperties: false
+          required:
+            - supplierIdGln
+            - supplierItemNumber
+            - allowanceSurcharges
+          properties:
+            supplierIdGln:
+              type: string
+              description: |
+                GLN (Global Location Number) of the supplier.
+                **ETIM xChange**: `SupplierId.IdValue` where `IdScheme` = `GLN`
+              pattern: ^[0-9]{13}$
+              examples:
+                - '1234567890123'
+            supplierItemNumber:
+              type: string
+              description: |
+                The supplier's own item number for this trade item.
+                **ETIM xChange**: `TradeItemSupplierItemNumber`
+              minLength: 1
+              maxLength: 35
+              examples:
+                - SKU-12345
+            allowanceSurcharges:
+              type:
+                - array
+                - 'null'
+              description: |
+                Array of allowances and surcharges with pricing join keys.
+                Each item includes the pricing identifiers to correlate with pricing entries.
+              items:
+                $ref: '#/components/schemas/TradeItemAllowanceSurchargeItem'
+              examples:
+                - - priceUnit: C62
+                    priceQuantity: 1
+                    priceValidityDate: '2025-01-01'
+                    allowanceSurchargeIndicator: ALLOWANCE
+                    allowanceSurchargeType: AEQ
+                    allowanceSurchargePercentage: 5.5
+                    allowanceSurchargeMinimumQuantity: 50
+      examples:
+        - data:
+            supplierIdGln: '1234567890123'
+            supplierItemNumber: SKU-12345
+            allowanceSurcharges:
+              - priceUnit: C62
+                priceQuantity: 1
+                priceValidityDate: '2025-01-01'
+                allowanceSurchargeIndicator: ALLOWANCE
+                allowanceSurchargeValidityDate: '2025-01-01'
+                allowanceSurchargeType: AEQ
+                allowanceSurchargeAmount: null
+                allowanceSurchargeSequenceNumber: 1
+                allowanceSurchargePercentage: 5.5
+                allowanceSurchargeDescription:
+                  - language: en
+                    allowanceSurchargeDescription: Bulk quantity discount
+                allowanceSurchargeMinimumQuantity: 50
+              - priceUnit: C62
+                priceQuantity: 1
+                priceValidityDate: '2025-01-01'
+                allowanceSurchargeIndicator: SURCHARGE
+                allowanceSurchargeValidityDate: null
+                allowanceSurchargeType: DBD
+                allowanceSurchargeAmount: 25
+                allowanceSurchargeSequenceNumber: 2
+                allowanceSurchargePercentage: null
+                allowanceSurchargeDescription: null
+                allowanceSurchargeMinimumQuantity: null
+    TradeItemAllowanceSurchargeItem:
+      type: object
+      description: |
+        Allowance or surcharge with pricing join keys for correlating with pricing entries.
+        Includes the pricing identifiers (priceUnit, priceQuantity, priceValidityDate) to enable
+        joining with the corresponding pricing record.
+
+        **ETIM xChange**: `AllowanceSurcharge`
+        **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[]`
+      additionalProperties: false
+      required:
+        - priceUnit
+        - priceQuantity
+        - allowanceSurchargeIndicator
+        - allowanceSurchargeType
+      properties:
+        priceUnit:
+          description: |
+            Unit for which the parent price applies. Join key to pricing entry.
+            **ETIM xChange**: `PriceUnit` (from parent Pricing)
+          $ref: '#/components/schemas/UnitCodes'
+          examples:
+            - C62
+            - MTR
+        priceQuantity:
+          type: number
+          description: |
+            Quantity for which the parent price applies. Join key to pricing entry.
+            **ETIM xChange**: `PriceQuantity` (from parent Pricing)
+          minimum: 0
+          multipleOf: 0.0001
+          maximum: 99999.9999
+          examples:
+            - 1
+            - 100
+        priceValidityDate:
+          type:
+            - string
+            - 'null'
+          format: date
+          description: |
+            Date from which the parent price is valid. Join key to pricing entry.
+            **ETIM xChange**: `PriceValidityDate` (from parent Pricing)
+          examples:
+            - '2025-01-01'
+            - null
+        allowanceSurchargeIndicator:
+          type: string
+          description: |
+            Indicates whether this price adjustment is an allowance (discount) or a surcharge (additional charge).
+            **ETIM xChange**: `AllowanceSurchargeIndicator`
+          enum:
+            - ALLOWANCE
+            - SURCHARGE
+          examples:
+            - ALLOWANCE
+            - SURCHARGE
+        allowanceSurchargeValidityDate:
+          type:
+            - string
+            - 'null'
+          format: date
+          description: |
+            Date from which the allowance or surcharge becomes valid.
+            **ETIM xChange**: `AllowanceSurchargeValidityDate`
+          examples:
+            - '2025-01-01'
+            - null
+        allowanceSurchargeType:
+          description: |
+            Code describing the reason for the allowance or surcharge.
+            **ETIM xChange**: `AllowanceSurchargeType`
+          $ref: '#/components/schemas/AllowanceSurchargeTypes'
+        allowanceSurchargeAmount:
+          type:
+            - number
+            - 'null'
+          description: |
+            Fixed monetary amount of the allowance or surcharge.
+            **ETIM xChange**: `AllowanceSurchargeAmount`
+          minimum: 0
+          multipleOf: 0.0001
+          maximum: 99999999999.9999
+          examples:
+            - 15.5
+            - null
+        allowanceSurchargeSequenceNumber:
+          type:
+            - integer
+            - 'null'
+          description: |
+            Sequence number used to order multiple allowances or surcharges applied to the same price.
+            **ETIM xChange**: `AllowanceSurchargeSequenceNumber`
+          minimum: 1
+          examples:
+            - 1
+            - null
+        allowanceSurchargePercentage:
+          type:
+            - number
+            - 'null'
+          description: |
+            Percentage rate of the allowance or surcharge.
+            **ETIM xChange**: `AllowanceSurchargePercentage`
+          minimum: 0
+          multipleOf: 0.001
+          maximum: 999.999
+          examples:
+            - 5.5
+            - null
+        allowanceSurchargeDescription:
+          description: |
+            Multilingual description of the allowance or surcharge.
+            **ETIM xChange**: `AllowanceSurchargeDescription[]`
+          anyOf:
+            - type: array
+              items:
+                type: object
+                additionalProperties: false
+                required:
+                  - allowanceSurchargeDescription
+                properties:
+                  language:
+                    $ref: '#/components/schemas/LanguageCode'
+                  allowanceSurchargeDescription:
+                    type: string
+                    minLength: 1
+                    maxLength: 35
+            - type: 'null'
+          examples:
+            - null
+            - - language: en
+                allowanceSurchargeDescription: Early payment discount
+        allowanceSurchargeMinimumQuantity:
+          type:
+            - number
+            - 'null'
+          description: |
+            Minimum ordered quantity required for the allowance or surcharge to apply.
+            **ETIM xChange**: `AllowanceSurchargeMinimumQuantity`
+          minimum: 0
+          multipleOf: 0.0001
+          maximum: 999999999999.9999
+          examples:
+            - 10
+            - null
+      examples:
+        - priceUnit: C62
+          priceQuantity: 1
+          priceValidityDate: '2025-01-01'
+          allowanceSurchargeIndicator: ALLOWANCE
+          allowanceSurchargeValidityDate: '2025-01-01'
+          allowanceSurchargeType: AEQ
+          allowanceSurchargeAmount: null
+          allowanceSurchargeSequenceNumber: 1
+          allowanceSurchargePercentage: 5.5
+          allowanceSurchargeDescription:
+            - language: en
+              allowanceSurchargeDescription: Bulk quantity discount
+          allowanceSurchargeMinimumQuantity: 50
     Gln:
       type: string
       description: Global Location Number (GLN) - 13 digit GS1 identifier
@@ -1879,506 +3811,6 @@ components:
         - Z3
         - D99
         - KG
-    ItemOrdering:
-      type: object
-      description: |
-        Ordering information for the trade item including order unit, minimum quantities, and lead time.
-        Extracted from ETIM xChange `TradeItem.Ordering` structure.
-      additionalProperties: false
-      required:
-        - orderUnit
-        - minimumOrderQuantity
-        - orderStepSize
-      properties:
-        orderUnit:
-          description: |
-            Unit in which the item can be ordered (e.g., pieces, boxes, meters).
-            **ETIM xChange**: `OrderUnit`
-            **Path**: `Supplier[].Product[].TradeItem[].Ordering.OrderUnit`
-          $ref: '#/components/schemas/UnitCodes'
-          examples:
-            - C62
-            - BX
-            - MTR
-        minimumOrderQuantity:
-          type: number
-          description: |
-            Minimum quantity that must be ordered (converted from ETIM xChange string to number).
-            **ETIM xChange**: `MinimumOrderQuantity` (string with pattern)
-            **Path**: `Supplier[].Product[].TradeItem[].Ordering.MinimumOrderQuantity`
-          minimum: 0
-          multipleOf: 0.0001
-          maximum: 999999999999.9999
-          examples:
-            - 1
-            - 10
-            - 500
-        orderStepSize:
-          type: number
-          description: |
-            Quantity increment for orders beyond minimum (converted from ETIM xChange string to number).
-            For example, if minimum is 10 and step is 5, you can order 10, 15, 20, etc.
-            **ETIM xChange**: `OrderStepSize` (string with pattern)
-            **Path**: `Supplier[].Product[].TradeItem[].Ordering.OrderStepSize`
-          minimum: 0
-          multipleOf: 0.0001
-          maximum: 999999999999.9999
-          examples:
-            - 1
-            - 5
-            - 100
-        standardOrderLeadTime:
-          type:
-            - integer
-            - 'null'
-          description: |
-            Standard lead time for orders in days.
-            **ETIM xChange**: `StandardOrderLeadTime`
-            **Path**: `Supplier[].Product[].TradeItem[].Ordering.StandardOrderLeadTime`
-          minimum: 0
-          examples:
-            - 5
-            - 14
-            - null
-        useUnit:
-          description: |
-            Unit in which the item is used or consumed (may differ from order unit, nullable).
-            **ETIM xChange**: `UseUnit`
-            **Path**: `Supplier[].Product[].TradeItem[].Ordering.UseUnit`
-          anyOf:
-            - $ref: '#/components/schemas/UnitCodes'
-            - type: 'null'
-          examples:
-            - MTR
-            - KGM
-            - null
-        useUnitConversionFactor:
-          type:
-            - number
-            - 'null'
-          description: |
-            Conversion factor from order unit to use unit (converted from ETIM xChange string to number).
-            **ETIM xChange**: `UseUnitConversionFactor` (string with pattern)
-            **Path**: `Supplier[].Product[].TradeItem[].Ordering.UseUnitConversionFactor`
-          minimum: 0
-          multipleOf: 0.0001
-          maximum: 999999999999.9999
-          examples:
-            - 1
-            - 100
-            - null
-        singleUseUnitQuantity:
-          type:
-            - number
-            - 'null'
-          description: |
-            Quantity of use units in a single order unit (converted from ETIM xChange string to number).
-            **ETIM xChange**: `SingleUseUnitQuantity` (string with pattern)
-            **Path**: `Supplier[].Product[].TradeItem[].Ordering.SingleUseUnitQuantity`
-          minimum: 0
-          multipleOf: 0.0001
-          maximum: 999999999999.9999
-          examples:
-            - 1
-            - 100
-            - null
-        alternativeUseUnit:
-          description: |
-            Alternative unit in which the item can be used or consumed (nullable).
-            **ETIM xChange**: `AlternativeUseUnit`
-            **Path**: `Supplier[].Product[].TradeItem[].Ordering.AlternativeUseUnit`
-          anyOf:
-            - $ref: '#/components/schemas/UnitCodes'
-            - type: 'null'
-          examples:
-            - LTR
-            - null
-        alternativeUseUnitConversionFactor:
-          type:
-            - number
-            - 'null'
-          description: |
-            Conversion factor from order unit to alternative use unit (converted from ETIM xChange string to number).
-            **ETIM xChange**: `AlternativeUseUnitConversionFactor` (string with pattern)
-            **Path**: `Supplier[].Product[].TradeItem[].Ordering.AlternativeUseUnitConversionFactor`
-          minimum: 0
-          multipleOf: 0.0001
-          maximum: 999999999999.9999
-          examples:
-            - 1
-            - null
-      examples:
-        - orderUnit: C62
-          minimumOrderQuantity: 1
-          orderStepSize: 1
-          standardOrderLeadTime: 5
-          useUnit: null
-          useUnitConversionFactor: null
-          singleUseUnitQuantity: null
-          alternativeUseUnit: null
-          alternativeUseUnitConversionFactor: null
-    AllowanceSurchargeTypes:
-      type: string
-      description: |
-        Allowance and surcharge type codes for pricing adjustments.
-        These codes define the reason for price adjustments.
-      enum:
-        - AAT
-        - ABL
-        - ADO
-        - ADR
-        - ADZ
-        - AEM
-        - AEO
-        - AEP
-        - AEQ
-        - CAI
-        - DAE
-        - DBD
-        - FC
-        - HD
-        - INS
-        - MAC
-        - MAT
-        - PAD
-        - PI
-        - QD
-        - RAD
-        - SH
-        - TD
-        - WHE
-        - X21
-    LanguageCode:
-      type: string
-      description: ISO 639-1 language code
-      enum:
-        - en
-        - de
-        - fr
-        - nl
-        - es
-        - it
-        - sv
-        - 'no'
-        - da
-        - pl
-        - cs
-      examples:
-        - en
-        - nl
-        - de
-    AllowanceSurcharge:
-      type: object
-      description: |
-        Allowance or surcharge applied to trade item pricing, including fixed and percentage-based adjustments.
-        **ETIM xChange**: `AllowanceSurcharge`
-        **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[]`
-      additionalProperties: false
-      required:
-        - allowanceSurchargeIndicator
-        - allowanceSurchargeType
-      properties:
-        allowanceSurchargeIndicator:
-          type: string
-          description: |
-            Indicates whether this price adjustment is an allowance (discount) or a surcharge (additional charge).
-            **ETIM xChange**: `AllowanceSurchargeIndicator`
-            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[].AllowanceSurchargeIndicator`
-          enum:
-            - ALLOWANCE
-            - SURCHARGE
-          examples:
-            - ALLOWANCE
-            - SURCHARGE
-        allowanceSurchargeValidityDate:
-          type:
-            - string
-            - 'null'
-          description: |
-            Date from which the allowance or surcharge becomes valid. ISO 8601 date format (YYYY-MM-DD).
-            **ETIM xChange**: `AllowanceSurchargeValidityDate`
-            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[].AllowanceSurchargeValidityDate`
-          format: date
-          examples:
-            - '2025-01-01'
-            - null
-        allowanceSurchargeType:
-          description: |
-            Code describing the reason for the allowance or surcharge. Uses shared enumeration aligned with ETIM codes.
-            **ETIM xChange**: `AllowanceSurchargeType`
-            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[].AllowanceSurchargeType`
-          $ref: '#/components/schemas/AllowanceSurchargeTypes'
-        allowanceSurchargeAmount:
-          type:
-            - number
-            - 'null'
-          description: |
-            Fixed monetary amount of the allowance or surcharge (converted from ETIM string pattern to numeric form).
-            **ETIM xChange**: `AllowanceSurchargeAmount`
-            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[].AllowanceSurchargeAmount`
-          minimum: 0
-          multipleOf: 0.0001
-          maximum: 99999999999.9999
-          examples:
-            - 15.5
-            - 250
-            - null
-        allowanceSurchargeSequenceNumber:
-          type:
-            - integer
-            - 'null'
-          description: |
-            Sequence number used to order multiple allowances or surcharges applied to the same price.
-            **ETIM xChange**: `AllowanceSurchargeSequenceNumber`
-            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[].AllowanceSurchargeSequenceNumber`
-          minimum: 1
-          examples:
-            - 1
-            - 3
-            - null
-        allowanceSurchargePercentage:
-          type:
-            - number
-            - 'null'
-          description: |
-            Percentage rate of the allowance or surcharge (converted from ETIM string pattern to numeric form).
-            **ETIM xChange**: `AllowanceSurchargePercentage`
-            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[].AllowanceSurchargePercentage`
-          minimum: 0
-          multipleOf: 0.001
-          maximum: 999.999
-          examples:
-            - 5.5
-            - 12.75
-            - null
-        allowanceSurchargeDescription:
-          description: |
-            Multilingual description of the allowance or surcharge, flattened from the ETIM language array.
-            **ETIM xChange**: `AllowanceSurchargeDescription[]`
-            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[].AllowanceSurchargeDescription[]`
-          anyOf:
-            - type: array
-              items:
-                type: object
-                additionalProperties: false
-                required:
-                  - allowanceSurchargeDescription
-                properties:
-                  language:
-                    $ref: '#/components/schemas/LanguageCode'
-                  allowanceSurchargeDescription:
-                    type: string
-                    minLength: 1
-                    maxLength: 35
-            - type: 'null'
-          examples:
-            - null
-            - - language: en
-                allowanceSurchargeDescription: Early payment discount
-              - language: nl
-                allowanceSurchargeDescription: Korting voor snelle betaling
-        allowanceSurchargeMinimumQuantity:
-          type:
-            - number
-            - 'null'
-          description: |
-            Minimum ordered quantity required for the allowance or surcharge to apply (converted from ETIM string pattern to numeric form).
-            **ETIM xChange**: `AllowanceSurchargeMinimumQuantity`
-            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[].AllowanceSurchargeMinimumQuantity`
-          minimum: 0
-          multipleOf: 0.0001
-          maximum: 999999999999.9999
-          examples:
-            - 10
-            - 1250.5
-            - null
-      examples:
-        - allowanceSurchargeIndicator: ALLOWANCE
-          allowanceSurchargeValidityDate: '2025-01-01'
-          allowanceSurchargeType: AEQ
-          allowanceSurchargeAmount: null
-          allowanceSurchargeSequenceNumber: 1
-          allowanceSurchargePercentage: 5.5
-          allowanceSurchargeDescription:
-            - language: en
-              allowanceSurchargeDescription: Bulk quantity discount
-          allowanceSurchargeMinimumQuantity: 50
-        - allowanceSurchargeIndicator: SURCHARGE
-          allowanceSurchargeValidityDate: null
-          allowanceSurchargeType: DBD
-          allowanceSurchargeAmount: 25
-          allowanceSurchargeSequenceNumber: null
-          allowanceSurchargePercentage: null
-          allowanceSurchargeDescription: null
-          allowanceSurchargeMinimumQuantity: null
-    ItemPricing:
-      type: object
-      description: |
-        Pricing information for the trade item including prices, price unit, and allowances/surcharges.
-        Extracted from ETIM xChange `TradeItem.Pricing[]` structure.
-      additionalProperties: false
-      required:
-        - priceUnit
-        - priceQuantity
-      properties:
-        priceUnit:
-          description: |
-            Unit for which the price applies (e.g., pieces, boxes, meters).
-            **ETIM xChange**: `PriceUnit`
-            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceUnit`
-          $ref: '#/components/schemas/UnitCodes'
-          examples:
-            - C62
-            - BX
-            - MTR
-        priceUnitFactor:
-          type:
-            - number
-            - 'null'
-          description: |
-            Factor to convert price unit to order unit (converted from ETIM xChange string to number).
-            **ETIM xChange**: `PriceUnitFactor` (string with pattern)
-            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceUnitFactor`
-          minimum: 0
-          multipleOf: 0.0001
-          maximum: 99999999999.9999
-          examples:
-            - 1
-            - 100
-            - null
-        priceQuantity:
-          type: number
-          description: |
-            Quantity for which the price applies (converted from ETIM xChange string to number).
-            **ETIM xChange**: `PriceQuantity` (string with pattern)
-            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceQuantity`
-          minimum: 0
-          multipleOf: 0.0001
-          maximum: 99999.9999
-          examples:
-            - 1
-            - 10
-            - 100
-        priceOnRequest:
-          type:
-            - boolean
-            - 'null'
-          description: |
-            Indicates whether the price is available only on request.
-            **ETIM xChange**: `PriceOnRequest`
-            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceOnRequest`
-          examples:
-            - false
-            - true
-            - null
-        grossListPrice:
-          type:
-            - number
-            - 'null'
-          description: |
-            Gross list price (before discounts) (converted from ETIM xChange string to number).
-            **ETIM xChange**: `GrossListPrice` (string with pattern)
-            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].GrossListPrice`
-          minimum: 0
-          multipleOf: 0.0001
-          maximum: 99999999999.9999
-          examples:
-            - 130
-            - 1500
-            - null
-        netPrice:
-          type:
-            - number
-            - 'null'
-          description: |
-            Net price (after discounts, before tax) (converted from ETIM xChange string to number).
-            **ETIM xChange**: `NetPrice` (string with pattern)
-            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].NetPrice`
-          minimum: 0
-          multipleOf: 0.0001
-          maximum: 99999999999.9999
-          examples:
-            - 100
-            - 1200
-            - null
-        recommendedRetailPrice:
-          type:
-            - number
-            - 'null'
-          description: |
-            Recommended retail price (MSRP) (converted from ETIM xChange string to number).
-            **ETIM xChange**: `RecommendedRetailPrice` (string with pattern)
-            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].RecommendedRetailPrice`
-          minimum: 0
-          multipleOf: 0.0001
-          maximum: 99999999999.9999
-          examples:
-            - 150
-            - 1800
-            - null
-        vat:
-          type:
-            - number
-            - 'null'
-          description: |
-            VAT/tax percentage (converted from ETIM xChange string to number).
-            **ETIM xChange**: `Vat` (string with pattern)
-            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].Vat`
-          minimum: 0
-          multipleOf: 0.01
-          maximum: 99.99
-          examples:
-            - 21
-            - 19
-            - null
-        priceValidityDate:
-          type:
-            - string
-            - 'null'
-          format: date
-          description: |
-            Date from which the price is valid. ISO 8601 date format (YYYY-MM-DD).
-            **ETIM xChange**: `PriceValidityDate`
-            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceValidityDate`
-          examples:
-            - '2025-01-01'
-            - null
-        priceExpiryDate:
-          type:
-            - string
-            - 'null'
-          format: date
-          description: |
-            Date when the price expires. ISO 8601 date format (YYYY-MM-DD).
-            **ETIM xChange**: `PriceExpiryDate`
-            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceExpiryDate`
-          examples:
-            - '2025-12-31'
-            - null
-        allowanceSurcharges:
-          type:
-            - array
-            - 'null'
-          description: |
-            Array of allowances (discounts) or surcharges (additional charges) applied to the price.
-            **ETIM xChange**: `AllowanceSurcharge[]`
-            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[]`
-          items:
-            $ref: '#/components/schemas/AllowanceSurcharge'
-          examples:
-            - null
-      examples:
-        - priceUnit: C62
-          priceUnitFactor: null
-          priceQuantity: 1
-          priceOnRequest: false
-          grossListPrice: 130
-          netPrice: 100
-          recommendedRetailPrice: 150
-          vat: 21
-          priceValidityDate: '2025-01-01'
-          priceExpiryDate: '2025-12-31'
-          allowanceSurcharges: null
     RelationType:
       type: string
       description: |
@@ -3550,7 +4982,7 @@ components:
             Ordering information for the trade item.
             **ETIM xChange**: `Ordering`
             **Path**: `Supplier[].Product[].TradeItem[].Ordering`
-          $ref: '#/components/schemas/ItemOrdering'
+          $ref: '#/components/schemas/TradeItemOrdering'
         pricings:
           type:
             - array
@@ -3560,7 +4992,7 @@ components:
             **ETIM xChange**: `Pricing[]`
             **Path**: `Supplier[].Product[].TradeItem[].Pricing[]`
           items:
-            $ref: '#/components/schemas/ItemPricing'
+            $ref: '#/components/schemas/TradeItemPricing'
           examples:
             - null
         itemRelations:
@@ -3801,6 +5233,56 @@ components:
         - descriptionLanguage: de-DE
           minimalItemDescription: Hammer 500g
           uniqueMainItemDescription: null
+    AllowanceSurchargeTypes:
+      type: string
+      description: |
+        Allowance and surcharge type codes for pricing adjustments.
+        These codes define the reason for price adjustments.
+      enum:
+        - AAT
+        - ABL
+        - ADO
+        - ADR
+        - ADZ
+        - AEM
+        - AEO
+        - AEP
+        - AEQ
+        - CAI
+        - DAE
+        - DBD
+        - FC
+        - HD
+        - INS
+        - MAC
+        - MAT
+        - PAD
+        - PI
+        - QD
+        - RAD
+        - SH
+        - TD
+        - WHE
+        - X21
+    LanguageCode:
+      type: string
+      description: ISO 639-1 language code
+      enum:
+        - en
+        - de
+        - fr
+        - nl
+        - es
+        - it
+        - sv
+        - 'no'
+        - da
+        - pl
+        - cs
+      examples:
+        - en
+        - nl
+        - de
     CursorPaginationMetadata:
       type: object
       description: |
@@ -3855,127 +5337,235 @@ components:
         - cursor
         - hasNext
         - limit
-    BulkItemOrderingsResponse:
+    TradeItemPricingSummary:
       type: object
       description: |
-        Bulk response containing trade item ordering information with cursor-based pagination.
-        Provides ordering details including units, quantities, and lead times.
+        Flattened trade item pricing for bulk retrieval.
+        Each row represents a single price entry with the trade item identifier, following the 
+        same pattern as `ProductEtimClassificationFeature` (1 row = 1 data point).
 
-        **ETIM xChange**: Response wrapper for flattened `Ordering` data
-        **Path**: `Supplier[].Product[].TradeItem[].Ordering`
-      additionalProperties: false
-      required:
-        - data
-        - meta
-      properties:
-        data:
-          type: array
-          description: |
-            Array of trade item ordering records including order units, minimum quantities,
-            order step sizes, and lead times.
-          items:
-            type: object
-            additionalProperties: false
-            required:
-              - supplierIdGln
-              - supplierItemNumber
-              - ordering
-            properties:
-              supplierIdGln:
-                description: Global Location Number (GLN) of the supplier
-                $ref: '#/components/schemas/Gln'
-              supplierItemNumber:
-                type: string
-                minLength: 1
-                maxLength: 35
-                description: Supplier's unique item number
-              ordering:
-                $ref: '#/components/schemas/ItemOrdering'
-        meta:
-          $ref: '#/components/schemas/CursorPaginationMetadata'
-      examples:
-        - data:
-            - supplierIdGln: '8712423012485'
-              supplierItemNumber: SKU-LAMP-001
-              ordering:
-                orderUnit: C62
-                minimumOrderQuantity: 1
-                orderStepSize: 1
-                standardOrderLeadTime: 5
-                useUnit: null
-                useUnitConversionFactor: null
-                singleUseUnitQuantity: null
-                alternativeUseUnit: null
-                alternativeUseUnitConversionFactor: null
-          meta:
-            cursor: eyJzdXBwbGllcklkR2xuIjoiODcxMjQyMzAxMjQ4NSIsInN1cHBsaWVySXRlbU51bWJlciI6IlNLVS1MQU1QLTA0MSJ9
-            hasNext: true
-            hasPrev: false
-            limit: 100
-            estimatedTotal: 15420
-    BulkItemPricingsResponse:
-      type: object
-      description: |
-        Bulk response containing trade item pricing information with cursor-based pagination.
-        Provides pricing details including net prices, gross prices, and applicable allowances/surcharges.
+        This flattened structure is optimized for:
+        - Predictable payload sizes per row
+        - Efficient cursor-based pagination
+        - ETL/data warehouse ingestion
+        - Streaming data processing
 
-        **ETIM xChange**: Response wrapper for flattened `Pricing[]` data
+        A trade item may have multiple pricing entries (e.g., quantity tiers, validity periods),
+        resulting in multiple rows with the same composite key but different pricing data.
+
+        **Allowances & Surcharges**: Available via separate `/bulk/trade-item-allowance-surcharges` endpoint.
+        Join using `supplierIdGln` + `supplierItemNumber` + `priceUnit` + `priceQuantity` (+ `priceValidityDate`).
+
+        **Payload Optimization**: Optional properties with null values may be omitted from the response
+        to minimize payload size. Clients should treat missing properties as null/not applicable.
+
+        **ETIM xChange**: `Pricing`
         **Path**: `Supplier[].Product[].TradeItem[].Pricing[]`
       additionalProperties: false
       required:
-        - data
-        - meta
+        - supplierIdGln
+        - supplierItemNumber
+        - priceUnit
+        - priceQuantity
       properties:
-        data:
-          type: array
+        supplierIdGln:
+          type: string
+          pattern: ^[0-9]{13}$
           description: |
-            Array of trade item pricing records. Items may have multiple pricing entries
-            for different conditions, customer groups, or validity periods.
-          items:
-            type: object
-            additionalProperties: false
-            required:
-              - supplierIdGln
-              - supplierItemNumber
-              - pricings
-            properties:
-              supplierIdGln:
-                description: Global Location Number (GLN) of the supplier
-                $ref: '#/components/schemas/Gln'
-              supplierItemNumber:
-                type: string
-                minLength: 1
-                maxLength: 35
-                description: Supplier's unique item number
-              pricings:
-                type: array
-                description: Array of pricing information for this trade item
-                items:
-                  $ref: '#/components/schemas/ItemPricing'
-        meta:
-          $ref: '#/components/schemas/CursorPaginationMetadata'
+            Global Location Number (GLN) of the supplier. 13-digit GS1 identifier.
+            Part of the composite key for the trade item.
+
+            **ETIM xChange**: `SupplierIdGln`  
+            **Path**: `Supplier[].SupplierId.SupplierIdGln`
+          examples:
+            - '1234567890123'
+            - '8712423012485'
+        supplierItemNumber:
+          type: string
+          minLength: 1
+          maxLength: 35
+          description: |
+            Supplier's unique item number. Part of the composite key for the trade item.
+            This is the primary identifier for items in the supplier's catalog system.
+
+            **ETIM xChange**: `SupplierItemNumber`  
+            **Path**: `Supplier[].Product[].TradeItem[].ItemIdentification.SupplierItemNumber`
+          examples:
+            - SKU-12345
+            - ITEM-ABC-789
+        priceUnit:
+          description: |
+            Unit for which the price applies (e.g., pieces, boxes, meters).
+
+            **ETIM xChange**: `PriceUnit`
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceUnit`
+          $ref: '#/components/schemas/UnitCodes'
+          examples:
+            - C62
+            - BX
+            - MTR
+        priceUnitFactor:
+          type:
+            - number
+            - 'null'
+          description: |
+            Factor to convert price unit to order unit (converted from ETIM xChange string to number).
+
+            **ETIM xChange**: `PriceUnitFactor` (string with pattern)
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceUnitFactor`
+          minimum: 0
+          multipleOf: 0.0001
+          maximum: 99999999999.9999
+          examples:
+            - 1
+            - 100
+        priceQuantity:
+          type: number
+          description: |
+            Quantity for which the price applies (converted from ETIM xChange string to number).
+            Used for quantity-based pricing tiers.
+
+            **ETIM xChange**: `PriceQuantity` (string with pattern)
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceQuantity`
+          minimum: 0
+          multipleOf: 0.0001
+          maximum: 99999.9999
+          examples:
+            - 1
+            - 10
+            - 100
+        priceOnRequest:
+          type:
+            - boolean
+            - 'null'
+          description: |
+            Indicates whether the price is available only on request.
+
+            **ETIM xChange**: `PriceOnRequest`
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceOnRequest`
+          examples:
+            - false
+            - true
+        grossListPrice:
+          type:
+            - number
+            - 'null'
+          description: |
+            Gross list price (before discounts) (converted from ETIM xChange string to number).
+
+            **ETIM xChange**: `GrossListPrice` (string with pattern)
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].GrossListPrice`
+          minimum: 0
+          multipleOf: 0.0001
+          maximum: 99999999999.9999
+          examples:
+            - 130
+            - 1500
+        netPrice:
+          type:
+            - number
+            - 'null'
+          description: |
+            Net price (after discounts, before tax) (converted from ETIM xChange string to number).
+
+            **ETIM xChange**: `NetPrice` (string with pattern)
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].NetPrice`
+          minimum: 0
+          multipleOf: 0.0001
+          maximum: 99999999999.9999
+          examples:
+            - 100
+            - 1200
+        recommendedRetailPrice:
+          type:
+            - number
+            - 'null'
+          description: |
+            Recommended retail price (MSRP) (converted from ETIM xChange string to number).
+
+            **ETIM xChange**: `RecommendedRetailPrice` (string with pattern)
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].RecommendedRetailPrice`
+          minimum: 0
+          multipleOf: 0.0001
+          maximum: 99999999999.9999
+          examples:
+            - 150
+            - 1800
+        vat:
+          type:
+            - number
+            - 'null'
+          description: |
+            VAT/tax percentage (converted from ETIM xChange string to number).
+
+            **ETIM xChange**: `Vat` (string with pattern)
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].Vat`
+          minimum: 0
+          multipleOf: 0.01
+          maximum: 99.99
+          examples:
+            - 21
+            - 19
+        priceValidityDate:
+          type:
+            - string
+            - 'null'
+          format: date
+          description: |
+            Date from which the price is valid. ISO 8601 date format (YYYY-MM-DD).
+
+            **ETIM xChange**: `PriceValidityDate`
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceValidityDate`
+          examples:
+            - '2025-01-01'
+        priceExpiryDate:
+          type:
+            - string
+            - 'null'
+          format: date
+          description: |
+            Date when the price expires. ISO 8601 date format (YYYY-MM-DD).
+
+            **ETIM xChange**: `PriceExpiryDate`
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceExpiryDate`
+          examples:
+            - '2025-12-31'
       examples:
-        - data:
-            - supplierIdGln: '8712423012485'
-              supplierItemNumber: SKU-LAMP-001
-              pricings:
-                - priceUnit: C62
-                  priceUnitFactor: null
-                  priceQuantity: 1
-                  priceOnRequest: false
-                  grossListPrice: 12.99
-                  netPrice: 9.99
-                  recommendedRetailPrice: 15.99
-                  vat: 21
-                  priceValidityDate: '2025-01-01'
-                  priceExpiryDate: '2025-12-31'
-                  allowanceSurcharges: null
-          meta:
-            cursor: eyJzdXBwbGllcklkR2xuIjoiODcxMjQyMzAxMjQ4NSIsInN1cHBsaWVySXRlbU51bWJlciI6IlNLVS1MQU1QLTA0MSJ9
-            hasNext: true
-            hasPrev: false
-            limit: 100
-            estimatedTotal: 15420
+        - supplierIdGln: '8712423012485'
+          supplierItemNumber: SKU-LAMP-001
+          priceUnit: C62
+          priceQuantity: 1
+          priceOnRequest: false
+          grossListPrice: 12.99
+          netPrice: 9.99
+          recommendedRetailPrice: 15.99
+          vat: 21
+          priceValidityDate: '2025-01-01'
+          priceExpiryDate: '2025-12-31'
+        - supplierIdGln: '8712423012485'
+          supplierItemNumber: SKU-CABLE-002
+          priceUnit: MTR
+          priceUnitFactor: 1
+          priceQuantity: 1
+          priceOnRequest: false
+          grossListPrice: 2.5
+          netPrice: 1.99
+          recommendedRetailPrice: 3.49
+          vat: 21
+          priceValidityDate: '2025-01-01'
+          priceExpiryDate: '2025-06-30'
+        - supplierIdGln: '8712423012485'
+          supplierItemNumber: SKU-CABLE-002
+          priceUnit: MTR
+          priceUnitFactor: 1
+          priceQuantity: 100
+          priceOnRequest: false
+          grossListPrice: 2
+          netPrice: 1.59
+          recommendedRetailPrice: 2.99
+          vat: 21
+          priceValidityDate: '2025-01-01'
+          priceExpiryDate: '2025-06-30'
   parameters:
     SupplierIdGln:
       $ref: '#/components/parameters/supplier-id-gln-filter'

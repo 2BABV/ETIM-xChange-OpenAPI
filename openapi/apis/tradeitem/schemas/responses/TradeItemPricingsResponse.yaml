@@ -8,6 +8,8 @@ description: |
   A trade item may have multiple pricing entries for different conditions, 
   customer groups, or validity periods.
   
+  **Allowances & Surcharges**: Available via separate `/{supplierIdGln}/{supplierItemNumber}/allowance-surcharges` endpoint.
+  
   This structure aligns with other single-item subresource responses
   (`/details`, `/descriptions`, `/orderings`).
   
@@ -66,7 +68,6 @@ examples:
           vat: 21.0
           priceValidityDate: "2025-01-01"
           priceExpiryDate: "2025-12-31"
-          allowanceSurcharges: null
   - data:
       supplierIdGln: "8712423012485"
       supplierItemNumber: "SKU-CABLE-002"
@@ -81,7 +82,6 @@ examples:
           vat: 21.0
           priceValidityDate: "2025-01-01"
           priceExpiryDate: "2025-06-30"
-          allowanceSurcharges: null
         - priceUnit: MTR
           priceUnitFactor: 1.0
           priceQuantity: 100
@@ -92,4 +92,3 @@ examples:
           vat: 21.0
           priceValidityDate: "2025-01-01"
           priceExpiryDate: "2025-06-30"
-          allowanceSurcharges: null

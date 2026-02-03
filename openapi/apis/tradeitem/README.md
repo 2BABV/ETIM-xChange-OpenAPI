@@ -54,6 +54,17 @@ The bulk API consolidates ETIM xChange sections for efficient data retrieval:
 
 **Note**: There is no separate `/bulk/trade-items` or `/bulk/item-identifications` endpoint. The `/bulk/trade-item-details` endpoint provides all identification fields combined with item details.
 
+### Single-Item Endpoints
+
+| Endpoint | Description | Schema |
+|----------|-------------|--------|
+| `/{supplierIdGln}/{supplierItemNumber}` | Core trade item info | `TradeItemResponse` |
+| `/{supplierIdGln}/{supplierItemNumber}/details` | Item details | `TradeItemDetailsResponse` |
+| `/{supplierIdGln}/{supplierItemNumber}/descriptions` | Multilingual descriptions | `TradeItemDescriptionsResponse` |
+| `/{supplierIdGln}/{supplierItemNumber}/orderings` | Ordering conditions | `TradeItemOrderingsResponse` |
+| `/{supplierIdGln}/{supplierItemNumber}/pricings` | Pricing information | `TradeItemPricingsResponse` |
+| `/{supplierIdGln}/{supplierItemNumber}/allowance-surcharges` | Allowances/surcharges | `TradeItemAllowanceSurchargesResponse` |
+
 ### Bulk Flattening Strategy
 
 **Design Philosophy**: Maximize flattening for predictable pagination and ETL compatibility.

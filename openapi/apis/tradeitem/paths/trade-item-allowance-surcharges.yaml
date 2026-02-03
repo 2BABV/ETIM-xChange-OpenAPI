@@ -1,0 +1,121 @@
+get:
+  operationId: getTradeItemAllowanceSurcharges
+  tags:
+    - TradeItems single
+  summary: Retrieve trade item allowances and surcharges
+  description: |
+    Retrieve allowances (discounts) and surcharges (additional charges) for a specific trade item.
+    
+    This endpoint returns all allowances and surcharges associated with the trade item's pricing entries.
+    Each allowance/surcharge includes **pricing join keys** (`priceUnit`, `priceQuantity`, `priceValidityDate`) 
+    to enable correlation with the corresponding pricing record from the `/pricings` endpoint.
+    
+    **Design Decision**: Allowances and surcharges are provided in a separate endpoint to:
+    - Enable direct ETL/data warehouse fact table loading
+    - Provide predictable pagination for datasets with varying surcharge counts
+    - Support star schema design patterns (pricing fact table + surcharges fact table)
+    
+    **No pagination** - Returns exactly one trade item's allowances/surcharges or 404 if not found.
+    
+    **ETIM xChange**: `AllowanceSurcharge[]`
+    **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[]`
+  parameters:
+    - $ref: '../../../shared/parameters/path/supplier-id-gln.yaml'
+    - $ref: '../../../shared/parameters/path/supplier-item-number.yaml'
+  responses:
+    '200':
+      description: Successfully retrieved trade item allowances and surcharges
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/responses/TradeItemAllowanceSurchargesResponse.yaml'
+          examples:
+            withAllowancesAndSurcharges:
+              summary: Trade item with multiple allowances and surcharges
+              value:
+                data:
+                  supplierIdGln: "1234567890123"
+                  supplierItemNumber: "SKU-12345"
+                  allowanceSurcharges:
+                    - priceUnit: "C62"
+                      priceQuantity: 1
+                      priceValidityDate: "2025-01-01"
+                      allowanceSurchargeIndicator: "ALLOWANCE"
+                      allowanceSurchargeValidityDate: "2025-01-01"
+                      allowanceSurchargeType: "AEQ"
+                      allowanceSurchargeAmount: null
+                      allowanceSurchargeSequenceNumber: 1
+                      allowanceSurchargePercentage: 5.5
+                      allowanceSurchargeDescription:
+                        - language: "en"
+                          allowanceSurchargeDescription: "Bulk quantity discount"
+                        - language: "nl"
+                          allowanceSurchargeDescription: "Staffelkorting"
+                      allowanceSurchargeMinimumQuantity: 50
+                    - priceUnit: "C62"
+                      priceQuantity: 1
+                      priceValidityDate: "2025-01-01"
+                      allowanceSurchargeIndicator: "SURCHARGE"
+                      allowanceSurchargeValidityDate: null
+                      allowanceSurchargeType: "DBD"
+                      allowanceSurchargeAmount: 25.0
+                      allowanceSurchargeSequenceNumber: 2
+                      allowanceSurchargePercentage: null
+                      allowanceSurchargeDescription: null
+                      allowanceSurchargeMinimumQuantity: null
+            noSurcharges:
+              summary: Trade item without allowances or surcharges
+              value:
+                data:
+                  supplierIdGln: "8712423012485"
+                  supplierItemNumber: "SKU-BASIC-001"
+                  allowanceSurcharges: null
+            multiplePricings:
+              summary: Trade item with surcharges across multiple pricing entries
+              value:
+                data:
+                  supplierIdGln: "9876543210987"
+                  supplierItemNumber: "SKU-VOLUME-002"
+                  allowanceSurcharges:
+                    - priceUnit: "MTR"
+                      priceQuantity: 1
+                      priceValidityDate: "2025-01-01"
+                      allowanceSurchargeIndicator: "ALLOWANCE"
+                      allowanceSurchargeValidityDate: "2025-01-01"
+                      allowanceSurchargeType: "AEQ"
+                      allowanceSurchargeAmount: null
+                      allowanceSurchargeSequenceNumber: 1
+                      allowanceSurchargePercentage: 2.0
+                      allowanceSurchargeDescription: null
+                      allowanceSurchargeMinimumQuantity: 100
+                    - priceUnit: "MTR"
+                      priceQuantity: 100
+                      priceValidityDate: "2025-01-01"
+                      allowanceSurchargeIndicator: "ALLOWANCE"
+                      allowanceSurchargeValidityDate: "2025-01-01"
+                      allowanceSurchargeType: "AEQ"
+                      allowanceSurchargeAmount: null
+                      allowanceSurchargeSequenceNumber: 1
+                      allowanceSurchargePercentage: 5.0
+                      allowanceSurchargeDescription: null
+                      allowanceSurchargeMinimumQuantity: 500
+    '400':
+      $ref: '../../../shared/responses/400-bad-request.yaml'
+    '401':
+      $ref: '../../../shared/responses/401-unauthorized.yaml'
+    '403':
+      $ref: '../../../shared/responses/403-forbidden.yaml'
+    '404':
+      description: Trade item not found
+      content:
+        application/json:
+          schema:
+            $ref: '../../../shared/schemas/common/ProblemDetails.yaml'
+          example:
+            type: "https://api.tradeitem.2ba.nl/problems/not-found"
+            title: "Trade Item Not Found"
+            status: 404
+            detail: "No trade item found with supplier GLN '1234567890123' and item number 'UNKNOWN-SKU'"
+            instance: "https://api.tradeitem.2ba.nl/v1/1234567890123/UNKNOWN-SKU/allowance-surcharges"
+    '500':
+      $ref: '../../../shared/responses/500-internal-server-error.yaml'
