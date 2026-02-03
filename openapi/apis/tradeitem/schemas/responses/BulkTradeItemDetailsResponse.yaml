@@ -42,10 +42,6 @@ examples:
         itemCondition: "NEW"
         stockItem: true
         shelfLifePeriod: null
-        itemDescriptions:
-          - descriptionLanguage: "en-US"
-            minimalItemDescription: "LED Lamp 10W E27"
-            uniqueMainItemDescription: "Professional LED lamp with E27 socket"
       - supplierIdGln: "8712423012485"
         supplierItemNumber: "SKU-TOOL-002"
         supplierAltItemNumber: null
@@ -65,11 +61,6 @@ examples:
         itemCondition: "NEW"
         stockItem: true
         shelfLifePeriod: null
-        itemDescriptions:
-          - descriptionLanguage: "en-US"
-            minimalItemDescription: "Professional Hammer 500g"
-          - descriptionLanguage: "nl-NL"
-            minimalItemDescription: "Professionele Hamer 500g"
     meta:
       cursor: "eyJzdXBwbGllcklkR2xuIjoiODcxMjQyMzAxMjQ4NSIsInN1cHBsaWVySXRlbU51bWJlciI6IlNLVS1UT09MLTAwMiJ9"
       hasNext: true

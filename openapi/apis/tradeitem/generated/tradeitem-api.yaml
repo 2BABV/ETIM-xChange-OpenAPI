@@ -80,10 +80,6 @@ paths:
                         itemCondition: NEW
                         stockItem: true
                         shelfLifePeriod: 365
-                        itemDescriptions:
-                          - descriptionLanguage: en-US
-                            minimalItemDescription: Hammer 500g
-                            uniqueMainItemDescription: Professional claw hammer with fiberglass handle
                       ordering:
                         orderUnit: C62
                         minimumOrderQuantity: 1
@@ -158,9 +154,6 @@ paths:
                         itemStatus: ACTIVE
                         itemCondition: NEW
                         stockItem: true
-                        itemDescriptions:
-                          - descriptionLanguage: en-US
-                            minimalItemDescription: Basic item
                       ordering:
                         orderUnit: C62
                         minimumOrderQuantity: 1
@@ -204,7 +197,8 @@ paths:
         - Discount and bonus group information
         - Validity and obsolescence dates
         - Item status and condition
-        - Item descriptions in multiple languages
+
+        **Note**: Item descriptions are available via the separate `/descriptions` endpoint.
 
         The trade item key (`supplierIdGln` + `supplierItemNumber`) is at the root level,
         with details nested inside. This structure aligns with other single-item subresource responses.
@@ -245,13 +239,6 @@ paths:
                         itemCondition: NEW
                         stockItem: true
                         shelfLifePeriod: 365
-                        itemDescriptions:
-                          - descriptionLanguage: en-US
-                            minimalItemDescription: LED Lamp 10W E27
-                            uniqueMainItemDescription: Professional LED lamp with E27 socket, 10W warm white
-                          - descriptionLanguage: nl-NL
-                            minimalItemDescription: LED Lamp 10W E27
-                            uniqueMainItemDescription: Professionele LED lamp met E27 fitting, 10W warm wit
                 minimalDetails:
                   summary: Minimal trade item details
                   value:
@@ -275,9 +262,6 @@ paths:
                         itemCondition: NEW
                         stockItem: true
                         shelfLifePeriod: null
-                        itemDescriptions:
-                          - descriptionLanguage: en-US
-                            minimalItemDescription: Basic Item
         '400':
           $ref: '#/components/responses/400-bad-request'
         '401':
@@ -298,6 +282,91 @@ paths:
                 instance: https://api.tradeitem.2ba.nl/v1/1234567890123/UNKNOWN-SKU/details
         '500':
           $ref: '#/components/responses/500-internal-server-error'
+  /{supplierIdGln}/{supplierItemNumber}/descriptions:
+    get:
+      operationId: getTradeItemDescriptions
+      tags:
+        - TradeItems single
+      summary: Retrieve trade item descriptions
+      description: |
+        Retrieve multilingual descriptions for a specific trade item.
+
+        This endpoint returns trade item descriptions including minimal and unique main descriptions
+        for each available language.
+
+        **Language filtering**: Use the optional `language` query parameter to filter
+        descriptions to specific language(s). If not specified, all available languages are returned.
+
+        **Nested structure**: Unlike the bulk endpoint `/bulk/trade-item-descriptions` which uses
+        a flattened structure optimized for ETL, this single-item endpoint returns descriptions
+        in their natural nested format for easier consumption.
+
+        **No pagination** - Returns all descriptions for the specified trade item.
+      parameters:
+        - $ref: '#/components/parameters/supplier-id-gln'
+        - $ref: '#/components/parameters/supplier-item-number'
+        - $ref: '#/components/parameters/language'
+      responses:
+        '200':
+          description: Successfully retrieved trade item descriptions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TradeItemDescriptionsResponse'
+              examples:
+                multipleLanguages:
+                  summary: Trade item with multiple language descriptions
+                  value:
+                    data:
+                      supplierIdGln: '1234567890123'
+                      supplierItemNumber: SKU-12345
+                      descriptions:
+                        - descriptionLanguage: en-GB
+                          minimalItemDescription: LED Lamp 10W E27
+                          uniqueMainItemDescription: Professional LED lamp with E27 socket, 10W warm white
+                        - descriptionLanguage: de-DE
+                          minimalItemDescription: LED Lampe 10W E27
+                          uniqueMainItemDescription: Professionelle LED-Lampe mit E27-Fassung, 10W warmweiß
+                        - descriptionLanguage: nl-NL
+                          minimalItemDescription: LED Lamp 10W E27
+                          uniqueMainItemDescription: Professionele LED lamp met E27 fitting, 10W warm wit
+                singleLanguage:
+                  summary: Filtered to single language
+                  value:
+                    data:
+                      supplierIdGln: '1234567890123'
+                      supplierItemNumber: SKU-12345
+                      descriptions:
+                        - descriptionLanguage: en-GB
+                          minimalItemDescription: LED Lamp 10W E27
+                          uniqueMainItemDescription: Professional LED lamp with E27 socket, 10W warm white
+                noDescriptions:
+                  summary: Trade item without descriptions
+                  value:
+                    data:
+                      supplierIdGln: '1234567890123'
+                      supplierItemNumber: SKU-12345
+                      descriptions: null
+        '400':
+          $ref: '#/components/responses/400-bad-request'
+        '401':
+          $ref: '#/components/responses/401-unauthorized'
+        '403':
+          $ref: '#/components/responses/403-forbidden'
+        '404':
+          description: Trade item not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: https://api.tradeitem.2ba.nl/problems/not-found
+                title: Trade Item Not Found
+                status: 404
+                detail: No trade item found with supplier GLN '1234567890123' and item number 'UNKNOWN-SKU'
+                instance: https://api.tradeitem.2ba.nl/v1/1234567890123/UNKNOWN-SKU/descriptions
+        '500':
+          $ref: '#/components/responses/500-internal-server-error'
   /bulk/trade-item-details:
     get:
       operationId: getBulkTradeItemDetails
@@ -314,7 +383,8 @@ paths:
         - Discount and bonus group information
         - Validity and obsolescence dates
         - Item status and condition
-        - Item descriptions in multiple languages
+
+        **Note**: Item descriptions are available via `/bulk/trade-item-descriptions` endpoint.
 
         Use this endpoint for:
         - Initial data synchronization
@@ -359,9 +429,6 @@ paths:
                         itemCondition: NEW
                         stockItem: true
                         shelfLifePeriod: null
-                        itemDescriptions:
-                          - descriptionLanguage: en-US
-                            minimalItemDescription: LED Lamp 10W E27
                       - supplierIdGln: '8712423012485'
                         supplierItemNumber: SKU-TOOL-002
                         supplierAltItemNumber: null
@@ -381,9 +448,6 @@ paths:
                         itemCondition: NEW
                         stockItem: true
                         shelfLifePeriod: null
-                        itemDescriptions:
-                          - descriptionLanguage: en-US
-                            minimalItemDescription: Professional Hammer 500g
                     meta:
                       cursor: eyJzdXBwbGllcklkR2xuIjoiODcxMjQyMzAxMjQ4NSIsInN1cHBsaWVySXRlbU51bWJlciI6IlNLVS1UT09MLTAwMiJ9
                       hasNext: true
@@ -400,6 +464,73 @@ paths:
                       hasPrev: false
                       limit: 100
                       estimatedTotal: 0
+        '400':
+          $ref: '#/components/responses/400-bad-request'
+        '401':
+          $ref: '#/components/responses/401-unauthorized'
+        '403':
+          $ref: '#/components/responses/403-forbidden'
+        '500':
+          $ref: '#/components/responses/500-internal-server-error'
+  /bulk/trade-item-descriptions:
+    get:
+      operationId: getBulkTradeItemDescriptions
+      tags:
+        - TradeItems bulk
+      summary: Retrieve trade item descriptions in bulk
+      description: |
+        Retrieve trade item descriptions in bulk with cursor-based pagination.
+        Returns a flattened structure where each row represents a single language description
+        with the trade item identifier (`supplierIdGln` + `supplierItemNumber`).
+
+        A trade item with descriptions in 3 languages will result in 3 rows.
+
+        This flattened structure is optimized for:
+        - Predictable payload sizes per row
+        - Efficient cursor-based pagination
+        - ETL/data warehouse ingestion
+        - Streaming data processing
+        - Language filtering at row level
+      parameters:
+        - $ref: '#/components/parameters/cursor'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/selection-id'
+        - $ref: '#/components/parameters/supplier-id-gln-filter'
+        - $ref: '#/components/parameters/mutation-date-time'
+        - $ref: '#/components/parameters/language'
+      responses:
+        '200':
+          description: Successfully retrieved trade item descriptions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkTradeItemDescriptionsResponse'
+              examples:
+                multipleItems:
+                  summary: Multiple trade item descriptions
+                  value:
+                    data:
+                      - supplierIdGln: '1234567890123'
+                        supplierItemNumber: SKU-12345
+                        descriptionLanguage: en-GB
+                        minimalItemDescription: LED Lamp 10W E27
+                        uniqueMainItemDescription: Professional LED lamp with E27 socket, 10W warm white
+                      - supplierIdGln: '1234567890123'
+                        supplierItemNumber: SKU-12345
+                        descriptionLanguage: de-DE
+                        minimalItemDescription: LED Lampe 10W E27
+                        uniqueMainItemDescription: Professionelle LED-Lampe mit E27-Fassung, 10W warmweiß
+                      - supplierIdGln: '1234567890123'
+                        supplierItemNumber: SKU-67890
+                        descriptionLanguage: en-GB
+                        minimalItemDescription: Hammer 500g
+                        uniqueMainItemDescription: Professional claw hammer with fiberglass handle
+                    meta:
+                      cursor: eyJpZCI6MTIzfQ==
+                      hasNext: true
+                      hasPrev: false
+                      limit: 100
+                      estimatedTotal: 15420
         '400':
           $ref: '#/components/responses/400-bad-request'
         '401':
@@ -544,11 +675,12 @@ components:
         is provided at the root level.
 
         For bulk retrieval with embedded keys, use `TradeItemDetailsSummary`.
+
+        **Note**: Item descriptions are available via a separate `/descriptions` endpoint.
       additionalProperties: false
       required:
         - manufacturerIdGln
         - manufacturerProductNumber
-        - itemDescriptions
       properties:
         supplierAltItemNumber:
           type:
@@ -788,21 +920,6 @@ components:
             - 365
             - 730
             - null
-        itemDescriptions:
-          type: array
-          minItems: 1
-          items:
-            $ref: '#/components/schemas/ItemDescription'
-          description: |
-            Array of item descriptions in different languages. At least one description 
-            is required, typically including the minimal item description.
-
-            **ETIM xChange**: `ItemDescriptions[]`  
-            **Path**: `Supplier[].Product[].TradeItem[].ItemDetails.ItemDescriptions[]`
-          examples:
-            - - descriptionLanguage: en-US
-                minimalItemDescription: LED Lamp 10W E27
-                uniqueMainItemDescription: Professional LED lamp with E27 socket, 10W warm white
       examples:
         - supplierAltItemNumber: ALT-12345
           manufacturerItemNumber: MFG-98765
@@ -821,10 +938,6 @@ components:
           itemCondition: NEW
           stockItem: true
           shelfLifePeriod: null
-          itemDescriptions:
-            - descriptionLanguage: en-US
-              minimalItemDescription: LED Lamp 10W E27
-              uniqueMainItemDescription: Professional LED lamp with E27 socket, 10W warm white
     TradeItemDetailsSummary:
       type: object
       description: |
@@ -835,13 +948,14 @@ components:
         must be self-contained with its own key.
 
         For single-item responses (where key is at root level), use `TradeItemDetails`.
+
+        **Note**: Item descriptions are available via `/bulk/trade-item-descriptions` endpoint.
       additionalProperties: false
       required:
         - supplierIdGln
         - supplierItemNumber
         - manufacturerIdGln
         - manufacturerProductNumber
-        - itemDescriptions
       properties:
         supplierIdGln:
           type: string
@@ -1121,20 +1235,6 @@ components:
             - 365
             - 730
             - null
-        itemDescriptions:
-          type: array
-          minItems: 1
-          items:
-            $ref: '#/components/schemas/ItemDescription'
-          description: |
-            Array of item descriptions in different languages. At least one description 
-            is required, typically including the minimal item description.
-
-            **ETIM xChange**: `ItemDescriptions[]`  
-            **Path**: `Supplier[].Product[].TradeItem[].ItemDetails.ItemDescriptions[]`
-          examples:
-            - - descriptionLanguage: en-US
-                minimalItemDescription: LED Lamp 10W E27
       examples:
         - supplierIdGln: '8712423012485'
           supplierItemNumber: SKU-LAMP-001
@@ -1156,10 +1256,107 @@ components:
           itemCondition: NEW
           stockItem: true
           shelfLifePeriod: null
-          itemDescriptions:
-            - descriptionLanguage: en-US
-              minimalItemDescription: LED Lamp 10W E27
-              uniqueMainItemDescription: Professional LED lamp with E27 socket, 10W warm white
+    ItemDescriptionsSummary:
+      type: object
+      description: |
+        Flattened trade item description for bulk retrieval.
+        Each row represents a single language description with the trade item identifier.
+
+        This flattened structure is optimized for:
+        - Predictable payload sizes per row
+        - Efficient cursor-based pagination
+        - ETL/data warehouse ingestion
+        - Streaming data processing
+        - Language filtering at row level
+
+        **Payload Optimization**: Optional properties with null values may be omitted from the response
+        to minimize payload size. Clients should treat missing properties as null/not applicable.
+
+        **ETIM xChange**: `ItemDetails.ItemDescriptions`  
+        **Path**: `Supplier[].Product[].TradeItem[].ItemDetails.ItemDescriptions[]`
+      additionalProperties: false
+      required:
+        - supplierIdGln
+        - supplierItemNumber
+        - minimalItemDescription
+      properties:
+        supplierIdGln:
+          type: string
+          pattern: ^[0-9]{13}$
+          description: |
+            Global Location Number (GLN) identifying the supplier.
+            13-digit GS1 identifier. Part of the composite trade item identifier.
+          examples:
+            - '1234567890123'
+        supplierItemNumber:
+          type: string
+          minLength: 1
+          maxLength: 35
+          description: |
+            Supplier's unique item identifier.
+            Part of the composite trade item identifier.
+
+            **ETIM xChange**: `SupplierItemNumber`  
+            **Path**: `Supplier[].Product[].TradeItem[].ItemIdentification.SupplierItemNumber`
+          examples:
+            - SKU-12345
+            - ITEM-ABC-789
+        descriptionLanguage:
+          type:
+            - string
+            - 'null'
+          pattern: ^[a-z]{2}[-][A-Z]{2}$
+          description: |
+            Language code for the description in ISO 639-1 and ISO 3166-1 format (e.g., "en-GB", "de-DE").
+
+            **ETIM xChange**: `DescriptionLanguage`  
+            **Path**: `Supplier[].Product[].TradeItem[].ItemDetails.ItemDescriptions[].DescriptionLanguage`
+          examples:
+            - en-GB
+            - de-DE
+            - nl-NL
+        minimalItemDescription:
+          type: string
+          minLength: 1
+          maxLength: 80
+          description: |
+            Short item description (maximum 80 characters). Minimal required description for item identification.
+
+            **ETIM xChange**: `MinimalItemDescription`  
+            **Path**: `Supplier[].Product[].TradeItem[].ItemDetails.ItemDescriptions[].MinimalItemDescription`
+          examples:
+            - LED Lamp 10W E27
+            - Hammer 500g
+        uniqueMainItemDescription:
+          type:
+            - string
+            - 'null'
+          minLength: 1
+          maxLength: 255
+          description: |
+            Unique main item description (maximum 255 characters). 
+            A concise but comprehensive description that uniquely identifies the trade item.
+
+            **ETIM xChange**: `UniqueMainItemDescription`  
+            **Path**: `Supplier[].Product[].TradeItem[].ItemDetails.ItemDescriptions[].UniqueMainItemDescription`
+          examples:
+            - Professional LED lamp with E27 socket, 10W warm white
+            - Professional claw hammer with fiberglass handle, 500g head weight
+      examples:
+        - supplierIdGln: '1234567890123'
+          supplierItemNumber: SKU-12345
+          descriptionLanguage: en-GB
+          minimalItemDescription: LED Lamp 10W E27
+          uniqueMainItemDescription: Professional LED lamp with E27 socket, 10W warm white
+        - supplierIdGln: '1234567890123'
+          supplierItemNumber: SKU-12345
+          descriptionLanguage: de-DE
+          minimalItemDescription: LED Lampe 10W E27
+          uniqueMainItemDescription: Professionelle LED-Lampe mit E27-Fassung, 10W warmweiß
+        - supplierIdGln: '9876543210987'
+          supplierItemNumber: ITEM-67890
+          descriptionLanguage: en-GB
+          minimalItemDescription: Hammer 500g
     TradeItemResponse:
       type: object
       description: |
@@ -1196,10 +1393,6 @@ components:
               itemCondition: NEW
               stockItem: true
               shelfLifePeriod: null
-              itemDescriptions:
-                - descriptionLanguage: en-US
-                  minimalItemDescription: Hammer 500g
-                  uniqueMainItemDescription: Professional claw hammer with fiberglass handle
             ordering:
               orderUnit: C62
               minimumOrderQuantity: 1
@@ -1244,9 +1437,6 @@ components:
               itemStatus: ACTIVE
               itemCondition: NEW
               stockItem: true
-              itemDescriptions:
-                - descriptionLanguage: en-US
-                  minimalItemDescription: Minimal trade item
             ordering:
               orderUnit: C62
               minimumOrderQuantity: 1
@@ -1323,10 +1513,68 @@ components:
               itemCondition: NEW
               stockItem: true
               shelfLifePeriod: null
-              itemDescriptions:
-                - descriptionLanguage: en-US
-                  minimalItemDescription: LED Lamp 10W E27
-                  uniqueMainItemDescription: Professional LED lamp with E27 socket, 10W warm white
+    TradeItemDescriptionsResponse:
+      type: object
+      description: |
+        Response containing multilingual trade item descriptions for a single trade item.
+        Returns the trade item identification keys and a nested array of `ItemDescription` objects,
+        each containing descriptions in a specific language.
+
+        Unlike the bulk endpoint `/bulk/trade-item-descriptions` which uses a flattened structure
+        optimized for ETL, this single-item endpoint returns descriptions in their natural
+        nested format for easier consumption.
+
+        **Language Filtering**: Use the optional `language` query parameter to filter
+        descriptions to specific language(s).
+      additionalProperties: false
+      required:
+        - data
+      properties:
+        data:
+          type: object
+          additionalProperties: false
+          required:
+            - supplierIdGln
+            - supplierItemNumber
+          properties:
+            supplierIdGln:
+              type: string
+              pattern: ^[0-9]{13}$
+              description: Global Location Number (GLN) uniquely identifying the supplier
+              examples:
+                - '1234567890123'
+            supplierItemNumber:
+              type: string
+              minLength: 1
+              maxLength: 35
+              description: Supplier's unique item number
+              examples:
+                - SKU-12345
+            descriptions:
+              type:
+                - array
+                - 'null'
+              description: |
+                Array of trade item descriptions. Each item contains descriptions in a specific language.
+                Returns null if no descriptions are available, or an empty array if filtering
+                by language yields no matches.
+              items:
+                $ref: '#/components/schemas/ItemDescription'
+      examples:
+        - data:
+            supplierIdGln: '1234567890123'
+            supplierItemNumber: SKU-12345
+            descriptions:
+              - descriptionLanguage: en-GB
+                minimalItemDescription: LED Lamp 10W E27
+                uniqueMainItemDescription: Professional LED lamp with E27 socket, 10W warm white
+              - descriptionLanguage: de-DE
+                minimalItemDescription: LED Lampe 10W E27
+                uniqueMainItemDescription: Professionelle LED-Lampe mit E27-Fassung, 10W warmweiß
+        - data:
+            supplierIdGln: '1234567890123'
+            supplierItemNumber: SKU-12345
+            descriptions: null
     BulkTradeItemDetailsResponse:
       type: object
       description: |
@@ -1371,10 +1619,6 @@ components:
               itemCondition: NEW
               stockItem: true
               shelfLifePeriod: null
-              itemDescriptions:
-                - descriptionLanguage: en-US
-                  minimalItemDescription: LED Lamp 10W E27
-                  uniqueMainItemDescription: Professional LED lamp with E27 socket
             - supplierIdGln: '8712423012485'
               supplierItemNumber: SKU-TOOL-002
               supplierAltItemNumber: null
@@ -1394,13 +1638,53 @@ components:
               itemCondition: NEW
               stockItem: true
               shelfLifePeriod: null
-              itemDescriptions:
-                - descriptionLanguage: en-US
-                  minimalItemDescription: Professional Hammer 500g
-                - descriptionLanguage: nl-NL
-                  minimalItemDescription: Professionele Hamer 500g
           meta:
             cursor: eyJzdXBwbGllcklkR2xuIjoiODcxMjQyMzAxMjQ4NSIsInN1cHBsaWVySXRlbU51bWJlciI6IlNLVS1UT09MLTAwMiJ9
+            hasNext: true
+            hasPrev: false
+            limit: 100
+            estimatedTotal: 15420
+    BulkTradeItemDescriptionsResponse:
+      type: object
+      description: |
+        Bulk response containing trade item descriptions with cursor-based pagination.
+
+        Each item in the `data` array represents a single language description for a trade item.
+        A trade item with descriptions in 3 languages will result in 3 rows.
+
+        This flattened structure is optimized for ETL/data warehouse ingestion and
+        streaming data processing.
+      additionalProperties: false
+      required:
+        - data
+        - meta
+      properties:
+        data:
+          type: array
+          description: Array of trade item descriptions. Each row is one language per trade item.
+          items:
+            $ref: '#/components/schemas/ItemDescriptionsSummary'
+        meta:
+          $ref: '#/components/schemas/CursorPaginationMetadata'
+      examples:
+        - data:
+            - supplierIdGln: '1234567890123'
+              supplierItemNumber: SKU-12345
+              descriptionLanguage: en-GB
+              minimalItemDescription: LED Lamp 10W E27
+              uniqueMainItemDescription: Professional LED lamp with E27 socket, 10W warm white
+            - supplierIdGln: '1234567890123'
+              supplierItemNumber: SKU-12345
+              descriptionLanguage: de-DE
+              minimalItemDescription: LED Lampe 10W E27
+              uniqueMainItemDescription: Professionelle LED-Lampe mit E27-Fassung, 10W warmweiß
+            - supplierIdGln: '1234567890123'
+              supplierItemNumber: SKU-67890
+              descriptionLanguage: en-GB
+              minimalItemDescription: Hammer 500g
+              uniqueMainItemDescription: Professional claw hammer with fiberglass handle
+          meta:
+            cursor: eyJpZCI6MTIzfQ==
             hasNext: true
             hasPrev: false
             limit: 100
@@ -1451,68 +1735,14 @@ components:
       examples:
         - NEW
         - REFURBISHED
-    ItemDescription:
-      type: object
-      description: |
-        Item description in a specific language.
-        Extracted from ETIM xChange `TradeItem.ItemDetails.ItemDescriptions[]` structure.
-      additionalProperties: false
-      required:
-        - minimalItemDescription
-      properties:
-        descriptionLanguage:
-          type:
-            - string
-            - 'null'
-          description: |
-            Language code for the description (e.g., 'en-US', 'de-DE', 'nl-NL').
-            **ETIM xChange**: `DescriptionLanguage`
-            **Path**: `Supplier[].Product[].TradeItem[].ItemDetails.ItemDescriptions[].DescriptionLanguage`
-          pattern: ^[a-z]{2}[-][A-Z]{2}$
-          examples:
-            - en-US
-            - de-DE
-            - nl-NL
-            - null
-        minimalItemDescription:
-          type: string
-          description: |
-            Minimal description of the trade item (short description).
-            **ETIM xChange**: `MinimalItemDescription`
-            **Path**: `Supplier[].Product[].TradeItem[].ItemDetails.ItemDescriptions[].MinimalItemDescription`
-          minLength: 1
-          maxLength: 80
-          examples:
-            - Hammer 500g
-            - Screwdriver Phillips
-        uniqueMainItemDescription:
-          type:
-            - string
-            - 'null'
-          description: |
-            Extended unique description of the trade item (long description).
-            **ETIM xChange**: `UniqueMainItemDescription`
-            **Path**: `Supplier[].Product[].TradeItem[].ItemDetails.ItemDescriptions[].UniqueMainItemDescription`
-          minLength: 1
-          maxLength: 255
-          examples:
-            - Professional claw hammer with fiberglass handle, 500g head weight, ergonomic grip
-            - null
-      examples:
-        - descriptionLanguage: en-US
-          minimalItemDescription: Hammer 500g
-          uniqueMainItemDescription: Professional claw hammer with fiberglass handle, 500g head weight
-        - descriptionLanguage: de-DE
-          minimalItemDescription: Hammer 500g
-          uniqueMainItemDescription: null
     ItemDetails:
       type: object
       description: |
-        Detailed information about the trade item including status, condition, and descriptions.
+        Detailed information about the trade item including status, condition, and shelf life.
         Extracted from ETIM xChange `TradeItem.ItemDetails` structure.
+
+        **Note**: Item descriptions are available via a separate `/descriptions` endpoint.
       additionalProperties: false
-      required:
-        - itemDescriptions
       properties:
         itemStatus:
           description: |
@@ -1564,28 +1794,11 @@ components:
             - 365
             - 730
             - null
-        itemDescriptions:
-          type: array
-          description: |
-            Array of item descriptions in different languages.
-            **ETIM xChange**: `ItemDescriptions[]`
-            **Path**: `Supplier[].Product[].TradeItem[].ItemDetails.ItemDescriptions[]`
-          minItems: 1
-          items:
-            $ref: '#/components/schemas/ItemDescription'
-          examples:
-            - - descriptionLanguage: en-US
-                minimalItemDescription: Hammer 500g
-                uniqueMainItemDescription: Professional claw hammer
       examples:
         - itemStatus: ACTIVE
           itemCondition: NEW
           stockItem: true
           shelfLifePeriod: null
-          itemDescriptions:
-            - descriptionLanguage: en-US
-              minimalItemDescription: Hammer 500g
-              uniqueMainItemDescription: Professional claw hammer with fiberglass handle
     UnitCodes:
       type: string
       description: |
@@ -3327,7 +3540,8 @@ components:
             - null
         itemDetails:
           description: |
-            Detailed information about the trade item including status, condition, and descriptions.
+            Detailed information about the trade item including status and condition.
+            Note: Item descriptions are available via `/{supplierIdGln}/{supplierItemNumber}/descriptions`.
             **ETIM xChange**: `ItemDetails`
             **Path**: `Supplier[].Product[].TradeItem[].ItemDetails`
           $ref: '#/components/schemas/ItemDetails'
@@ -3429,10 +3643,6 @@ components:
             itemCondition: NEW
             stockItem: true
             shelfLifePeriod: null
-            itemDescriptions:
-              - descriptionLanguage: en-US
-                minimalItemDescription: Hammer 500g
-                uniqueMainItemDescription: Professional claw hammer with fiberglass handle
           ordering:
             orderUnit: C62
             minimumOrderQuantity: 1
@@ -3537,6 +3747,60 @@ components:
           errors:
             email:
               - Email must be a valid email address.
+    ItemDescription:
+      type: object
+      description: |
+        Item description in a specific language.
+        Extracted from ETIM xChange `TradeItem.ItemDetails.ItemDescriptions[]` structure.
+      additionalProperties: false
+      required:
+        - minimalItemDescription
+      properties:
+        descriptionLanguage:
+          type:
+            - string
+            - 'null'
+          description: |
+            Language code for the description (e.g., 'en-US', 'de-DE', 'nl-NL').
+            **ETIM xChange**: `DescriptionLanguage`
+            **Path**: `Supplier[].Product[].TradeItem[].ItemDetails.ItemDescriptions[].DescriptionLanguage`
+          pattern: ^[a-z]{2}[-][A-Z]{2}$
+          examples:
+            - en-US
+            - de-DE
+            - nl-NL
+            - null
+        minimalItemDescription:
+          type: string
+          description: |
+            Minimal description of the trade item (short description).
+            **ETIM xChange**: `MinimalItemDescription`
+            **Path**: `Supplier[].Product[].TradeItem[].ItemDetails.ItemDescriptions[].MinimalItemDescription`
+          minLength: 1
+          maxLength: 80
+          examples:
+            - Hammer 500g
+            - Screwdriver Phillips
+        uniqueMainItemDescription:
+          type:
+            - string
+            - 'null'
+          description: |
+            Extended unique description of the trade item (long description).
+            **ETIM xChange**: `UniqueMainItemDescription`
+            **Path**: `Supplier[].Product[].TradeItem[].ItemDetails.ItemDescriptions[].UniqueMainItemDescription`
+          minLength: 1
+          maxLength: 255
+          examples:
+            - Professional claw hammer with fiberglass handle, 500g head weight, ergonomic grip
+            - null
+      examples:
+        - descriptionLanguage: en-US
+          minimalItemDescription: Hammer 500g
+          uniqueMainItemDescription: Professional claw hammer with fiberglass handle, 500g head weight
+        - descriptionLanguage: de-DE
+          minimalItemDescription: Hammer 500g
+          uniqueMainItemDescription: null
     CursorPaginationMetadata:
       type: object
       description: |
@@ -3754,6 +4018,34 @@ components:
         maxLength: 35
         description: Supplier's item identifier
       example: ART-12345
+    language:
+      name: language
+      in: query
+      description: |
+        Filter results by language code(s).
+        Uses ISO 639-1 language code with ISO 3166-1 country code (e.g., "en-GB", "de-DE", "nl-NL").
+
+        If not specified, all available languages are returned.
+        Multiple languages can be specified to return descriptions in those languages only.
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+          pattern: ^[a-z]{2}[-][A-Z]{2}$
+      style: form
+      explode: true
+      examples:
+        singleLanguage:
+          summary: Single language filter
+          value:
+            - en-GB
+        multipleLanguages:
+          summary: Multiple language filter
+          value:
+            - en-GB
+            - de-DE
+            - nl-NL
     cursor:
       name: cursor
       in: query

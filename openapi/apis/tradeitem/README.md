@@ -26,9 +26,19 @@ TradeItem details (`TradeItemDetails`) combines identification and operational i
 - **Identification**: alternative item numbers, manufacturer references, GTINs, buyer item numbers
 - **Commercial**: discount/bonus group assignments, validity/obsolescence dates
 - **Operational**: item status, condition, stock indicator, shelf life
-- **Descriptions**: multilingual item descriptions
 
 This merged approach simplifies the API surface compared to the ETIM xChange source structure which separates `ItemIdentification` and `ItemDetails`.
+
+### TradeItem Descriptions
+
+Item descriptions are available via dedicated endpoints:
+- `/{supplierIdGln}/{supplierItemNumber}/descriptions` - Single item descriptions (nested array)
+- `/bulk/trade-item-descriptions` - Bulk descriptions (flattened, one row per language)
+
+This separation allows:
+- Independent retrieval of descriptions without loading full trade item details
+- Language filtering at the API level
+- Efficient bulk synchronization of multilingual content
 
 ### Bulk Endpoint Consolidation
 
@@ -36,7 +46,8 @@ The bulk API consolidates ETIM xChange sections for efficient data retrieval:
 
 | Endpoint | ETIM xChange Sections | Schema |
 |----------|----------------------|--------|
-| `/bulk/trade-item-details` | `ItemIdentification` + `ItemDetails` | `TradeItemDetailsSummary` |
+| `/bulk/trade-item-details` | `ItemIdentification` + `ItemDetails` (excl. descriptions) | `TradeItemDetailsSummary` |
+| `/bulk/trade-item-descriptions` | `ItemDetails.ItemDescriptions[]` | `ItemDescriptionsSummary` |
 | `/bulk/trade-item-orderings` | `Ordering` | `TradeItemOrderingsSummary` |
 | `/bulk/trade-item-pricings` | `Pricing[]` | `TradeItemPricingsSummary` |
 

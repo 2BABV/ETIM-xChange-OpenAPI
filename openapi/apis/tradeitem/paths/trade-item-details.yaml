@@ -12,7 +12,8 @@ get:
     - Discount and bonus group information
     - Validity and obsolescence dates
     - Item status and condition
-    - Item descriptions in multiple languages
+    
+    **Note**: Item descriptions are available via the separate `/descriptions` endpoint.
     
     The trade item key (`supplierIdGln` + `supplierItemNumber`) is at the root level,
     with details nested inside. This structure aligns with other single-item subresource responses.
@@ -52,13 +53,6 @@ get:
                     itemCondition: "NEW"
                     stockItem: true
                     shelfLifePeriod: 365
-                    itemDescriptions:
-                      - descriptionLanguage: "en-US"
-                        minimalItemDescription: "LED Lamp 10W E27"
-                        uniqueMainItemDescription: "Professional LED lamp with E27 socket, 10W warm white"
-                      - descriptionLanguage: "nl-NL"
-                        minimalItemDescription: "LED Lamp 10W E27"
-                        uniqueMainItemDescription: "Professionele LED lamp met E27 fitting, 10W warm wit"
             minimalDetails:
               summary: Minimal trade item details
               value:
@@ -82,9 +76,6 @@ get:
                     itemCondition: "NEW"
                     stockItem: true
                     shelfLifePeriod: null
-                    itemDescriptions:
-                      - descriptionLanguage: "en-US"
-                        minimalItemDescription: "Basic Item"
     '400':
       $ref: '../../../shared/responses/400-bad-request.yaml'
     '401':

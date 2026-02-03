@@ -63,7 +63,3 @@ examples:
         itemCondition: "NEW"
         stockItem: true
         shelfLifePeriod: null
-        itemDescriptions:
-          - descriptionLanguage: "en-US"
-            minimalItemDescription: "LED Lamp 10W E27"
-            uniqueMainItemDescription: "Professional LED lamp with E27 socket, 10W warm white"

@@ -32,10 +32,6 @@ examples:
         itemCondition: NEW
         stockItem: true
         shelfLifePeriod: null
-        itemDescriptions:
-          - descriptionLanguage: "en-US"
-            minimalItemDescription: "Hammer 500g"
-            uniqueMainItemDescription: "Professional claw hammer with fiberglass handle"
       ordering:
         orderUnit: C62
         minimumOrderQuantity: 1
@@ -80,9 +76,6 @@ examples:
         itemStatus: ACTIVE
         itemCondition: NEW
         stockItem: true
-        itemDescriptions:
-          - descriptionLanguage: "en-US"
-            minimalItemDescription: "Minimal trade item"
       ordering:
         orderUnit: C62
         minimumOrderQuantity: 1

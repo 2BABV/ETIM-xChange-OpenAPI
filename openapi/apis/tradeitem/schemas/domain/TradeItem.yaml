@@ -182,7 +182,8 @@ properties:
   # ItemDetails (required object with flattened key fields)
   itemDetails:
     description: |
-      Detailed information about the trade item including status, condition, and descriptions.
+      Detailed information about the trade item including status and condition.
+      Note: Item descriptions are available via `/{supplierIdGln}/{supplierItemNumber}/descriptions`.
       **ETIM xChange**: `ItemDetails`
       **Path**: `Supplier[].Product[].TradeItem[].ItemDetails`
     $ref: ./ItemDetails.yaml
@@ -281,10 +282,6 @@ examples:
       itemCondition: NEW
       stockItem: true
       shelfLifePeriod: null
-      itemDescriptions:
-        - descriptionLanguage: "en-US"
-          minimalItemDescription: "Hammer 500g"
-          uniqueMainItemDescription: "Professional claw hammer with fiberglass handle"
     ordering:
       orderUnit: C62
       minimumOrderQuantity: 1

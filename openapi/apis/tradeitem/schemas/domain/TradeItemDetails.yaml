@@ -7,11 +7,12 @@ description: |
   is provided at the root level.
   
   For bulk retrieval with embedded keys, use `TradeItemDetailsSummary`.
+  
+  **Note**: Item descriptions are available via a separate `/descriptions` endpoint.
 additionalProperties: false
 required:
   - manufacturerIdGln
   - manufacturerProductNumber
-  - itemDescriptions
 properties:
   # =========================================================================
   # ITEM IDENTIFICATION (from TradeItem.ItemIdentification)
@@ -249,22 +250,6 @@ properties:
       - 365
       - 730
       - null
-  
-  itemDescriptions:
-    type: array
-    minItems: 1
-    items:
-      $ref: ./ItemDescription.yaml
-    description: |
-      Array of item descriptions in different languages. At least one description 
-      is required, typically including the minimal item description.
-      
-      **ETIM xChange**: `ItemDescriptions[]`  
-      **Path**: `Supplier[].Product[].TradeItem[].ItemDetails.ItemDescriptions[]`
-    examples:
-      - - descriptionLanguage: "en-US"
-          minimalItemDescription: "LED Lamp 10W E27"
-          uniqueMainItemDescription: "Professional LED lamp with E27 socket, 10W warm white"
 
 examples:
   - supplierAltItemNumber: "ALT-12345"
@@ -283,7 +268,3 @@ examples:
     itemCondition: "NEW"
     stockItem: true
     shelfLifePeriod: null
-    itemDescriptions:
-      - descriptionLanguage: "en-US"
-        minimalItemDescription: "LED Lamp 10W E27"
-        uniqueMainItemDescription: "Professional LED lamp with E27 socket, 10W warm white"

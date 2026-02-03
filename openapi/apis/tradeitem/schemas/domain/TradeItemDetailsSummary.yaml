@@ -7,13 +7,14 @@ description: |
   must be self-contained with its own key.
   
   For single-item responses (where key is at root level), use `TradeItemDetails`.
+  
+  **Note**: Item descriptions are available via `/bulk/trade-item-descriptions` endpoint.
 additionalProperties: false
 required:
   - supplierIdGln
   - supplierItemNumber
   - manufacturerIdGln
   - manufacturerProductNumber
-  - itemDescriptions
 properties:
   # =========================================================================
   # KEY FIELDS (required for bulk retrieval)
@@ -283,21 +284,6 @@ properties:
       - 365
       - 730
       - null
-  
-  itemDescriptions:
-    type: array
-    minItems: 1
-    items:
-      $ref: ./ItemDescription.yaml
-    description: |
-      Array of item descriptions in different languages. At least one description 
-      is required, typically including the minimal item description.
-      
-      **ETIM xChange**: `ItemDescriptions[]`  
-      **Path**: `Supplier[].Product[].TradeItem[].ItemDetails.ItemDescriptions[]`
-    examples:
-      - - descriptionLanguage: "en-US"
-          minimalItemDescription: "LED Lamp 10W E27"
 
 examples:
   - supplierIdGln: "8712423012485"
@@ -320,7 +306,3 @@ examples:
     itemCondition: "NEW"
     stockItem: true
     shelfLifePeriod: null
-    itemDescriptions:
-      - descriptionLanguage: "en-US"
-        minimalItemDescription: "LED Lamp 10W E27"
-        uniqueMainItemDescription: "Professional LED lamp with E27 socket, 10W warm white"

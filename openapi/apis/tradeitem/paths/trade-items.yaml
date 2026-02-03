@@ -41,10 +41,6 @@ get:
                     itemCondition: NEW
                     stockItem: true
                     shelfLifePeriod: 365
-                    itemDescriptions:
-                      - descriptionLanguage: "en-US"
-                        minimalItemDescription: "Hammer 500g"
-                        uniqueMainItemDescription: "Professional claw hammer with fiberglass handle"
                   ordering:
                     orderUnit: C62
                     minimumOrderQuantity: 1
@@ -117,9 +113,6 @@ get:
                     itemStatus: ACTIVE
                     itemCondition: NEW
                     stockItem: true
-                    itemDescriptions:
-                      - descriptionLanguage: "en-US"
-                        minimalItemDescription: "Basic item"
                   ordering:
                     orderUnit: C62
                     minimumOrderQuantity: 1

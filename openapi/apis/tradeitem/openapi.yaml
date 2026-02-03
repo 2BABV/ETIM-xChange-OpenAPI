@@ -49,12 +49,17 @@ paths:
   /{supplierIdGln}/{supplierItemNumber}/details:
     $ref: './paths/trade-item-details.yaml'
   
+  /{supplierIdGln}/{supplierItemNumber}/descriptions:
+    $ref: './paths/trade-item-descriptions.yaml'
+  
   # Bulk operations
   # Note: /bulk/trade-item-details consolidates what would have been separate
   # /bulk/trade-items and /bulk/item-identifications endpoints since
   # TradeItemDetailsSummary combines ItemIdentification + ItemDetails from ETIM xChange
   /bulk/trade-item-details:
     $ref: './paths/bulk/trade-item-details.yaml'
+  /bulk/trade-item-descriptions:
+    $ref: './paths/bulk/trade-item-descriptions.yaml'
   /bulk/trade-item-orderings:
     $ref: './paths/bulk/trade-item-orderings.yaml'
   /bulk/trade-item-pricings:
@@ -71,14 +76,20 @@ components:
       $ref: './schemas/domain/TradeItemDetails.yaml'
     TradeItemDetailsSummary:
       $ref: './schemas/domain/TradeItemDetailsSummary.yaml'
+    ItemDescriptionsSummary:
+      $ref: './schemas/domain/ItemDescriptionsSummary.yaml'
     
     # Response schemas
     TradeItemResponse:
       $ref: './schemas/responses/TradeItemResponse.yaml'
     TradeItemDetailsResponse:
       $ref: './schemas/responses/TradeItemDetailsResponse.yaml'
+    TradeItemDescriptionsResponse:
+      $ref: './schemas/responses/TradeItemDescriptionsResponse.yaml'
     BulkTradeItemDetailsResponse:
       $ref: './schemas/responses/BulkTradeItemDetailsResponse.yaml'
+    BulkTradeItemDescriptionsResponse:
+      $ref: './schemas/responses/BulkTradeItemDescriptionsResponse.yaml'
 
   parameters:
     SupplierIdGln:

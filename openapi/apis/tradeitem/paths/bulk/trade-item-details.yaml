@@ -13,7 +13,8 @@ get:
     - Discount and bonus group information
     - Validity and obsolescence dates
     - Item status and condition
-    - Item descriptions in multiple languages
+    
+    **Note**: Item descriptions are available via `/bulk/trade-item-descriptions` endpoint.
     
     Use this endpoint for:
     - Initial data synchronization
@@ -58,9 +59,6 @@ get:
                     itemCondition: "NEW"
                     stockItem: true
                     shelfLifePeriod: null
-                    itemDescriptions:
-                      - descriptionLanguage: "en-US"
-                        minimalItemDescription: "LED Lamp 10W E27"
                   - supplierIdGln: "8712423012485"
                     supplierItemNumber: "SKU-TOOL-002"
                     supplierAltItemNumber: null
@@ -80,9 +78,6 @@ get:
                     itemCondition: "NEW"
                     stockItem: true
                     shelfLifePeriod: null
-                    itemDescriptions:
-                      - descriptionLanguage: "en-US"
-                        minimalItemDescription: "Professional Hammer 500g"
                 meta:
                   cursor: "eyJzdXBwbGllcklkR2xuIjoiODcxMjQyMzAxMjQ4NSIsInN1cHBsaWVySXRlbU51bWJlciI6IlNLVS1UT09MLTAwMiJ9"
                   hasNext: true

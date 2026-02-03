@@ -1,10 +1,10 @@
 type: object
 description: |
-  Detailed information about the trade item including status, condition, and descriptions.
+  Detailed information about the trade item including status, condition, and shelf life.
   Extracted from ETIM xChange `TradeItem.ItemDetails` structure.
+  
+  **Note**: Item descriptions are available via a separate `/descriptions` endpoint.
 additionalProperties: false
-required:
-  - itemDescriptions
 properties:
   itemStatus:
     description: |
@@ -52,25 +52,8 @@ properties:
       - 365
       - 730
       - null
-  itemDescriptions:
-    type: array
-    description: |
-      Array of item descriptions in different languages.
-      **ETIM xChange**: `ItemDescriptions[]`
-      **Path**: `Supplier[].Product[].TradeItem[].ItemDetails.ItemDescriptions[]`
-    minItems: 1
-    items:
-      $ref: ./ItemDescription.yaml
-    examples:
-      - - descriptionLanguage: "en-US"
-          minimalItemDescription: "Hammer 500g"
-          uniqueMainItemDescription: "Professional claw hammer"
 examples:
   - itemStatus: ACTIVE
     itemCondition: NEW
     stockItem: true
     shelfLifePeriod: null
-    itemDescriptions:
-      - descriptionLanguage: "en-US"
-        minimalItemDescription: "Hammer 500g"
-        uniqueMainItemDescription: "Professional claw hammer with fiberglass handle"
