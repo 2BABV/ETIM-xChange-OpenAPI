@@ -51,14 +51,12 @@ paths:
         `manufacturerIdGln` and `manufacturerProductNumber`. The product key is at the root level,
         with nested objects for each component:
 
-        - **identification**: Manufacturer details, GTINs, brand, dates, customs data
-        - **details**: Status, type, warranties, product groups
+        - **details**: Manufacturer info, GTINs, brand, dates, customs data, status, warranties
         - **descriptions**: Multilingual product descriptions (nested array)
         - **etimClassifications**: ETIM classifications with embedded features (nested array)
 
         **Subresources**: Each component is also available as a dedicated subresource:
-        - `/identification` - Product identification only
-        - `/details` - Product details only
+        - `/details` - Core product information
         - `/descriptions` - Multilingual descriptions with language filtering
         - `/etim-classifications` - ETIM classifications with features
 
@@ -87,7 +85,7 @@ paths:
                     data:
                       manufacturerIdGln: '1234567890123'
                       manufacturerProductNumber: '929002376910'
-                      identification:
+                      details:
                         manufacturerName: Philips Lighting B.V.
                         manufacturerShortname: Philips
                         productGtins:
@@ -99,7 +97,6 @@ paths:
                         customsCommodityCode: '8539502090'
                         countryOfOrigin:
                           - NL
-                      details:
                         productStatus: ACTIVE
                         productType: PHYSICAL
                         customisableProduct: false
@@ -123,7 +120,7 @@ paths:
                     data:
                       manufacturerIdGln: '1234567890123'
                       manufacturerProductNumber: LED-12345-A
-                      identification:
+                      details:
                         manufacturerName: OSRAM GmbH
                       descriptions:
                         - descriptionLanguage: en-GB
@@ -149,80 +146,6 @@ paths:
                 instance: https://api.product.2ba.nl/v1/products/1234567890123/929002376910
         '500':
           $ref: '#/components/responses/500-internal-server-error'
-  /{manufacturerIdGln}/{manufacturerProductNumber}/identification:
-    get:
-      operationId: getProductIdentification
-      tags:
-        - Products single
-      summary: Retrieve product identification
-      description: |
-        Retrieve identification information for a specific manufacturer product combination.
-
-        This endpoint returns product identification data including manufacturer details,
-        GTINs, brand information, lifecycle dates, and customs data for a single product
-        identified by the composite key of `manufacturerIdGln` and `manufacturerProductNumber`.
-
-        The product key is at the root level, with identification details nested inside.
-        This structure aligns with other single-product subresource responses.
-
-        **No pagination** - Returns exactly one product's identification or 404 if not found.
-      parameters:
-        - $ref: '#/components/parameters/manufacturer-id-gln'
-        - $ref: '#/components/parameters/manufacturer-product-number'
-      responses:
-        '200':
-          description: Successfully retrieved product identification
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProductIdentificationResponse'
-              examples:
-                fullIdentification:
-                  summary: Complete product identification
-                  value:
-                    data:
-                      manufacturerIdGln: '1234567890123'
-                      manufacturerProductNumber: '929002376910'
-                      identification:
-                        manufacturerName: Philips Lighting B.V.
-                        manufacturerShortname: Philips
-                        productGtins:
-                          - '8718699673826'
-                        brandName: Hue
-                        productAnnouncementDate: '2024-01-15'
-                        productValidityDate: '2024-03-01'
-                        productObsolescenceDate: null
-                        customsCommodityCode: '8539502090'
-                        countryOfOrigin:
-                          - NL
-                minimalIdentification:
-                  summary: Minimal product identification
-                  value:
-                    data:
-                      manufacturerIdGln: '1234567890123'
-                      manufacturerProductNumber: LED-12345-A
-                      identification:
-                        manufacturerName: OSRAM GmbH
-        '400':
-          $ref: '#/components/responses/400-bad-request'
-        '401':
-          $ref: '#/components/responses/401-unauthorized'
-        '403':
-          $ref: '#/components/responses/403-forbidden'
-        '404':
-          description: Product not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-              example:
-                type: https://api.product.2ba.nl/problems/not-found
-                title: Product Not Found
-                status: 404
-                detail: No product found with manufacturer GLN '1234567890123' and product number '929002376910'
-                instance: https://api.product.2ba.nl/v1/products/1234567890123/929002376910/identification
-        '500':
-          $ref: '#/components/responses/500-internal-server-error'
   /{manufacturerIdGln}/{manufacturerProductNumber}/details:
     get:
       operationId: getProductDetails
@@ -230,10 +153,11 @@ paths:
         - Products single
       summary: Retrieve product details
       description: |
-        Retrieve details for a specific manufacturer product combination.
+        Retrieve core product information for a specific manufacturer product combination.
 
-        This endpoint returns product details including status, type, warranties, and
-        product groups for a single product identified by the composite key of
+        This endpoint returns comprehensive product information including manufacturer details,
+        identifiers (GTINs, DUNS), brand, lifecycle dates, customs data, status, type, 
+        warranties, and product groups for a single product identified by the composite key of
         `manufacturerIdGln` and `manufacturerProductNumber`.
 
         The product key is at the root level, with details nested inside.
@@ -261,6 +185,14 @@ paths:
                       manufacturerIdGln: '1234567890123'
                       manufacturerProductNumber: '929002376910'
                       details:
+                        manufacturerName: Philips Lighting B.V.
+                        manufacturerShortname: Philips
+                        productGtins:
+                          - '8718699673826'
+                        brandName: Hue
+                        productValidityDate: '2024-03-01'
+                        countryOfOrigin:
+                          - NL
                         productStatus: ACTIVE
                         productType: PHYSICAL
                         customisableProduct: false
@@ -277,6 +209,7 @@ paths:
                       manufacturerIdGln: '1234567890123'
                       manufacturerProductNumber: LED-12345-A
                       details:
+                        manufacturerName: OSRAM GmbH
                         productStatus: ACTIVE
                         productType: PHYSICAL
         '400':
@@ -564,39 +497,6 @@ paths:
                 status: 404
                 detail: No product found with manufacturer GLN '1234567890123' and product number '929002376910'
                 instance: https://api.product.2ba.nl/v1/products/1234567890123/929002376910/lca-environmental
-        '500':
-          $ref: '#/components/responses/500-internal-server-error'
-  /bulk/product-identifications:
-    get:
-      operationId: getBulkProductIdentifications
-      tags:
-        - Products bulk
-      summary: Retrieve product identification information in bulk
-      description: |
-        Retrieve product identification information in bulk with cursor-based pagination.
-        Returns only identification-related fields: manufacturer details, product numbers,
-        GTINs, brand information, lifecycle dates, customs codes, and country of origin.
-
-        Use this endpoint for lightweight product identification synchronization.
-      parameters:
-        - $ref: '#/components/parameters/cursor'
-        - $ref: '#/components/parameters/limit'
-        - $ref: '#/components/parameters/selection-id'
-        - $ref: '#/components/parameters/manufacturer-id-gln-filter'
-        - $ref: '#/components/parameters/mutation-date-time'
-      responses:
-        '200':
-          description: Successfully retrieved product identifications
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BulkProductIdentificationsResponse'
-        '400':
-          $ref: '#/components/responses/400-bad-request'
-        '401':
-          $ref: '#/components/responses/401-unauthorized'
-        '403':
-          $ref: '#/components/responses/403-forbidden'
         '500':
           $ref: '#/components/responses/500-internal-server-error'
   /bulk/product-details:
@@ -910,17 +810,267 @@ paths:
           $ref: '#/components/responses/500-internal-server-error'
 components:
   schemas:
-    ProductIdentification:
+    ProductDetails:
       type: object
       description: |
-        Product identification information without the composite key fields.
-        Used in single-product responses where the key is provided at the root level.
+        Core product information combining identification and details without the composite key fields.
+        Contains manufacturer info, identifiers, lifecycle dates, and operational details.
+        Used in single-product responses where the key (manufacturerIdGln + manufacturerProductNumber) 
+        is provided at the root level.
 
-        For bulk retrieval with embedded keys, use `ProductIdentificationSummary`.
+        For bulk retrieval with embedded keys, use `ProductDetailsSummary`.
+
+        For product descriptions (text content), use the dedicated `/descriptions` subresource
+        which supports language filtering.
       additionalProperties: false
       required:
         - manufacturerName
       properties:
+        manufacturerIdDuns:
+          type:
+            - string
+            - 'null'
+          pattern: ^[0-9]{9}$
+          description: |
+            DUNS number identifying the manufacturer.
+            9-digit Dun & Bradstreet identifier.
+
+            **ETIM xChange**: `ManufacturerIdDuns`  
+            **Path**: `Supplier[].Product[].ProductIdentification.ManufacturerIdDuns`
+        manufacturerName:
+          type: string
+          minLength: 1
+          maxLength: 80
+          description: |
+            Official name of the manufacturer.
+
+            **ETIM xChange**: `ManufacturerName`  
+            **Path**: `Supplier[].Product[].ProductIdentification.ManufacturerName`
+        manufacturerShortname:
+          type:
+            - string
+            - 'null'
+          minLength: 1
+          maxLength: 15
+          description: |
+            Short name or abbreviation of the manufacturer.
+
+            **ETIM xChange**: `ManufacturerShortname`  
+            **Path**: `Supplier[].Product[].ProductIdentification.ManufacturerShortname`
+        productGtins:
+          type:
+            - array
+            - 'null'
+          uniqueItems: true
+          items:
+            type: string
+            pattern: ^[0-9]{8,14}$
+          description: |
+            Global Trade Item Numbers (GTINs) for the product.
+            Can include GTIN-8, GTIN-12, GTIN-13, or GTIN-14.
+
+            **ETIM xChange**: `ProductGtin`  
+            **Path**: `Supplier[].Product[].ProductIdentification.ProductGtin[]`
+        unbrandedProduct:
+          type:
+            - boolean
+            - 'null'
+          description: |
+            Indicates whether this is an unbranded/white-label product.
+
+            **ETIM xChange**: `UnbrandedProduct`  
+            **Path**: `Supplier[].Product[].ProductIdentification.UnbrandedProduct`
+        brandName:
+          type:
+            - string
+            - 'null'
+          minLength: 1
+          maxLength: 50
+          description: |
+            Brand name of the product.
+
+            **ETIM xChange**: `BrandName`  
+            **Path**: `Supplier[].Product[].ProductIdentification.BrandName`
+        productAnnouncementDate:
+          type:
+            - string
+            - 'null'
+          format: date
+          description: |
+            Date when the product was announced. ISO 8601 date format (YYYY-MM-DD).
+
+            **ETIM xChange**: `ProductAnnouncementDate`  
+            **Path**: `Supplier[].Product[].ProductIdentification.ProductAnnouncementDate`
+        productValidityDate:
+          type:
+            - string
+            - 'null'
+          format: date
+          description: |
+            Date when the product becomes valid/available. ISO 8601 date format (YYYY-MM-DD).
+
+            **ETIM xChange**: `ProductValidityDate`  
+            **Path**: `Supplier[].Product[].ProductIdentification.ProductValidityDate`
+        productObsolescenceDate:
+          type:
+            - string
+            - 'null'
+          format: date
+          description: |
+            Date when the product becomes obsolete. ISO 8601 date format (YYYY-MM-DD).
+
+            **ETIM xChange**: `ProductObsolescenceDate`  
+            **Path**: `Supplier[].Product[].ProductIdentification.ProductObsolescenceDate`
+        customsCommodityCode:
+          type:
+            - string
+            - 'null'
+          minLength: 6
+          maxLength: 16
+          description: |
+            Customs/HS commodity code for the product.
+
+            **ETIM xChange**: `CustomsCommodityCode`  
+            **Path**: `Supplier[].Product[].ProductIdentification.CustomsCommodityCode`
+        factorCustomsCommodityCode:
+          type:
+            - number
+            - 'null'
+          format: decimal
+          minimum: 0
+          multipleOf: 0.0001
+          maximum: 99999999999.9999
+          description: |
+            Factor for customs commodity code calculation.
+
+            **ETIM xChange**: `FactorCustomsCommodityCode`  
+            **Path**: `Supplier[].Product[].ProductIdentification.FactorCustomsCommodityCode`
+        countryOfOrigin:
+          type:
+            - array
+            - 'null'
+          uniqueItems: true
+          items:
+            type: string
+            pattern: ^[A-Z]{2}$
+          description: |
+            ISO 3166-1 alpha-2 country codes for country of origin.
+
+            **ETIM xChange**: `CountryOfOrigin`  
+            **Path**: `Supplier[].Product[].ProductIdentification.CountryOfOrigin[]`
+        productStatus:
+          $ref: '#/components/schemas/ProductStatus'
+        productType:
+          $ref: '#/components/schemas/ProductType'
+        customisableProduct:
+          type:
+            - boolean
+            - 'null'
+          description: |
+            Indicates whether the product can be customised.
+
+            **ETIM xChange**: `CustomisableProduct`  
+            **Path**: `Supplier[].Product[].ProductDetails.CustomisableProduct`
+        hasSerialNumber:
+          type:
+            - boolean
+            - 'null'
+          description: |
+            Indicates whether the product has a serial number.
+
+            **ETIM xChange**: `HasSerialNumber`  
+            **Path**: `Supplier[].Product[].ProductDetails.HasSerialNumber`
+        warrantyConsumer:
+          type:
+            - integer
+            - 'null'
+          minimum: 0
+          exclusiveMaximum: 1000
+          description: |
+            Consumer warranty period in months.
+
+            **ETIM xChange**: `WarrantyConsumer`  
+            **Path**: `Supplier[].Product[].ProductDetails.WarrantyConsumer`
+        warrantyBusiness:
+          type:
+            - integer
+            - 'null'
+          minimum: 0
+          exclusiveMaximum: 1000
+          description: |
+            Business/B2B warranty period in months.
+
+            **ETIM xChange**: `WarrantyBusiness`  
+            **Path**: `Supplier[].Product[].ProductDetails.WarrantyBusiness`
+        relatedManufacturerProductGroup:
+          type:
+            - array
+            - 'null'
+          uniqueItems: true
+          items:
+            type: string
+            minLength: 1
+            maxLength: 50
+          description: |
+            Related manufacturer product groups for categorization.
+
+            **ETIM xChange**: `RelatedManufacturerProductGroup`  
+            **Path**: `Supplier[].Product[].ProductDetails.RelatedManufacturerProductGroup[]`
+      examples:
+        - manufacturerName: Philips Lighting B.V.
+          manufacturerShortname: Philips
+          productGtins:
+            - '8718699673826'
+          brandName: Hue
+          productAnnouncementDate: '2024-01-15'
+          productValidityDate: '2024-03-01'
+          productObsolescenceDate: null
+          customsCommodityCode: '8539502090'
+          countryOfOrigin:
+            - NL
+          productStatus: ACTIVE
+          productType: PHYSICAL
+          customisableProduct: false
+          hasSerialNumber: true
+          warrantyConsumer: 24
+          warrantyBusiness: 12
+          relatedManufacturerProductGroup:
+            - Smart Lighting
+            - LED Bulbs
+    ProductDetailsSummary:
+      type: object
+      description: |
+        Core product information for bulk retrieval combining identification and details.
+        Contains all key fields plus manufacturer info, identifiers, lifecycle dates, and operational details.
+
+        For product descriptions (text content), use the dedicated `/bulk/product-descriptions` endpoint
+        which supports language filtering.
+      additionalProperties: false
+      required:
+        - manufacturerIdGln
+        - manufacturerProductNumber
+        - manufacturerName
+      properties:
+        manufacturerIdGln:
+          type: string
+          pattern: ^[0-9]{13}$
+          description: |
+            Global Location Number (GLN) identifying the manufacturer.
+            13-digit GS1 identifier.
+          examples:
+            - '1234567890123'
+        manufacturerProductNumber:
+          type: string
+          minLength: 1
+          maxLength: 35
+          description: |
+            Manufacturer's unique product identifier.
+
+            **ETIM xChange**: `ManufacturerProductNumber`  
+            **Path**: `Supplier[].Product[].ProductIdentification.ManufacturerProductNumber`
+          examples:
+            - '929002376910'
+            - ABC-12345-XYZ
         manufacturerIdDuns:
           type:
             - string
@@ -1017,31 +1167,6 @@ components:
             pattern: ^[A-Z]{2}$
           description: |
             ISO 3166-1 alpha-2 country codes for country of origin.
-      examples:
-        - manufacturerName: Philips Lighting B.V.
-          manufacturerShortname: Philips
-          productGtins:
-            - '8718699673826'
-          brandName: Hue
-          productAnnouncementDate: '2024-01-15'
-          productValidityDate: '2024-03-01'
-          productObsolescenceDate: null
-          customsCommodityCode: '8539502090'
-          countryOfOrigin:
-            - NL
-    ProductDetails:
-      type: object
-      description: |
-        Product details information without the composite key fields.
-        Contains status, type, warranties, and product groups.
-        Used in single-product responses where the key is provided at the root level.
-
-        For bulk retrieval with embedded keys, use `ProductDetailsSummary`.
-
-        For product descriptions (text content), use the dedicated `/descriptions` subresource
-        which supports language filtering.
-      additionalProperties: false
-      properties:
         productStatus:
           $ref: '#/components/schemas/ProductStatus'
         productType:
@@ -1101,208 +1226,16 @@ components:
             **ETIM xChange**: `RelatedManufacturerProductGroup`  
             **Path**: `Supplier[].Product[].ProductDetails.RelatedManufacturerProductGroup[]`
       examples:
-        - productStatus: ACTIVE
-          productType: PHYSICAL
-          customisableProduct: false
-          hasSerialNumber: true
-          warrantyConsumer: 24
-          warrantyBusiness: 12
-          relatedManufacturerProductGroup:
-            - Smart Lighting
-            - LED Bulbs
-    ProductIdentificationSummary:
-      type: object
-      description: |
-        Simplified product identification information for bulk retrieval.
-        Contains only key identification fields without complex nested structures.
-      additionalProperties: false
-      required:
-        - manufacturerIdGln
-        - manufacturerName
-        - manufacturerProductNumber
-      properties:
-        manufacturerIdGln:
-          type: string
-          pattern: ^[0-9]{13}$
-        manufacturerIdDuns:
-          type:
-            - string
-            - 'null'
-          pattern: ^[0-9]{9}$
-        manufacturerName:
-          type: string
-          minLength: 1
-          maxLength: 80
-        manufacturerShortname:
-          type:
-            - string
-            - 'null'
-          minLength: 1
-          maxLength: 15
-        manufacturerProductNumber:
-          type: string
-          minLength: 1
-          maxLength: 35
-        productGtins:
-          type:
-            - array
-            - 'null'
-          uniqueItems: true
-          items:
-            type: string
-            pattern: ^[0-9]{8,14}$
-        unbrandedProduct:
-          type:
-            - boolean
-            - 'null'
-        brandName:
-          type:
-            - string
-            - 'null'
-          minLength: 1
-          maxLength: 50
-        productAnnouncementDate:
-          type:
-            - string
-            - 'null'
-          format: date
-        productValidityDate:
-          type:
-            - string
-            - 'null'
-          format: date
-        productObsolescenceDate:
-          type:
-            - string
-            - 'null'
-          format: date
-        customsCommodityCode:
-          type:
-            - string
-            - 'null'
-          minLength: 6
-          maxLength: 16
-        factorCustomsCommodityCode:
-          type:
-            - number
-            - 'null'
-          format: decimal
-          minimum: 0
-          multipleOf: 0.0001
-          maximum: 99999999999.9999
-        countryOfOrigin:
-          type:
-            - array
-            - 'null'
-          uniqueItems: true
-          items:
-            type: string
-            pattern: ^[A-Z]{2}$
-      examples:
         - manufacturerIdGln: '1234567890123'
+          manufacturerProductNumber: '929002376910'
           manufacturerName: Philips Lighting B.V.
           manufacturerShortname: Philips
-          manufacturerProductNumber: '929002376910'
           productGtins:
             - '8718699673826'
           brandName: Hue
           productValidityDate: '2024-03-01'
           countryOfOrigin:
             - NL
-    ProductDetailsSummary:
-      type: object
-      description: |
-        Product details information for bulk retrieval.
-        Contains status, type, warranties, and product groups.
-
-        For product descriptions (text content), use the dedicated `/bulk/product-descriptions` endpoint
-        which supports language filtering.
-      additionalProperties: false
-      required:
-        - manufacturerIdGln
-        - manufacturerProductNumber
-      properties:
-        manufacturerIdGln:
-          type: string
-          pattern: ^[0-9]{13}$
-          description: |
-            Global Location Number (GLN) identifying the manufacturer.
-            13-digit GS1 identifier.
-          examples:
-            - '1234567890123'
-        manufacturerProductNumber:
-          type: string
-          minLength: 1
-          maxLength: 35
-          description: |
-            Manufacturer's unique product identifier.
-
-            **ETIM xChange**: `ManufacturerProductNumber`  
-            **Path**: `Supplier[].Product[].ProductIdentification.ManufacturerProductNumber`
-          examples:
-            - '929002376910'
-            - ABC-12345-XYZ
-        productStatus:
-          $ref: '#/components/schemas/ProductStatus'
-        productType:
-          $ref: '#/components/schemas/ProductType'
-        customisableProduct:
-          type:
-            - boolean
-            - 'null'
-          description: |
-            Indicates whether the product can be customised.
-
-            **ETIM xChange**: `CustomisableProduct`  
-            **Path**: `Supplier[].Product[].ProductDetails.CustomisableProduct`
-        hasSerialNumber:
-          type:
-            - boolean
-            - 'null'
-          description: |
-            Indicates whether the product has a serial number.
-
-            **ETIM xChange**: `HasSerialNumber`  
-            **Path**: `Supplier[].Product[].ProductDetails.HasSerialNumber`
-        warrantyConsumer:
-          type:
-            - integer
-            - 'null'
-          minimum: 0
-          exclusiveMaximum: 1000
-          description: |
-            Consumer warranty period in months.
-
-            **ETIM xChange**: `WarrantyConsumer`  
-            **Path**: `Supplier[].Product[].ProductDetails.WarrantyConsumer`
-        warrantyBusiness:
-          type:
-            - integer
-            - 'null'
-          minimum: 0
-          exclusiveMaximum: 1000
-          description: |
-            Business/B2B warranty period in months.
-
-            **ETIM xChange**: `WarrantyBusiness`  
-            **Path**: `Supplier[].Product[].ProductDetails.WarrantyBusiness`
-        relatedManufacturerProductGroup:
-          type:
-            - array
-            - 'null'
-          uniqueItems: true
-          items:
-            type: string
-            minLength: 1
-            maxLength: 50
-          description: |
-            Related manufacturer product groups for categorization.
-
-            **ETIM xChange**: `RelatedManufacturerProductGroup`  
-            **Path**: `Supplier[].Product[].ProductDetails.RelatedManufacturerProductGroup[]`
-      examples:
-        - manufacturerIdGln: '1234567890123'
-          manufacturerProductNumber: '929002376910'
           productStatus: ACTIVE
           productType: PHYSICAL
           customisableProduct: false
@@ -3534,12 +3467,11 @@ components:
 
         The product key (`manufacturerIdGln` + `manufacturerProductNumber`) is at the root level,
         with nested objects for each component:
-        - `identification`: Manufacturer details, GTINs, brand, dates, customs data
-        - `details`: Status, type, warranties, product groups
+        - `details`: Manufacturer info, GTINs, brand, dates, customs data, status, warranties
         - `descriptions`: Array of multilingual descriptions (nested, not flattened)
         - `etimClassifications`: Array of ETIM classifications with embedded features (nested)
 
-        This structure aligns with the subresource endpoints (`/identification`, `/details`, 
+        This structure aligns with the subresource endpoints (`/details`, 
         `/descriptions`, `/etim-classifications`) which all include the key at the root level.
       additionalProperties: false
       required:
@@ -3551,7 +3483,7 @@ components:
           required:
             - manufacturerIdGln
             - manufacturerProductNumber
-            - identification
+            - details
           properties:
             manufacturerIdGln:
               type: string
@@ -3566,15 +3498,11 @@ components:
               description: Manufacturer's unique product number/code
               examples:
                 - '929002376910'
-            identification:
-              $ref: '#/components/schemas/ProductIdentification'
-              description: |
-                Product identification information including manufacturer details, GTINs, brand, 
-                dates, and customs data.
             details:
               $ref: '#/components/schemas/ProductDetails'
               description: |
-                Product details including status, type, warranties, and product groups.
+                Core product information including manufacturer details, GTINs, brand,
+                dates, customs data, status, type, warranties, and product groups.
             descriptions:
               type:
                 - array
@@ -3598,7 +3526,7 @@ components:
         - data:
             manufacturerIdGln: '1234567890123'
             manufacturerProductNumber: '929002376910'
-            identification:
+            details:
               manufacturerName: Philips Lighting B.V.
               manufacturerShortname: Philips
               productGtins:
@@ -3610,7 +3538,6 @@ components:
               customsCommodityCode: '8539502090'
               countryOfOrigin:
                 - NL
-            details:
               productStatus: ACTIVE
               productType: PHYSICAL
               customisableProduct: false
@@ -3632,68 +3559,14 @@ components:
                 etimFeatures:
                   - etimFeatureCode: EF012345
                     etimValueNumeric: 10
-    ProductIdentificationResponse:
-      type: object
-      description: |
-        Response containing product identification information for a single product.
-        The product key is at the root level, with identification details nested inside.
-
-        This structure aligns with other single-product subresource responses
-        (`/details`, `/descriptions`, `/etim-classifications`).
-      additionalProperties: false
-      required:
-        - data
-      properties:
-        data:
-          type: object
-          additionalProperties: false
-          required:
-            - manufacturerIdGln
-            - manufacturerProductNumber
-            - identification
-          properties:
-            manufacturerIdGln:
-              type: string
-              pattern: ^[0-9]{13}$
-              description: Global Location Number (GLN) uniquely identifying the manufacturer
-              examples:
-                - '1234567890123'
-            manufacturerProductNumber:
-              type: string
-              minLength: 1
-              maxLength: 35
-              description: Manufacturer's unique product number/code
-              examples:
-                - '929002376910'
-            identification:
-              $ref: '#/components/schemas/ProductIdentification'
-              description: |
-                Product identification information including manufacturer details, GTINs, brand,
-                dates, and customs data.
-      examples:
-        - data:
-            manufacturerIdGln: '1234567890123'
-            manufacturerProductNumber: '929002376910'
-            identification:
-              manufacturerName: Philips Lighting B.V.
-              manufacturerShortname: Philips
-              productGtins:
-                - '8718699673826'
-              brandName: Hue
-              productAnnouncementDate: '2024-01-15'
-              productValidityDate: '2024-03-01'
-              productObsolescenceDate: null
-              customsCommodityCode: '8539502090'
-              countryOfOrigin:
-                - NL
     ProductDetailsResponse:
       type: object
       description: |
-        Response containing product details for a single product.
+        Response containing core product information for a single product.
         The product key is at the root level, with details nested inside.
 
         This structure aligns with other single-product subresource responses
-        (`/identification`, `/descriptions`, `/etim-classifications`).
+        (`/descriptions`, `/etim-classifications`).
 
         Note: Product descriptions are available through the dedicated `/descriptions` subresource
         which supports language filtering.
@@ -3724,12 +3597,21 @@ components:
             details:
               $ref: '#/components/schemas/ProductDetails'
               description: |
-                Product details including status, type, warranties, and product groups.
+                Core product information including manufacturer details, identifiers,
+                brand, dates, customs data, status, warranties, and product groups.
       examples:
         - data:
             manufacturerIdGln: '1234567890123'
             manufacturerProductNumber: '929002376910'
             details:
+              manufacturerName: Philips Lighting B.V.
+              manufacturerShortname: Philips
+              productGtins:
+                - '8718699673826'
+              brandName: Hue
+              productValidityDate: '2024-03-01'
+              countryOfOrigin:
+                - NL
               productStatus: ACTIVE
               productType: PHYSICAL
               customisableProduct: false
@@ -3866,39 +3748,6 @@ components:
                 etimFeatures:
                   - etimFeatureCode: EF000789
                     etimValueLogical: true
-    BulkProductIdentificationsResponse:
-      type: object
-      additionalProperties: false
-      required:
-        - data
-        - meta
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProductIdentificationSummary'
-          description: Array of product identification summaries
-        meta:
-          $ref: '#/components/schemas/CursorPaginationMetadata'
-          description: Cursor-based pagination metadata
-      examples:
-        - data:
-            - manufacturerIdGln: '1234567890123'
-              manufacturerName: Philips Lighting B.V.
-              manufacturerShortname: Philips
-              manufacturerProductNumber: '929002376910'
-              productGtins:
-                - '8718699673826'
-              brandName: Hue
-              productValidityDate: '2024-03-01'
-              countryOfOrigin:
-                - NL
-          meta:
-            cursor: eyJpZCI6MTIzfQ==
-            hasNext: true
-            hasPrev: false
-            limit: 100
-            estimatedTotal: 1523
     BulkProductDetailsResponse:
       type: object
       additionalProperties: false
@@ -3918,6 +3767,14 @@ components:
         - data:
             - manufacturerIdGln: '1234567890123'
               manufacturerProductNumber: '929002376910'
+              manufacturerName: Philips Lighting B.V.
+              manufacturerShortname: Philips
+              productGtins:
+                - '8718699673826'
+              brandName: Hue
+              productValidityDate: '2024-03-01'
+              countryOfOrigin:
+                - NL
               productStatus: ACTIVE
               productType: PHYSICAL
               customisableProduct: false
