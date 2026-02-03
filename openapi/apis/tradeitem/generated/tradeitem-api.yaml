@@ -35,153 +35,6 @@ tags:
     description: Bulk data retrieval operations with cursor-based pagination for high-volume data exchange
     x-displayName: Bulk Trade Items
 paths:
-  /{supplierIdGln}/{supplierItemNumber}:
-    get:
-      operationId: getTradeItem
-      summary: Retrieve a single trade item by supplier GLN and item number
-      description: |
-        Retrieve the full trade item payload for a single supplier item combination.
-        Returns exactly one trade item document. No pagination, no cursor metadata.
-
-        **ETIM xChange Path**: `Supplier[].Product[].TradeItem[]`
-      tags:
-        - TradeItems single
-      parameters:
-        - $ref: '#/components/parameters/supplier-id-gln'
-        - $ref: '#/components/parameters/supplier-item-number'
-      responses:
-        '200':
-          description: Trade item found and returned successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TradeItemResponse'
-              examples:
-                fullTradeItem:
-                  summary: Complete trade item with all optional fields
-                  value:
-                    data:
-                      supplierIdGln: '1234567890123'
-                      supplierItemNumber: ART-12345
-                      supplierAltItemNumber: ALT-12345
-                      manufacturerItemNumber: MFG-98765
-                      manufacturerIdGln: '9876543210987'
-                      itemGtins:
-                        - '4012345678901'
-                      buyerItemNumber: BUYER-XYZ-123
-                      discountGroupId: DG-001
-                      discountGroupDescription: Standard discount group
-                      bonusGroupId: BG-002
-                      bonusGroupDescription: Premium bonus tier
-                      itemValidityDate: '2024-01-01'
-                      itemObsolescenceDate: '2026-12-31'
-                      itemDetails:
-                        itemStatus: ACTIVE
-                        itemCondition: NEW
-                        stockItem: true
-                        shelfLifePeriod: 365
-                      ordering:
-                        orderUnit: C62
-                        minimumOrderQuantity: 1
-                        orderStepSize: 1
-                        standardOrderLeadTime: 5
-                        useUnit: C62
-                        useUnitConversionFactor: 1
-                      pricings:
-                        - priceUnit: C62
-                          priceUnitFactor: 1
-                          priceQuantity: 1
-                          priceOnRequest: false
-                          netPrice: 100
-                          grossListPrice: 130
-                          recommendedRetailPrice: 150
-                          vat: 21
-                          priceValidityDate: '2025-01-01'
-                          priceExpiryDate: '2025-12-31'
-                      itemRelations:
-                        - relatedSupplierItemNumber: ART-12346
-                          relatedManufacturerItemNumber: MFG-98766
-                          relatedItemGtins:
-                            - '4012345678902'
-                          relationType: ACCESSORY
-                          relatedItemQuantity: 2
-                      itemLogistics:
-                        - baseItemNetLength: 25.5
-                          baseItemNetWidth: 15
-                          baseItemNetHeight: 10
-                          baseItemNetDiameter: null
-                          netDimensionUnit: CMT
-                          baseItemNetWeight: 500
-                          netWeightUnit: GRM
-                          baseItemNetVolume: 3.825
-                          netVolumeUnit: LTR
-                      itemAttachments:
-                        - attachmentType: ATX001
-                          attachmentUri: https://example.com/images/hammer-main.jpg
-                          attachmentDescription: Product main image
-                          attachmentFilename: hammer-main.jpg
-                      packagingUnits:
-                        - packagingTypeCode: BX
-                          packagingGtins:
-                            - '14012345678908'
-                          packagingQuantity: 10
-                          grossLength: 30
-                          grossWidth: 20
-                          grossHeight: 15
-                          grossDiameter: null
-                          grossDimensionUnit: CMT
-                          grossWeight: 5500
-                          grossWeightUnit: GRM
-                      itemCountrySpecificFields: null
-                minimalTradeItem:
-                  summary: Minimal trade item with only required fields
-                  value:
-                    data:
-                      supplierIdGln: '9876543210987'
-                      supplierItemNumber: SKU-MIN-001
-                      supplierAltItemNumber: null
-                      manufacturerItemNumber: null
-                      manufacturerIdGln: null
-                      itemGtins: null
-                      buyerItemNumber: null
-                      discountGroupId: null
-                      discountGroupDescription: null
-                      bonusGroupId: null
-                      bonusGroupDescription: null
-                      itemValidityDate: null
-                      itemObsolescenceDate: null
-                      itemDetails:
-                        itemStatus: ACTIVE
-                        itemCondition: NEW
-                        stockItem: true
-                      ordering:
-                        orderUnit: C62
-                        minimumOrderQuantity: 1
-                        orderStepSize: 1
-                      pricings: null
-                      itemRelations: null
-                      itemLogistics: null
-                      itemAttachments: null
-                      packagingUnits: null
-                      itemCountrySpecificFields: null
-        '400':
-          $ref: '#/components/responses/400-bad-request'
-        '401':
-          $ref: '#/components/responses/401-unauthorized'
-        '404':
-          description: Trade item not found for the given composite key
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-              example:
-                type: https://api.tradeitem.2ba.nl/problems/not-found
-                title: Trade Item Not Found
-                status: 404
-                detail: No trade item found for supplier GLN '1234567890123' and item number 'UNKNOWN-SKU'
-                instance: https://api.tradeitem.2ba.nl/v1/trade-items/1234567890123/UNKNOWN-SKU
-        '500':
-          $ref: '#/components/responses/500-internal-server-error'
   /{supplierIdGln}/{supplierItemNumber}/details:
     get:
       operationId: getTradeItemDetails
@@ -3667,70 +3520,128 @@ components:
       examples:
         - NEW
         - REFURBISHED
-    ItemDetails:
+    ProblemDetails:
+      type: object
+      title: Problem Details
+      description: |
+        A machine-readable format for specifying errors in HTTP API responses,
+        based on RFC 7807 (https://datatracker.ietf.org/doc/html/rfc7807).
+      properties:
+        type:
+          type: string
+          format: uri
+          description: A URI reference that identifies the problem type.
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type.
+        status:
+          type: integer
+          format: int32
+          description: The HTTP status code generated by the origin server.
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          format: uri
+          description: A URI reference that identifies the specific occurrence of the problem.
+      additionalProperties: true
+      examples:
+        - type: https://example.com/probs/out-of-credit
+          title: You do not have enough credit.
+          status: 403
+          detail: Your current balance is 30, but that costs 50.
+          instance: /account/12345/msgs/abc
+        - type: https://example.com/probs/not-found
+          title: Resource not found
+          status: 404
+          detail: The requested resource could not be found.
+          instance: /api/resources/12345
+    ValidationProblemDetails:
+      allOf:
+        - $ref: '#/components/schemas/ProblemDetails'
+        - type: object
+          title: Validation Problem Details
+          description: |
+            A validation problem details object, extending RFC 7807 ProblemDetails
+            to include model validation errors. Matches .NET's ValidationProblemDetails.
+          properties:
+            errors:
+              type: object
+              additionalProperties:
+                type: array
+                items:
+                  type: string
+              description: A dictionary of validation errors keyed by field name.
+      examples:
+        - type: https://example.com/validation-error
+          title: One or more validation errors occurred.
+          status: 400
+          errors:
+            name:
+              - The Name field is required.
+            age:
+              - Age must be greater than or equal to 18.
+        - type: https://example.com/validation-error
+          title: Validation failed
+          status: 400
+          errors:
+            email:
+              - Email must be a valid email address.
+    ItemDescription:
       type: object
       description: |
-        Detailed information about the trade item including status, condition, and shelf life.
-        Extracted from ETIM xChange `TradeItem.ItemDetails` structure.
-
-        **Note**: Item descriptions are available via a separate `/descriptions` endpoint.
+        Item description in a specific language.
+        Extracted from ETIM xChange `TradeItem.ItemDetails.ItemDescriptions[]` structure.
       additionalProperties: false
+      required:
+        - minimalItemDescription
       properties:
-        itemStatus:
-          description: |
-            Current lifecycle status of the trade item (nullable).
-            **ETIM xChange**: `ItemStatus`
-            **Path**: `Supplier[].Product[].TradeItem[].ItemDetails.ItemStatus`
-          anyOf:
-            - $ref: '#/components/schemas/ItemStatus'
-            - type: 'null'
-          examples:
-            - ACTIVE
-            - OBSOLETE
-            - null
-        itemCondition:
-          description: |
-            Physical condition of the trade item (nullable).
-            **ETIM xChange**: `ItemCondition`
-            **Path**: `Supplier[].Product[].TradeItem[].ItemDetails.ItemCondition`
-          anyOf:
-            - $ref: '#/components/schemas/ItemCondition'
-            - type: 'null'
-          examples:
-            - NEW
-            - REFURBISHED
-            - null
-        stockItem:
+        descriptionLanguage:
           type:
-            - boolean
+            - string
             - 'null'
           description: |
-            Indicates whether the item is a stock item (true) or made-to-order (false).
-            **ETIM xChange**: `StockItem`
-            **Path**: `Supplier[].Product[].TradeItem[].ItemDetails.StockItem`
+            Language code for the description (e.g., 'en-US', 'de-DE', 'nl-NL').
+            **ETIM xChange**: `DescriptionLanguage`
+            **Path**: `Supplier[].Product[].TradeItem[].ItemDetails.ItemDescriptions[].DescriptionLanguage`
+          pattern: ^[a-z]{2}[-][A-Z]{2}$
           examples:
-            - true
-            - false
+            - en-US
+            - de-DE
+            - nl-NL
             - null
-        shelfLifePeriod:
+        minimalItemDescription:
+          type: string
+          description: |
+            Minimal description of the trade item (short description).
+            **ETIM xChange**: `MinimalItemDescription`
+            **Path**: `Supplier[].Product[].TradeItem[].ItemDetails.ItemDescriptions[].MinimalItemDescription`
+          minLength: 1
+          maxLength: 80
+          examples:
+            - Hammer 500g
+            - Screwdriver Phillips
+        uniqueMainItemDescription:
           type:
-            - integer
+            - string
             - 'null'
           description: |
-            Shelf life period of the item in days (0-999).
-            **ETIM xChange**: `ShelfLifePeriod`
-            **Path**: `Supplier[].Product[].TradeItem[].ItemDetails.ShelfLifePeriod`
-          minimum: 0
-          maximum: 999
+            Extended unique description of the trade item (long description).
+            **ETIM xChange**: `UniqueMainItemDescription`
+            **Path**: `Supplier[].Product[].TradeItem[].ItemDetails.ItemDescriptions[].UniqueMainItemDescription`
+          minLength: 1
+          maxLength: 255
           examples:
-            - 365
-            - 730
+            - Professional claw hammer with fiberglass handle, 500g head weight, ergonomic grip
             - null
       examples:
-        - itemStatus: ACTIVE
-          itemCondition: NEW
-          stockItem: true
-          shelfLifePeriod: null
+        - descriptionLanguage: en-US
+          minimalItemDescription: Hammer 500g
+          uniqueMainItemDescription: Professional claw hammer with fiberglass handle, 500g head weight
+        - descriptionLanguage: de-DE
+          minimalItemDescription: Hammer 500g
+          uniqueMainItemDescription: null
     UnitCodes:
       type: string
       description: |
@@ -3811,6 +3722,403 @@ components:
         - Z3
         - D99
         - KG
+    AllowanceSurchargeTypes:
+      type: string
+      description: |
+        Allowance and surcharge type codes for pricing adjustments.
+        These codes define the reason for price adjustments.
+      enum:
+        - AAT
+        - ABL
+        - ADO
+        - ADR
+        - ADZ
+        - AEM
+        - AEO
+        - AEP
+        - AEQ
+        - CAI
+        - DAE
+        - DBD
+        - FC
+        - HD
+        - INS
+        - MAC
+        - MAT
+        - PAD
+        - PI
+        - QD
+        - RAD
+        - SH
+        - TD
+        - WHE
+        - X21
+    LanguageCode:
+      type: string
+      description: ISO 639-1 language code
+      enum:
+        - en
+        - de
+        - fr
+        - nl
+        - es
+        - it
+        - sv
+        - 'no'
+        - da
+        - pl
+        - cs
+      examples:
+        - en
+        - nl
+        - de
+    CursorPaginationMetadata:
+      type: object
+      description: |
+        Cursor-based pagination metadata exposed in the `meta` object. Includes the opaque pagination cursor,
+        navigation flags, the requested page size, and an optional estimated total count for windowed scans.
+      additionalProperties: false
+      properties:
+        cursor:
+          type:
+            - string
+            - 'null'
+          description: Cursor bookmark to request the next page of data. Always opaque and URL-safe. Null when no next page exists.
+          minLength: 1
+          examples:
+            - eyJpZCI6MTIzNDU2Nzg5MCwic29ydCI6ImFzYyJ9
+            - null
+        prevCursor:
+          type:
+            - string
+            - 'null'
+          description: Cursor bookmark that replays the previous page of data when present.
+          examples:
+            - eyJpZCI6MTIzNDU2NzAwMCwic29ydCI6ImFzYyJ9
+            - null
+        hasNext:
+          type: boolean
+          description: Indicates whether another page of data is available after the current window.
+          examples:
+            - true
+        hasPrev:
+          type: boolean
+          description: Indicates whether a previous page of data can be fetched using `prevCursor`.
+          examples:
+            - false
+        limit:
+          type: integer
+          description: Effective page size applied for this request.
+          minimum: 1
+          maximum: 1000
+          examples:
+            - 100
+        estimatedTotal:
+          type:
+            - integer
+            - 'null'
+          description: Estimated total number of records that satisfy the filter window. May be null when unknown or expensive to calculate.
+          minimum: 0
+          examples:
+            - 15234
+            - null
+      required:
+        - cursor
+        - hasNext
+        - limit
+    TradeItemPricingSummary:
+      type: object
+      description: |
+        Flattened trade item pricing for bulk retrieval.
+        Each row represents a single price entry with the trade item identifier, following the 
+        same pattern as `ProductEtimClassificationFeature` (1 row = 1 data point).
+
+        This flattened structure is optimized for:
+        - Predictable payload sizes per row
+        - Efficient cursor-based pagination
+        - ETL/data warehouse ingestion
+        - Streaming data processing
+
+        A trade item may have multiple pricing entries (e.g., quantity tiers, validity periods),
+        resulting in multiple rows with the same composite key but different pricing data.
+
+        **Allowances & Surcharges**: Available via separate `/bulk/trade-item-allowance-surcharges` endpoint.
+        Join using `supplierIdGln` + `supplierItemNumber` + `priceUnit` + `priceQuantity` (+ `priceValidityDate`).
+
+        **Payload Optimization**: Optional properties with null values may be omitted from the response
+        to minimize payload size. Clients should treat missing properties as null/not applicable.
+
+        **ETIM xChange**: `Pricing`
+        **Path**: `Supplier[].Product[].TradeItem[].Pricing[]`
+      additionalProperties: false
+      required:
+        - supplierIdGln
+        - supplierItemNumber
+        - priceUnit
+        - priceQuantity
+      properties:
+        supplierIdGln:
+          type: string
+          pattern: ^[0-9]{13}$
+          description: |
+            Global Location Number (GLN) of the supplier. 13-digit GS1 identifier.
+            Part of the composite key for the trade item.
+
+            **ETIM xChange**: `SupplierIdGln`  
+            **Path**: `Supplier[].SupplierId.SupplierIdGln`
+          examples:
+            - '1234567890123'
+            - '8712423012485'
+        supplierItemNumber:
+          type: string
+          minLength: 1
+          maxLength: 35
+          description: |
+            Supplier's unique item number. Part of the composite key for the trade item.
+            This is the primary identifier for items in the supplier's catalog system.
+
+            **ETIM xChange**: `SupplierItemNumber`  
+            **Path**: `Supplier[].Product[].TradeItem[].ItemIdentification.SupplierItemNumber`
+          examples:
+            - SKU-12345
+            - ITEM-ABC-789
+        priceUnit:
+          description: |
+            Unit for which the price applies (e.g., pieces, boxes, meters).
+
+            **ETIM xChange**: `PriceUnit`
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceUnit`
+          $ref: '#/components/schemas/UnitCodes'
+          examples:
+            - C62
+            - BX
+            - MTR
+        priceUnitFactor:
+          type:
+            - number
+            - 'null'
+          description: |
+            Factor to convert price unit to order unit (converted from ETIM xChange string to number).
+
+            **ETIM xChange**: `PriceUnitFactor` (string with pattern)
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceUnitFactor`
+          minimum: 0
+          multipleOf: 0.0001
+          maximum: 99999999999.9999
+          examples:
+            - 1
+            - 100
+        priceQuantity:
+          type: number
+          description: |
+            Quantity for which the price applies (converted from ETIM xChange string to number).
+            Used for quantity-based pricing tiers.
+
+            **ETIM xChange**: `PriceQuantity` (string with pattern)
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceQuantity`
+          minimum: 0
+          multipleOf: 0.0001
+          maximum: 99999.9999
+          examples:
+            - 1
+            - 10
+            - 100
+        priceOnRequest:
+          type:
+            - boolean
+            - 'null'
+          description: |
+            Indicates whether the price is available only on request.
+
+            **ETIM xChange**: `PriceOnRequest`
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceOnRequest`
+          examples:
+            - false
+            - true
+        grossListPrice:
+          type:
+            - number
+            - 'null'
+          description: |
+            Gross list price (before discounts) (converted from ETIM xChange string to number).
+
+            **ETIM xChange**: `GrossListPrice` (string with pattern)
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].GrossListPrice`
+          minimum: 0
+          multipleOf: 0.0001
+          maximum: 99999999999.9999
+          examples:
+            - 130
+            - 1500
+        netPrice:
+          type:
+            - number
+            - 'null'
+          description: |
+            Net price (after discounts, before tax) (converted from ETIM xChange string to number).
+
+            **ETIM xChange**: `NetPrice` (string with pattern)
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].NetPrice`
+          minimum: 0
+          multipleOf: 0.0001
+          maximum: 99999999999.9999
+          examples:
+            - 100
+            - 1200
+        recommendedRetailPrice:
+          type:
+            - number
+            - 'null'
+          description: |
+            Recommended retail price (MSRP) (converted from ETIM xChange string to number).
+
+            **ETIM xChange**: `RecommendedRetailPrice` (string with pattern)
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].RecommendedRetailPrice`
+          minimum: 0
+          multipleOf: 0.0001
+          maximum: 99999999999.9999
+          examples:
+            - 150
+            - 1800
+        vat:
+          type:
+            - number
+            - 'null'
+          description: |
+            VAT/tax percentage (converted from ETIM xChange string to number).
+
+            **ETIM xChange**: `Vat` (string with pattern)
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].Vat`
+          minimum: 0
+          multipleOf: 0.01
+          maximum: 99.99
+          examples:
+            - 21
+            - 19
+        priceValidityDate:
+          type:
+            - string
+            - 'null'
+          format: date
+          description: |
+            Date from which the price is valid. ISO 8601 date format (YYYY-MM-DD).
+
+            **ETIM xChange**: `PriceValidityDate`
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceValidityDate`
+          examples:
+            - '2025-01-01'
+        priceExpiryDate:
+          type:
+            - string
+            - 'null'
+          format: date
+          description: |
+            Date when the price expires. ISO 8601 date format (YYYY-MM-DD).
+
+            **ETIM xChange**: `PriceExpiryDate`
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceExpiryDate`
+          examples:
+            - '2025-12-31'
+      examples:
+        - supplierIdGln: '8712423012485'
+          supplierItemNumber: SKU-LAMP-001
+          priceUnit: C62
+          priceQuantity: 1
+          priceOnRequest: false
+          grossListPrice: 12.99
+          netPrice: 9.99
+          recommendedRetailPrice: 15.99
+          vat: 21
+          priceValidityDate: '2025-01-01'
+          priceExpiryDate: '2025-12-31'
+        - supplierIdGln: '8712423012485'
+          supplierItemNumber: SKU-CABLE-002
+          priceUnit: MTR
+          priceUnitFactor: 1
+          priceQuantity: 1
+          priceOnRequest: false
+          grossListPrice: 2.5
+          netPrice: 1.99
+          recommendedRetailPrice: 3.49
+          vat: 21
+          priceValidityDate: '2025-01-01'
+          priceExpiryDate: '2025-06-30'
+        - supplierIdGln: '8712423012485'
+          supplierItemNumber: SKU-CABLE-002
+          priceUnit: MTR
+          priceUnitFactor: 1
+          priceQuantity: 100
+          priceOnRequest: false
+          grossListPrice: 2
+          netPrice: 1.59
+          recommendedRetailPrice: 2.99
+          vat: 21
+          priceValidityDate: '2025-01-01'
+          priceExpiryDate: '2025-06-30'
+    ItemDetails:
+      type: object
+      description: |
+        Detailed information about the trade item including status, condition, and shelf life.
+        Extracted from ETIM xChange `TradeItem.ItemDetails` structure.
+
+        **Note**: Item descriptions are available via a separate `/descriptions` endpoint.
+      additionalProperties: false
+      properties:
+        itemStatus:
+          description: |
+            Current lifecycle status of the trade item (nullable).
+            **ETIM xChange**: `ItemStatus`
+            **Path**: `Supplier[].Product[].TradeItem[].ItemDetails.ItemStatus`
+          anyOf:
+            - $ref: '#/components/schemas/ItemStatus'
+            - type: 'null'
+          examples:
+            - ACTIVE
+            - OBSOLETE
+            - null
+        itemCondition:
+          description: |
+            Physical condition of the trade item (nullable).
+            **ETIM xChange**: `ItemCondition`
+            **Path**: `Supplier[].Product[].TradeItem[].ItemDetails.ItemCondition`
+          anyOf:
+            - $ref: '#/components/schemas/ItemCondition'
+            - type: 'null'
+          examples:
+            - NEW
+            - REFURBISHED
+            - null
+        stockItem:
+          type:
+            - boolean
+            - 'null'
+          description: |
+            Indicates whether the item is a stock item (true) or made-to-order (false).
+            **ETIM xChange**: `StockItem`
+            **Path**: `Supplier[].Product[].TradeItem[].ItemDetails.StockItem`
+          examples:
+            - true
+            - false
+            - null
+        shelfLifePeriod:
+          type:
+            - integer
+            - 'null'
+          description: |
+            Shelf life period of the item in days (0-999).
+            **ETIM xChange**: `ShelfLifePeriod`
+            **Path**: `Supplier[].Product[].TradeItem[].ItemDetails.ShelfLifePeriod`
+          minimum: 0
+          maximum: 999
+          examples:
+            - 365
+            - 730
+            - null
+      examples:
+        - itemStatus: ACTIVE
+          itemCondition: NEW
+          stockItem: true
+          shelfLifePeriod: null
     RelationType:
       type: string
       description: |
@@ -5111,461 +5419,6 @@ components:
           itemAttachments: null
           packagingUnits: null
           itemCountrySpecificFields: null
-    ProblemDetails:
-      type: object
-      title: Problem Details
-      description: |
-        A machine-readable format for specifying errors in HTTP API responses,
-        based on RFC 7807 (https://datatracker.ietf.org/doc/html/rfc7807).
-      properties:
-        type:
-          type: string
-          format: uri
-          description: A URI reference that identifies the problem type.
-        title:
-          type: string
-          description: A short, human-readable summary of the problem type.
-        status:
-          type: integer
-          format: int32
-          description: The HTTP status code generated by the origin server.
-        detail:
-          type: string
-          description: A human-readable explanation specific to this occurrence of the problem.
-        instance:
-          type: string
-          format: uri
-          description: A URI reference that identifies the specific occurrence of the problem.
-      additionalProperties: true
-      examples:
-        - type: https://example.com/probs/out-of-credit
-          title: You do not have enough credit.
-          status: 403
-          detail: Your current balance is 30, but that costs 50.
-          instance: /account/12345/msgs/abc
-        - type: https://example.com/probs/not-found
-          title: Resource not found
-          status: 404
-          detail: The requested resource could not be found.
-          instance: /api/resources/12345
-    ValidationProblemDetails:
-      allOf:
-        - $ref: '#/components/schemas/ProblemDetails'
-        - type: object
-          title: Validation Problem Details
-          description: |
-            A validation problem details object, extending RFC 7807 ProblemDetails
-            to include model validation errors. Matches .NET's ValidationProblemDetails.
-          properties:
-            errors:
-              type: object
-              additionalProperties:
-                type: array
-                items:
-                  type: string
-              description: A dictionary of validation errors keyed by field name.
-      examples:
-        - type: https://example.com/validation-error
-          title: One or more validation errors occurred.
-          status: 400
-          errors:
-            name:
-              - The Name field is required.
-            age:
-              - Age must be greater than or equal to 18.
-        - type: https://example.com/validation-error
-          title: Validation failed
-          status: 400
-          errors:
-            email:
-              - Email must be a valid email address.
-    ItemDescription:
-      type: object
-      description: |
-        Item description in a specific language.
-        Extracted from ETIM xChange `TradeItem.ItemDetails.ItemDescriptions[]` structure.
-      additionalProperties: false
-      required:
-        - minimalItemDescription
-      properties:
-        descriptionLanguage:
-          type:
-            - string
-            - 'null'
-          description: |
-            Language code for the description (e.g., 'en-US', 'de-DE', 'nl-NL').
-            **ETIM xChange**: `DescriptionLanguage`
-            **Path**: `Supplier[].Product[].TradeItem[].ItemDetails.ItemDescriptions[].DescriptionLanguage`
-          pattern: ^[a-z]{2}[-][A-Z]{2}$
-          examples:
-            - en-US
-            - de-DE
-            - nl-NL
-            - null
-        minimalItemDescription:
-          type: string
-          description: |
-            Minimal description of the trade item (short description).
-            **ETIM xChange**: `MinimalItemDescription`
-            **Path**: `Supplier[].Product[].TradeItem[].ItemDetails.ItemDescriptions[].MinimalItemDescription`
-          minLength: 1
-          maxLength: 80
-          examples:
-            - Hammer 500g
-            - Screwdriver Phillips
-        uniqueMainItemDescription:
-          type:
-            - string
-            - 'null'
-          description: |
-            Extended unique description of the trade item (long description).
-            **ETIM xChange**: `UniqueMainItemDescription`
-            **Path**: `Supplier[].Product[].TradeItem[].ItemDetails.ItemDescriptions[].UniqueMainItemDescription`
-          minLength: 1
-          maxLength: 255
-          examples:
-            - Professional claw hammer with fiberglass handle, 500g head weight, ergonomic grip
-            - null
-      examples:
-        - descriptionLanguage: en-US
-          minimalItemDescription: Hammer 500g
-          uniqueMainItemDescription: Professional claw hammer with fiberglass handle, 500g head weight
-        - descriptionLanguage: de-DE
-          minimalItemDescription: Hammer 500g
-          uniqueMainItemDescription: null
-    AllowanceSurchargeTypes:
-      type: string
-      description: |
-        Allowance and surcharge type codes for pricing adjustments.
-        These codes define the reason for price adjustments.
-      enum:
-        - AAT
-        - ABL
-        - ADO
-        - ADR
-        - ADZ
-        - AEM
-        - AEO
-        - AEP
-        - AEQ
-        - CAI
-        - DAE
-        - DBD
-        - FC
-        - HD
-        - INS
-        - MAC
-        - MAT
-        - PAD
-        - PI
-        - QD
-        - RAD
-        - SH
-        - TD
-        - WHE
-        - X21
-    LanguageCode:
-      type: string
-      description: ISO 639-1 language code
-      enum:
-        - en
-        - de
-        - fr
-        - nl
-        - es
-        - it
-        - sv
-        - 'no'
-        - da
-        - pl
-        - cs
-      examples:
-        - en
-        - nl
-        - de
-    CursorPaginationMetadata:
-      type: object
-      description: |
-        Cursor-based pagination metadata exposed in the `meta` object. Includes the opaque pagination cursor,
-        navigation flags, the requested page size, and an optional estimated total count for windowed scans.
-      additionalProperties: false
-      properties:
-        cursor:
-          type:
-            - string
-            - 'null'
-          description: Cursor bookmark to request the next page of data. Always opaque and URL-safe. Null when no next page exists.
-          minLength: 1
-          examples:
-            - eyJpZCI6MTIzNDU2Nzg5MCwic29ydCI6ImFzYyJ9
-            - null
-        prevCursor:
-          type:
-            - string
-            - 'null'
-          description: Cursor bookmark that replays the previous page of data when present.
-          examples:
-            - eyJpZCI6MTIzNDU2NzAwMCwic29ydCI6ImFzYyJ9
-            - null
-        hasNext:
-          type: boolean
-          description: Indicates whether another page of data is available after the current window.
-          examples:
-            - true
-        hasPrev:
-          type: boolean
-          description: Indicates whether a previous page of data can be fetched using `prevCursor`.
-          examples:
-            - false
-        limit:
-          type: integer
-          description: Effective page size applied for this request.
-          minimum: 1
-          maximum: 1000
-          examples:
-            - 100
-        estimatedTotal:
-          type:
-            - integer
-            - 'null'
-          description: Estimated total number of records that satisfy the filter window. May be null when unknown or expensive to calculate.
-          minimum: 0
-          examples:
-            - 15234
-            - null
-      required:
-        - cursor
-        - hasNext
-        - limit
-    TradeItemPricingSummary:
-      type: object
-      description: |
-        Flattened trade item pricing for bulk retrieval.
-        Each row represents a single price entry with the trade item identifier, following the 
-        same pattern as `ProductEtimClassificationFeature` (1 row = 1 data point).
-
-        This flattened structure is optimized for:
-        - Predictable payload sizes per row
-        - Efficient cursor-based pagination
-        - ETL/data warehouse ingestion
-        - Streaming data processing
-
-        A trade item may have multiple pricing entries (e.g., quantity tiers, validity periods),
-        resulting in multiple rows with the same composite key but different pricing data.
-
-        **Allowances & Surcharges**: Available via separate `/bulk/trade-item-allowance-surcharges` endpoint.
-        Join using `supplierIdGln` + `supplierItemNumber` + `priceUnit` + `priceQuantity` (+ `priceValidityDate`).
-
-        **Payload Optimization**: Optional properties with null values may be omitted from the response
-        to minimize payload size. Clients should treat missing properties as null/not applicable.
-
-        **ETIM xChange**: `Pricing`
-        **Path**: `Supplier[].Product[].TradeItem[].Pricing[]`
-      additionalProperties: false
-      required:
-        - supplierIdGln
-        - supplierItemNumber
-        - priceUnit
-        - priceQuantity
-      properties:
-        supplierIdGln:
-          type: string
-          pattern: ^[0-9]{13}$
-          description: |
-            Global Location Number (GLN) of the supplier. 13-digit GS1 identifier.
-            Part of the composite key for the trade item.
-
-            **ETIM xChange**: `SupplierIdGln`  
-            **Path**: `Supplier[].SupplierId.SupplierIdGln`
-          examples:
-            - '1234567890123'
-            - '8712423012485'
-        supplierItemNumber:
-          type: string
-          minLength: 1
-          maxLength: 35
-          description: |
-            Supplier's unique item number. Part of the composite key for the trade item.
-            This is the primary identifier for items in the supplier's catalog system.
-
-            **ETIM xChange**: `SupplierItemNumber`  
-            **Path**: `Supplier[].Product[].TradeItem[].ItemIdentification.SupplierItemNumber`
-          examples:
-            - SKU-12345
-            - ITEM-ABC-789
-        priceUnit:
-          description: |
-            Unit for which the price applies (e.g., pieces, boxes, meters).
-
-            **ETIM xChange**: `PriceUnit`
-            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceUnit`
-          $ref: '#/components/schemas/UnitCodes'
-          examples:
-            - C62
-            - BX
-            - MTR
-        priceUnitFactor:
-          type:
-            - number
-            - 'null'
-          description: |
-            Factor to convert price unit to order unit (converted from ETIM xChange string to number).
-
-            **ETIM xChange**: `PriceUnitFactor` (string with pattern)
-            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceUnitFactor`
-          minimum: 0
-          multipleOf: 0.0001
-          maximum: 99999999999.9999
-          examples:
-            - 1
-            - 100
-        priceQuantity:
-          type: number
-          description: |
-            Quantity for which the price applies (converted from ETIM xChange string to number).
-            Used for quantity-based pricing tiers.
-
-            **ETIM xChange**: `PriceQuantity` (string with pattern)
-            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceQuantity`
-          minimum: 0
-          multipleOf: 0.0001
-          maximum: 99999.9999
-          examples:
-            - 1
-            - 10
-            - 100
-        priceOnRequest:
-          type:
-            - boolean
-            - 'null'
-          description: |
-            Indicates whether the price is available only on request.
-
-            **ETIM xChange**: `PriceOnRequest`
-            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceOnRequest`
-          examples:
-            - false
-            - true
-        grossListPrice:
-          type:
-            - number
-            - 'null'
-          description: |
-            Gross list price (before discounts) (converted from ETIM xChange string to number).
-
-            **ETIM xChange**: `GrossListPrice` (string with pattern)
-            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].GrossListPrice`
-          minimum: 0
-          multipleOf: 0.0001
-          maximum: 99999999999.9999
-          examples:
-            - 130
-            - 1500
-        netPrice:
-          type:
-            - number
-            - 'null'
-          description: |
-            Net price (after discounts, before tax) (converted from ETIM xChange string to number).
-
-            **ETIM xChange**: `NetPrice` (string with pattern)
-            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].NetPrice`
-          minimum: 0
-          multipleOf: 0.0001
-          maximum: 99999999999.9999
-          examples:
-            - 100
-            - 1200
-        recommendedRetailPrice:
-          type:
-            - number
-            - 'null'
-          description: |
-            Recommended retail price (MSRP) (converted from ETIM xChange string to number).
-
-            **ETIM xChange**: `RecommendedRetailPrice` (string with pattern)
-            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].RecommendedRetailPrice`
-          minimum: 0
-          multipleOf: 0.0001
-          maximum: 99999999999.9999
-          examples:
-            - 150
-            - 1800
-        vat:
-          type:
-            - number
-            - 'null'
-          description: |
-            VAT/tax percentage (converted from ETIM xChange string to number).
-
-            **ETIM xChange**: `Vat` (string with pattern)
-            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].Vat`
-          minimum: 0
-          multipleOf: 0.01
-          maximum: 99.99
-          examples:
-            - 21
-            - 19
-        priceValidityDate:
-          type:
-            - string
-            - 'null'
-          format: date
-          description: |
-            Date from which the price is valid. ISO 8601 date format (YYYY-MM-DD).
-
-            **ETIM xChange**: `PriceValidityDate`
-            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceValidityDate`
-          examples:
-            - '2025-01-01'
-        priceExpiryDate:
-          type:
-            - string
-            - 'null'
-          format: date
-          description: |
-            Date when the price expires. ISO 8601 date format (YYYY-MM-DD).
-
-            **ETIM xChange**: `PriceExpiryDate`
-            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceExpiryDate`
-          examples:
-            - '2025-12-31'
-      examples:
-        - supplierIdGln: '8712423012485'
-          supplierItemNumber: SKU-LAMP-001
-          priceUnit: C62
-          priceQuantity: 1
-          priceOnRequest: false
-          grossListPrice: 12.99
-          netPrice: 9.99
-          recommendedRetailPrice: 15.99
-          vat: 21
-          priceValidityDate: '2025-01-01'
-          priceExpiryDate: '2025-12-31'
-        - supplierIdGln: '8712423012485'
-          supplierItemNumber: SKU-CABLE-002
-          priceUnit: MTR
-          priceUnitFactor: 1
-          priceQuantity: 1
-          priceOnRequest: false
-          grossListPrice: 2.5
-          netPrice: 1.99
-          recommendedRetailPrice: 3.49
-          vat: 21
-          priceValidityDate: '2025-01-01'
-          priceExpiryDate: '2025-06-30'
-        - supplierIdGln: '8712423012485'
-          supplierItemNumber: SKU-CABLE-002
-          priceUnit: MTR
-          priceUnitFactor: 1
-          priceQuantity: 100
-          priceOnRequest: false
-          grossListPrice: 2
-          netPrice: 1.59
-          recommendedRetailPrice: 2.99
-          vat: 21
-          priceValidityDate: '2025-01-01'
-          priceExpiryDate: '2025-06-30'
   parameters:
     SupplierIdGln:
       $ref: '#/components/parameters/supplier-id-gln-filter'
@@ -5734,21 +5587,6 @@ components:
                 status: 401
                 detail: Authentication is required and has failed or has not yet been provided
                 instance: https://api.example.com/v1/resource/example
-    500-internal-server-error:
-      description: Internal Server Error - An unexpected error occurred
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/ProblemDetails'
-          examples:
-            internal-server-error:
-              summary: Internal Server Error example
-              value:
-                type: https://example.com/probs/internal-server-error
-                title: Internal Server Error
-                status: 500
-                detail: An unexpected error occurred. Please try again later
-                instance: https://api.example.com/v1/resource/example
     403-forbidden:
       description: Forbidden - Insufficient permissions
       content:
@@ -5763,6 +5601,21 @@ components:
                 title: Forbidden
                 status: 403
                 detail: You do not have permission to access this resource.
+                instance: https://api.example.com/v1/resource/example
+    500-internal-server-error:
+      description: Internal Server Error - An unexpected error occurred
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+          examples:
+            internal-server-error:
+              summary: Internal Server Error example
+              value:
+                type: https://example.com/probs/internal-server-error
+                title: Internal Server Error
+                status: 500
+                detail: An unexpected error occurred. Please try again later
                 instance: https://api.example.com/v1/resource/example
     404-not-found:
       description: Not Found - The requested resource does not exist

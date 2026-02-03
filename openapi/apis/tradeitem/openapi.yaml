@@ -43,8 +43,8 @@ x-tagGroups:
 
 paths:
   # Single trade item endpoints
-  /{supplierIdGln}/{supplierItemNumber}:
-    $ref: './paths/trade-items.yaml'
+  # /{supplierIdGln}/{supplierItemNumber}:
+  #   $ref: './paths/trade-items.yaml'
   
   /{supplierIdGln}/{supplierItemNumber}/details:
     $ref: './paths/trade-item-details.yaml'
