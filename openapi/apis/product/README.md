@@ -34,13 +34,52 @@ Product descriptions (multilingual texts, marketing content, keywords) are inten
 
 An ETIM product classification is uniquely identified by the composite key:
 - `etimClassCode` + `etimReleaseVersion` 
-- removed: other classifications
-- TODO: modelling classes
+
+**Design decisions:**
+- **OtherClassifications excluded**: Non-ETIM classification systems (UNSPSC, eCl@ss, etc.) are intentionally not supported. This API focuses on ETIM-based product data interchange.
+- **Modelling classes**: TODO - see below
 
 [Decision details](docs/etim-classifications.md)
 
 
 
 ## Products TODO
-- ProductDetails is missing BrandDetails (nested structure with BrandSeries and BrandSeriesVariation). Check how to handle this complex multilingual structure.
-- TODO: modelling classes
+
+### High Priority
+
+**Missing Endpoints** (schemas exist, endpoints not implemented)
+- `/{manufacturerIdGln}/{manufacturerProductNumber}/relations` - ProductRelations (accessory, sparepart, etc.)
+- `/{manufacturerIdGln}/{manufacturerProductNumber}/attachments` - ProductAttachments (images, datasheets, etc.)
+- `/{manufacturerIdGln}/{manufacturerProductNumber}/legislation` - Legislation compliance data
+- `/bulk/product-relations` - Bulk relations export
+- `/bulk/product-attachments` - Bulk attachments export
+- `/bulk/product-legislation` - Bulk legislation export
+
+**BrandDetails** (ProductIdentification)
+- Missing nested structure with `BrandSeries` and `BrandSeriesVariation` (both multilingual arrays)
+- Check how to handle this complex multilingual structure
+
+**Legislation - Hazardous Materials & Compliance** (44% coverage, missing 20 fields)
+- SVHC identification: `SvhcIdentification[]` with `CasNumber`, `EcNumber`
+- GHS labeling: `LabelCode[]` (GHS01-GHS09), `SignalWord` (D/W), `HazardStatement[]`, `PrecautionaryStatement[]`
+- ADR transport: `PackingGroup`, `LimitedQuantities`, `ExceptedQuantities`, `AggregationState`, `SpecialProvisionId[]`, `ClassificationCode`, `HazardLabel[]`, `TunnelCode`, `EnvironmentalHazards`, `UnShippingName[]` (multilingual)
+- Battery data: `LiIonTested`, `LithiumAmount`, `BatteryEnergy`, `Nos274`
+- Other: `HazardTrigger[]`, `EprelRegistrationNumber` (EU Energy Label)
+
+### Medium Priority
+
+**ETIM Modelling Classes** (EtimClassification)
+- `EtimModellingClassCode` (pattern: `^MC[0-9]{6}$`)
+- `EtimModellingClassVersion`
+- `EtimModellingPorts[]` with port definitions for BIM/CAD integration
+
+**ProductCountrySpecificFields Enhancement**
+- Current implementation uses simplified `fieldName`/`fieldValue` strings
+- xChange supports typed values: boolean, numeric, range (lower/upper), multilingual strings, single/multi select
+- Missing: `CSProductCharacteristicValueUnitCode`, `CSProductCharacteristicReferenceGtin[]`
+- Decision needed: keep simplified model or implement full type support?
+
+### Not Planned
+
+**OtherClassifications** - Intentionally excluded (ETIM-focused API)
+**ProductCountrySpecificExtensions** - Open-ended extension point, not in scope
