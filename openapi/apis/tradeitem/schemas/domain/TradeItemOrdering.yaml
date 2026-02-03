@@ -2,6 +2,9 @@ type: object
 description: |
   Ordering information for the trade item including order unit, minimum quantities, and lead time.
   Extracted from ETIM xChange `TradeItem.Ordering` structure.
+  
+  **ETIM xChange**: `Ordering`
+  **Path**: `Supplier[].Product[].TradeItem[].Ordering`
 additionalProperties: false
 required:
   - orderUnit
@@ -11,6 +14,7 @@ properties:
   orderUnit:
     description: |
       Unit in which the item can be ordered (e.g., pieces, boxes, meters).
+      
       **ETIM xChange**: `OrderUnit`
       **Path**: `Supplier[].Product[].TradeItem[].Ordering.OrderUnit`
     $ref: ../../../../shared/schemas/common/UnitCodes.yaml
@@ -22,6 +26,7 @@ properties:
     type: number
     description: |
       Minimum quantity that must be ordered (converted from ETIM xChange string to number).
+      
       **ETIM xChange**: `MinimumOrderQuantity` (string with pattern)
       **Path**: `Supplier[].Product[].TradeItem[].Ordering.MinimumOrderQuantity`
     minimum: 0
@@ -36,6 +41,7 @@ properties:
     description: |
       Quantity increment for orders beyond minimum (converted from ETIM xChange string to number).
       For example, if minimum is 10 and step is 5, you can order 10, 15, 20, etc.
+      
       **ETIM xChange**: `OrderStepSize` (string with pattern)
       **Path**: `Supplier[].Product[].TradeItem[].Ordering.OrderStepSize`
     minimum: 0
@@ -49,6 +55,7 @@ properties:
     type: ["integer", "null"]
     description: |
       Standard lead time for orders in days.
+      
       **ETIM xChange**: `StandardOrderLeadTime`
       **Path**: `Supplier[].Product[].TradeItem[].Ordering.StandardOrderLeadTime`
     minimum: 0
@@ -59,6 +66,7 @@ properties:
   useUnit:
     description: |
       Unit in which the item is used or consumed (may differ from order unit, nullable).
+      
       **ETIM xChange**: `UseUnit`
       **Path**: `Supplier[].Product[].TradeItem[].Ordering.UseUnit`
     anyOf:
@@ -72,6 +80,7 @@ properties:
     type: ["number", "null"]
     description: |
       Conversion factor from order unit to use unit (converted from ETIM xChange string to number).
+      
       **ETIM xChange**: `UseUnitConversionFactor` (string with pattern)
       **Path**: `Supplier[].Product[].TradeItem[].Ordering.UseUnitConversionFactor`
     minimum: 0
@@ -85,6 +94,7 @@ properties:
     type: ["number", "null"]
     description: |
       Quantity of use units in a single order unit (converted from ETIM xChange string to number).
+      
       **ETIM xChange**: `SingleUseUnitQuantity` (string with pattern)
       **Path**: `Supplier[].Product[].TradeItem[].Ordering.SingleUseUnitQuantity`
     minimum: 0
@@ -97,6 +107,7 @@ properties:
   alternativeUseUnit:
     description: |
       Alternative unit in which the item can be used or consumed (nullable).
+      
       **ETIM xChange**: `AlternativeUseUnit`
       **Path**: `Supplier[].Product[].TradeItem[].Ordering.AlternativeUseUnit`
     anyOf:
@@ -109,6 +120,7 @@ properties:
     type: ["number", "null"]
     description: |
       Conversion factor from order unit to alternative use unit (converted from ETIM xChange string to number).
+      
       **ETIM xChange**: `AlternativeUseUnitConversionFactor` (string with pattern)
       **Path**: `Supplier[].Product[].TradeItem[].Ordering.AlternativeUseUnitConversionFactor`
     minimum: 0

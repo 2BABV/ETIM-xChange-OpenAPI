@@ -1,0 +1,73 @@
+type: object
+description: |
+  Bulk response containing trade item pricing information with cursor-based pagination.
+  
+  Each item in the `data` array includes its composite key (`supplierIdGln` + `supplierItemNumber`)
+  along with an array of pricing entries. A trade item may have multiple pricing entries
+  for different conditions, customer groups, or validity periods.
+  
+  Use the `cursor` from `meta` to retrieve the next page of results.
+  
+  **ETIM xChange**: Response wrapper for `Pricing[]` data
+  **Path**: `Supplier[].Product[].TradeItem[].Pricing[]`
+additionalProperties: false
+required:
+  - data
+  - meta
+properties:
+  data:
+    type: array
+    description: Array of trade item pricing summaries with embedded keys
+    items:
+      $ref: ../domain/TradeItemPricingsSummary.yaml
+  meta:
+    $ref: ../../../../shared/schemas/common/CursorPaginationMetadata.yaml
+    description: Cursor-based pagination metadata
+
+examples:
+  - data:
+      - supplierIdGln: "8712423012485"
+        supplierItemNumber: "SKU-LAMP-001"
+        pricings:
+          - priceUnit: C62
+            priceUnitFactor: null
+            priceQuantity: 1
+            priceOnRequest: false
+            grossListPrice: 12.99
+            netPrice: 9.99
+            recommendedRetailPrice: 15.99
+            vat: 21.0
+            priceValidityDate: "2025-01-01"
+            priceExpiryDate: "2025-12-31"
+            allowanceSurcharges: null
+      - supplierIdGln: "8712423012485"
+        supplierItemNumber: "SKU-CABLE-002"
+        pricings:
+          - priceUnit: MTR
+            priceUnitFactor: 1.0
+            priceQuantity: 1
+            priceOnRequest: false
+            grossListPrice: 2.50
+            netPrice: 1.99
+            recommendedRetailPrice: 3.49
+            vat: 21.0
+            priceValidityDate: "2025-01-01"
+            priceExpiryDate: "2025-06-30"
+            allowanceSurcharges: null
+          - priceUnit: MTR
+            priceUnitFactor: 1.0
+            priceQuantity: 100
+            priceOnRequest: false
+            grossListPrice: 2.00
+            netPrice: 1.59
+            recommendedRetailPrice: 2.99
+            vat: 21.0
+            priceValidityDate: "2025-01-01"
+            priceExpiryDate: "2025-06-30"
+            allowanceSurcharges: null
+    meta:
+      cursor: "eyJzdXBwbGllcklkR2xuIjoiODcxMjQyMzAxMjQ4NSIsInN1cHBsaWVySXRlbU51bWJlciI6IlNLVS1DQUJMRS0wMDIifQ=="
+      hasNext: true
+      hasPrev: false
+      limit: 100
+      estimatedTotal: 15420

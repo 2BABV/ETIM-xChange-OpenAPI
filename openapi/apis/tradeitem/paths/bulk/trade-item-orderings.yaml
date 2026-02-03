@@ -1,10 +1,13 @@
 get:
-  operationId: getBulkItemOrderings
-  summary: Retrieve item ordering information in bulk
+  operationId: getBulkTradeItemOrderings
+  summary: Retrieve trade item ordering information in bulk
   description: |
     Retrieve trade item ordering information in bulk with cursor-based pagination.
     Returns ordering details including order units, minimum/maximum quantities, order step sizes,
     lead times, and unit conversions.
+    
+    Each item in the response includes its composite key (`supplierIdGln` + `supplierItemNumber`)
+    along with all ordering fields in a flat structure.
     
     This endpoint is optimized for scenarios where only ordering data is needed,
     such as inventory management or order processing systems.
@@ -21,11 +24,11 @@ get:
     - $ref: ../../../../shared/parameters/query/supplier-id-gln-filter.yaml
   responses:
     '200':
-      description: Successfully retrieved item ordering information
+      description: Successfully retrieved trade item ordering information
       content:
         application/json:
           schema:
-            $ref: ../../schemas/responses/BulkItemOrderingsResponse.yaml
+            $ref: ../../schemas/responses/BulkTradeItemOrderingsResponse.yaml
           examples:
             success:
               summary: Successful bulk retrieval
@@ -33,16 +36,26 @@ get:
                 data:
                   - supplierIdGln: "8712423012485"
                     supplierItemNumber: "SKU-LAMP-001"
-                    ordering:
-                      orderUnit: "C62"
-                      minimumOrderQuantity: 1
-                      orderStepSize: 1
-                      standardOrderLeadTime: 5
-                      useUnit: null
-                      useUnitConversionFactor: null
-                      singleUseUnitQuantity: null
-                      alternativeUseUnit: null
-                      alternativeUseUnitConversionFactor: null
+                    orderUnit: "C62"
+                    minimumOrderQuantity: 1
+                    orderStepSize: 1
+                    standardOrderLeadTime: 5
+                    useUnit: null
+                    useUnitConversionFactor: null
+                    singleUseUnitQuantity: null
+                    alternativeUseUnit: null
+                    alternativeUseUnitConversionFactor: null
+                  - supplierIdGln: "8712423012485"
+                    supplierItemNumber: "SKU-CABLE-002"
+                    orderUnit: "MTR"
+                    minimumOrderQuantity: 10
+                    orderStepSize: 5
+                    standardOrderLeadTime: 3
+                    useUnit: "MTR"
+                    useUnitConversionFactor: 1.0
+                    singleUseUnitQuantity: 1.0
+                    alternativeUseUnit: null
+                    alternativeUseUnitConversionFactor: null
                 meta:
                   cursor: "eyJzdXBwbGllcklkR2xuIjoiODcxMjQyMzAxMjQ4NSJ9"
                   hasNext: true

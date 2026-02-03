@@ -1,7 +1,10 @@
 type: object
 description: |
-  Pricing information for the trade item including prices, price unit, and allowances/surcharges.
+  Pricing information for a trade item including prices, price unit, and allowances/surcharges.
   Extracted from ETIM xChange `TradeItem.Pricing[]` structure.
+  
+  **ETIM xChange**: `Pricing`
+  **Path**: `Supplier[].Product[].TradeItem[].Pricing[]`
 additionalProperties: false
 required:
   - priceUnit
@@ -10,6 +13,7 @@ properties:
   priceUnit:
     description: |
       Unit for which the price applies (e.g., pieces, boxes, meters).
+      
       **ETIM xChange**: `PriceUnit`
       **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceUnit`
     $ref: ../../../../shared/schemas/common/UnitCodes.yaml
@@ -21,6 +25,7 @@ properties:
     type: ["number", "null"]
     description: |
       Factor to convert price unit to order unit (converted from ETIM xChange string to number).
+      
       **ETIM xChange**: `PriceUnitFactor` (string with pattern)
       **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceUnitFactor`
     minimum: 0
@@ -34,6 +39,7 @@ properties:
     type: number
     description: |
       Quantity for which the price applies (converted from ETIM xChange string to number).
+      
       **ETIM xChange**: `PriceQuantity` (string with pattern)
       **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceQuantity`
     minimum: 0
@@ -47,6 +53,7 @@ properties:
     type: ["boolean", "null"]
     description: |
       Indicates whether the price is available only on request.
+      
       **ETIM xChange**: `PriceOnRequest`
       **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceOnRequest`
     examples:
@@ -57,6 +64,7 @@ properties:
     type: ["number", "null"]
     description: |
       Gross list price (before discounts) (converted from ETIM xChange string to number).
+      
       **ETIM xChange**: `GrossListPrice` (string with pattern)
       **Path**: `Supplier[].Product[].TradeItem[].Pricing[].GrossListPrice`
     minimum: 0
@@ -70,6 +78,7 @@ properties:
     type: ["number", "null"]
     description: |
       Net price (after discounts, before tax) (converted from ETIM xChange string to number).
+      
       **ETIM xChange**: `NetPrice` (string with pattern)
       **Path**: `Supplier[].Product[].TradeItem[].Pricing[].NetPrice`
     minimum: 0
@@ -83,6 +92,7 @@ properties:
     type: ["number", "null"]
     description: |
       Recommended retail price (MSRP) (converted from ETIM xChange string to number).
+      
       **ETIM xChange**: `RecommendedRetailPrice` (string with pattern)
       **Path**: `Supplier[].Product[].TradeItem[].Pricing[].RecommendedRetailPrice`
     minimum: 0
@@ -96,6 +106,7 @@ properties:
     type: ["number", "null"]
     description: |
       VAT/tax percentage (converted from ETIM xChange string to number).
+      
       **ETIM xChange**: `Vat` (string with pattern)
       **Path**: `Supplier[].Product[].TradeItem[].Pricing[].Vat`
     minimum: 0
@@ -110,6 +121,7 @@ properties:
     format: date
     description: |
       Date from which the price is valid. ISO 8601 date format (YYYY-MM-DD).
+      
       **ETIM xChange**: `PriceValidityDate`
       **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceValidityDate`
     examples:
@@ -120,6 +132,7 @@ properties:
     format: date
     description: |
       Date when the price expires. ISO 8601 date format (YYYY-MM-DD).
+      
       **ETIM xChange**: `PriceExpiryDate`
       **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceExpiryDate`
     examples:
@@ -129,12 +142,14 @@ properties:
     type: ["array", "null"]
     description: |
       Array of allowances (discounts) or surcharges (additional charges) applied to the price.
+      
       **ETIM xChange**: `AllowanceSurcharge[]`
       **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[]`
     items:
       $ref: ./AllowanceSurcharge.yaml
     examples:
       - null
+
 examples:
   - priceUnit: C62
     priceUnitFactor: null
