@@ -61,12 +61,27 @@ properties:
     description: |
       Global Location Number (GLN) of the manufacturer (nullable).
       **ETIM xChange**: Inherited from Product level `ManufacturerId.ManufacturerIdGln`
-      **Path**: `Supplier[].Product[].ManufacturerId.ManufacturerIdGln`
+      **Path**: `Supplier[].Product[].ProductIdentification.ManufacturerIdGln`
     anyOf:
       - $ref: ../../../../shared/schemas/identifiers/Gln.yaml
       - type: "null"
     examples:
       - "9876543210987"
+      - null
+  
+  manufacturerProductNumber:
+    type: ["string", "null"]
+    minLength: 1
+    maxLength: 35
+    description: |
+      Manufacturer's product number. Links this trade item to its parent product.
+      Inherited from Product level - required in ETIM xChange Product.ProductIdentification.
+      
+      **ETIM xChange**: `ManufacturerProductNumber`  
+      **Path**: `Supplier[].Product[].ProductIdentification.ManufacturerProductNumber`
+    examples:
+      - "929002376910"
+      - "PROD-ABC-123"
       - null
   
   itemGtins:

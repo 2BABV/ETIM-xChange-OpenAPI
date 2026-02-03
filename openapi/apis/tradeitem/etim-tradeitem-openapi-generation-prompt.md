@@ -312,7 +312,7 @@ openapi/apis/tradeitem/
 ├── README.md
 ├── paths/
 │   ├── bulk/                             # Bulk endpoints
-│   │   ├── trade-item-details.yaml       # GET /bulk/trade-item-details
+│   │   ├── trade-item-details.yaml       # GET /bulk/trade-item-details (consolidates identification + details)
 │   │   ├── trade-item-orderings.yaml     # GET /bulk/trade-item-orderings
 │   │   └── trade-item-pricings.yaml      # GET /bulk/trade-item-pricings
 │   ├── trade-items.yaml                  # GET /{supplierIdGln}/{supplierItemNumber}
@@ -406,10 +406,24 @@ servers:
 
 ### 6. Bulk Service Design
 
+#### Bulk Endpoint Consolidation
+
+The bulk API consolidates ETIM xChange's separate `ItemIdentification` and `ItemDetails` sections into a single endpoint:
+
+| Endpoint | Consolidates | Schema |
+|----------|--------------|--------|
+| `/bulk/trade-item-details` | `ItemIdentification` + `ItemDetails` | `TradeItemDetailsSummary` |
+| `/bulk/trade-item-orderings` | `Ordering` | `TradeItemOrderingsSummary` |
+| `/bulk/trade-item-pricings` | `Pricing[]` | `TradeItemPricingsSummary` |
+
+**Note**: There is no separate `/bulk/trade-items` or `/bulk/item-identifications` endpoint. 
+The `/bulk/trade-item-details` endpoint provides all identification fields (GTINs, manufacturer numbers, 
+discount/bonus groups, validity dates) combined with item details (status, condition, descriptions).
+
 #### Bulk Endpoints to Create
 
 **GET /bulk/trade-item-details**
-- **Description**: Retrieve trade item details (identification, status, descriptions) in bulk with cursor-based pagination
+- **Description**: Retrieve trade item identification AND details (status, descriptions) in bulk with cursor-based pagination. This endpoint consolidates what would have been separate trade-items and item-identifications endpoints.
 - **Query Parameters**:
   - `cursor` (optional): Pagination cursor
   - `limit` (optional): Number of items per page (default: 100, max: 1000)

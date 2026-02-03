@@ -1,0 +1,69 @@
+type: object
+description: |
+  Response containing trade item identification and details for a single trade item.
+  
+  The trade item key (`supplierIdGln` + `supplierItemNumber`) is at the root level,
+  with the `details` object containing all identification and details fields.
+  
+  This structure aligns with other single-item subresource responses
+  (`/orderings`, `/pricings`).
+additionalProperties: false
+required:
+  - data
+properties:
+  data:
+    type: object
+    additionalProperties: false
+    required:
+      - supplierIdGln
+      - supplierItemNumber
+      - details
+    properties:
+      supplierIdGln:
+        type: string
+        pattern: "^[0-9]{13}$"
+        description: |
+          Global Location Number (GLN) uniquely identifying the supplier.
+          Part of the composite key for the trade item.
+        examples:
+          - "1234567890123"
+      supplierItemNumber:
+        type: string
+        minLength: 1
+        maxLength: 35
+        description: |
+          Supplier's unique item number/code.
+          Part of the composite key for the trade item.
+        examples:
+          - "SKU-12345"
+      details:
+        $ref: ../domain/TradeItemDetails.yaml
+        description: |
+          Trade item identification and details including alternative item numbers,
+          GTINs, discount/bonus groups, validity dates, status, condition, and descriptions.
+
+examples:
+  - data:
+      supplierIdGln: "1234567890123"
+      supplierItemNumber: "SKU-12345"
+      details:
+        supplierAltItemNumber: "ALT-12345"
+        manufacturerItemNumber: "MFG-98765"
+        manufacturerIdGln: "9876543210987"
+        manufacturerProductNumber: "929002376910"
+        itemGtins: ["4012345678901"]
+        buyerItemNumber: null
+        discountGroupId: "DG-001"
+        discountGroupDescription: "Standard discount group"
+        bonusGroupId: null
+        bonusGroupDescription: null
+        itemValidityDate: "2024-01-01"
+        itemObsolescenceDate: null
+        itemStatus: "ACTIVE"
+        itemCondition: "NEW"
+        stockItem: true
+        shelfLifePeriod: null
+        itemDescriptions:
+          - descriptionLanguage: "en-US"
+            minimalItemDescription: "LED Lamp 10W E27"
+            uniqueMainItemDescription: "Professional LED lamp with E27 socket, 10W warm white"

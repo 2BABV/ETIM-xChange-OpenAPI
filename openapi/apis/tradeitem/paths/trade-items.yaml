@@ -1,13 +1,13 @@
 get:
   operationId: getTradeItem
-  summary: Get trade item by composite key
+  summary: Retrieve a single trade item by supplier GLN and item number
   description: |
     Retrieve the full trade item payload for a single supplier item combination.
     Returns exactly one trade item document. No pagination, no cursor metadata.
     
     **ETIM xChange Path**: `Supplier[].Product[].TradeItem[]`
   tags:
-    - TradeItems
+    - TradeItems single
   parameters:
     - $ref: '../../../shared/parameters/path/supplier-id-gln.yaml'
     - $ref: '../../../shared/parameters/path/supplier-item-number.yaml'

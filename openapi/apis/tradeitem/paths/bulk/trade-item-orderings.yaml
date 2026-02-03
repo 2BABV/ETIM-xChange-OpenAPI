@@ -12,13 +12,13 @@ get:
     **ETIM xChange**: Bulk retrieval of `Ordering` data  
     **Path**: `Supplier[].Product[].TradeItem[].Ordering`
   tags:
-    - BulkOperations
+    - TradeItems bulk
   parameters:
     - $ref: ../../../../shared/parameters/query/cursor.yaml
     - $ref: ../../../../shared/parameters/query/limit.yaml
     - $ref: ../../../../shared/parameters/query/selection-id.yaml
     - $ref: ../../../../shared/parameters/query/mutation-date-time.yaml
-    - $ref: ../../../../shared/parameters/query/supplier-id-gln.yaml
+    - $ref: ../../../../shared/parameters/query/supplier-id-gln-filter.yaml
   responses:
     '200':
       description: Successfully retrieved item ordering information

@@ -166,7 +166,7 @@ components:
     MutationDateTime:
       $ref: ../../shared/parameters/query/mutation-date-time.yaml
     SupplierIdGln:
-      $ref: ../../shared/parameters/query/supplier-id-gln.yaml
+      $ref: ../../shared/parameters/query/supplier-id-gln-filter.yaml
   
   responses:
     BadRequest:

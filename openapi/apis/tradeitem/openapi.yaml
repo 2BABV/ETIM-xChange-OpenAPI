@@ -28,25 +28,37 @@ servers:
     description: Staging server
 
 tags:
-  - name: TradeItems
-    description: Trade item management operations
-  - name: BulkOperations
+  - name: TradeItems single
+    description: Single trade item operations
+    x-displayName: Single Trade Item
+  - name: TradeItems bulk
     description: Bulk data retrieval operations with cursor-based pagination for high-volume data exchange
+    x-displayName: Bulk Trade Items
+
+x-tagGroups:
+  - name: Trade Items
+    tags:
+      - TradeItems single
+      - TradeItems bulk
 
 paths:
-  # Single trade item endpoint
-  /trade-items/{supplierIdGln}/{supplierItemNumber}:
+  # Single trade item endpoints
+  /{supplierIdGln}/{supplierItemNumber}:
     $ref: './paths/trade-items.yaml'
   
+  /{supplierIdGln}/{supplierItemNumber}/details:
+    $ref: './paths/trade-item-details.yaml'
+  
   # Bulk operations
-  /bulk/trade-items:
-    $ref: './paths/bulk/trade-items.yaml'
-  /bulk/item-identifications:
-    $ref: './paths/bulk/item-identifications.yaml'
-  /bulk/item-orderings:
-    $ref: './paths/bulk/item-orderings.yaml'
-  /bulk/item-pricings:
-    $ref: './paths/bulk/item-pricings.yaml'
+  # Note: /bulk/trade-item-details consolidates what would have been separate
+  # /bulk/trade-items and /bulk/item-identifications endpoints since
+  # TradeItemDetailsSummary combines ItemIdentification + ItemDetails from ETIM xChange
+  /bulk/trade-item-details:
+    $ref: './paths/bulk/trade-item-details.yaml'
+  /bulk/trade-item-orderings:
+    $ref: './paths/bulk/trade-item-orderings.yaml'
+  /bulk/trade-item-pricings:
+    $ref: './paths/bulk/trade-item-pricings.yaml'
     
 components:
   schemas:
@@ -54,13 +66,23 @@ components:
     ErrorResponse:
       $ref: ../../shared/schemas/common/ProblemDetails.yaml
     
+    # Domain schemas
+    TradeItemDetails:
+      $ref: './schemas/domain/TradeItemDetails.yaml'
+    TradeItemDetailsSummary:
+      $ref: './schemas/domain/TradeItemDetailsSummary.yaml'
+    
     # Response schemas
     TradeItemResponse:
       $ref: './schemas/responses/TradeItemResponse.yaml'
+    TradeItemDetailsResponse:
+      $ref: './schemas/responses/TradeItemDetailsResponse.yaml'
+    BulkTradeItemDetailsResponse:
+      $ref: './schemas/responses/BulkTradeItemDetailsResponse.yaml'
 
   parameters:
     SupplierIdGln:
-      $ref: ../../shared/parameters/query/supplier-id-gln.yaml
+      $ref: ../../shared/parameters/query/supplier-id-gln-filter.yaml
     SupplierIdGlnPath:
       $ref: ../../shared/parameters/path/supplier-id-gln.yaml
     SupplierItemNumberPath:
