@@ -48,9 +48,6 @@ paths:
   /{manufacturerIdGln}/{manufacturerProductNumber}:
     $ref: paths/products.yaml
   
-  /{manufacturerIdGln}/{manufacturerProductNumber}/identification:
-    $ref: paths/product-identification.yaml
-  
   /{manufacturerIdGln}/{manufacturerProductNumber}/details:
     $ref: paths/product-details.yaml
   
@@ -65,9 +62,6 @@ paths:
   
   # /bulk/products:
   #   $ref: paths/bulk/products.yaml
-  
-  /bulk/product-identifications:
-    $ref: paths/bulk/product-identifications.yaml
   
   /bulk/product-details:
     $ref: paths/bulk/product-details.yaml
@@ -89,12 +83,8 @@ components:
     # Domain schemas
     # Product:
     #   $ref: schemas/domain/Product.yaml
-    ProductIdentification:
-      $ref: schemas/domain/ProductIdentification.yaml
     ProductDetails:
       $ref: schemas/domain/ProductDetails.yaml
-    ProductIdentificationSummary:
-      $ref: schemas/domain/ProductIdentificationSummary.yaml
     ProductDetailsSummary:
       $ref: schemas/domain/ProductDetailsSummary.yaml
     ProductDescriptionsSummary:
@@ -149,8 +139,6 @@ components:
     # Response schemas
     ProductResponse:
       $ref: schemas/responses/ProductResponse.yaml
-    ProductIdentificationResponse:
-      $ref: schemas/responses/ProductIdentificationResponse.yaml
     ProductDetailsResponse:
       $ref: schemas/responses/ProductDetailsResponse.yaml
     ProductDescriptionsResponse:
@@ -159,8 +147,6 @@ components:
       $ref: schemas/responses/ProductEtimClassificationsResponse.yaml
     # BulkProductsResponse:
     #   $ref: schemas/responses/BulkProductsResponse.yaml
-    BulkProductIdentificationsResponse:
-      $ref: schemas/responses/BulkProductIdentificationsResponse.yaml
     BulkProductDetailsResponse:
       $ref: schemas/responses/BulkProductDetailsResponse.yaml
     BulkProductDescriptionsResponse:

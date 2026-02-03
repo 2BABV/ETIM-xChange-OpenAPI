@@ -1,19 +1,162 @@
 type: object
 description: |
-  Product details information without the composite key fields.
-  Contains status, type, warranties, and product groups.
-  Used in single-product responses where the key is provided at the root level.
+  Core product information combining identification and details without the composite key fields.
+  Contains manufacturer info, identifiers, lifecycle dates, and operational details.
+  Used in single-product responses where the key (manufacturerIdGln + manufacturerProductNumber) 
+  is provided at the root level.
   
   For bulk retrieval with embedded keys, use `ProductDetailsSummary`.
   
   For product descriptions (text content), use the dedicated `/descriptions` subresource
   which supports language filtering.
 additionalProperties: false
+required:
+  - manufacturerName
 properties:
+  # =========================================================================
+  # IDENTIFICATION (from ProductIdentification)
+  # =========================================================================
+  
+  manufacturerIdDuns:
+    type: ["string", "null"]
+    pattern: "^[0-9]{9}$"
+    description: |
+      DUNS number identifying the manufacturer.
+      9-digit Dun & Bradstreet identifier.
+      
+      **ETIM xChange**: `ManufacturerIdDuns`  
+      **Path**: `Supplier[].Product[].ProductIdentification.ManufacturerIdDuns`
+  
+  manufacturerName:
+    type: string
+    minLength: 1
+    maxLength: 80
+    description: |
+      Official name of the manufacturer.
+      
+      **ETIM xChange**: `ManufacturerName`  
+      **Path**: `Supplier[].Product[].ProductIdentification.ManufacturerName`
+  
+  manufacturerShortname:
+    type: ["string", "null"]
+    minLength: 1
+    maxLength: 15
+    description: |
+      Short name or abbreviation of the manufacturer.
+      
+      **ETIM xChange**: `ManufacturerShortname`  
+      **Path**: `Supplier[].Product[].ProductIdentification.ManufacturerShortname`
+  
+  productGtins:
+    type: ["array", "null"]
+    uniqueItems: true
+    items:
+      type: string
+      pattern: "^[0-9]{8,14}$"
+    description: |
+      Global Trade Item Numbers (GTINs) for the product.
+      Can include GTIN-8, GTIN-12, GTIN-13, or GTIN-14.
+      
+      **ETIM xChange**: `ProductGtin`  
+      **Path**: `Supplier[].Product[].ProductIdentification.ProductGtin[]`
+  
+  unbrandedProduct:
+    type: ["boolean", "null"]
+    description: |
+      Indicates whether this is an unbranded/white-label product.
+      
+      **ETIM xChange**: `UnbrandedProduct`  
+      **Path**: `Supplier[].Product[].ProductIdentification.UnbrandedProduct`
+  
+  brandName:
+    type: ["string", "null"]
+    minLength: 1
+    maxLength: 50
+    description: |
+      Brand name of the product.
+      
+      **ETIM xChange**: `BrandName`  
+      **Path**: `Supplier[].Product[].ProductIdentification.BrandName`
+  
+  # =========================================================================
+  # LIFECYCLE DATES (from ProductIdentification)
+  # =========================================================================
+  
+  productAnnouncementDate:
+    type: ["string", "null"]
+    format: date
+    description: |
+      Date when the product was announced. ISO 8601 date format (YYYY-MM-DD).
+      
+      **ETIM xChange**: `ProductAnnouncementDate`  
+      **Path**: `Supplier[].Product[].ProductIdentification.ProductAnnouncementDate`
+  
+  productValidityDate:
+    type: ["string", "null"]
+    format: date
+    description: |
+      Date when the product becomes valid/available. ISO 8601 date format (YYYY-MM-DD).
+      
+      **ETIM xChange**: `ProductValidityDate`  
+      **Path**: `Supplier[].Product[].ProductIdentification.ProductValidityDate`
+  
+  productObsolescenceDate:
+    type: ["string", "null"]
+    format: date
+    description: |
+      Date when the product becomes obsolete. ISO 8601 date format (YYYY-MM-DD).
+      
+      **ETIM xChange**: `ProductObsolescenceDate`  
+      **Path**: `Supplier[].Product[].ProductIdentification.ProductObsolescenceDate`
+  
+  # =========================================================================
+  # CUSTOMS AND ORIGIN (from ProductIdentification)
+  # =========================================================================
+  
+  customsCommodityCode:
+    type: ["string", "null"]
+    minLength: 6
+    maxLength: 16
+    description: |
+      Customs/HS commodity code for the product.
+      
+      **ETIM xChange**: `CustomsCommodityCode`  
+      **Path**: `Supplier[].Product[].ProductIdentification.CustomsCommodityCode`
+  
+  factorCustomsCommodityCode:
+    type: ["number", "null"]
+    format: decimal
+    minimum: 0
+    multipleOf: 0.0001
+    maximum: 99999999999.9999
+    description: |
+      Factor for customs commodity code calculation.
+      
+      **ETIM xChange**: `FactorCustomsCommodityCode`  
+      **Path**: `Supplier[].Product[].ProductIdentification.FactorCustomsCommodityCode`
+  
+  countryOfOrigin:
+    type: ["array", "null"]
+    uniqueItems: true
+    items:
+      type: string
+      pattern: "^[A-Z]{2}$"
+    description: |
+      ISO 3166-1 alpha-2 country codes for country of origin.
+      
+      **ETIM xChange**: `CountryOfOrigin`  
+      **Path**: `Supplier[].Product[].ProductIdentification.CountryOfOrigin[]`
+  
+  # =========================================================================
+  # PRODUCT DETAILS
+  # =========================================================================
+  
   productStatus:
     $ref: ../enums/ProductStatus.yaml
+  
   productType:
     $ref: ../enums/ProductType.yaml
+  
   customisableProduct:
     type: ["boolean", "null"]
     description: |
@@ -21,6 +164,7 @@ properties:
       
       **ETIM xChange**: `CustomisableProduct`  
       **Path**: `Supplier[].Product[].ProductDetails.CustomisableProduct`
+  
   hasSerialNumber:
     type: ["boolean", "null"]
     description: |
@@ -28,6 +172,7 @@ properties:
       
       **ETIM xChange**: `HasSerialNumber`  
       **Path**: `Supplier[].Product[].ProductDetails.HasSerialNumber`
+  
   warrantyConsumer:
     type: ["integer", "null"]
     minimum: 0
@@ -37,6 +182,7 @@ properties:
       
       **ETIM xChange**: `WarrantyConsumer`  
       **Path**: `Supplier[].Product[].ProductDetails.WarrantyConsumer`
+  
   warrantyBusiness:
     type: ["integer", "null"]
     minimum: 0
@@ -46,6 +192,7 @@ properties:
       
       **ETIM xChange**: `WarrantyBusiness`  
       **Path**: `Supplier[].Product[].ProductDetails.WarrantyBusiness`
+  
   relatedManufacturerProductGroup:
     type: ["array", "null"]
     uniqueItems: true
@@ -60,7 +207,18 @@ properties:
       **Path**: `Supplier[].Product[].ProductDetails.RelatedManufacturerProductGroup[]`
 
 examples:
-  - productStatus: "ACTIVE"
+  - manufacturerName: "Philips Lighting B.V."
+    manufacturerShortname: "Philips"
+    productGtins:
+      - "8718699673826"
+    brandName: "Hue"
+    productAnnouncementDate: "2024-01-15"
+    productValidityDate: "2024-03-01"
+    productObsolescenceDate: null
+    customsCommodityCode: "8539502090"
+    countryOfOrigin:
+      - "NL"
+    productStatus: "ACTIVE"
     productType: "PHYSICAL"
     customisableProduct: false
     hasSerialNumber: true

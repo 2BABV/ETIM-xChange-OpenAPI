@@ -1,10 +1,10 @@
 type: object
 description: |
-  Response containing product details for a single product.
+  Response containing core product information for a single product.
   The product key is at the root level, with details nested inside.
   
   This structure aligns with other single-product subresource responses
-  (`/identification`, `/descriptions`, `/etim-classifications`).
+  (`/descriptions`, `/etim-classifications`).
   
   Note: Product descriptions are available through the dedicated `/descriptions` subresource
   which supports language filtering.
@@ -35,12 +35,21 @@ properties:
       details:
         $ref: ../domain/ProductDetails.yaml
         description: |
-          Product details including status, type, warranties, and product groups.
+          Core product information including manufacturer details, identifiers,
+          brand, dates, customs data, status, warranties, and product groups.
 examples:
   - data:
       manufacturerIdGln: "1234567890123"
       manufacturerProductNumber: "929002376910"
       details:
+        manufacturerName: "Philips Lighting B.V."
+        manufacturerShortname: "Philips"
+        productGtins:
+          - "8718699673826"
+        brandName: "Hue"
+        productValidityDate: "2024-03-01"
+        countryOfOrigin:
+          - "NL"
         productStatus: "ACTIVE"
         productType: "PHYSICAL"
         customisableProduct: false

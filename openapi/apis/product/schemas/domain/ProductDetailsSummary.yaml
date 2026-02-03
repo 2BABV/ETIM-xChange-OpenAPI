@@ -1,7 +1,7 @@
 type: object
 description: |
-  Product details information for bulk retrieval.
-  Contains status, type, warranties, and product groups.
+  Core product information for bulk retrieval combining identification and details.
+  Contains all key fields plus manufacturer info, identifiers, lifecycle dates, and operational details.
   
   For product descriptions (text content), use the dedicated `/bulk/product-descriptions` endpoint
   which supports language filtering.
@@ -9,7 +9,12 @@ additionalProperties: false
 required:
   - manufacturerIdGln
   - manufacturerProductNumber
+  - manufacturerName
 properties:
+  # =========================================================================
+  # KEY FIELDS (required for bulk retrieval)
+  # =========================================================================
+  
   manufacturerIdGln:
     type: string
     pattern: "^[0-9]{13}$"
@@ -18,6 +23,7 @@ properties:
       13-digit GS1 identifier.
     examples:
       - "1234567890123"
+  
   manufacturerProductNumber:
     type: string
     minLength: 1
@@ -30,10 +36,115 @@ properties:
     examples:
       - "929002376910"
       - "ABC-12345-XYZ"
+  
+  # =========================================================================
+  # IDENTIFICATION
+  # =========================================================================
+  
+  manufacturerIdDuns:
+    type: ["string", "null"]
+    pattern: "^[0-9]{9}$"
+    description: |
+      DUNS number identifying the manufacturer.
+      9-digit Dun & Bradstreet identifier.
+  
+  manufacturerName:
+    type: string
+    minLength: 1
+    maxLength: 80
+    description: |
+      Official name of the manufacturer.
+  
+  manufacturerShortname:
+    type: ["string", "null"]
+    minLength: 1
+    maxLength: 15
+    description: |
+      Short name or abbreviation of the manufacturer.
+  
+  productGtins:
+    type: ["array", "null"]
+    uniqueItems: true
+    items:
+      type: string
+      pattern: "^[0-9]{8,14}$"
+    description: |
+      Global Trade Item Numbers (GTINs) for the product.
+      Can include GTIN-8, GTIN-12, GTIN-13, or GTIN-14.
+  
+  unbrandedProduct:
+    type: ["boolean", "null"]
+    description: |
+      Indicates whether this is an unbranded/white-label product.
+  
+  brandName:
+    type: ["string", "null"]
+    minLength: 1
+    maxLength: 50
+    description: |
+      Brand name of the product.
+  
+  # =========================================================================
+  # LIFECYCLE DATES
+  # =========================================================================
+  
+  productAnnouncementDate:
+    type: ["string", "null"]
+    format: date
+    description: |
+      Date when the product was announced. ISO 8601 date format (YYYY-MM-DD).
+  
+  productValidityDate:
+    type: ["string", "null"]
+    format: date
+    description: |
+      Date when the product becomes valid/available. ISO 8601 date format (YYYY-MM-DD).
+  
+  productObsolescenceDate:
+    type: ["string", "null"]
+    format: date
+    description: |
+      Date when the product becomes obsolete. ISO 8601 date format (YYYY-MM-DD).
+  
+  # =========================================================================
+  # CUSTOMS AND ORIGIN
+  # =========================================================================
+  
+  customsCommodityCode:
+    type: ["string", "null"]
+    minLength: 6
+    maxLength: 16
+    description: |
+      Customs/HS commodity code for the product.
+  
+  factorCustomsCommodityCode:
+    type: ["number", "null"]
+    format: decimal
+    minimum: 0
+    multipleOf: 0.0001
+    maximum: 99999999999.9999
+    description: |
+      Factor for customs commodity code calculation.
+  
+  countryOfOrigin:
+    type: ["array", "null"]
+    uniqueItems: true
+    items:
+      type: string
+      pattern: "^[A-Z]{2}$"
+    description: |
+      ISO 3166-1 alpha-2 country codes for country of origin.
+  
+  # =========================================================================
+  # PRODUCT DETAILS
+  # =========================================================================
+  
   productStatus:
     $ref: ../enums/ProductStatus.yaml
+  
   productType:
     $ref: ../enums/ProductType.yaml
+  
   customisableProduct:
     type: ["boolean", "null"]
     description: |
@@ -41,6 +152,7 @@ properties:
       
       **ETIM xChange**: `CustomisableProduct`  
       **Path**: `Supplier[].Product[].ProductDetails.CustomisableProduct`
+  
   hasSerialNumber:
     type: ["boolean", "null"]
     description: |
@@ -48,6 +160,7 @@ properties:
       
       **ETIM xChange**: `HasSerialNumber`  
       **Path**: `Supplier[].Product[].ProductDetails.HasSerialNumber`
+  
   warrantyConsumer:
     type: ["integer", "null"]
     minimum: 0
@@ -57,6 +170,7 @@ properties:
       
       **ETIM xChange**: `WarrantyConsumer`  
       **Path**: `Supplier[].Product[].ProductDetails.WarrantyConsumer`
+  
   warrantyBusiness:
     type: ["integer", "null"]
     minimum: 0
@@ -66,6 +180,7 @@ properties:
       
       **ETIM xChange**: `WarrantyBusiness`  
       **Path**: `Supplier[].Product[].ProductDetails.WarrantyBusiness`
+  
   relatedManufacturerProductGroup:
     type: ["array", "null"]
     uniqueItems: true
@@ -82,6 +197,12 @@ properties:
 examples:
   - manufacturerIdGln: "1234567890123"
     manufacturerProductNumber: "929002376910"
+    manufacturerName: "Philips Lighting B.V."
+    manufacturerShortname: "Philips"
+    productGtins: ["8718699673826"]
+    brandName: "Hue"
+    productValidityDate: "2024-03-01"
+    countryOfOrigin: ["NL"]
     productStatus: "ACTIVE"
     productType: "PHYSICAL"
     customisableProduct: false

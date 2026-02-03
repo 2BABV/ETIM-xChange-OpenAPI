@@ -4,12 +4,11 @@ description: |
   
   The product key (`manufacturerIdGln` + `manufacturerProductNumber`) is at the root level,
   with nested objects for each component:
-  - `identification`: Manufacturer details, GTINs, brand, dates, customs data
-  - `details`: Status, type, warranties, product groups
+  - `details`: Manufacturer info, GTINs, brand, dates, customs data, status, warranties
   - `descriptions`: Array of multilingual descriptions (nested, not flattened)
   - `etimClassifications`: Array of ETIM classifications with embedded features (nested)
   
-  This structure aligns with the subresource endpoints (`/identification`, `/details`, 
+  This structure aligns with the subresource endpoints (`/details`, 
   `/descriptions`, `/etim-classifications`) which all include the key at the root level.
 additionalProperties: false
 required:
@@ -21,7 +20,7 @@ properties:
     required:
       - manufacturerIdGln
       - manufacturerProductNumber
-      - identification
+      - details
     properties:
       manufacturerIdGln:
         type: string
@@ -36,15 +35,11 @@ properties:
         description: Manufacturer's unique product number/code
         examples:
           - "929002376910"
-      identification:
-        $ref: ../domain/ProductIdentification.yaml
-        description: |
-          Product identification information including manufacturer details, GTINs, brand, 
-          dates, and customs data.
       details:
         $ref: ../domain/ProductDetails.yaml
         description: |
-          Product details including status, type, warranties, and product groups.
+          Core product information including manufacturer details, GTINs, brand,
+          dates, customs data, status, type, warranties, and product groups.
       descriptions:
         type: ["array", "null"]
         description: |
@@ -64,7 +59,7 @@ examples:
   - data:
       manufacturerIdGln: "1234567890123"
       manufacturerProductNumber: "929002376910"
-      identification:
+      details:
         manufacturerName: "Philips Lighting B.V."
         manufacturerShortname: "Philips"
         productGtins:
@@ -76,7 +71,6 @@ examples:
         customsCommodityCode: "8539502090"
         countryOfOrigin:
           - "NL"
-      details:
         productStatus: "ACTIVE"
         productType: "PHYSICAL"
         customisableProduct: false

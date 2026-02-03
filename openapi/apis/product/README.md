@@ -19,6 +19,12 @@ Products are uniquely identified by the composite key:
 
 ### Product details
 
+Product details (`ProductDetails`) combines identification and operational information into a single schema:
+- **Identification**: manufacturer info (name, DUNS), GTINs, brand, lifecycle dates, customs data
+- **Operational**: status, type, warranties, product groups
+
+This merged approach simplifies the API surface compared to the ETIM xChange source structure which separates `ProductIdentification` and `ProductDetails`.
+
 Product descriptions (multilingual texts, marketing content, keywords) are intentionally excluded from the product details endpoint. Instead, descriptions are available through a dedicated `/bulk/product-descriptions` endpoint with:
 - Flattened structure (one row per language per product)
 - Language filtering support
@@ -36,4 +42,5 @@ An ETIM product classification is uniquely identified by the composite key:
 
 
 ## Products TODO
-- ProductIdentification is missing BrandDetails. This is an overly complicated structure for a productIndentification. Check how to handle this.
+- ProductDetails is missing BrandDetails (nested structure with BrandSeries and BrandSeriesVariation). Check how to handle this complex multilingual structure.
+- TODO: modelling classes

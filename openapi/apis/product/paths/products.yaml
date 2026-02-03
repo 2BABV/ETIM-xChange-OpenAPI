@@ -10,14 +10,12 @@ get:
     `manufacturerIdGln` and `manufacturerProductNumber`. The product key is at the root level,
     with nested objects for each component:
     
-    - **identification**: Manufacturer details, GTINs, brand, dates, customs data
-    - **details**: Status, type, warranties, product groups
+    - **details**: Manufacturer info, GTINs, brand, dates, customs data, status, warranties
     - **descriptions**: Multilingual product descriptions (nested array)
     - **etimClassifications**: ETIM classifications with embedded features (nested array)
     
     **Subresources**: Each component is also available as a dedicated subresource:
-    - `/identification` - Product identification only
-    - `/details` - Product details only
+    - `/details` - Core product information
     - `/descriptions` - Multilingual descriptions with language filtering
     - `/etim-classifications` - ETIM classifications with features
     
@@ -46,7 +44,7 @@ get:
                 data:
                   manufacturerIdGln: "1234567890123"
                   manufacturerProductNumber: "929002376910"
-                  identification:
+                  details:
                     manufacturerName: "Philips Lighting B.V."
                     manufacturerShortname: "Philips"
                     productGtins:
@@ -58,7 +56,6 @@ get:
                     customsCommodityCode: "8539502090"
                     countryOfOrigin:
                       - "NL"
-                  details:
                     productStatus: "ACTIVE"
                     productType: "PHYSICAL"
                     customisableProduct: false
@@ -82,7 +79,7 @@ get:
                 data:
                   manufacturerIdGln: "1234567890123"
                   manufacturerProductNumber: "LED-12345-A"
-                  identification:
+                  details:
                     manufacturerName: "OSRAM GmbH"
                   descriptions:
                     - descriptionLanguage: "en-GB"
