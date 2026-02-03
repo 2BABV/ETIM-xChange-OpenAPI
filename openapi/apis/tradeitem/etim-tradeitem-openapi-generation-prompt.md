@@ -326,7 +326,7 @@ openapi/apis/tradeitem/
     │   ├── TradeItemOrdering.yaml        # Without key (for nested single-item)
     │   ├── TradeItemOrderingsSummary.yaml # WITH key (for bulk retrieval)
     │   ├── ItemPricing.yaml
-    │   ├── TradeItemPricingsSummary.yaml # WITH key (for bulk retrieval)
+    │   ├── TradeItemPricingSummary.yaml  # WITH key (for bulk retrieval, 1 row per price)
     │   ├── ItemLogistics.yaml
     │   ├── ItemRelation.yaml
     │   ├── PackagingUnit.yaml
@@ -414,11 +414,31 @@ The bulk API consolidates ETIM xChange's separate `ItemIdentification` and `Item
 |----------|--------------|--------|
 | `/bulk/trade-item-details` | `ItemIdentification` + `ItemDetails` | `TradeItemDetailsSummary` |
 | `/bulk/trade-item-orderings` | `Ordering` | `TradeItemOrderingsSummary` |
-| `/bulk/trade-item-pricings` | `Pricing[]` | `TradeItemPricingsSummary` |
+| `/bulk/trade-item-pricings` | `Pricing[]` | `TradeItemPricingSummary` (1 row per price) |
 
 **Note**: There is no separate `/bulk/trade-items` or `/bulk/item-identifications` endpoint. 
 The `/bulk/trade-item-details` endpoint provides all identification fields (GTINs, manufacturer numbers, 
 discount/bonus groups, validity dates) combined with item details (status, condition, descriptions).
+
+#### Bulk Flattening Strategy
+
+**Design Philosophy**: Maximize flattening for predictable pagination and ETL compatibility.
+
+| Endpoint | Rows per Item | Flattening Pattern |
+|----------|---------------|-------------------|
+| `/bulk/trade-item-details` | 1 | Fully flat (all fields inline) |
+| `/bulk/trade-item-orderings` | 1 | Fully flat (all fields inline) |
+| `/bulk/trade-item-descriptions` | n (per language) | Flat per language row |
+| `/bulk/trade-item-pricings` | n (per price tier) | **Flat per price entry** |
+
+**Pricing Flattening** (consistent with `ProductEtimClassificationFeature` pattern):
+- Each row = 1 price entry with embedded composite key
+- Trade items with quantity tiers generate multiple rows
+- Allows predictable payload sizes and efficient cursor pagination
+
+**Nested structures retained**:
+- `allowanceSurcharges[]` within each price row - maintains relational integrity between price and its adjustments
+- Simple string arrays (`itemGtins[]`, `productKeyword[]`) - minimal impact on row predictability
 
 #### Bulk Endpoints to Create
 
@@ -443,14 +463,15 @@ discount/bonus groups, validity dates) combined with item details (status, condi
 - **Response**: `BulkTradeItemOrderingsResponse` using `TradeItemOrderingsSummary` schema
 
 **GET /bulk/trade-item-pricings**
-- **Description**: Retrieve trade item pricing information (prices, currencies, allowances) in bulk with cursor-based pagination
+- **Description**: Retrieve trade item pricing information (prices, currencies, allowances) in bulk with cursor-based pagination. **Flattened structure**: 1 row per price entry (not grouped by item)
 - **Query Parameters**:
   - `cursor` (optional): Pagination cursor
   - `limit` (optional): Number of items per page (default: 100, max: 1000)
   - `selectionId` (optional): Filter by selection identifier
   - `supplierIdGln` (optional): Filter by supplier GLN
   - `mutationDateTime` (optional): Filter by mutation timestamp (RFC 3339 / ISO 8601 UTC format with 'Z' suffix)
-- **Response**: `BulkTradeItemPricingsResponse` using `TradeItemPricingsSummary` schema
+- **Response**: `BulkTradeItemPricingsResponse` using `TradeItemPricingSummary` schema
+- **Note**: A trade item with multiple price tiers will generate multiple rows with the same key but different pricing data. This follows the same pattern as `/bulk/product-etim-classifications`
 
 #### Response Structure (Cursor-Based Pagination)
 
@@ -1118,7 +1139,7 @@ Each schema file must include:
    - `TradeItemDetails.yaml` (without key, for nested single-item)
    - `TradeItemDetailsSummary.yaml` (WITH key, for bulk)
    - `TradeItemOrdering.yaml`, `TradeItemOrderingsSummary.yaml`
-   - `ItemPricing.yaml`, `TradeItemPricingsSummary.yaml`
+   - `ItemPricing.yaml`, `TradeItemPricingSummary.yaml` (1 row per price for bulk)
    - `ItemLogistics.yaml`, `ItemRelation.yaml`, `PackagingUnit.yaml`, `ItemDescription.yaml`
    - Include ETIM xChange field names and paths in all descriptions
 3. **Create single-item response schemas** (nested structure with key at root):
@@ -1211,7 +1232,7 @@ Generate the following files:
 **Domain schemas (WITH keys - for bulk retrieval)**:
 19. `openapi/apis/tradeitem/schemas/domain/TradeItemDetailsSummary.yaml`
 20. `openapi/apis/tradeitem/schemas/domain/TradeItemOrderingsSummary.yaml`
-21. `openapi/apis/tradeitem/schemas/domain/TradeItemPricingsSummary.yaml`
+21. `openapi/apis/tradeitem/schemas/domain/TradeItemPricingSummary.yaml` (flattened - 1 row per price)
 
 **Single-item response schemas**:
 22. `openapi/apis/tradeitem/schemas/responses/TradeItemResponse.yaml`

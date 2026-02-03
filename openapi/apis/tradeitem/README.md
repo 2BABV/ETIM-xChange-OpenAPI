@@ -49,31 +49,34 @@ The bulk API consolidates ETIM xChange sections for efficient data retrieval:
 | `/bulk/trade-item-details` | `ItemIdentification` + `ItemDetails` (excl. descriptions) | `TradeItemDetailsSummary` |
 | `/bulk/trade-item-descriptions` | `ItemDetails.ItemDescriptions[]` | `ItemDescriptionsSummary` |
 | `/bulk/trade-item-orderings` | `Ordering` | `TradeItemOrderingsSummary` |
-| `/bulk/trade-item-pricings` | `Pricing[]` | `TradeItemPricingsSummary` |
+| `/bulk/trade-item-pricings` | `Pricing[]` | `TradeItemPricingSummary` |
 
 **Note**: There is no separate `/bulk/trade-items` or `/bulk/item-identifications` endpoint. The `/bulk/trade-item-details` endpoint provides all identification fields combined with item details.
+
+### Bulk Flattening Strategy
+
+**Design Philosophy**: Maximize flattening for predictable pagination and ETL compatibility.
+
+| Endpoint | Rows per Item | Flattening Pattern |
+|----------|---------------|-------------------|
+| `/bulk/trade-item-details` | 1 | Fully flat (all fields inline) |
+| `/bulk/trade-item-orderings` | 1 | Fully flat (all fields inline) |
+| `/bulk/trade-item-descriptions` | n (per language) | Flat per language row |
+| `/bulk/trade-item-pricings` | n (per price tier) | **Flat per price entry** |
+
+**Pricing Flattening** (consistent with Product API's `ProductEtimClassificationFeature` pattern):
+- Each row = 1 price entry with embedded composite key (`supplierIdGln` + `supplierItemNumber`)
+- Trade items with quantity tiers or validity periods generate multiple rows
+- Enables predictable payload sizes and efficient cursor pagination
+- Optimized for ETL/data warehouse ingestion
+
+**Nested structures retained**:
+- `allowanceSurcharges[]` within each price row - maintains relational integrity between price and its adjustments
+- Simple string arrays (`itemGtins[]`) - minimal impact on row predictability
 
 
 
 ## TradeItem TODO
-
-### High Priority
-
-**Missing Single-Item Endpoints** (bulk schemas exist, single endpoints not implemented)
-- `/{supplierIdGln}/{supplierItemNumber}/orderings` - Order units, quantities, step sizes
-- `/{supplierIdGln}/{supplierItemNumber}/pricings` - Pricing information array
-
-**Missing Bulk Domain Schemas** (endpoints exist, schemas need implementation)
-- `TradeItemOrderingsSummary.yaml` - WITH key fields for bulk orderings
-- `TradeItemPricingsSummary.yaml` - WITH key fields for bulk pricings
-- `TradeItemOrdering.yaml` - Without key for nested single-item orderings
-- `ItemPricing.yaml` - Pricing details per price record
-
-**Missing Response Schemas**
-- `TradeItemOrderingsResponse.yaml` - Single-item orderings subresource
-- `TradeItemPricingsResponse.yaml` - Single-item pricings subresource
-- `BulkTradeItemOrderingsResponse.yaml` - Bulk orderings with pagination
-- `BulkTradeItemPricingsResponse.yaml` - Bulk pricings with pagination
 
 ### Medium Priority
 
