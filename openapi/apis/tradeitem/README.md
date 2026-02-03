@@ -49,7 +49,8 @@ The bulk API consolidates ETIM xChange sections for efficient data retrieval:
 | `/bulk/trade-item-details` | `ItemIdentification` + `ItemDetails` (excl. descriptions) | `TradeItemDetailsSummary` |
 | `/bulk/trade-item-descriptions` | `ItemDetails.ItemDescriptions[]` | `ItemDescriptionsSummary` |
 | `/bulk/trade-item-orderings` | `Ordering` | `TradeItemOrderingsSummary` |
-| `/bulk/trade-item-pricings` | `Pricing[]` | `TradeItemPricingSummary` |
+| `/bulk/trade-item-pricings` | `Pricing[]` (excl. allowances/surcharges) | `TradeItemPricingSummary` |
+| `/bulk/trade-item-allowance-surcharges` | `Pricing[].AllowanceSurcharge[]` | `AllowanceSurchargeSummary` |
 
 **Note**: There is no separate `/bulk/trade-items` or `/bulk/item-identifications` endpoint. The `/bulk/trade-item-details` endpoint provides all identification fields combined with item details.
 
@@ -63,6 +64,7 @@ The bulk API consolidates ETIM xChange sections for efficient data retrieval:
 | `/bulk/trade-item-orderings` | 1 | Fully flat (all fields inline) |
 | `/bulk/trade-item-descriptions` | n (per language) | Flat per language row |
 | `/bulk/trade-item-pricings` | n (per price tier) | **Flat per price entry** |
+| `/bulk/trade-item-allowance-surcharges` | n (per surcharge) | **Flat per surcharge entry** |
 
 **Pricing Flattening** (consistent with Product API's `ProductEtimClassificationFeature` pattern):
 - Each row = 1 price entry with embedded composite key (`supplierIdGln` + `supplierItemNumber`)
@@ -70,8 +72,13 @@ The bulk API consolidates ETIM xChange sections for efficient data retrieval:
 - Enables predictable payload sizes and efficient cursor pagination
 - Optimized for ETL/data warehouse ingestion
 
+**Allowance/Surcharge Separation** (star schema pattern):
+- Moved from nested array within pricing to separate `/bulk/trade-item-allowance-surcharges` endpoint
+- Each row = 1 surcharge entry with pricing join keys (`priceUnit` + `priceQuantity` + `priceValidityDate`)
+- Enables clean dimensional modeling: pricing fact table + surcharges fact table
+- Join via: `supplierIdGln` + `supplierItemNumber` + `priceUnit` + `priceQuantity`
+
 **Nested structures retained**:
-- `allowanceSurcharges[]` within each price row - maintains relational integrity between price and its adjustments
 - Simple string arrays (`itemGtins[]`) - minimal impact on row predictability
 
 
@@ -99,10 +106,6 @@ The bulk API consolidates ETIM xChange sections for efficient data retrieval:
 - Decision needed: simplified model vs full type support (same as Product API)
 
 ### Low Priority
-
-**Allowances & Surcharges** (Pricing)
-- `AllowanceSurcharge[]` array within pricing
-- Type, calculation method, percentage/amount values
 
 **Legislation Fields** (if applicable at trade item level)
 - RoHS, REACH indicators (string enums: "true"/"false"/"exempt")

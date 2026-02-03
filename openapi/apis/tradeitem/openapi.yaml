@@ -70,6 +70,8 @@ paths:
     $ref: './paths/bulk/trade-item-orderings.yaml'
   /bulk/trade-item-pricings:
     $ref: './paths/bulk/trade-item-pricings.yaml'
+  /bulk/trade-item-allowance-surcharges:
+    $ref: './paths/bulk/trade-item-allowance-surcharges.yaml'
     
 components:
   schemas:
@@ -92,6 +94,8 @@ components:
       $ref: './schemas/domain/TradeItemPricing.yaml'
     TradeItemPricingsSummary:
       $ref: './schemas/domain/TradeItemPricingsSummary.yaml'
+    AllowanceSurchargeSummary:
+      $ref: './schemas/domain/AllowanceSurchargeSummary.yaml'
     
     # Response schemas
     TradeItemResponse:
@@ -112,6 +116,8 @@ components:
       $ref: './schemas/responses/TradeItemPricingsResponse.yaml'
     BulkTradeItemPricingsResponse:
       $ref: './schemas/responses/BulkTradeItemPricingsResponse.yaml'
+    BulkAllowanceSurchargesResponse:
+      $ref: './schemas/responses/BulkAllowanceSurchargesResponse.yaml'
 
   parameters:
     SupplierIdGln:

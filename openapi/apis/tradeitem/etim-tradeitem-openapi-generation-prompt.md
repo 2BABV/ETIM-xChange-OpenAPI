@@ -430,15 +430,21 @@ discount/bonus groups, validity dates) combined with item details (status, condi
 | `/bulk/trade-item-orderings` | 1 | Fully flat (all fields inline) |
 | `/bulk/trade-item-descriptions` | n (per language) | Flat per language row |
 | `/bulk/trade-item-pricings` | n (per price tier) | **Flat per price entry** |
+| `/bulk/trade-item-allowance-surcharges` | n (per surcharge) | **Flat per surcharge entry** |
 
 **Pricing Flattening** (consistent with `ProductEtimClassificationFeature` pattern):
 - Each row = 1 price entry with embedded composite key
 - Trade items with quantity tiers generate multiple rows
 - Allows predictable payload sizes and efficient cursor pagination
 
+**Allowance/Surcharge Separation** (star schema pattern):
+- Moved from nested array within pricing to separate `/bulk/trade-item-allowance-surcharges` endpoint
+- Each row = 1 surcharge entry with pricing join keys (`priceUnit` + `priceQuantity` + `priceValidityDate`)
+- Enables clean dimensional modeling: pricing fact table + surcharges fact table
+- Join via: `supplierIdGln` + `supplierItemNumber` + `priceUnit` + `priceQuantity`
+
 **Nested structures retained**:
-- `allowanceSurcharges[]` within each price row - maintains relational integrity between price and its adjustments
-- Simple string arrays (`itemGtins[]`, `productKeyword[]`) - minimal impact on row predictability
+- Simple string arrays (`itemGtins[]`) - minimal impact on row predictability
 
 #### Bulk Endpoints to Create
 
@@ -472,6 +478,18 @@ discount/bonus groups, validity dates) combined with item details (status, condi
   - `mutationDateTime` (optional): Filter by mutation timestamp (RFC 3339 / ISO 8601 UTC format with 'Z' suffix)
 - **Response**: `BulkTradeItemPricingsResponse` using `TradeItemPricingSummary` schema
 - **Note**: A trade item with multiple price tiers will generate multiple rows with the same key but different pricing data. This follows the same pattern as `/bulk/product-etim-classifications`
+- **Allowances/Surcharges**: Available via separate `/bulk/trade-item-allowance-surcharges` endpoint (not embedded)
+
+**GET /bulk/trade-item-allowance-surcharges**
+- **Description**: Retrieve trade item allowances and surcharges in bulk with cursor-based pagination. **Flattened structure**: 1 row per surcharge entry
+- **Query Parameters**:
+  - `cursor` (optional): Pagination cursor
+  - `limit` (optional): Number of items per page (default: 100, max: 1000)
+  - `selectionId` (optional): Filter by selection identifier
+  - `supplierIdGln` (optional): Filter by supplier GLN
+  - `mutationDateTime` (optional): Filter by mutation timestamp (RFC 3339 / ISO 8601 UTC format with 'Z' suffix)
+- **Response**: `BulkAllowanceSurchargesResponse` using `AllowanceSurchargeSummary` schema
+- **Join Keys**: `supplierIdGln` + `supplierItemNumber` + `priceUnit` + `priceQuantity` (+ `priceValidityDate`)
 
 #### Response Structure (Cursor-Based Pagination)
 
@@ -1218,6 +1236,7 @@ Generate the following files:
 7. `openapi/apis/tradeitem/paths/bulk/trade-item-details.yaml`
 8. `openapi/apis/tradeitem/paths/bulk/trade-item-orderings.yaml`
 9. `openapi/apis/tradeitem/paths/bulk/trade-item-pricings.yaml`
+10. `openapi/apis/tradeitem/paths/bulk/trade-item-allowance-surcharges.yaml`
 
 **Domain schemas (without keys - for nested single-item)**:
 11. `openapi/apis/tradeitem/schemas/domain/TradeItemDetails.yaml`
@@ -1233,22 +1252,24 @@ Generate the following files:
 19. `openapi/apis/tradeitem/schemas/domain/TradeItemDetailsSummary.yaml`
 20. `openapi/apis/tradeitem/schemas/domain/TradeItemOrderingsSummary.yaml`
 21. `openapi/apis/tradeitem/schemas/domain/TradeItemPricingSummary.yaml` (flattened - 1 row per price)
+22. `openapi/apis/tradeitem/schemas/domain/AllowanceSurchargeSummary.yaml` (flattened - 1 row per surcharge)
 
 **Single-item response schemas**:
-22. `openapi/apis/tradeitem/schemas/responses/TradeItemResponse.yaml`
-23. `openapi/apis/tradeitem/schemas/responses/TradeItemDetailsResponse.yaml`
-24. `openapi/apis/tradeitem/schemas/responses/TradeItemOrderingsResponse.yaml`
-25. `openapi/apis/tradeitem/schemas/responses/TradeItemPricingsResponse.yaml`
+23. `openapi/apis/tradeitem/schemas/responses/TradeItemResponse.yaml`
+24. `openapi/apis/tradeitem/schemas/responses/TradeItemDetailsResponse.yaml`
+25. `openapi/apis/tradeitem/schemas/responses/TradeItemOrderingsResponse.yaml`
+26. `openapi/apis/tradeitem/schemas/responses/TradeItemPricingsResponse.yaml`
 
 **Bulk response schemas**:
-26. `openapi/apis/tradeitem/schemas/responses/BulkTradeItemDetailsResponse.yaml`
-27. `openapi/apis/tradeitem/schemas/responses/BulkTradeItemOrderingsResponse.yaml`
-28. `openapi/apis/tradeitem/schemas/responses/BulkTradeItemPricingsResponse.yaml`
+27. `openapi/apis/tradeitem/schemas/responses/BulkTradeItemDetailsResponse.yaml`
+28. `openapi/apis/tradeitem/schemas/responses/BulkTradeItemOrderingsResponse.yaml`
+29. `openapi/apis/tradeitem/schemas/responses/BulkTradeItemPricingsResponse.yaml`
+30. `openapi/apis/tradeitem/schemas/responses/BulkAllowanceSurchargesResponse.yaml`
 
 **Enum schemas**:
-29. `openapi/apis/tradeitem/schemas/enums/ItemStatus.yaml`
-30. `openapi/apis/tradeitem/schemas/enums/ItemCondition.yaml`
-31. `openapi/apis/tradeitem/schemas/enums/RelationType.yaml`
+31. `openapi/apis/tradeitem/schemas/enums/ItemStatus.yaml`
+32. `openapi/apis/tradeitem/schemas/enums/ItemCondition.yaml`
+33. `openapi/apis/tradeitem/schemas/enums/RelationType.yaml`
 
 ### Existing Files to Reuse (DO NOT CREATE)
 - `openapi/shared/parameters/query/selection-id.yaml`

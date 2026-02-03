@@ -13,6 +13,9 @@ description: |
   A trade item may have multiple pricing entries (e.g., quantity tiers, validity periods),
   resulting in multiple rows with the same composite key but different pricing data.
   
+  **Allowances & Surcharges**: Available via separate `/bulk/trade-item-allowance-surcharges` endpoint.
+  Join using `supplierIdGln` + `supplierItemNumber` + `priceUnit` + `priceQuantity` (+ `priceValidityDate`).
+  
   **Payload Optimization**: Optional properties with null values may be omitted from the response
   to minimize payload size. Clients should treat missing properties as null/not applicable.
   
@@ -190,21 +193,6 @@ properties:
       **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceExpiryDate`
     examples:
       - "2025-12-31"
-  
-  # =========================================================================
-  # ALLOWANCE/SURCHARGES (kept nested per decision)
-  # =========================================================================
-  
-  allowanceSurcharges:
-    type: ["array", "null"]
-    description: |
-      Array of allowances (discounts) or surcharges (additional charges) applied to this price.
-      Kept as nested array to maintain relational integrity between price and its adjustments.
-      
-      **ETIM xChange**: `AllowanceSurcharge[]`
-      **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[]`
-    items:
-      $ref: ./AllowanceSurcharge.yaml
 
 examples:
   # Standard pricing - single quantity
@@ -247,19 +235,3 @@ examples:
     vat: 21.0
     priceValidityDate: "2025-01-01"
     priceExpiryDate: "2025-06-30"
-  
-  # Pricing with allowance
-  - supplierIdGln: "8712423012485"
-    supplierItemNumber: "SKU-TOOL-003"
-    priceUnit: C62
-    priceQuantity: 1
-    priceOnRequest: false
-    grossListPrice: 50.00
-    netPrice: 42.50
-    vat: 21.0
-    priceValidityDate: "2025-01-01"
-    allowanceSurcharges:
-      - allowanceSurchargeIndicator: ALLOWANCE
-        allowanceSurchargeType: AEQ
-        allowanceSurchargePercentage: 15.0
-        allowanceSurchargeMinimumQuantity: 10
