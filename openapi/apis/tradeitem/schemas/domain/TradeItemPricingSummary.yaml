@@ -27,6 +27,7 @@ required:
   - supplierItemNumber
   - priceUnit
   - priceQuantity
+  - currencyCode
 properties:
   # =========================================================================
   # KEY FIELDS (required for bulk retrieval)
@@ -104,6 +105,13 @@ properties:
       - 1
       - 10
       - 100
+  currencyCode:
+    description: |
+      Currency code for all monetary values in this pricing entry.
+      Sourced from ETIM xChange `CurrencyCode` at catalog level.
+    $ref: ../../../../shared/schemas/common/CurrencyCode.yaml
+    examples:
+      - EUR
   
   priceOnRequest:
     type: ["boolean", "null"]
@@ -200,6 +208,7 @@ examples:
     supplierItemNumber: "SKU-LAMP-001"
     priceUnit: C62
     priceQuantity: 1
+    currencyCode: EUR
     priceOnRequest: false
     grossListPrice: 12.99
     netPrice: 9.99
@@ -214,6 +223,7 @@ examples:
     priceUnit: MTR
     priceUnitFactor: 1.0
     priceQuantity: 1
+    currencyCode: EUR
     priceOnRequest: false
     grossListPrice: 2.50
     netPrice: 1.99
@@ -228,6 +238,7 @@ examples:
     priceUnit: MTR
     priceUnitFactor: 1.0
     priceQuantity: 100
+    currencyCode: EUR
     priceOnRequest: false
     grossListPrice: 2.00
     netPrice: 1.59

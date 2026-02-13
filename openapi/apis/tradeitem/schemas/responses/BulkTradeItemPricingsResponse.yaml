@@ -34,6 +34,7 @@ examples:
         supplierItemNumber: "SKU-LAMP-001"
         priceUnit: C62
         priceQuantity: 1
+        currencyCode: EUR
         priceOnRequest: false
         grossListPrice: 12.99
         netPrice: 9.99
@@ -47,6 +48,7 @@ examples:
         priceUnit: MTR
         priceUnitFactor: 1.0
         priceQuantity: 1
+        currencyCode: EUR
         priceOnRequest: false
         grossListPrice: 2.50
         netPrice: 1.99
@@ -59,6 +61,7 @@ examples:
         priceUnit: MTR
         priceUnitFactor: 1.0
         priceQuantity: 100
+        currencyCode: EUR
         priceOnRequest: false
         grossListPrice: 2.00
         netPrice: 1.59

@@ -1,7 +1,7 @@
 type: object
 description: |
   Core product information combining identification and details without the composite key fields.
-  Contains manufacturer info, identifiers, lifecycle dates, and operational details.
+  Contains identifiers, lifecycle dates, and operational details.
   Used in single-product responses where the key (manufacturerIdGln + manufacturerProductNumber) 
   is provided at the root level.
   
@@ -10,42 +10,10 @@ description: |
   For product descriptions (text content), use the dedicated `/descriptions` subresource
   which supports language filtering.
 additionalProperties: false
-required:
-  - manufacturerName
 properties:
   # =========================================================================
   # IDENTIFICATION (from ProductIdentification)
   # =========================================================================
-  
-  manufacturerIdDuns:
-    type: ["string", "null"]
-    pattern: "^[0-9]{9}$"
-    description: |
-      DUNS number identifying the manufacturer.
-      9-digit Dun & Bradstreet identifier.
-      
-      **ETIM xChange**: `ManufacturerIdDuns`  
-      **Path**: `Supplier[].Product[].ProductIdentification.ManufacturerIdDuns`
-  
-  manufacturerName:
-    type: string
-    minLength: 1
-    maxLength: 80
-    description: |
-      Official name of the manufacturer.
-      
-      **ETIM xChange**: `ManufacturerName`  
-      **Path**: `Supplier[].Product[].ProductIdentification.ManufacturerName`
-  
-  manufacturerShortname:
-    type: ["string", "null"]
-    minLength: 1
-    maxLength: 15
-    description: |
-      Short name or abbreviation of the manufacturer.
-      
-      **ETIM xChange**: `ManufacturerShortname`  
-      **Path**: `Supplier[].Product[].ProductIdentification.ManufacturerShortname`
   
   productGtins:
     type: ["array", "null"]
@@ -207,9 +175,7 @@ properties:
       **Path**: `Supplier[].Product[].ProductDetails.RelatedManufacturerProductGroup[]`
 
 examples:
-  - manufacturerName: "Philips Lighting B.V."
-    manufacturerShortname: "Philips"
-    productGtins:
+  - productGtins:
       - "8718699673826"
     brandName: "Hue"
     productAnnouncementDate: "2024-01-15"

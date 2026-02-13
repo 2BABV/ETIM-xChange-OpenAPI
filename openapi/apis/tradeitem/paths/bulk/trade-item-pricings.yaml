@@ -4,7 +4,7 @@ get:
   description: |
     Retrieve trade item pricing information in bulk with cursor-based pagination.
     Returns pricing details including net prices, gross list prices, recommended retail prices,
-    VAT, price validity periods, and allowances/surcharges.
+    VAT, price validity periods, allowances/surcharges, and the catalog-level currency code.
     
     **Flattened Structure**: Each row represents a single price entry with embedded composite key
     (`supplierIdGln` + `supplierItemNumber`). This follows the same pattern as 
@@ -45,6 +45,7 @@ get:
                     supplierItemNumber: "SKU-LAMP-001"
                     priceUnit: "C62"
                     priceQuantity: 1
+                    currencyCode: "EUR"
                     priceOnRequest: false
                     grossListPrice: 12.99
                     netPrice: 9.99
@@ -56,12 +57,14 @@ get:
                     supplierItemNumber: "SKU-CABLE-002"
                     priceUnit: "MTR"
                     priceQuantity: 1
+                    currencyCode: "EUR"
                     netPrice: 1.99
                     priceValidityDate: "2025-01-01"
                   - supplierIdGln: "8712423012485"
                     supplierItemNumber: "SKU-CABLE-002"
                     priceUnit: "MTR"
                     priceQuantity: 100
+                    currencyCode: "EUR"
                     netPrice: 1.59
                     priceValidityDate: "2025-01-01"
                 meta:

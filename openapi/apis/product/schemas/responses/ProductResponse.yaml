@@ -4,7 +4,7 @@ description: |
   
   The product key (`manufacturerIdGln` + `manufacturerProductNumber`) is at the root level,
   with nested objects for each component:
-  - `details`: Manufacturer info, GTINs, brand, dates, customs data, status, warranties
+  - `details`: GTINs, brand, dates, customs data, status, warranties
   - `descriptions`: Array of multilingual descriptions (nested, not flattened)
   - `etimClassifications`: Array of ETIM classifications with embedded features (nested)
   
@@ -38,7 +38,7 @@ properties:
       details:
         $ref: ../domain/ProductDetails.yaml
         description: |
-          Core product information including manufacturer details, GTINs, brand,
+          Core product information including GTINs, brand,
           dates, customs data, status, type, warranties, and product groups.
       descriptions:
         type: ["array", "null"]
@@ -60,8 +60,6 @@ examples:
       manufacturerIdGln: "1234567890123"
       manufacturerProductNumber: "929002376910"
       details:
-        manufacturerName: "Philips Lighting B.V."
-        manufacturerShortname: "Philips"
         productGtins:
           - "8718699673826"
         brandName: "Hue"

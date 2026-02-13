@@ -10,7 +10,7 @@ get:
     `manufacturerIdGln` and `manufacturerProductNumber`. The product key is at the root level,
     with nested objects for each component:
     
-    - **details**: Manufacturer info, GTINs, brand, dates, customs data, status, warranties
+    - **details**: GTINs, brand, dates, customs data, status, warranties
     - **descriptions**: Multilingual product descriptions (nested array)
     - **etimClassifications**: ETIM classifications with embedded features (nested array)
     
@@ -45,8 +45,6 @@ get:
                   manufacturerIdGln: "1234567890123"
                   manufacturerProductNumber: "929002376910"
                   details:
-                    manufacturerName: "Philips Lighting B.V."
-                    manufacturerShortname: "Philips"
                     productGtins:
                       - "8718699673826"
                     brandName: "Hue"
@@ -79,8 +77,7 @@ get:
                 data:
                   manufacturerIdGln: "1234567890123"
                   manufacturerProductNumber: "LED-12345-A"
-                  details:
-                    manufacturerName: "OSRAM GmbH"
+                  details: {}
                   descriptions:
                     - descriptionLanguage: "en-GB"
                       minimalProductDescription: "LED Lamp"

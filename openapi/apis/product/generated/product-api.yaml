@@ -51,7 +51,7 @@ paths:
         `manufacturerIdGln` and `manufacturerProductNumber`. The product key is at the root level,
         with nested objects for each component:
 
-        - **details**: Manufacturer info, GTINs, brand, dates, customs data, status, warranties
+        - **details**: GTINs, brand, dates, customs data, status, warranties
         - **descriptions**: Multilingual product descriptions (nested array)
         - **etimClassifications**: ETIM classifications with embedded features (nested array)
 
@@ -86,8 +86,6 @@ paths:
                       manufacturerIdGln: '1234567890123'
                       manufacturerProductNumber: '929002376910'
                       details:
-                        manufacturerName: Philips Lighting B.V.
-                        manufacturerShortname: Philips
                         productGtins:
                           - '8718699673826'
                         brandName: Hue
@@ -120,8 +118,7 @@ paths:
                     data:
                       manufacturerIdGln: '1234567890123'
                       manufacturerProductNumber: LED-12345-A
-                      details:
-                        manufacturerName: OSRAM GmbH
+                      details: {}
                       descriptions:
                         - descriptionLanguage: en-GB
                           minimalProductDescription: LED Lamp
@@ -155,8 +152,8 @@ paths:
       description: |
         Retrieve core product information for a specific manufacturer product combination.
 
-        This endpoint returns comprehensive product information including manufacturer details,
-        identifiers (GTINs, DUNS), brand, lifecycle dates, customs data, status, type, 
+        This endpoint returns comprehensive product information including
+        identifiers (GTINs), brand, lifecycle dates, customs data, status, type, 
         warranties, and product groups for a single product identified by the composite key of
         `manufacturerIdGln` and `manufacturerProductNumber`.
 
@@ -185,8 +182,6 @@ paths:
                       manufacturerIdGln: '1234567890123'
                       manufacturerProductNumber: '929002376910'
                       details:
-                        manufacturerName: Philips Lighting B.V.
-                        manufacturerShortname: Philips
                         productGtins:
                           - '8718699673826'
                         brandName: Hue
@@ -209,7 +204,6 @@ paths:
                       manufacturerIdGln: '1234567890123'
                       manufacturerProductNumber: LED-12345-A
                       details:
-                        manufacturerName: OSRAM GmbH
                         productStatus: ACTIVE
                         productType: PHYSICAL
         '400':
@@ -814,7 +808,7 @@ components:
       type: object
       description: |
         Core product information combining identification and details without the composite key fields.
-        Contains manufacturer info, identifiers, lifecycle dates, and operational details.
+        Contains identifiers, lifecycle dates, and operational details.
         Used in single-product responses where the key (manufacturerIdGln + manufacturerProductNumber) 
         is provided at the root level.
 
@@ -823,40 +817,7 @@ components:
         For product descriptions (text content), use the dedicated `/descriptions` subresource
         which supports language filtering.
       additionalProperties: false
-      required:
-        - manufacturerName
       properties:
-        manufacturerIdDuns:
-          type:
-            - string
-            - 'null'
-          pattern: ^[0-9]{9}$
-          description: |
-            DUNS number identifying the manufacturer.
-            9-digit Dun & Bradstreet identifier.
-
-            **ETIM xChange**: `ManufacturerIdDuns`  
-            **Path**: `Supplier[].Product[].ProductIdentification.ManufacturerIdDuns`
-        manufacturerName:
-          type: string
-          minLength: 1
-          maxLength: 80
-          description: |
-            Official name of the manufacturer.
-
-            **ETIM xChange**: `ManufacturerName`  
-            **Path**: `Supplier[].Product[].ProductIdentification.ManufacturerName`
-        manufacturerShortname:
-          type:
-            - string
-            - 'null'
-          minLength: 1
-          maxLength: 15
-          description: |
-            Short name or abbreviation of the manufacturer.
-
-            **ETIM xChange**: `ManufacturerShortname`  
-            **Path**: `Supplier[].Product[].ProductIdentification.ManufacturerShortname`
         productGtins:
           type:
             - array
@@ -1017,9 +978,7 @@ components:
             **ETIM xChange**: `RelatedManufacturerProductGroup`  
             **Path**: `Supplier[].Product[].ProductDetails.RelatedManufacturerProductGroup[]`
       examples:
-        - manufacturerName: Philips Lighting B.V.
-          manufacturerShortname: Philips
-          productGtins:
+        - productGtins:
             - '8718699673826'
           brandName: Hue
           productAnnouncementDate: '2024-01-15'
@@ -1049,7 +1008,6 @@ components:
       required:
         - manufacturerIdGln
         - manufacturerProductNumber
-        - manufacturerName
       properties:
         manufacturerIdGln:
           type: string
@@ -1071,28 +1029,6 @@ components:
           examples:
             - '929002376910'
             - ABC-12345-XYZ
-        manufacturerIdDuns:
-          type:
-            - string
-            - 'null'
-          pattern: ^[0-9]{9}$
-          description: |
-            DUNS number identifying the manufacturer.
-            9-digit Dun & Bradstreet identifier.
-        manufacturerName:
-          type: string
-          minLength: 1
-          maxLength: 80
-          description: |
-            Official name of the manufacturer.
-        manufacturerShortname:
-          type:
-            - string
-            - 'null'
-          minLength: 1
-          maxLength: 15
-          description: |
-            Short name or abbreviation of the manufacturer.
         productGtins:
           type:
             - array
@@ -1228,8 +1164,6 @@ components:
       examples:
         - manufacturerIdGln: '1234567890123'
           manufacturerProductNumber: '929002376910'
-          manufacturerName: Philips Lighting B.V.
-          manufacturerShortname: Philips
           productGtins:
             - '8718699673826'
           brandName: Hue
@@ -3467,7 +3401,7 @@ components:
 
         The product key (`manufacturerIdGln` + `manufacturerProductNumber`) is at the root level,
         with nested objects for each component:
-        - `details`: Manufacturer info, GTINs, brand, dates, customs data, status, warranties
+        - `details`: GTINs, brand, dates, customs data, status, warranties
         - `descriptions`: Array of multilingual descriptions (nested, not flattened)
         - `etimClassifications`: Array of ETIM classifications with embedded features (nested)
 
@@ -3501,7 +3435,7 @@ components:
             details:
               $ref: '#/components/schemas/ProductDetails'
               description: |
-                Core product information including manufacturer details, GTINs, brand,
+                Core product information including GTINs, brand,
                 dates, customs data, status, type, warranties, and product groups.
             descriptions:
               type:
@@ -3527,8 +3461,6 @@ components:
             manufacturerIdGln: '1234567890123'
             manufacturerProductNumber: '929002376910'
             details:
-              manufacturerName: Philips Lighting B.V.
-              manufacturerShortname: Philips
               productGtins:
                 - '8718699673826'
               brandName: Hue
@@ -3597,15 +3529,13 @@ components:
             details:
               $ref: '#/components/schemas/ProductDetails'
               description: |
-                Core product information including manufacturer details, identifiers,
+                Core product information including identifiers,
                 brand, dates, customs data, status, warranties, and product groups.
       examples:
         - data:
             manufacturerIdGln: '1234567890123'
             manufacturerProductNumber: '929002376910'
             details:
-              manufacturerName: Philips Lighting B.V.
-              manufacturerShortname: Philips
               productGtins:
                 - '8718699673826'
               brandName: Hue
@@ -3767,8 +3697,6 @@ components:
         - data:
             - manufacturerIdGln: '1234567890123'
               manufacturerProductNumber: '929002376910'
-              manufacturerName: Philips Lighting B.V.
-              manufacturerShortname: Philips
               productGtins:
                 - '8718699673826'
               brandName: Hue

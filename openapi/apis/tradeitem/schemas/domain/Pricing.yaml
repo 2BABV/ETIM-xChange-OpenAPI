@@ -3,6 +3,7 @@ additionalProperties: false
 required:
   - priceUnit
   - priceQuantity
+  - currencyCode
 properties:
   priceUnit:
     $ref: ../../../../shared/schemas/common/UnitCodes.yaml
@@ -30,6 +31,11 @@ properties:
       - 1
       - 10
       - 100.5
+  currencyCode:
+    description: Currency code for all monetary values in this pricing entry.
+    $ref: ../../../../shared/schemas/common/CurrencyCode.yaml
+    examples:
+      - EUR
   priceOnRequest:
     type: ["boolean", "null"]
     description: Indicates whether the price is available on request only

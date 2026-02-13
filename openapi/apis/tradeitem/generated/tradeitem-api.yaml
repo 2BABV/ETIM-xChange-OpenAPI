@@ -335,6 +335,7 @@ paths:
         - Gross list price, net price, and recommended retail price
         - VAT percentage
         - Price validity and expiry dates
+        - Currency code (catalog-level `CurrencyCode`)
 
         **Allowances & Surcharges**: Available via separate `/{supplierIdGln}/{supplierItemNumber}/allowance-surcharges` endpoint.
 
@@ -369,6 +370,7 @@ paths:
                         - priceUnit: C62
                           priceUnitFactor: null
                           priceQuantity: 1
+                          currencyCode: EUR
                           priceOnRequest: false
                           grossListPrice: 130
                           netPrice: 100
@@ -386,6 +388,7 @@ paths:
                         - priceUnit: MTR
                           priceUnitFactor: 1
                           priceQuantity: 1
+                          currencyCode: EUR
                           priceOnRequest: false
                           grossListPrice: 2.5
                           netPrice: 1.99
@@ -396,6 +399,7 @@ paths:
                         - priceUnit: MTR
                           priceUnitFactor: 1
                           priceQuantity: 100
+                          currencyCode: EUR
                           priceOnRequest: false
                           grossListPrice: 2
                           netPrice: 1.59
@@ -413,6 +417,7 @@ paths:
                         - priceUnit: C62
                           priceUnitFactor: null
                           priceQuantity: 1
+                          currencyCode: EUR
                           priceOnRequest: true
                           grossListPrice: null
                           netPrice: null
@@ -814,7 +819,7 @@ paths:
       description: |
         Retrieve trade item pricing information in bulk with cursor-based pagination.
         Returns pricing details including net prices, gross list prices, recommended retail prices,
-        VAT, price validity periods, and allowances/surcharges.
+        VAT, price validity periods, allowances/surcharges, and the catalog-level currency code.
 
         **Flattened Structure**: Each row represents a single price entry with embedded composite key
         (`supplierIdGln` + `supplierItemNumber`). This follows the same pattern as 
@@ -855,6 +860,7 @@ paths:
                         supplierItemNumber: SKU-LAMP-001
                         priceUnit: C62
                         priceQuantity: 1
+                        currencyCode: EUR
                         priceOnRequest: false
                         grossListPrice: 12.99
                         netPrice: 9.99
@@ -866,12 +872,14 @@ paths:
                         supplierItemNumber: SKU-CABLE-002
                         priceUnit: MTR
                         priceQuantity: 1
+                        currencyCode: EUR
                         netPrice: 1.99
                         priceValidityDate: '2025-01-01'
                       - supplierIdGln: '8712423012485'
                         supplierItemNumber: SKU-CABLE-002
                         priceUnit: MTR
                         priceQuantity: 100
+                        currencyCode: EUR
                         netPrice: 1.59
                         priceValidityDate: '2025-01-01'
                     meta:
@@ -2031,6 +2039,7 @@ components:
       required:
         - priceUnit
         - priceQuantity
+        - currencyCode
       properties:
         priceUnit:
           description: |
@@ -2073,6 +2082,13 @@ components:
             - 1
             - 10
             - 100
+        currencyCode:
+          description: |
+            Currency code for all monetary values in this pricing entry.
+            Sourced from ETIM xChange `CurrencyCode` at catalog level.
+          $ref: '#/components/schemas/CurrencyCode'
+          examples:
+            - EUR
         priceOnRequest:
           type:
             - boolean
@@ -2180,6 +2196,7 @@ components:
         - priceUnit: C62
           priceUnitFactor: null
           priceQuantity: 1
+          currencyCode: EUR
           priceOnRequest: false
           grossListPrice: 130
           netPrice: 100
@@ -2249,6 +2266,7 @@ components:
             - priceUnit: C62
               priceUnitFactor: null
               priceQuantity: 1
+              currencyCode: EUR
               priceOnRequest: false
               grossListPrice: 12.99
               netPrice: 9.99
@@ -2263,6 +2281,7 @@ components:
             - priceUnit: MTR
               priceUnitFactor: 1
               priceQuantity: 1
+              currencyCode: EUR
               priceOnRequest: false
               grossListPrice: 2.5
               netPrice: 1.99
@@ -2274,6 +2293,7 @@ components:
             - priceUnit: MTR
               priceUnitFactor: 1
               priceQuantity: 100
+              currencyCode: EUR
               priceOnRequest: false
               grossListPrice: 2
               netPrice: 1.59
@@ -3045,6 +3065,7 @@ components:
               - priceUnit: C62
                 priceUnitFactor: null
                 priceQuantity: 1
+                currencyCode: EUR
                 priceOnRequest: false
                 grossListPrice: 130
                 netPrice: 100
@@ -3059,6 +3080,7 @@ components:
               - priceUnit: MTR
                 priceUnitFactor: 1
                 priceQuantity: 1
+                currencyCode: EUR
                 priceOnRequest: false
                 grossListPrice: 2.5
                 netPrice: 1.99
@@ -3069,6 +3091,7 @@ components:
               - priceUnit: MTR
                 priceUnitFactor: 1
                 priceQuantity: 100
+                currencyCode: EUR
                 priceOnRequest: false
                 grossListPrice: 2
                 netPrice: 1.59
@@ -3111,6 +3134,7 @@ components:
               supplierItemNumber: SKU-LAMP-001
               priceUnit: C62
               priceQuantity: 1
+              currencyCode: EUR
               priceOnRequest: false
               grossListPrice: 12.99
               netPrice: 9.99
@@ -3123,6 +3147,7 @@ components:
               priceUnit: MTR
               priceUnitFactor: 1
               priceQuantity: 1
+              currencyCode: EUR
               priceOnRequest: false
               grossListPrice: 2.5
               netPrice: 1.99
@@ -3135,6 +3160,7 @@ components:
               priceUnit: MTR
               priceUnitFactor: 1
               priceQuantity: 100
+              currencyCode: EUR
               priceOnRequest: false
               grossListPrice: 2
               netPrice: 1.59
@@ -3722,6 +3748,22 @@ components:
         - Z3
         - D99
         - KG
+    CurrencyCode:
+      type: string
+      description: ISO 4217 currency code
+      enum:
+        - EUR
+        - USD
+        - GBP
+        - CHF
+        - SEK
+        - NOK
+        - DKK
+        - PLN
+        - CZK
+      examples:
+        - EUR
+        - USD
     AllowanceSurchargeTypes:
       type: string
       description: |
@@ -3856,6 +3898,7 @@ components:
         - supplierItemNumber
         - priceUnit
         - priceQuantity
+        - currencyCode
       properties:
         supplierIdGln:
           type: string
@@ -3923,6 +3966,13 @@ components:
             - 1
             - 10
             - 100
+        currencyCode:
+          description: |
+            Currency code for all monetary values in this pricing entry.
+            Sourced from ETIM xChange `CurrencyCode` at catalog level.
+          $ref: '#/components/schemas/CurrencyCode'
+          examples:
+            - EUR
         priceOnRequest:
           type:
             - boolean
@@ -4024,6 +4074,7 @@ components:
           supplierItemNumber: SKU-LAMP-001
           priceUnit: C62
           priceQuantity: 1
+          currencyCode: EUR
           priceOnRequest: false
           grossListPrice: 12.99
           netPrice: 9.99
@@ -4036,6 +4087,7 @@ components:
           priceUnit: MTR
           priceUnitFactor: 1
           priceQuantity: 1
+          currencyCode: EUR
           priceOnRequest: false
           grossListPrice: 2.5
           netPrice: 1.99
@@ -4048,6 +4100,7 @@ components:
           priceUnit: MTR
           priceUnitFactor: 1
           priceQuantity: 100
+          currencyCode: EUR
           priceOnRequest: false
           grossListPrice: 2
           netPrice: 1.59

@@ -16,8 +16,6 @@ properties:
 examples:
   - data:
       - manufacturerIdGln: "1234567890123"
-        manufacturerName: "Philips Lighting B.V."
-        manufacturerShortname: "Philips"
         manufacturerProductNumber: "929002376910"
         productGtins: ["8718699673826"]
         brandName: "Hue"

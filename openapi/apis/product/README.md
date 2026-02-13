@@ -17,10 +17,16 @@ Products are uniquely identified by the composite key:
 
 [Decision details](docs/product-key.md)
 
+### Manufacturer identity
+
+The ETIM xChange `ProductIdentification` object includes `ManufacturerIdDuns`, `ManufacturerName`, and `ManufacturerShortname` alongside each product. This API intentionally **excludes** these fields from the Product domain. Manufacturer identity data (name, shortname, DUNS) belongs in a separate **Manufacturer service** and should not be duplicated per product.
+
+Only `manufacturerIdGln` is retained as a foreign key reference to the Manufacturer. Consumers needing manufacturer details should resolve `manufacturerIdGln` against the Manufacturer service.
+
 ### Product details
 
 Product details (`ProductDetails`) combines identification and operational information into a single schema:
-- **Identification**: manufacturer info (name, DUNS), GTINs, brand, lifecycle dates, customs data
+- **Identification**: GTINs, brand, lifecycle dates, customs data
 - **Operational**: status, type, warranties, product groups
 
 This merged approach simplifies the API surface compared to the ETIM xChange source structure which separates `ProductIdentification` and `ProductDetails`.

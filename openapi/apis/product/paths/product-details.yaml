@@ -6,8 +6,8 @@ get:
   description: |
     Retrieve core product information for a specific manufacturer product combination.
     
-    This endpoint returns comprehensive product information including manufacturer details,
-    identifiers (GTINs, DUNS), brand, lifecycle dates, customs data, status, type, 
+    This endpoint returns comprehensive product information including
+    identifiers (GTINs), brand, lifecycle dates, customs data, status, type, 
     warranties, and product groups for a single product identified by the composite key of
     `manufacturerIdGln` and `manufacturerProductNumber`.
     
@@ -36,8 +36,6 @@ get:
                   manufacturerIdGln: "1234567890123"
                   manufacturerProductNumber: "929002376910"
                   details:
-                    manufacturerName: "Philips Lighting B.V."
-                    manufacturerShortname: "Philips"
                     productGtins:
                       - "8718699673826"
                     brandName: "Hue"
@@ -60,7 +58,6 @@ get:
                   manufacturerIdGln: "1234567890123"
                   manufacturerProductNumber: "LED-12345-A"
                   details:
-                    manufacturerName: "OSRAM GmbH"
                     productStatus: "ACTIVE"
                     productType: "PHYSICAL"
     '400':

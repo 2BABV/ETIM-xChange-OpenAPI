@@ -9,7 +9,6 @@ additionalProperties: false
 required:
   - manufacturerIdGln
   - manufacturerProductNumber
-  - manufacturerName
 properties:
   # =========================================================================
   # KEY FIELDS (required for bulk retrieval)
@@ -40,27 +39,6 @@ properties:
   # =========================================================================
   # IDENTIFICATION
   # =========================================================================
-  
-  manufacturerIdDuns:
-    type: ["string", "null"]
-    pattern: "^[0-9]{9}$"
-    description: |
-      DUNS number identifying the manufacturer.
-      9-digit Dun & Bradstreet identifier.
-  
-  manufacturerName:
-    type: string
-    minLength: 1
-    maxLength: 80
-    description: |
-      Official name of the manufacturer.
-  
-  manufacturerShortname:
-    type: ["string", "null"]
-    minLength: 1
-    maxLength: 15
-    description: |
-      Short name or abbreviation of the manufacturer.
   
   productGtins:
     type: ["array", "null"]
@@ -197,8 +175,6 @@ properties:
 examples:
   - manufacturerIdGln: "1234567890123"
     manufacturerProductNumber: "929002376910"
-    manufacturerName: "Philips Lighting B.V."
-    manufacturerShortname: "Philips"
     productGtins: ["8718699673826"]
     brandName: "Hue"
     productValidityDate: "2024-03-01"

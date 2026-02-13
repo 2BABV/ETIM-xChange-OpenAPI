@@ -11,6 +11,7 @@ get:
     - Gross list price, net price, and recommended retail price
     - VAT percentage
     - Price validity and expiry dates
+    - Currency code (catalog-level `CurrencyCode`)
     
     **Allowances & Surcharges**: Available via separate `/{supplierIdGln}/{supplierItemNumber}/allowance-surcharges` endpoint.
     
@@ -45,6 +46,7 @@ get:
                     - priceUnit: "C62"
                       priceUnitFactor: null
                       priceQuantity: 1
+                      currencyCode: "EUR"
                       priceOnRequest: false
                       grossListPrice: 130.0
                       netPrice: 100.0
@@ -62,6 +64,7 @@ get:
                     - priceUnit: "MTR"
                       priceUnitFactor: 1.0
                       priceQuantity: 1
+                      currencyCode: "EUR"
                       priceOnRequest: false
                       grossListPrice: 2.50
                       netPrice: 1.99
@@ -72,6 +75,7 @@ get:
                     - priceUnit: "MTR"
                       priceUnitFactor: 1.0
                       priceQuantity: 100
+                      currencyCode: "EUR"
                       priceOnRequest: false
                       grossListPrice: 2.00
                       netPrice: 1.59
@@ -89,6 +93,7 @@ get:
                     - priceUnit: "C62"
                       priceUnitFactor: null
                       priceQuantity: 1
+                      currencyCode: "EUR"
                       priceOnRequest: true
                       grossListPrice: null
                       netPrice: null
