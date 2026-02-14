@@ -161,6 +161,8 @@ components:
       $ref: schemas/responses/BulkProductLcaDeclarationsResponse.yaml
     
     # Shared schemas
+    TechnicalId:
+      $ref: ../../shared/schemas/identifiers/TechnicalId.yaml
     ProblemDetails:
       $ref: ../../shared/schemas/common/ProblemDetails.yaml
     CursorPaginationMetadata:

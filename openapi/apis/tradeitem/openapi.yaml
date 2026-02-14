@@ -81,6 +81,8 @@ components:
     # Shared components from other domains
     ErrorResponse:
       $ref: ../../shared/schemas/common/ProblemDetails.yaml
+    TechnicalId:
+      $ref: ../../shared/schemas/identifiers/TechnicalId.yaml
     
     # Domain schemas
     TradeItemDetails:

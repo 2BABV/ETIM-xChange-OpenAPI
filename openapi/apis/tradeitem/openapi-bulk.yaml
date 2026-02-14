@@ -136,6 +136,8 @@ components:
       $ref: ./schemas/responses/BulkItemPricingsResponse.yaml
     
     # Shared schemas
+    TechnicalId:
+      $ref: ../../shared/schemas/identifiers/TechnicalId.yaml
     Gln:
       $ref: ../../shared/schemas/identifiers/Gln.yaml
     Gtin:
