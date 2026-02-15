@@ -10,6 +10,8 @@ description: |
   For product descriptions (text content), use the dedicated `/descriptions` subresource
   which supports language filtering.
 additionalProperties: false
+required:
+  - productValidityDate
 properties:
   # =========================================================================
   # IDENTIFICATION (from ProductIdentification)
@@ -60,13 +62,15 @@ properties:
       **Path**: `Supplier[].Product[].ProductIdentification.ProductAnnouncementDate`
   
   productValidityDate:
-    type: ["string", "null"]
+    type: string
     format: date
     description: |
       Date when the product becomes valid/available. ISO 8601 date format (YYYY-MM-DD).
+      Defaults to CatalogueValidityStart if not overridden at the product level.
       
       **ETIM xChange**: `ProductValidityDate`  
-      **Path**: `Supplier[].Product[].ProductIdentification.ProductValidityDate`
+      **Path**: `Supplier[].Product[].ProductIdentification.ProductValidityDate`  
+      **Default from**: `CatalogueValidityStart`
   
   productObsolescenceDate:
     type: ["string", "null"]

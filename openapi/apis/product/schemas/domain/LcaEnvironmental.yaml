@@ -6,6 +6,7 @@ required:
   - lcaReferenceLifetime
   - thirdPartyVerification
   - lcaDeclaration
+  - epdValidityStartDate
 properties:
   declaredUnitUnit:
     type: string
@@ -145,16 +146,17 @@ properties:
       - null
   
   epdValidityStartDate:
-    type: ["string", "null"]
+    type: string
     format: date
     description: |
       Start date of EPD validity period. ISO 8601 date format (YYYY-MM-DD).
+      Defaults to CatalogueValidityStart if not overridden at the product level.
       
       **ETIM xChange**: `EpdValidityStartDate`  
-      **Path**: `Supplier[].Product[].LcaEnvironmental.EpdValidityStartDate`
+      **Path**: `Supplier[].Product[].LcaEnvironmental.EpdValidityStartDate`  
+      **Default from**: `CatalogueValidityStart`
     examples:
       - "2024-01-01"
-      - null
   
   epdValidityExpiryDate:
     type: ["string", "null"]

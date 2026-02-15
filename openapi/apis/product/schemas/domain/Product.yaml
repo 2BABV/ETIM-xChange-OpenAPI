@@ -10,6 +10,7 @@ required:
   - manufacturerIdGln
   - manufacturerProductNumber
   - productDescriptions
+  - productValidityDate
 properties:
   # =========================================================================
   # KEY IDENTIFICATION FIELDS (flattened from ProductIdentification)
@@ -97,16 +98,17 @@ properties:
       - null
   
   productValidityDate:
-    type: ["string", "null"]
+    type: string
     format: date
     description: |
       Date from which product is valid for sale. ISO 8601 date format (YYYY-MM-DD).
+      Defaults to CatalogueValidityStart if not overridden at the product level.
       
       **ETIM xChange**: `ProductValidityDate`  
-      **Path**: `Supplier[].Product[].ProductIdentification.ProductValidityDate`
+      **Path**: `Supplier[].Product[].ProductIdentification.ProductValidityDate`  
+      **Default from**: `CatalogueValidityStart`
     examples:
       - "2024-03-01"
-      - null
   
   productObsolescenceDate:
     type: ["string", "null"]

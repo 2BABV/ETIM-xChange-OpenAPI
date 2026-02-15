@@ -204,6 +204,7 @@ paths:
                       manufacturerIdGln: '1234567890123'
                       manufacturerProductNumber: LED-12345-A
                       details:
+                        productValidityDate: '2024-03-01'
                         productStatus: ACTIVE
                         productType: PHYSICAL
         '400':
@@ -817,6 +818,8 @@ components:
         For product descriptions (text content), use the dedicated `/descriptions` subresource
         which supports language filtering.
       additionalProperties: false
+      required:
+        - productValidityDate
       properties:
         productGtins:
           type:
@@ -863,15 +866,15 @@ components:
             **ETIM xChange**: `ProductAnnouncementDate`  
             **Path**: `Supplier[].Product[].ProductIdentification.ProductAnnouncementDate`
         productValidityDate:
-          type:
-            - string
-            - 'null'
+          type: string
           format: date
           description: |
             Date when the product becomes valid/available. ISO 8601 date format (YYYY-MM-DD).
+            Defaults to CatalogueValidityStart if not overridden at the product level.
 
             **ETIM xChange**: `ProductValidityDate`  
-            **Path**: `Supplier[].Product[].ProductIdentification.ProductValidityDate`
+            **Path**: `Supplier[].Product[].ProductIdentification.ProductValidityDate`  
+            **Default from**: `CatalogueValidityStart`
         productObsolescenceDate:
           type:
             - string
@@ -1008,6 +1011,7 @@ components:
       required:
         - manufacturerIdGln
         - manufacturerProductNumber
+        - productValidityDate
       properties:
         manufacturerIdGln:
           type: string
@@ -1062,12 +1066,15 @@ components:
           description: |
             Date when the product was announced. ISO 8601 date format (YYYY-MM-DD).
         productValidityDate:
-          type:
-            - string
-            - 'null'
+          type: string
           format: date
           description: |
             Date when the product becomes valid/available. ISO 8601 date format (YYYY-MM-DD).
+            Defaults to CatalogueValidityStart if not overridden at the product level.
+
+            **ETIM xChange**: `ProductValidityDate`  
+            **Path**: `Supplier[].Product[].ProductIdentification.ProductValidityDate`  
+            **Default from**: `CatalogueValidityStart`
         productObsolescenceDate:
           type:
             - string
@@ -2097,6 +2104,7 @@ components:
         - lcaReferenceLifetime
         - thirdPartyVerification
         - lcaDeclaration
+        - epdValidityStartDate
       properties:
         declaredUnitUnit:
           type: string
@@ -2236,18 +2244,17 @@ components:
             - EPD-PHI-20240001
             - null
         epdValidityStartDate:
-          type:
-            - string
-            - 'null'
+          type: string
           format: date
           description: |
             Start date of EPD validity period. ISO 8601 date format (YYYY-MM-DD).
+            Defaults to CatalogueValidityStart if not overridden at the product level.
 
             **ETIM xChange**: `EpdValidityStartDate`  
-            **Path**: `Supplier[].Product[].LcaEnvironmental.EpdValidityStartDate`
+            **Path**: `Supplier[].Product[].LcaEnvironmental.EpdValidityStartDate`  
+            **Default from**: `CatalogueValidityStart`
           examples:
             - '2024-01-01'
-            - null
         epdValidityExpiryDate:
           type:
             - string
@@ -4016,6 +4023,15 @@ components:
             hasPrev: false
             limit: 1000
             estimatedTotal: 12540
+    TechnicalId:
+      type: string
+      description: Generic technical identifier that can hold an integer, string, or GUID/UUID value. Used for opaque system-generated identifiers such as selection IDs, internal references, and other technical keys where the format is not prescribed.
+      minLength: 1
+      maxLength: 50
+      examples:
+        - SELECTION-2024-Q1
+        - '123456'
+        - f47ac10b-58cc-4372-a567-0e02b2c3d479
     ProblemDetails:
       type: object
       title: Problem Details
@@ -4260,9 +4276,7 @@ components:
       description: Filter results by selection identifier. Used to retrieve a specific subset of items based on a predefined selection.
       required: false
       schema:
-        type: string
-        minLength: 1
-        maxLength: 50
+        $ref: '#/components/schemas/TechnicalId'
       example: SELECTION-2024-Q1
     manufacturer-id-gln-filter:
       name: manufacturerIdGln

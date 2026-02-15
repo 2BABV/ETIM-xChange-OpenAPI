@@ -58,6 +58,7 @@ get:
                   manufacturerIdGln: "1234567890123"
                   manufacturerProductNumber: "LED-12345-A"
                   details:
+                    productValidityDate: "2024-03-01"
                     productStatus: "ACTIVE"
                     productType: "PHYSICAL"
     '400':
