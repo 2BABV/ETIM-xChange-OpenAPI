@@ -10,6 +10,7 @@ required:
   - priceUnit
   - priceQuantity
   - currencyCode
+  - priceValidityDate
 properties:
   # Trade item identification
   supplierIdGln:
@@ -134,14 +135,16 @@ properties:
       - null
   
   priceValidityDate:
-    type: ["string", "null"]
+    type: string
     format: date
     description: |
       Date from which the price is valid. ISO 8601 date format (YYYY-MM-DD).
-      **ETIM xChange**: `PriceValidityDate`
+      Defaults to CatalogueValidityStart if not overridden at the pricing level.
+      
+      **ETIM xChange**: `PriceValidityDate`  
+      **Default from**: `CatalogueValidityStart`
     examples:
       - "2025-01-01"
-      - null
   
   priceExpiryDate:
     type: ["string", "null"]

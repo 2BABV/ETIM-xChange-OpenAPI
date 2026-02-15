@@ -4,6 +4,7 @@ required:
   - priceUnit
   - priceQuantity
   - currencyCode
+  - priceValidityDate
 properties:
   priceUnit:
     $ref: ../../../../shared/schemas/common/UnitCodes.yaml
@@ -69,9 +70,13 @@ properties:
           - 6.5
       - type: "null"
   priceValidityDate:
-    type: ["string", "null"]
+    type: string
     format: date
-    description: The date from which the price is valid
+    description: |
+      The date from which the price is valid. ISO 8601 date format (YYYY-MM-DD).
+      Defaults to CatalogueValidityStart if not overridden at the pricing level.
+      
+      **Default from**: `CatalogueValidityStart`
     examples:
       - "2025-01-01"
   priceExpiryDate:

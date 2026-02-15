@@ -5,6 +5,7 @@ description: |
 additionalProperties: false
 required:
   - supplierItemNumber
+  - itemValidityDate
 properties:
   supplierItemNumber:
     type: string
@@ -108,16 +109,18 @@ properties:
       - "Premium bonus tier"
       - null
   itemValidityDate:
-    type: ["string", "null"]
+    type: string
     format: date
     description: |
       Date from which the trade item is valid for ordering. ISO 8601 date format (YYYY-MM-DD).
-      **ETIM xChange**: `ItemValidityDate`
-      **Path**: `Supplier[].Product[].TradeItem[].ItemIdentification.ItemValidityDate`
+      Defaults to CatalogueValidityStart if not overridden at the trade item level.
+      
+      **ETIM xChange**: `ItemValidityDate`  
+      **Path**: `Supplier[].Product[].TradeItem[].ItemIdentification.ItemValidityDate`  
+      **Default from**: `CatalogueValidityStart`
     examples:
       - "2025-01-15"
       - "2024-06-01"
-      - null
   itemObsolescenceDate:
     type: ["string", "null"]
     format: date

@@ -109,7 +109,7 @@ paths:
                         discountGroupDescription: null
                         bonusGroupId: null
                         bonusGroupDescription: null
-                        itemValidityDate: null
+                        itemValidityDate: '2024-01-01'
                         itemObsolescenceDate: null
                         itemStatus: ACTIVE
                         itemCondition: NEW
@@ -1013,6 +1013,7 @@ components:
       required:
         - manufacturerIdGln
         - manufacturerProductNumber
+        - itemValidityDate
       properties:
         supplierAltItemNumber:
           type:
@@ -1158,20 +1159,19 @@ components:
             - Premium bonus tier
             - null
         itemValidityDate:
-          type:
-            - string
-            - 'null'
+          type: string
           format: date
           description: |
             Date from which the trade item is valid for ordering. 
             ISO 8601 date format (YYYY-MM-DD).
+            Defaults to CatalogueValidityStart if not overridden at the trade item level.
 
             **ETIM xChange**: `ItemValidityDate`  
-            **Path**: `Supplier[].Product[].TradeItem[].ItemIdentification.ItemValidityDate`
+            **Path**: `Supplier[].Product[].TradeItem[].ItemIdentification.ItemValidityDate`  
+            **Default from**: `CatalogueValidityStart`
           examples:
             - '2025-01-15'
             - '2024-06-01'
-            - null
         itemObsolescenceDate:
           type:
             - string
@@ -1288,6 +1288,7 @@ components:
         - supplierItemNumber
         - manufacturerIdGln
         - manufacturerProductNumber
+        - itemValidityDate
       properties:
         supplierIdGln:
           type: string
@@ -1462,19 +1463,18 @@ components:
             - Premium bonus tier
             - null
         itemValidityDate:
-          type:
-            - string
-            - 'null'
+          type: string
           format: date
           description: |
             Date from which the trade item is valid for ordering. 
             ISO 8601 date format (YYYY-MM-DD).
+            Defaults to CatalogueValidityStart if not overridden at the trade item level.
 
             **ETIM xChange**: `ItemValidityDate`  
-            **Path**: `Supplier[].Product[].TradeItem[].ItemIdentification.ItemValidityDate`
+            **Path**: `Supplier[].Product[].TradeItem[].ItemIdentification.ItemValidityDate`  
+            **Default from**: `CatalogueValidityStart`
           examples:
             - '2025-01-15'
-            - null
         itemObsolescenceDate:
           type:
             - string
@@ -2049,6 +2049,7 @@ components:
         - priceUnit
         - priceQuantity
         - currencyCode
+        - priceValidityDate
       properties:
         priceUnit:
           description: |
@@ -2176,18 +2177,17 @@ components:
             - 19
             - null
         priceValidityDate:
-          type:
-            - string
-            - 'null'
+          type: string
           format: date
           description: |
             Date from which the price is valid. ISO 8601 date format (YYYY-MM-DD).
+            Defaults to CatalogueValidityStart if not overridden at the pricing level.
 
-            **ETIM xChange**: `PriceValidityDate`
-            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceValidityDate`
+            **ETIM xChange**: `PriceValidityDate`  
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceValidityDate`  
+            **Default from**: `CatalogueValidityStart`
           examples:
             - '2025-01-01'
-            - null
         priceExpiryDate:
           type:
             - string
@@ -2335,6 +2335,7 @@ components:
         - supplierItemNumber
         - priceUnit
         - priceQuantity
+        - priceValidityDate
         - allowanceSurchargeIndicator
         - allowanceSurchargeType
       properties:
@@ -2387,17 +2388,17 @@ components:
             - 10
             - 100
         priceValidityDate:
-          type:
-            - string
-            - 'null'
+          type: string
           format: date
           description: |
-            Date from which the price is valid. Optional join key for distinguishing
+            Date from which the price is valid. Join key for distinguishing
             prices with same unit/quantity but different validity periods.
             ISO 8601 date format (YYYY-MM-DD).
+            Defaults to CatalogueValidityStart if not overridden at the pricing level.
 
-            **ETIM xChange**: `PriceValidityDate`
-            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceValidityDate`
+            **ETIM xChange**: `PriceValidityDate`  
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceValidityDate`  
+            **Default from**: `CatalogueValidityStart`
           examples:
             - '2025-01-01'
         allowanceSurchargeIndicator:
@@ -2624,7 +2625,7 @@ components:
             discountGroupDescription: null
             bonusGroupId: null
             bonusGroupDescription: null
-            itemValidityDate: null
+            itemValidityDate: '2024-01-01'
             itemObsolescenceDate: null
             itemDetails:
               itemStatus: ACTIVE
@@ -3908,6 +3909,7 @@ components:
         - priceUnit
         - priceQuantity
         - currencyCode
+        - priceValidityDate
       properties:
         supplierIdGln:
           type: string
@@ -4055,15 +4057,15 @@ components:
             - 21
             - 19
         priceValidityDate:
-          type:
-            - string
-            - 'null'
+          type: string
           format: date
           description: |
             Date from which the price is valid. ISO 8601 date format (YYYY-MM-DD).
+            Defaults to CatalogueValidityStart if not overridden at the pricing level.
 
-            **ETIM xChange**: `PriceValidityDate`
-            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceValidityDate`
+            **ETIM xChange**: `PriceValidityDate`  
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceValidityDate`  
+            **Default from**: `CatalogueValidityStart`
           examples:
             - '2025-01-01'
         priceExpiryDate:
@@ -5165,6 +5167,7 @@ components:
         - supplierItemNumber
         - itemDetails
         - ordering
+        - itemValidityDate
       properties:
         supplierIdGln:
           description: |
@@ -5317,17 +5320,17 @@ components:
             - Premium bonus tier
             - null
         itemValidityDate:
-          type:
-            - string
-            - 'null'
+          type: string
           format: date
           description: |
             Date from which the trade item is valid for ordering. ISO 8601 date format (YYYY-MM-DD).
-            **ETIM xChange**: `ItemValidityDate`
-            **Path**: `Supplier[].Product[].TradeItem[].ItemIdentification.ItemValidityDate`
+            Defaults to CatalogueValidityStart if not overridden at the trade item level.
+
+            **ETIM xChange**: `ItemValidityDate`  
+            **Path**: `Supplier[].Product[].TradeItem[].ItemIdentification.ItemValidityDate`  
+            **Default from**: `CatalogueValidityStart`
           examples:
             - '2025-01-15'
-            - null
         itemObsolescenceDate:
           type:
             - string

@@ -70,7 +70,7 @@ get:
                     discountGroupDescription: null
                     bonusGroupId: null
                     bonusGroupDescription: null
-                    itemValidityDate: null
+                    itemValidityDate: "2024-01-01"
                     itemObsolescenceDate: null
                     itemStatus: "ACTIVE"
                     itemCondition: "NEW"

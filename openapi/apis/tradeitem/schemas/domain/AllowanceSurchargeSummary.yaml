@@ -21,6 +21,7 @@ required:
   - supplierItemNumber
   - priceUnit
   - priceQuantity
+  - priceValidityDate
   - allowanceSurchargeIndicator
   - allowanceSurchargeType
 properties:
@@ -85,15 +86,17 @@ properties:
       - 100
   
   priceValidityDate:
-    type: ["string", "null"]
+    type: string
     format: date
     description: |
-      Date from which the price is valid. Optional join key for distinguishing
+      Date from which the price is valid. Join key for distinguishing
       prices with same unit/quantity but different validity periods.
       ISO 8601 date format (YYYY-MM-DD).
+      Defaults to CatalogueValidityStart if not overridden at the pricing level.
       
-      **ETIM xChange**: `PriceValidityDate`
-      **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceValidityDate`
+      **ETIM xChange**: `PriceValidityDate`  
+      **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceValidityDate`  
+      **Default from**: `CatalogueValidityStart`
     examples:
       - "2025-01-01"
   
