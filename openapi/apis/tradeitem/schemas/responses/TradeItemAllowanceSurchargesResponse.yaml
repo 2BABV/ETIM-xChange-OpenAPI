@@ -1,10 +1,11 @@
 type: object
 description: |
   Response containing allowances and surcharges for a specific trade item.
-  Returns the trade item key and all associated allowances/surcharges with pricing join keys.
+  Returns the trade item key and all associated allowances/surcharges linked to pricing entries
+  via `pricingRef`.
   
-  **Pricing Join Keys**: Each allowance/surcharge includes `priceUnit`, `priceQuantity`, and 
-  `priceValidityDate` to enable joining with the corresponding pricing entry.
+  **Pricing Reference**: Each allowance/surcharge includes a `pricingRef` to enable 
+  correlation with the corresponding pricing entry from the `/pricings` endpoint.
   
   **ETIM xChange**: `AllowanceSurcharge[]`
   **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[]`
@@ -40,14 +41,12 @@ properties:
       allowanceSurcharges:
         type: ["array", "null"]
         description: |
-          Array of allowances and surcharges with pricing join keys.
-          Each item includes the pricing identifiers to correlate with pricing entries.
+          Array of allowances and surcharges linked to pricing entries via `pricingRef`.
+          Each item includes a `pricingRef` to correlate with pricing entries.
         items:
           $ref: ./TradeItemAllowanceSurchargeItem.yaml
         examples:
-          - - priceUnit: C62
-              priceQuantity: 1
-              priceValidityDate: "2025-01-01"
+          - - pricingRef: "price-c62-1-20250101"
               allowanceSurchargeIndicator: ALLOWANCE
               allowanceSurchargeType: AEQ
               allowanceSurchargePercentage: 5.5
@@ -58,9 +57,7 @@ examples:
       supplierIdGln: "1234567890123"
       supplierItemNumber: "SKU-12345"
       allowanceSurcharges:
-        - priceUnit: C62
-          priceQuantity: 1
-          priceValidityDate: "2025-01-01"
+        - pricingRef: "price-c62-1-20250101"
           allowanceSurchargeIndicator: ALLOWANCE
           allowanceSurchargeValidityDate: "2025-01-01"
           allowanceSurchargeType: AEQ
@@ -71,9 +68,7 @@ examples:
             - language: en
               allowanceSurchargeDescription: Bulk quantity discount
           allowanceSurchargeMinimumQuantity: 50
-        - priceUnit: C62
-          priceQuantity: 1
-          priceValidityDate: "2025-01-01"
+        - pricingRef: "price-c62-1-20250101"
           allowanceSurchargeIndicator: SURCHARGE
           allowanceSurchargeValidityDate: null
           allowanceSurchargeType: DBD

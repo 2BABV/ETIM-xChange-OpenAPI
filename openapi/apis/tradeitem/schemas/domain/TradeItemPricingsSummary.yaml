@@ -67,7 +67,8 @@ examples:
   - supplierIdGln: "8712423012485"
     supplierItemNumber: "SKU-LAMP-001"
     pricings:
-      - priceUnit: C62
+      - pricingRef: "price-c62-1-20250101"
+        priceUnit: C62
         priceUnitFactor: null
         priceQuantity: 1
         currencyCode: EUR
@@ -82,7 +83,8 @@ examples:
   - supplierIdGln: "8712423012485"
     supplierItemNumber: "SKU-CABLE-002"
     pricings:
-      - priceUnit: MTR
+      - pricingRef: "price-mtr-1-20250101"
+        priceUnit: MTR
         priceUnitFactor: 1.0
         priceQuantity: 1
         currencyCode: EUR
@@ -94,7 +96,8 @@ examples:
         priceValidityDate: "2025-01-01"
         priceExpiryDate: "2025-06-30"
         allowanceSurcharges: null
-      - priceUnit: MTR
+      - pricingRef: "price-mtr-100-20250101"
+        priceUnit: MTR
         priceUnitFactor: 1.0
         priceQuantity: 100
         currencyCode: EUR

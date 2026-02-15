@@ -32,6 +32,7 @@ examples:
       # Single price entry
       - supplierIdGln: "8712423012485"
         supplierItemNumber: "SKU-LAMP-001"
+        pricingRef: "price-c62-1-20250101"
         priceUnit: C62
         priceQuantity: 1
         currencyCode: EUR
@@ -45,6 +46,7 @@ examples:
       # Multiple price tiers for same item (quantity breaks)
       - supplierIdGln: "8712423012485"
         supplierItemNumber: "SKU-CABLE-002"
+        pricingRef: "price-mtr-1-20250101"
         priceUnit: MTR
         priceUnitFactor: 1.0
         priceQuantity: 1
@@ -58,6 +60,7 @@ examples:
         priceExpiryDate: "2025-06-30"
       - supplierIdGln: "8712423012485"
         supplierItemNumber: "SKU-CABLE-002"
+        pricingRef: "price-mtr-100-20250101"
         priceUnit: MTR
         priceUnitFactor: 1.0
         priceQuantity: 100

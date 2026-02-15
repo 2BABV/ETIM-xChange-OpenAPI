@@ -367,7 +367,8 @@ paths:
                       supplierIdGln: '1234567890123'
                       supplierItemNumber: SKU-12345
                       pricings:
-                        - priceUnit: C62
+                        - pricingRef: price-c62-1-20250101
+                          priceUnit: C62
                           priceUnitFactor: null
                           priceQuantity: 1
                           currencyCode: EUR
@@ -385,7 +386,8 @@ paths:
                       supplierIdGln: '8712423012485'
                       supplierItemNumber: SKU-CABLE-002
                       pricings:
-                        - priceUnit: MTR
+                        - pricingRef: price-mtr-1-20250101
+                          priceUnit: MTR
                           priceUnitFactor: 1
                           priceQuantity: 1
                           currencyCode: EUR
@@ -396,7 +398,8 @@ paths:
                           vat: 21
                           priceValidityDate: '2025-01-01'
                           priceExpiryDate: '2025-06-30'
-                        - priceUnit: MTR
+                        - pricingRef: price-mtr-100-20250101
+                          priceUnit: MTR
                           priceUnitFactor: 1
                           priceQuantity: 100
                           currencyCode: EUR
@@ -414,7 +417,8 @@ paths:
                       supplierIdGln: '9876543210987'
                       supplierItemNumber: CUSTOM-BUILD-001
                       pricings:
-                        - priceUnit: C62
+                        - pricingRef: price-c62-1-20250101
+                          priceUnit: C62
                           priceUnitFactor: null
                           priceQuantity: 1
                           currencyCode: EUR
@@ -455,8 +459,8 @@ paths:
         Retrieve allowances (discounts) and surcharges (additional charges) for a specific trade item.
 
         This endpoint returns all allowances and surcharges associated with the trade item's pricing entries.
-        Each allowance/surcharge includes **pricing join keys** (`priceUnit`, `priceQuantity`, `priceValidityDate`) 
-        to enable correlation with the corresponding pricing record from the `/pricings` endpoint.
+        Each allowance/surcharge includes a `pricingRef` to enable correlation with the corresponding 
+        pricing record from the `/pricings` endpoint.
 
         **Design Decision**: Allowances and surcharges are provided in a separate endpoint to:
         - Enable direct ETL/data warehouse fact table loading
@@ -485,9 +489,7 @@ paths:
                       supplierIdGln: '1234567890123'
                       supplierItemNumber: SKU-12345
                       allowanceSurcharges:
-                        - priceUnit: C62
-                          priceQuantity: 1
-                          priceValidityDate: '2025-01-01'
+                        - pricingRef: price-c62-1-20250101
                           allowanceSurchargeIndicator: ALLOWANCE
                           allowanceSurchargeValidityDate: '2025-01-01'
                           allowanceSurchargeType: AEQ
@@ -500,9 +502,7 @@ paths:
                             - language: nl
                               allowanceSurchargeDescription: Staffelkorting
                           allowanceSurchargeMinimumQuantity: 50
-                        - priceUnit: C62
-                          priceQuantity: 1
-                          priceValidityDate: '2025-01-01'
+                        - pricingRef: price-c62-1-20250101
                           allowanceSurchargeIndicator: SURCHARGE
                           allowanceSurchargeValidityDate: null
                           allowanceSurchargeType: DBD
@@ -525,9 +525,7 @@ paths:
                       supplierIdGln: '9876543210987'
                       supplierItemNumber: SKU-VOLUME-002
                       allowanceSurcharges:
-                        - priceUnit: MTR
-                          priceQuantity: 1
-                          priceValidityDate: '2025-01-01'
+                        - pricingRef: price-mtr-1-20250101
                           allowanceSurchargeIndicator: ALLOWANCE
                           allowanceSurchargeValidityDate: '2025-01-01'
                           allowanceSurchargeType: AEQ
@@ -536,9 +534,7 @@ paths:
                           allowanceSurchargePercentage: 2
                           allowanceSurchargeDescription: null
                           allowanceSurchargeMinimumQuantity: 100
-                        - priceUnit: MTR
-                          priceQuantity: 100
-                          priceValidityDate: '2025-01-01'
+                        - pricingRef: price-mtr-100-20250101
                           allowanceSurchargeIndicator: ALLOWANCE
                           allowanceSurchargeValidityDate: '2025-01-01'
                           allowanceSurchargeType: AEQ
@@ -858,6 +854,7 @@ paths:
                     data:
                       - supplierIdGln: '8712423012485'
                         supplierItemNumber: SKU-LAMP-001
+                        pricingRef: price-c62-1-20250101
                         priceUnit: C62
                         priceQuantity: 1
                         currencyCode: EUR
@@ -870,6 +867,7 @@ paths:
                         priceExpiryDate: '2025-12-31'
                       - supplierIdGln: '8712423012485'
                         supplierItemNumber: SKU-CABLE-002
+                        pricingRef: price-mtr-1-20250101
                         priceUnit: MTR
                         priceQuantity: 1
                         currencyCode: EUR
@@ -877,6 +875,7 @@ paths:
                         priceValidityDate: '2025-01-01'
                       - supplierIdGln: '8712423012485'
                         supplierItemNumber: SKU-CABLE-002
+                        pricingRef: price-mtr-100-20250101
                         priceUnit: MTR
                         priceQuantity: 100
                         currencyCode: EUR
@@ -905,8 +904,8 @@ paths:
         Returns discount allowances and additional charge surcharges applied to trade item pricing.
 
         **Flattened Structure**: Each row represents a single allowance/surcharge entry with embedded 
-        composite key (`supplierIdGln` + `supplierItemNumber`) and pricing reference keys 
-        (`priceUnit` + `priceQuantity` + `priceValidityDate`).
+        composite key (`supplierIdGln` + `supplierItemNumber`) and a `pricingRef` to correlate
+        with the parent pricing entry.
 
         **Join Pattern**: Use this endpoint in combination with `/bulk/trade-item-pricings` to build
         a complete pricing picture:
@@ -916,9 +915,7 @@ paths:
         LEFT JOIN allowance_surcharges a
           ON p.supplierIdGln = a.supplierIdGln
          AND p.supplierItemNumber = a.supplierItemNumber
-         AND p.priceUnit = a.priceUnit
-         AND p.priceQuantity = a.priceQuantity
-         AND (p.priceValidityDate = a.priceValidityDate OR a.priceValidityDate IS NULL)
+         AND p.pricingRef = a.pricingRef
         ```
 
         This endpoint is optimized for:
@@ -951,9 +948,7 @@ paths:
                     data:
                       - supplierIdGln: '8712423012485'
                         supplierItemNumber: SKU-LAMP-001
-                        priceUnit: C62
-                        priceQuantity: 1
-                        priceValidityDate: '2025-01-01'
+                        pricingRef: price-c62-1-20250101
                         allowanceSurchargeIndicator: ALLOWANCE
                         allowanceSurchargeType: AEQ
                         allowanceSurchargeSequenceNumber: 1
@@ -962,9 +957,7 @@ paths:
                         allowanceSurchargeDescription: Bulk quantity discount
                       - supplierIdGln: '8712423012485'
                         supplierItemNumber: SKU-CABLE-002
-                        priceUnit: MTR
-                        priceQuantity: 1
-                        priceValidityDate: '2025-01-01'
+                        pricingRef: price-mtr-1-20250101
                         allowanceSurchargeIndicator: SURCHARGE
                         allowanceSurchargeType: DBD
                         allowanceSurchargeSequenceNumber: 1
@@ -2046,11 +2039,24 @@ components:
         **Path**: `Supplier[].Product[].TradeItem[].Pricing[]`
       additionalProperties: false
       required:
+        - pricingRef
         - priceUnit
         - priceQuantity
         - currencyCode
         - priceValidityDate
       properties:
+        pricingRef:
+          description: |
+            Server-generated opaque reference key that uniquely identifies this pricing entry
+            within the scope of a trade item (identified by `supplierIdGln` + `supplierItemNumber`).
+
+            This is a technical identifier not present in the ETIM xChange domain model.
+            Use `pricingRef` to correlate pricing entries with their allowances/surcharges
+            from the `/allowance-surcharges` endpoint.
+          $ref: '#/components/schemas/TechnicalId'
+          examples:
+            - price-c62-1-20250101
+            - f47ac10b-58cc-4372-a567-0e02b2c3d479
         priceUnit:
           description: |
             Unit for which the price applies (e.g., pieces, boxes, meters).
@@ -2202,7 +2208,8 @@ components:
             - '2025-12-31'
             - null
       examples:
-        - priceUnit: C62
+        - pricingRef: price-c62-1-20250101
+          priceUnit: C62
           priceUnitFactor: null
           priceQuantity: 1
           currencyCode: EUR
@@ -2272,7 +2279,8 @@ components:
         - supplierIdGln: '8712423012485'
           supplierItemNumber: SKU-LAMP-001
           pricings:
-            - priceUnit: C62
+            - pricingRef: price-c62-1-20250101
+              priceUnit: C62
               priceUnitFactor: null
               priceQuantity: 1
               currencyCode: EUR
@@ -2287,7 +2295,8 @@ components:
         - supplierIdGln: '8712423012485'
           supplierItemNumber: SKU-CABLE-002
           pricings:
-            - priceUnit: MTR
+            - pricingRef: price-mtr-1-20250101
+              priceUnit: MTR
               priceUnitFactor: 1
               priceQuantity: 1
               currencyCode: EUR
@@ -2299,7 +2308,8 @@ components:
               priceValidityDate: '2025-01-01'
               priceExpiryDate: '2025-06-30'
               allowanceSurcharges: null
-            - priceUnit: MTR
+            - pricingRef: price-mtr-100-20250101
+              priceUnit: MTR
               priceUnitFactor: 1
               priceQuantity: 100
               currencyCode: EUR
@@ -2324,8 +2334,8 @@ components:
         - ETL/data warehouse ingestion (star schema: pricing fact + surcharges fact)
         - Streaming data processing
 
-        **Join Keys**: Use `supplierIdGln` + `supplierItemNumber` + `priceUnit` + `priceQuantity` 
-        (+ optionally `priceValidityDate`) to join with `/bulk/trade-item-pricings` data.
+        **Join Keys**: Use `supplierIdGln` + `supplierItemNumber` + `pricingRef` to join
+        with `/bulk/trade-item-pricings` data.
 
         **ETIM xChange**: `AllowanceSurcharge`
         **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[]`
@@ -2333,9 +2343,7 @@ components:
       required:
         - supplierIdGln
         - supplierItemNumber
-        - priceUnit
-        - priceQuantity
-        - priceValidityDate
+        - pricingRef
         - allowanceSurchargeIndicator
         - allowanceSurchargeType
       properties:
@@ -2363,44 +2371,17 @@ components:
           examples:
             - SKU-12345
             - ITEM-ABC-789
-        priceUnit:
+        pricingRef:
           description: |
-            Unit for which the price applies. Part of the pricing composite key for joining.
+            Server-generated opaque reference key that identifies the parent pricing entry.
+            Use this to correlate with the corresponding pricing record from the
+            `/bulk/trade-item-pricings` endpoint.
 
-            **ETIM xChange**: `PriceUnit`
-            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceUnit`
-          $ref: '#/components/schemas/UnitCodes'
+            This is a technical identifier not present in the ETIM xChange domain model.
+          $ref: '#/components/schemas/TechnicalId'
           examples:
-            - C62
-            - MTR
-        priceQuantity:
-          type: number
-          description: |
-            Quantity for which the price applies. Part of the pricing composite key for joining.
-
-            **ETIM xChange**: `PriceQuantity` (string with pattern)
-            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceQuantity`
-          minimum: 0
-          multipleOf: 0.0001
-          maximum: 99999.9999
-          examples:
-            - 1
-            - 10
-            - 100
-        priceValidityDate:
-          type: string
-          format: date
-          description: |
-            Date from which the price is valid. Join key for distinguishing
-            prices with same unit/quantity but different validity periods.
-            ISO 8601 date format (YYYY-MM-DD).
-            Defaults to CatalogueValidityStart if not overridden at the pricing level.
-
-            **ETIM xChange**: `PriceValidityDate`  
-            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceValidityDate`  
-            **Default from**: `CatalogueValidityStart`
-          examples:
-            - '2025-01-01'
+            - price-c62-1-20250101
+            - f47ac10b-58cc-4372-a567-0e02b2c3d479
         allowanceSurchargeIndicator:
           type: string
           description: |
@@ -2510,9 +2491,7 @@ components:
       examples:
         - supplierIdGln: '8712423012485'
           supplierItemNumber: SKU-LAMP-001
-          priceUnit: C62
-          priceQuantity: 1
-          priceValidityDate: '2025-01-01'
+          pricingRef: price-c62-1-20250101
           allowanceSurchargeIndicator: ALLOWANCE
           allowanceSurchargeType: AEQ
           allowanceSurchargeSequenceNumber: 1
@@ -2521,9 +2500,7 @@ components:
           allowanceSurchargeDescription: Bulk quantity discount
         - supplierIdGln: '8712423012485'
           supplierItemNumber: SKU-CABLE-002
-          priceUnit: MTR
-          priceQuantity: 1
-          priceValidityDate: '2025-01-01'
+          pricingRef: price-mtr-1-20250101
           allowanceSurchargeIndicator: SURCHARGE
           allowanceSurchargeType: DBD
           allowanceSurchargeSequenceNumber: 1
@@ -2531,9 +2508,7 @@ components:
           allowanceSurchargeDescription: Delivery surcharge
         - supplierIdGln: '8712423012485'
           supplierItemNumber: SKU-TOOL-003
-          priceUnit: C62
-          priceQuantity: 1
-          priceValidityDate: '2025-01-01'
+          pricingRef: price-c62-1-20250101
           allowanceSurchargeIndicator: ALLOWANCE
           allowanceSurchargeType: AEQ
           allowanceSurchargeSequenceNumber: 1
@@ -2542,9 +2517,7 @@ components:
           allowanceSurchargeDescription: Volume discount tier 1
         - supplierIdGln: '8712423012485'
           supplierItemNumber: SKU-TOOL-003
-          priceUnit: C62
-          priceQuantity: 1
-          priceValidityDate: '2025-01-01'
+          pricingRef: price-c62-1-20250101
           allowanceSurchargeIndicator: ALLOWANCE
           allowanceSurchargeType: AEQ
           allowanceSurchargeSequenceNumber: 2
@@ -2593,8 +2566,10 @@ components:
               orderStepSize: 1
               standardOrderLeadTime: 5
             pricings:
-              - priceUnit: C62
+              - pricingRef: price-c62-1-20250101
+                priceUnit: C62
                 priceQuantity: 1
+                currencyCode: EUR
                 priceOnRequest: false
                 netPrice: 100
                 grossListPrice: 130
@@ -3072,7 +3047,8 @@ components:
             supplierIdGln: '1234567890123'
             supplierItemNumber: SKU-12345
             pricings:
-              - priceUnit: C62
+              - pricingRef: price-c62-1-20250101
+                priceUnit: C62
                 priceUnitFactor: null
                 priceQuantity: 1
                 currencyCode: EUR
@@ -3087,7 +3063,8 @@ components:
             supplierIdGln: '8712423012485'
             supplierItemNumber: SKU-CABLE-002
             pricings:
-              - priceUnit: MTR
+              - pricingRef: price-mtr-1-20250101
+                priceUnit: MTR
                 priceUnitFactor: 1
                 priceQuantity: 1
                 currencyCode: EUR
@@ -3098,7 +3075,8 @@ components:
                 vat: 21
                 priceValidityDate: '2025-01-01'
                 priceExpiryDate: '2025-06-30'
-              - priceUnit: MTR
+              - pricingRef: price-mtr-100-20250101
+                priceUnit: MTR
                 priceUnitFactor: 1
                 priceQuantity: 100
                 currencyCode: EUR
@@ -3142,6 +3120,7 @@ components:
         - data:
             - supplierIdGln: '8712423012485'
               supplierItemNumber: SKU-LAMP-001
+              pricingRef: price-c62-1-20250101
               priceUnit: C62
               priceQuantity: 1
               currencyCode: EUR
@@ -3154,6 +3133,7 @@ components:
               priceExpiryDate: '2025-12-31'
             - supplierIdGln: '8712423012485'
               supplierItemNumber: SKU-CABLE-002
+              pricingRef: price-mtr-1-20250101
               priceUnit: MTR
               priceUnitFactor: 1
               priceQuantity: 1
@@ -3167,6 +3147,7 @@ components:
               priceExpiryDate: '2025-06-30'
             - supplierIdGln: '8712423012485'
               supplierItemNumber: SKU-CABLE-002
+              pricingRef: price-mtr-100-20250101
               priceUnit: MTR
               priceUnitFactor: 1
               priceQuantity: 100
@@ -3193,8 +3174,8 @@ components:
         with embedded keys for joining back to pricing data. This follows the same pattern as 
         `ProductEtimClassificationFeature` - 1 row per data point.
 
-        **Join Keys**: Use `supplierIdGln` + `supplierItemNumber` + `priceUnit` + `priceQuantity` 
-        (+ optionally `priceValidityDate`) to join with `/bulk/trade-item-pricings` data.
+        **Join Keys**: Use `supplierIdGln` + `supplierItemNumber` + `pricingRef` to join
+        with `/bulk/trade-item-pricings` data.
 
         Use the `cursor` from `meta` to retrieve the next page of results.
 
@@ -3217,9 +3198,7 @@ components:
         - data:
             - supplierIdGln: '8712423012485'
               supplierItemNumber: SKU-LAMP-001
-              priceUnit: C62
-              priceQuantity: 1
-              priceValidityDate: '2025-01-01'
+              pricingRef: price-c62-1-20250101
               allowanceSurchargeIndicator: ALLOWANCE
               allowanceSurchargeType: AEQ
               allowanceSurchargeSequenceNumber: 1
@@ -3228,9 +3207,7 @@ components:
               allowanceSurchargeDescription: Bulk quantity discount
             - supplierIdGln: '8712423012485'
               supplierItemNumber: SKU-CABLE-002
-              priceUnit: MTR
-              priceQuantity: 1
-              priceValidityDate: '2025-01-01'
+              pricingRef: price-mtr-1-20250101
               allowanceSurchargeIndicator: SURCHARGE
               allowanceSurchargeType: DBD
               allowanceSurchargeSequenceNumber: 1
@@ -3238,9 +3215,7 @@ components:
               allowanceSurchargeDescription: Delivery surcharge
             - supplierIdGln: '8712423012485'
               supplierItemNumber: SKU-TOOL-003
-              priceUnit: C62
-              priceQuantity: 1
-              priceValidityDate: '2025-01-01'
+              pricingRef: price-c62-1-20250101
               allowanceSurchargeIndicator: ALLOWANCE
               allowanceSurchargeType: AEQ
               allowanceSurchargeSequenceNumber: 1
@@ -3249,9 +3224,7 @@ components:
               allowanceSurchargeDescription: Volume discount tier 1
             - supplierIdGln: '8712423012485'
               supplierItemNumber: SKU-TOOL-003
-              priceUnit: C62
-              priceQuantity: 1
-              priceValidityDate: '2025-01-01'
+              pricingRef: price-c62-1-20250101
               allowanceSurchargeIndicator: ALLOWANCE
               allowanceSurchargeType: AEQ
               allowanceSurchargeSequenceNumber: 2
@@ -3268,10 +3241,11 @@ components:
       type: object
       description: |
         Response containing allowances and surcharges for a specific trade item.
-        Returns the trade item key and all associated allowances/surcharges with pricing join keys.
+        Returns the trade item key and all associated allowances/surcharges linked to pricing entries
+        via `pricingRef`.
 
-        **Pricing Join Keys**: Each allowance/surcharge includes `priceUnit`, `priceQuantity`, and 
-        `priceValidityDate` to enable joining with the corresponding pricing entry.
+        **Pricing Reference**: Each allowance/surcharge includes a `pricingRef` to enable 
+        correlation with the corresponding pricing entry from the `/pricings` endpoint.
 
         **ETIM xChange**: `AllowanceSurcharge[]`
         **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[]`
@@ -3309,14 +3283,12 @@ components:
                 - array
                 - 'null'
               description: |
-                Array of allowances and surcharges with pricing join keys.
-                Each item includes the pricing identifiers to correlate with pricing entries.
+                Array of allowances and surcharges linked to pricing entries via `pricingRef`.
+                Each item includes a `pricingRef` to correlate with pricing entries.
               items:
                 $ref: '#/components/schemas/TradeItemAllowanceSurchargeItem'
               examples:
-                - - priceUnit: C62
-                    priceQuantity: 1
-                    priceValidityDate: '2025-01-01'
+                - - pricingRef: price-c62-1-20250101
                     allowanceSurchargeIndicator: ALLOWANCE
                     allowanceSurchargeType: AEQ
                     allowanceSurchargePercentage: 5.5
@@ -3326,9 +3298,7 @@ components:
             supplierIdGln: '1234567890123'
             supplierItemNumber: SKU-12345
             allowanceSurcharges:
-              - priceUnit: C62
-                priceQuantity: 1
-                priceValidityDate: '2025-01-01'
+              - pricingRef: price-c62-1-20250101
                 allowanceSurchargeIndicator: ALLOWANCE
                 allowanceSurchargeValidityDate: '2025-01-01'
                 allowanceSurchargeType: AEQ
@@ -3339,9 +3309,7 @@ components:
                   - language: en
                     allowanceSurchargeDescription: Bulk quantity discount
                 allowanceSurchargeMinimumQuantity: 50
-              - priceUnit: C62
-                priceQuantity: 1
-                priceValidityDate: '2025-01-01'
+              - pricingRef: price-c62-1-20250101
                 allowanceSurchargeIndicator: SURCHARGE
                 allowanceSurchargeValidityDate: null
                 allowanceSurchargeType: DBD
@@ -3353,49 +3321,28 @@ components:
     TradeItemAllowanceSurchargeItem:
       type: object
       description: |
-        Allowance or surcharge with pricing join keys for correlating with pricing entries.
-        Includes the pricing identifiers (priceUnit, priceQuantity, priceValidityDate) to enable
-        joining with the corresponding pricing record.
+        Allowance or surcharge linked to a pricing entry via `pricingRef`.
+        Use `pricingRef` to correlate with the corresponding pricing record
+        from the `/pricings` endpoint.
 
         **ETIM xChange**: `AllowanceSurcharge`
         **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[]`
       additionalProperties: false
       required:
-        - priceUnit
-        - priceQuantity
+        - pricingRef
         - allowanceSurchargeIndicator
         - allowanceSurchargeType
       properties:
-        priceUnit:
+        pricingRef:
           description: |
-            Unit for which the parent price applies. Join key to pricing entry.
-            **ETIM xChange**: `PriceUnit` (from parent Pricing)
-          $ref: '#/components/schemas/UnitCodes'
+            Server-generated opaque reference key that identifies the parent pricing entry.
+            Use this to correlate with the corresponding pricing record from the `/pricings` endpoint.
+
+            This is a technical identifier not present in the ETIM xChange domain model.
+          $ref: '#/components/schemas/TechnicalId'
           examples:
-            - C62
-            - MTR
-        priceQuantity:
-          type: number
-          description: |
-            Quantity for which the parent price applies. Join key to pricing entry.
-            **ETIM xChange**: `PriceQuantity` (from parent Pricing)
-          minimum: 0
-          multipleOf: 0.0001
-          maximum: 99999.9999
-          examples:
-            - 1
-            - 100
-        priceValidityDate:
-          type:
-            - string
-            - 'null'
-          format: date
-          description: |
-            Date from which the parent price is valid. Join key to pricing entry.
-            **ETIM xChange**: `PriceValidityDate` (from parent Pricing)
-          examples:
-            - '2025-01-01'
-            - null
+            - price-c62-1-20250101
+            - f47ac10b-58cc-4372-a567-0e02b2c3d479
         allowanceSurchargeIndicator:
           type: string
           description: |
@@ -3497,9 +3444,7 @@ components:
             - 10
             - null
       examples:
-        - priceUnit: C62
-          priceQuantity: 1
-          priceValidityDate: '2025-01-01'
+        - pricingRef: price-c62-1-20250101
           allowanceSurchargeIndicator: ALLOWANCE
           allowanceSurchargeValidityDate: '2025-01-01'
           allowanceSurchargeType: AEQ
@@ -3895,7 +3840,7 @@ components:
         resulting in multiple rows with the same composite key but different pricing data.
 
         **Allowances & Surcharges**: Available via separate `/bulk/trade-item-allowance-surcharges` endpoint.
-        Join using `supplierIdGln` + `supplierItemNumber` + `priceUnit` + `priceQuantity` (+ `priceValidityDate`).
+        Join using `pricingRef` to correlate pricing entries with their allowances/surcharges.
 
         **Payload Optimization**: Optional properties with null values may be omitted from the response
         to minimize payload size. Clients should treat missing properties as null/not applicable.
@@ -3906,6 +3851,7 @@ components:
       required:
         - supplierIdGln
         - supplierItemNumber
+        - pricingRef
         - priceUnit
         - priceQuantity
         - currencyCode
@@ -3936,6 +3882,18 @@ components:
           examples:
             - SKU-12345
             - ITEM-ABC-789
+        pricingRef:
+          description: |
+            Server-generated opaque reference key that uniquely identifies this pricing entry
+            within the scope of a trade item (identified by `supplierIdGln` + `supplierItemNumber`).
+
+            This is a technical identifier not present in the ETIM xChange domain model.
+            Use `pricingRef` to correlate pricing entries with their allowances/surcharges
+            from the `/bulk/trade-item-allowance-surcharges` endpoint.
+          $ref: '#/components/schemas/TechnicalId'
+          examples:
+            - price-c62-1-20250101
+            - f47ac10b-58cc-4372-a567-0e02b2c3d479
         priceUnit:
           description: |
             Unit for which the price applies (e.g., pieces, boxes, meters).
@@ -4083,6 +4041,7 @@ components:
       examples:
         - supplierIdGln: '8712423012485'
           supplierItemNumber: SKU-LAMP-001
+          pricingRef: price-c62-1-20250101
           priceUnit: C62
           priceQuantity: 1
           currencyCode: EUR
@@ -4095,6 +4054,7 @@ components:
           priceExpiryDate: '2025-12-31'
         - supplierIdGln: '8712423012485'
           supplierItemNumber: SKU-CABLE-002
+          pricingRef: price-mtr-1-20250101
           priceUnit: MTR
           priceUnitFactor: 1
           priceQuantity: 1
@@ -4108,6 +4068,7 @@ components:
           priceExpiryDate: '2025-06-30'
         - supplierIdGln: '8712423012485'
           supplierItemNumber: SKU-CABLE-002
+          pricingRef: price-mtr-100-20250101
           priceUnit: MTR
           priceUnitFactor: 1
           priceQuantity: 100
@@ -5459,9 +5420,11 @@ components:
             alternativeUseUnit: null
             alternativeUseUnitConversionFactor: null
           pricings:
-            - priceUnit: C62
+            - pricingRef: price-c62-1-20250101
+              priceUnit: C62
               priceUnitFactor: null
               priceQuantity: 1
+              currencyCode: EUR
               priceOnRequest: false
               grossListPrice: 130
               netPrice: 100

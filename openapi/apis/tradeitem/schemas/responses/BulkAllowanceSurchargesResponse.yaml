@@ -6,8 +6,8 @@ description: |
   with embedded keys for joining back to pricing data. This follows the same pattern as 
   `ProductEtimClassificationFeature` - 1 row per data point.
   
-  **Join Keys**: Use `supplierIdGln` + `supplierItemNumber` + `priceUnit` + `priceQuantity` 
-  (+ optionally `priceValidityDate`) to join with `/bulk/trade-item-pricings` data.
+  **Join Keys**: Use `supplierIdGln` + `supplierItemNumber` + `pricingRef` to join
+  with `/bulk/trade-item-pricings` data.
   
   Use the `cursor` from `meta` to retrieve the next page of results.
   
@@ -32,9 +32,7 @@ examples:
       # Percentage-based allowance
       - supplierIdGln: "8712423012485"
         supplierItemNumber: "SKU-LAMP-001"
-        priceUnit: C62
-        priceQuantity: 1
-        priceValidityDate: "2025-01-01"
+        pricingRef: "price-c62-1-20250101"
         allowanceSurchargeIndicator: ALLOWANCE
         allowanceSurchargeType: AEQ
         allowanceSurchargeSequenceNumber: 1
@@ -44,9 +42,7 @@ examples:
       # Fixed amount surcharge
       - supplierIdGln: "8712423012485"
         supplierItemNumber: "SKU-CABLE-002"
-        priceUnit: MTR
-        priceQuantity: 1
-        priceValidityDate: "2025-01-01"
+        pricingRef: "price-mtr-1-20250101"
         allowanceSurchargeIndicator: SURCHARGE
         allowanceSurchargeType: DBD
         allowanceSurchargeSequenceNumber: 1
@@ -55,9 +51,7 @@ examples:
       # Multiple allowances for same price (volume tiers)
       - supplierIdGln: "8712423012485"
         supplierItemNumber: "SKU-TOOL-003"
-        priceUnit: C62
-        priceQuantity: 1
-        priceValidityDate: "2025-01-01"
+        pricingRef: "price-c62-1-20250101"
         allowanceSurchargeIndicator: ALLOWANCE
         allowanceSurchargeType: AEQ
         allowanceSurchargeSequenceNumber: 1
@@ -66,9 +60,7 @@ examples:
         allowanceSurchargeDescription: "Volume discount tier 1"
       - supplierIdGln: "8712423012485"
         supplierItemNumber: "SKU-TOOL-003"
-        priceUnit: C62
-        priceQuantity: 1
-        priceValidityDate: "2025-01-01"
+        pricingRef: "price-c62-1-20250101"
         allowanceSurchargeIndicator: ALLOWANCE
         allowanceSurchargeType: AEQ
         allowanceSurchargeSequenceNumber: 2

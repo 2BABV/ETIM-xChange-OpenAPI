@@ -14,7 +14,7 @@ description: |
   resulting in multiple rows with the same composite key but different pricing data.
   
   **Allowances & Surcharges**: Available via separate `/bulk/trade-item-allowance-surcharges` endpoint.
-  Join using `supplierIdGln` + `supplierItemNumber` + `priceUnit` + `priceQuantity` (+ `priceValidityDate`).
+  Join using `pricingRef` to correlate pricing entries with their allowances/surcharges.
   
   **Payload Optimization**: Optional properties with null values may be omitted from the response
   to minimize payload size. Clients should treat missing properties as null/not applicable.
@@ -25,6 +25,7 @@ additionalProperties: false
 required:
   - supplierIdGln
   - supplierItemNumber
+  - pricingRef
   - priceUnit
   - priceQuantity
   - currencyCode
@@ -60,6 +61,19 @@ properties:
     examples:
       - "SKU-12345"
       - "ITEM-ABC-789"
+  
+  pricingRef:
+    description: |
+      Server-generated opaque reference key that uniquely identifies this pricing entry
+      within the scope of a trade item (identified by `supplierIdGln` + `supplierItemNumber`).
+      
+      This is a technical identifier not present in the ETIM xChange domain model.
+      Use `pricingRef` to correlate pricing entries with their allowances/surcharges
+      from the `/bulk/trade-item-allowance-surcharges` endpoint.
+    $ref: ../../../../shared/schemas/identifiers/TechnicalId.yaml
+    examples:
+      - "price-c62-1-20250101"
+      - "f47ac10b-58cc-4372-a567-0e02b2c3d479"
   
   # =========================================================================
   # PRICING FIELDS (flattened from TradeItem.Pricing[])
@@ -209,6 +223,7 @@ examples:
   # Standard pricing - single quantity
   - supplierIdGln: "8712423012485"
     supplierItemNumber: "SKU-LAMP-001"
+    pricingRef: "price-c62-1-20250101"
     priceUnit: C62
     priceQuantity: 1
     currencyCode: EUR
@@ -223,6 +238,7 @@ examples:
   # Quantity tier pricing - same item, different quantity
   - supplierIdGln: "8712423012485"
     supplierItemNumber: "SKU-CABLE-002"
+    pricingRef: "price-mtr-1-20250101"
     priceUnit: MTR
     priceUnitFactor: 1.0
     priceQuantity: 1
@@ -238,6 +254,7 @@ examples:
   # Quantity tier pricing - bulk discount
   - supplierIdGln: "8712423012485"
     supplierItemNumber: "SKU-CABLE-002"
+    pricingRef: "price-mtr-100-20250101"
     priceUnit: MTR
     priceUnitFactor: 1.0
     priceQuantity: 100

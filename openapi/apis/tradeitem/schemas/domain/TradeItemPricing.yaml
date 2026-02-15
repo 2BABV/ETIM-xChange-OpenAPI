@@ -9,11 +9,24 @@ description: |
   **Path**: `Supplier[].Product[].TradeItem[].Pricing[]`
 additionalProperties: false
 required:
+  - pricingRef
   - priceUnit
   - priceQuantity
   - currencyCode
   - priceValidityDate
 properties:
+  pricingRef:
+    description: |
+      Server-generated opaque reference key that uniquely identifies this pricing entry
+      within the scope of a trade item (identified by `supplierIdGln` + `supplierItemNumber`).
+      
+      This is a technical identifier not present in the ETIM xChange domain model.
+      Use `pricingRef` to correlate pricing entries with their allowances/surcharges
+      from the `/allowance-surcharges` endpoint.
+    $ref: ../../../../shared/schemas/identifiers/TechnicalId.yaml
+    examples:
+      - "price-c62-1-20250101"
+      - "f47ac10b-58cc-4372-a567-0e02b2c3d479"
   priceUnit:
     description: |
       Unit for which the price applies (e.g., pieces, boxes, meters).
@@ -152,7 +165,8 @@ properties:
       - null
 
 examples:
-  - priceUnit: C62
+  - pricingRef: "price-c62-1-20250101"
+    priceUnit: C62
     priceUnitFactor: null
     priceQuantity: 1
     currencyCode: EUR

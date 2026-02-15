@@ -43,6 +43,7 @@ get:
                 data:
                   - supplierIdGln: "8712423012485"
                     supplierItemNumber: "SKU-LAMP-001"
+                    pricingRef: "price-c62-1-20250101"
                     priceUnit: "C62"
                     priceQuantity: 1
                     currencyCode: "EUR"
@@ -55,6 +56,7 @@ get:
                     priceExpiryDate: "2025-12-31"
                   - supplierIdGln: "8712423012485"
                     supplierItemNumber: "SKU-CABLE-002"
+                    pricingRef: "price-mtr-1-20250101"
                     priceUnit: "MTR"
                     priceQuantity: 1
                     currencyCode: "EUR"
@@ -62,6 +64,7 @@ get:
                     priceValidityDate: "2025-01-01"
                   - supplierIdGln: "8712423012485"
                     supplierItemNumber: "SKU-CABLE-002"
+                    pricingRef: "price-mtr-100-20250101"
                     priceUnit: "MTR"
                     priceQuantity: 100
                     currencyCode: "EUR"

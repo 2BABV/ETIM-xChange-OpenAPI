@@ -38,8 +38,10 @@ examples:
         orderStepSize: 1
         standardOrderLeadTime: 5
       pricings:
-        - priceUnit: C62
+        - pricingRef: "price-c62-1-20250101"
+          priceUnit: C62
           priceQuantity: 1
+          currencyCode: EUR
           priceOnRequest: false
           netPrice: 100.0
           grossListPrice: 130.0

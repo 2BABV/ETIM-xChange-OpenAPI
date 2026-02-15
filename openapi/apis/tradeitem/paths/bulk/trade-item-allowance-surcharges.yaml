@@ -6,8 +6,8 @@ get:
     Returns discount allowances and additional charge surcharges applied to trade item pricing.
     
     **Flattened Structure**: Each row represents a single allowance/surcharge entry with embedded 
-    composite key (`supplierIdGln` + `supplierItemNumber`) and pricing reference keys 
-    (`priceUnit` + `priceQuantity` + `priceValidityDate`).
+    composite key (`supplierIdGln` + `supplierItemNumber`) and a `pricingRef` to correlate
+    with the parent pricing entry.
     
     **Join Pattern**: Use this endpoint in combination with `/bulk/trade-item-pricings` to build
     a complete pricing picture:
@@ -17,9 +17,7 @@ get:
     LEFT JOIN allowance_surcharges a
       ON p.supplierIdGln = a.supplierIdGln
      AND p.supplierItemNumber = a.supplierItemNumber
-     AND p.priceUnit = a.priceUnit
-     AND p.priceQuantity = a.priceQuantity
-     AND (p.priceValidityDate = a.priceValidityDate OR a.priceValidityDate IS NULL)
+     AND p.pricingRef = a.pricingRef
     ```
     
     This endpoint is optimized for:
@@ -52,9 +50,7 @@ get:
                 data:
                   - supplierIdGln: "8712423012485"
                     supplierItemNumber: "SKU-LAMP-001"
-                    priceUnit: "C62"
-                    priceQuantity: 1
-                    priceValidityDate: "2025-01-01"
+                    pricingRef: "price-c62-1-20250101"
                     allowanceSurchargeIndicator: ALLOWANCE
                     allowanceSurchargeType: AEQ
                     allowanceSurchargeSequenceNumber: 1
@@ -63,9 +59,7 @@ get:
                     allowanceSurchargeDescription: "Bulk quantity discount"
                   - supplierIdGln: "8712423012485"
                     supplierItemNumber: "SKU-CABLE-002"
-                    priceUnit: "MTR"
-                    priceQuantity: 1
-                    priceValidityDate: "2025-01-01"
+                    pricingRef: "price-mtr-1-20250101"
                     allowanceSurchargeIndicator: SURCHARGE
                     allowanceSurchargeType: DBD
                     allowanceSurchargeSequenceNumber: 1

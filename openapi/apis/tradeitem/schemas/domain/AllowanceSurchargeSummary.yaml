@@ -10,8 +10,8 @@ description: |
   - ETL/data warehouse ingestion (star schema: pricing fact + surcharges fact)
   - Streaming data processing
   
-  **Join Keys**: Use `supplierIdGln` + `supplierItemNumber` + `priceUnit` + `priceQuantity` 
-  (+ optionally `priceValidityDate`) to join with `/bulk/trade-item-pricings` data.
+  **Join Keys**: Use `supplierIdGln` + `supplierItemNumber` + `pricingRef` to join
+  with `/bulk/trade-item-pricings` data.
   
   **ETIM xChange**: `AllowanceSurcharge`
   **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[]`
@@ -19,9 +19,7 @@ additionalProperties: false
 required:
   - supplierIdGln
   - supplierItemNumber
-  - priceUnit
-  - priceQuantity
-  - priceValidityDate
+  - pricingRef
   - allowanceSurchargeIndicator
   - allowanceSurchargeType
 properties:
@@ -55,50 +53,17 @@ properties:
       - "SKU-12345"
       - "ITEM-ABC-789"
   
-  # =========================================================================
-  # PRICING KEY FIELDS (for joining back to pricing data)
-  # =========================================================================
-  
-  priceUnit:
+  pricingRef:
     description: |
-      Unit for which the price applies. Part of the pricing composite key for joining.
+      Server-generated opaque reference key that identifies the parent pricing entry.
+      Use this to correlate with the corresponding pricing record from the
+      `/bulk/trade-item-pricings` endpoint.
       
-      **ETIM xChange**: `PriceUnit`
-      **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceUnit`
-    $ref: ../../../../shared/schemas/common/UnitCodes.yaml
+      This is a technical identifier not present in the ETIM xChange domain model.
+    $ref: ../../../../shared/schemas/identifiers/TechnicalId.yaml
     examples:
-      - C62  # Piece
-      - MTR  # Meter
-  
-  priceQuantity:
-    type: number
-    description: |
-      Quantity for which the price applies. Part of the pricing composite key for joining.
-      
-      **ETIM xChange**: `PriceQuantity` (string with pattern)
-      **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceQuantity`
-    minimum: 0
-    multipleOf: 0.0001
-    maximum: 99999.9999
-    examples:
-      - 1
-      - 10
-      - 100
-  
-  priceValidityDate:
-    type: string
-    format: date
-    description: |
-      Date from which the price is valid. Join key for distinguishing
-      prices with same unit/quantity but different validity periods.
-      ISO 8601 date format (YYYY-MM-DD).
-      Defaults to CatalogueValidityStart if not overridden at the pricing level.
-      
-      **ETIM xChange**: `PriceValidityDate`  
-      **Path**: `Supplier[].Product[].TradeItem[].Pricing[].PriceValidityDate`  
-      **Default from**: `CatalogueValidityStart`
-    examples:
-      - "2025-01-01"
+      - "price-c62-1-20250101"
+      - "f47ac10b-58cc-4372-a567-0e02b2c3d479"
   
   # =========================================================================
   # ALLOWANCE/SURCHARGE FIELDS
@@ -210,9 +175,7 @@ examples:
   # Percentage-based allowance (discount)
   - supplierIdGln: "8712423012485"
     supplierItemNumber: "SKU-LAMP-001"
-    priceUnit: C62
-    priceQuantity: 1
-    priceValidityDate: "2025-01-01"
+    pricingRef: "price-c62-1-20250101"
     allowanceSurchargeIndicator: ALLOWANCE
     allowanceSurchargeType: AEQ
     allowanceSurchargeSequenceNumber: 1
@@ -223,9 +186,7 @@ examples:
   # Fixed amount surcharge
   - supplierIdGln: "8712423012485"
     supplierItemNumber: "SKU-CABLE-002"
-    priceUnit: MTR
-    priceQuantity: 1
-    priceValidityDate: "2025-01-01"
+    pricingRef: "price-mtr-1-20250101"
     allowanceSurchargeIndicator: SURCHARGE
     allowanceSurchargeType: DBD
     allowanceSurchargeSequenceNumber: 1
@@ -235,9 +196,7 @@ examples:
   # Multiple surcharges for same price (different sequence numbers)
   - supplierIdGln: "8712423012485"
     supplierItemNumber: "SKU-TOOL-003"
-    priceUnit: C62
-    priceQuantity: 1
-    priceValidityDate: "2025-01-01"
+    pricingRef: "price-c62-1-20250101"
     allowanceSurchargeIndicator: ALLOWANCE
     allowanceSurchargeType: AEQ
     allowanceSurchargeSequenceNumber: 1
@@ -246,9 +205,7 @@ examples:
     allowanceSurchargeDescription: "Volume discount tier 1"
   - supplierIdGln: "8712423012485"
     supplierItemNumber: "SKU-TOOL-003"
-    priceUnit: C62
-    priceQuantity: 1
-    priceValidityDate: "2025-01-01"
+    pricingRef: "price-c62-1-20250101"
     allowanceSurchargeIndicator: ALLOWANCE
     allowanceSurchargeType: AEQ
     allowanceSurchargeSequenceNumber: 2

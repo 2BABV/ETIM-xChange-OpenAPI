@@ -381,6 +381,92 @@ servers:
     description: Acceptance server
 ```
 
+### 4.2. Pricing Reference Key (`pricingRef`)
+
+In ETIM xChange, `AllowanceSurcharge[]` is nested inside `Pricing[]`. When the API flattens this into separate endpoints (pricings vs. allowance-surcharges), a correlation key is needed to link surcharges back to their parent pricing entry.
+
+`pricingRef` is a **server-generated opaque reference key** (typed as `TechnicalId`) that uniquely identifies a pricing entry within the scope of a trade item (scoped by `supplierIdGln` + `supplierItemNumber`).
+
+**Key characteristics**:
+- **NOT present in the ETIM xChange domain model** — this is a technical addition for the API
+- Typed as `TechnicalId` (string, 1-50 chars): `$ref: ../../../../shared/schemas/identifiers/TechnicalId.yaml`
+- Opaque to clients — format may vary (human-readable slug or UUID)
+- Required field on all pricing and allowance/surcharge schemas
+- Used as the join key between `/pricings` and `/allowance-surcharges` endpoints (both single-item and bulk)
+
+**Join pattern**:
+- **Single-item**: Use `pricingRef` to correlate entries from `/{key}/pricings` with `/{key}/allowance-surcharges`
+- **Bulk**: Use `supplierIdGln` + `supplierItemNumber` + `pricingRef` to join `/bulk/trade-item-pricings` with `/bulk/trade-item-allowance-surcharges`
+
+**Format examples** (opaque — clients must not parse):
+```yaml
+pricingRef:
+  description: |
+    Server-generated opaque reference key that uniquely identifies this pricing entry
+    within the scope of a trade item (identified by `supplierIdGln` + `supplierItemNumber`).
+    
+    This is a technical identifier not present in the ETIM xChange domain model.
+    Use `pricingRef` to correlate pricing entries with their allowances/surcharges
+    from the `/allowance-surcharges` endpoint.
+  $ref: ../../../../shared/schemas/identifiers/TechnicalId.yaml
+  examples:
+    - "price-c62-1-20250101"
+    - "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+```
+
+**Schemas that include `pricingRef`**:
+| Schema | Context | Required |
+|--------|---------|----------|
+| `TradeItemPricing.yaml` | Single-item pricing (without trade item key) | ✅ |
+| `TradeItemPricingSummary.yaml` | Bulk pricing (with trade item key) | ✅ |
+| `TradeItemAllowanceSurchargeItem.yaml` | Single-item surcharge response | ✅ |
+| `AllowanceSurchargeSummary.yaml` | Bulk surcharge (with trade item key) | ✅ |
+
+### 4.3. Selection Identifier (`selectionId`) and `TechnicalId`
+
+The `selectionId` query parameter allows filtering bulk endpoint results by a predefined selection/subset (e.g., seasonal catalogs, quarterly selections).
+
+**`TechnicalId` schema** (`openapi/shared/schemas/identifiers/TechnicalId.yaml`):
+```yaml
+type: string
+description: >-
+  Generic technical identifier that can hold an integer, string, or GUID/UUID value.
+  Used for opaque system-generated identifiers such as selection IDs, internal references,
+  and other technical keys where the format is not prescribed.
+minLength: 1
+maxLength: 50
+examples:
+  - 'SELECTION-2024-Q1'
+  - '123456'
+  - 'f47ac10b-58cc-4372-a567-0e02b2c3d479'
+```
+
+`TechnicalId` is the shared schema type used for:
+- `selectionId` query parameter (via `$ref` in `selection-id.yaml`)
+- `pricingRef` property in pricing and allowance/surcharge schemas
+
+The `selectionId` parameter definition (`openapi/shared/parameters/query/selection-id.yaml`) references `TechnicalId` via `$ref`:
+```yaml
+name: selectionId
+in: query
+description: Filter results by selection identifier. Used to retrieve a specific subset
+  of items based on a predefined selection.
+required: false
+schema:
+  $ref: ../../schemas/identifiers/TechnicalId.yaml
+example: "SELECTION-2024-Q1"
+```
+
+In `openapi.yaml`, register both as named components:
+```yaml
+schemas:
+  TechnicalId:
+    $ref: ../../shared/schemas/identifiers/TechnicalId.yaml
+parameters:
+  SelectionId:
+    $ref: ../../shared/parameters/query/selection-id.yaml
+```
+
 ### 5. TradeItem Service Design
 
 #### Regular TradeItem Endpoints
@@ -411,7 +497,7 @@ servers:
 **GET /{supplierIdGln}/{supplierItemNumber}/allowance-surcharges**
 - **Description**: Retrieve allowances and surcharges for a specific trade item
 - **Response**: `TradeItemAllowanceSurchargesResponse` with key at root + nested `allowanceSurcharges` array
-- **Join Keys**: Each entry includes `priceUnit`, `priceQuantity`, `priceValidityDate` to correlate with pricing entries
+- **Correlation**: Each entry includes `pricingRef` to correlate with the corresponding pricing entry from the `/pricings` endpoint
 
 ### 6. Bulk Service Design
 
@@ -448,9 +534,9 @@ discount/bonus groups, validity dates) combined with item details (status, condi
 
 **Allowance/Surcharge Separation** (star schema pattern):
 - Moved from nested array within pricing to separate `/bulk/trade-item-allowance-surcharges` endpoint
-- Each row = 1 surcharge entry with pricing join keys (`priceUnit` + `priceQuantity` + `priceValidityDate`)
+- Each row = 1 surcharge entry with `pricingRef` linking to the parent pricing entry
 - Enables clean dimensional modeling: pricing fact table + surcharges fact table
-- Join via: `supplierIdGln` + `supplierItemNumber` + `priceUnit` + `priceQuantity`
+- Join via: `supplierIdGln` + `supplierItemNumber` + `pricingRef`
 
 **Nested structures retained**:
 - Simple string arrays (`itemGtins[]`) - minimal impact on row predictability
@@ -498,7 +584,7 @@ discount/bonus groups, validity dates) combined with item details (status, condi
   - `supplierIdGln` (optional): Filter by supplier GLN
   - `mutationDateTime` (optional): Filter by mutation timestamp (RFC 3339 / ISO 8601 UTC format with 'Z' suffix)
 - **Response**: `BulkAllowanceSurchargesResponse` using `AllowanceSurchargeSummary` schema
-- **Join Keys**: `supplierIdGln` + `supplierItemNumber` + `priceUnit` + `priceQuantity` (+ `priceValidityDate`)
+- **Correlation**: Each entry includes `pricingRef` to correlate with the corresponding pricing entry. Join via: `supplierIdGln` + `supplierItemNumber` + `pricingRef`
 
 #### Response Structure (Cursor-Based Pagination)
 
@@ -612,10 +698,12 @@ examples:
         minimumOrderQuantity: 1
         orderStepSize: 1
       pricings:
-        - priceUnit: "PCE"
+        - pricingRef: "price-c62-1-20250101"
+          priceUnit: "PCE"
           priceQuantity: 1
           netPrice: 9.99
           currencyCode: "EUR"
+          priceValidityDate: "2025-01-01"
 ```
 
 #### *Summary Schema Pattern for Bulk Retrieval
@@ -865,6 +953,7 @@ Reference existing `UnitCodes.yaml` for order unit values. Convert all quantity 
 #### Pricing
 | ETIM xChange Field | ETIM Type | JSON Path | OpenAPI Property | OpenAPI Type | Required |
 |-------------------|-----------|-----------|------------------|--------------|----------|
+| _(none — server-generated)_ | — | — | `pricingRef` | `TechnicalId` (`$ref`) | ✅ |
 | `PriceUnit` | string(enum) | `Supplier[].Product[].TradeItem[].Pricing[].PriceUnit` | `priceUnit` | `string` (enum) | ✅ |
 | `PriceUnitFactor` | string(pattern) | `Supplier[].Product[].TradeItem[].Pricing[].PriceUnitFactor` | `priceUnitFactor` | `["number", "null"]` | ❌ |
 | `PriceQuantity` | string(pattern) | `Supplier[].Product[].TradeItem[].Pricing[].PriceQuantity` | `priceQuantity` | `number` | ✅ |
@@ -872,7 +961,11 @@ Reference existing `UnitCodes.yaml` for order unit values. Convert all quantity 
 | `GrossListPrice` | string(pattern) | `Supplier[].Product[].TradeItem[].Pricing[].GrossListPrice` | `grossListPrice` | `["number", "null"]` | ❌ |
 | `RecommendedRetailPrice` | string(pattern) | `Supplier[].Product[].TradeItem[].Pricing[].RecommendedRetailPrice` | `recommendedRetailPrice` | `["number", "null"]` | ❌ |
 
-Create `ItemPricing.yaml` schema. **Convert all price/quantity string fields to `number` type** with `multipleOf: 0.0001`.
+Create `TradeItemPricing.yaml` schema (API-facing pricing, includes `pricingRef`, excludes nested `allowanceSurcharges`).
+Create `TradeItemPricingSummary.yaml` for bulk retrieval (includes `pricingRef` + trade item key fields).
+**Convert all price/quantity string fields to `number` type** with `multipleOf: 0.0001`.
+
+**Note**: `pricingRef` is a server-generated technical identifier (typed as `TechnicalId`) not present in the ETIM xChange domain model. It is required on all pricing schemas and used to correlate with allowance/surcharge entries.
 
 #### PackagingUnit
 | ETIM xChange Field | ETIM Type | JSON Path | OpenAPI Property | OpenAPI Type | Required |
@@ -892,6 +985,7 @@ Create `PackagingUnit.yaml` schema. **Convert all dimension, weight, and quantit
 Reuse existing shared schemas:
 - `Gln.yaml` (supplier identifiers)
 - `Gtin.yaml` (item identifiers)
+- `TechnicalId.yaml` (opaque system identifiers — used for `selectionId` parameter and `pricingRef` property)
 - `Price.yaml` (pricing structures)
 - `CurrencyCode.yaml`
 - `UnitCodes.yaml`
@@ -908,14 +1002,15 @@ Reuse existing shared query parameters (DO NOT create new files):
 ```yaml
 name: selectionId
 in: query
-description: Filter results by selection identifier. Used to retrieve a specific subset of items based on a predefined selection.
+description: Filter results by selection identifier. Used to retrieve a specific subset
+  of items based on a predefined selection.
 required: false
 schema:
-  type: string
-  minLength: 1
-  maxLength: 50
+  $ref: ../../schemas/identifiers/TechnicalId.yaml
 example: "SELECTION-2024-Q1"
 ```
+
+**Note**: The `selectionId` schema uses `$ref` to `TechnicalId.yaml` (generic opaque identifier, string 1-50 chars). Do NOT inline the type definition.
 
 #### mutation-date-time.yaml (EXISTS)
 ```yaml
@@ -1226,6 +1321,9 @@ Each schema file must include:
 ✅ Reuse existing shared components (parameters, responses)  
 ✅ Error responses follow RFC 7807 Problem Details  
 ✅ ETIM xChange traceability complete for all mapped fields  
+✅ `TechnicalId` schema used for `selectionId` parameter and `pricingRef` property  
+✅ `pricingRef` used as join key between pricings and allowance/surcharges (replaces composite natural key)  
+✅ `pricingRef` documented as server-generated, not present in ETIM xChange domain model  
 
 ## Output Files Expected
 
@@ -1251,7 +1349,7 @@ Generate the following files:
 **Domain schemas (without keys - for nested single-item)**:
 12. `openapi/apis/tradeitem/schemas/domain/TradeItemDetails.yaml`
 13. `openapi/apis/tradeitem/schemas/domain/TradeItemOrdering.yaml`
-14. `openapi/apis/tradeitem/schemas/domain/ItemPricing.yaml`
+14. `openapi/apis/tradeitem/schemas/domain/TradeItemPricing.yaml` (includes `pricingRef`, excludes nested allowance/surcharges)
 15. `openapi/apis/tradeitem/schemas/domain/ItemLogistics.yaml`
 16. `openapi/apis/tradeitem/schemas/domain/ItemRelation.yaml`
 17. `openapi/apis/tradeitem/schemas/domain/PackagingUnit.yaml`
@@ -1261,8 +1359,8 @@ Generate the following files:
 **Domain schemas (WITH keys - for bulk retrieval)**:
 20. `openapi/apis/tradeitem/schemas/domain/TradeItemDetailsSummary.yaml`
 21. `openapi/apis/tradeitem/schemas/domain/TradeItemOrderingsSummary.yaml`
-22. `openapi/apis/tradeitem/schemas/domain/TradeItemPricingSummary.yaml` (flattened - 1 row per price)
-23. `openapi/apis/tradeitem/schemas/domain/AllowanceSurchargeSummary.yaml` (flattened - 1 row per surcharge)
+22. `openapi/apis/tradeitem/schemas/domain/TradeItemPricingSummary.yaml` (flattened - 1 row per price, includes `pricingRef`)
+23. `openapi/apis/tradeitem/schemas/domain/AllowanceSurchargeSummary.yaml` (flattened - 1 row per surcharge, join via `pricingRef`)
 
 **Single-item response schemas**:
 24. `openapi/apis/tradeitem/schemas/responses/TradeItemResponse.yaml`
@@ -1270,7 +1368,7 @@ Generate the following files:
 26. `openapi/apis/tradeitem/schemas/responses/TradeItemOrderingsResponse.yaml`
 27. `openapi/apis/tradeitem/schemas/responses/TradeItemPricingsResponse.yaml`
 28. `openapi/apis/tradeitem/schemas/responses/TradeItemAllowanceSurchargesResponse.yaml`
-29. `openapi/apis/tradeitem/schemas/responses/TradeItemAllowanceSurchargeItem.yaml`
+29. `openapi/apis/tradeitem/schemas/responses/TradeItemAllowanceSurchargeItem.yaml` (includes `pricingRef` for correlation)
 
 **Bulk response schemas**:
 30. `openapi/apis/tradeitem/schemas/responses/BulkTradeItemDetailsResponse.yaml`
@@ -1295,6 +1393,7 @@ Generate the following files:
 - `openapi/shared/responses/500-internal-server-error.yaml`
 - `openapi/shared/schemas/common/CursorPaginationMetadata.yaml`
 - `openapi/shared/schemas/common/ProblemDetails.yaml`
+- `openapi/shared/schemas/identifiers/TechnicalId.yaml`
 
 ## Notes
 - Follow the ETIM xChange V2.0 schema structure but adapt for REST API best practices

@@ -7,8 +7,8 @@ get:
     Retrieve allowances (discounts) and surcharges (additional charges) for a specific trade item.
     
     This endpoint returns all allowances and surcharges associated with the trade item's pricing entries.
-    Each allowance/surcharge includes **pricing join keys** (`priceUnit`, `priceQuantity`, `priceValidityDate`) 
-    to enable correlation with the corresponding pricing record from the `/pricings` endpoint.
+    Each allowance/surcharge includes a `pricingRef` to enable correlation with the corresponding 
+    pricing record from the `/pricings` endpoint.
     
     **Design Decision**: Allowances and surcharges are provided in a separate endpoint to:
     - Enable direct ETL/data warehouse fact table loading
@@ -37,9 +37,7 @@ get:
                   supplierIdGln: "1234567890123"
                   supplierItemNumber: "SKU-12345"
                   allowanceSurcharges:
-                    - priceUnit: "C62"
-                      priceQuantity: 1
-                      priceValidityDate: "2025-01-01"
+                    - pricingRef: "price-c62-1-20250101"
                       allowanceSurchargeIndicator: "ALLOWANCE"
                       allowanceSurchargeValidityDate: "2025-01-01"
                       allowanceSurchargeType: "AEQ"
@@ -52,9 +50,7 @@ get:
                         - language: "nl"
                           allowanceSurchargeDescription: "Staffelkorting"
                       allowanceSurchargeMinimumQuantity: 50
-                    - priceUnit: "C62"
-                      priceQuantity: 1
-                      priceValidityDate: "2025-01-01"
+                    - pricingRef: "price-c62-1-20250101"
                       allowanceSurchargeIndicator: "SURCHARGE"
                       allowanceSurchargeValidityDate: null
                       allowanceSurchargeType: "DBD"
@@ -77,9 +73,7 @@ get:
                   supplierIdGln: "9876543210987"
                   supplierItemNumber: "SKU-VOLUME-002"
                   allowanceSurcharges:
-                    - priceUnit: "MTR"
-                      priceQuantity: 1
-                      priceValidityDate: "2025-01-01"
+                    - pricingRef: "price-mtr-1-20250101"
                       allowanceSurchargeIndicator: "ALLOWANCE"
                       allowanceSurchargeValidityDate: "2025-01-01"
                       allowanceSurchargeType: "AEQ"
@@ -88,9 +82,7 @@ get:
                       allowanceSurchargePercentage: 2.0
                       allowanceSurchargeDescription: null
                       allowanceSurchargeMinimumQuantity: 100
-                    - priceUnit: "MTR"
-                      priceQuantity: 100
-                      priceValidityDate: "2025-01-01"
+                    - pricingRef: "price-mtr-100-20250101"
                       allowanceSurchargeIndicator: "ALLOWANCE"
                       allowanceSurchargeValidityDate: "2025-01-01"
                       allowanceSurchargeType: "AEQ"

@@ -1,47 +1,28 @@
 type: object
 description: |
-  Allowance or surcharge with pricing join keys for correlating with pricing entries.
-  Includes the pricing identifiers (priceUnit, priceQuantity, priceValidityDate) to enable
-  joining with the corresponding pricing record.
+  Allowance or surcharge linked to a pricing entry via `pricingRef`.
+  Use `pricingRef` to correlate with the corresponding pricing record
+  from the `/pricings` endpoint.
   
   **ETIM xChange**: `AllowanceSurcharge`
   **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[]`
 additionalProperties: false
 required:
-  - priceUnit
-  - priceQuantity
+  - pricingRef
   - allowanceSurchargeIndicator
   - allowanceSurchargeType
 properties:
-  # --- Pricing Join Keys ---
-  priceUnit:
+  # --- Pricing Reference Key ---
+  pricingRef:
     description: |
-      Unit for which the parent price applies. Join key to pricing entry.
-      **ETIM xChange**: `PriceUnit` (from parent Pricing)
-    $ref: ../../../../shared/schemas/common/UnitCodes.yaml
+      Server-generated opaque reference key that identifies the parent pricing entry.
+      Use this to correlate with the corresponding pricing record from the `/pricings` endpoint.
+      
+      This is a technical identifier not present in the ETIM xChange domain model.
+    $ref: ../../../../shared/schemas/identifiers/TechnicalId.yaml
     examples:
-      - C62
-      - MTR
-  priceQuantity:
-    type: number
-    description: |
-      Quantity for which the parent price applies. Join key to pricing entry.
-      **ETIM xChange**: `PriceQuantity` (from parent Pricing)
-    minimum: 0
-    multipleOf: 0.0001
-    maximum: 99999.9999
-    examples:
-      - 1
-      - 100
-  priceValidityDate:
-    type: ["string", "null"]
-    format: date
-    description: |
-      Date from which the parent price is valid. Join key to pricing entry.
-      **ETIM xChange**: `PriceValidityDate` (from parent Pricing)
-    examples:
-      - "2025-01-01"
-      - null
+      - "price-c62-1-20250101"
+      - "f47ac10b-58cc-4372-a567-0e02b2c3d479"
 
   # --- Allowance/Surcharge Fields ---
   allowanceSurchargeIndicator:
@@ -136,9 +117,7 @@ properties:
       - null
 
 examples:
-  - priceUnit: C62
-    priceQuantity: 1
-    priceValidityDate: "2025-01-01"
+  - pricingRef: "price-c62-1-20250101"
     allowanceSurchargeIndicator: ALLOWANCE
     allowanceSurchargeValidityDate: "2025-01-01"
     allowanceSurchargeType: AEQ
