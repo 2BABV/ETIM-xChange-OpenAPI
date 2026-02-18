@@ -22,11 +22,10 @@ properties:
       - allowanceSurcharges
     properties:
       supplierIdGln:
-        type: string
+        $ref: ../../../../shared/schemas/identifiers/Gln.yaml
         description: |
           GLN (Global Location Number) of the supplier.
           **ETIM xChange**: `SupplierId.IdValue` where `IdScheme` = `GLN`
-        pattern: "^[0-9]{13}$"
         examples:
           - "1234567890123"
       supplierItemNumber:

@@ -1,31 +1,17 @@
 type: string
 enum:
   - "ATX001"
-  - "ATX002"
-  - "ATX003"
   - "ATX004"
-  - "ATX010"
-  - "ATX011"
-  - "ATX012"
-  - "ATX013"
   - "ATX014"
-  - "ATX015"
-  - "ATX016"
   - "ATX017"
   - "ATX018"
-  - "ATX019"
   - "ATX020"
-  - "ATX021"
-  - "ATX022"
-  - "ATX023"
-  - "ATX024"
-  - "ATX025"
   - "ATX026"
   - "ATX099"
 description: |
-  ETIM standardized attachment/document type codes.
+  ETIM standardized attachment/document type codes for product-level attachments.
   
-  Common types:
+  Product-level codes (per ETIM xChange schema):
   - `ATX001`: Product image
   - `ATX004`: Technical drawing
   - `ATX014`: Data sheet
@@ -34,6 +20,8 @@ description: |
   - `ATX020`: Marketing text
   - `ATX026`: Certificate (CE, RoHS, etc.)
   - `ATX099`: Other attachment type
+  
+  Note: Trade items support a broader set of ATX codes (ATX001-ATX026, ATX099).
   
   **ETIM xChange**: `AttachmentType`  
   **Path**: `Supplier[].Product[].ProductAttachments[].AttachmentType`

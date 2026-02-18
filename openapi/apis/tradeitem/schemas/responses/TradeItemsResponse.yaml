@@ -29,7 +29,7 @@ properties:
           type: array
           description: Array of Global Trade Item Numbers (GTIN)
           items:
-            $ref: ../../../../shared/schemas/identifiers/gtin.yaml
+            $ref: ../../../../shared/schemas/identifiers/Gtin.yaml
           examples:
             - ["12345678", "4012345678901"]
   meta:

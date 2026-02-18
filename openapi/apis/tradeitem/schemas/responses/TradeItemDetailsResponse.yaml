@@ -20,8 +20,7 @@ properties:
       - details
     properties:
       supplierIdGln:
-        type: string
-        pattern: "^[0-9]{13}$"
+        $ref: ../../../../shared/schemas/identifiers/Gln.yaml
         description: |
           Global Location Number (GLN) uniquely identifying the supplier.
           Part of the composite key for the trade item.

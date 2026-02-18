@@ -1284,8 +1284,7 @@ components:
         - itemValidityDate
       properties:
         supplierIdGln:
-          type: string
-          pattern: ^[0-9]{13}$
+          $ref: '#/components/schemas/Gln'
           description: |
             Global Location Number (GLN) of the supplier. 13-digit GS1 identifier.
             Part of the composite key for the trade item.
@@ -1339,8 +1338,7 @@ components:
             - MFG-54321
             - null
         manufacturerIdGln:
-          type: string
-          pattern: ^[0-9]{13}$
+          $ref: '#/components/schemas/Gln'
           description: |
             Global Location Number (GLN) of the manufacturer. 13-digit GS1 identifier.
             Required product key reference - together with `manufacturerProductNumber` identifies the parent product.
@@ -1368,8 +1366,7 @@ components:
             - 'null'
           uniqueItems: true
           items:
-            type: string
-            pattern: ^[0-9]{8,14}$
+            $ref: '#/components/schemas/Gtin'
           description: |
             Array of Global Trade Item Numbers (GTIN-8, GTIN-12, GTIN-13, or GTIN-14) 
             for the item. Multiple GTINs may exist for different packaging levels or markets.
@@ -1483,16 +1480,6 @@ components:
             - '2026-12-31'
             - null
         itemStatus:
-          type:
-            - string
-            - 'null'
-          enum:
-            - PRE-LAUNCH
-            - ACTIVE
-            - ON HOLD
-            - PLANNED WITHDRAWAL
-            - OBSOLETE
-            - null
           description: |
             Current lifecycle status of the trade item in the supplier's catalog.
 
@@ -1504,19 +1491,14 @@ components:
 
             **ETIM xChange**: `ItemStatus`  
             **Path**: `Supplier[].Product[].TradeItem[].ItemDetails.ItemStatus`
+          anyOf:
+            - $ref: '#/components/schemas/ItemStatus'
+            - type: 'null'
           examples:
             - ACTIVE
             - PRE-LAUNCH
             - null
         itemCondition:
-          type:
-            - string
-            - 'null'
-          enum:
-            - NEW
-            - USED
-            - REFURBISHED
-            - null
           description: |
             Physical condition of the trade item.
 
@@ -1526,6 +1508,9 @@ components:
 
             **ETIM xChange**: `ItemCondition`  
             **Path**: `Supplier[].Product[].TradeItem[].ItemDetails.ItemCondition`
+          anyOf:
+            - $ref: '#/components/schemas/ItemCondition'
+            - type: 'null'
           examples:
             - NEW
             - REFURBISHED
@@ -1606,8 +1591,7 @@ components:
         - minimalItemDescription
       properties:
         supplierIdGln:
-          type: string
-          pattern: ^[0-9]{13}$
+          $ref: '#/components/schemas/Gln'
           description: |
             Global Location Number (GLN) identifying the supplier.
             13-digit GS1 identifier. Part of the composite trade item identifier.
@@ -1853,8 +1837,7 @@ components:
         - orderStepSize
       properties:
         supplierIdGln:
-          type: string
-          pattern: ^[0-9]{13}$
+          $ref: '#/components/schemas/Gln'
           description: |
             Global Location Number (GLN) of the supplier. 13-digit GS1 identifier.
             Part of the composite key for the trade item.
@@ -2240,8 +2223,7 @@ components:
         - pricings
       properties:
         supplierIdGln:
-          type: string
-          pattern: ^[0-9]{13}$
+          $ref: '#/components/schemas/Gln'
           description: |
             Global Location Number (GLN) of the supplier. 13-digit GS1 identifier.
             Part of the composite key for the trade item.
@@ -2347,8 +2329,7 @@ components:
         - allowanceSurchargeType
       properties:
         supplierIdGln:
-          type: string
-          pattern: ^[0-9]{13}$
+          $ref: '#/components/schemas/Gln'
           description: |
             Global Location Number (GLN) of the supplier. 13-digit GS1 identifier.
             Part of the composite key for the trade item.
@@ -2638,8 +2619,7 @@ components:
             - details
           properties:
             supplierIdGln:
-              type: string
-              pattern: ^[0-9]{13}$
+              $ref: '#/components/schemas/Gln'
               description: |
                 Global Location Number (GLN) uniquely identifying the supplier.
                 Part of the composite key for the trade item.
@@ -2706,8 +2686,7 @@ components:
             - supplierItemNumber
           properties:
             supplierIdGln:
-              type: string
-              pattern: ^[0-9]{13}$
+              $ref: '#/components/schemas/Gln'
               description: Global Location Number (GLN) uniquely identifying the supplier
               examples:
                 - '1234567890123'
@@ -2883,8 +2862,7 @@ components:
             - ordering
           properties:
             supplierIdGln:
-              type: string
-              pattern: ^[0-9]{13}$
+              $ref: '#/components/schemas/Gln'
               description: |
                 Global Location Number (GLN) uniquely identifying the supplier.
                 Part of the composite key for the trade item.
@@ -3017,8 +2995,7 @@ components:
             - pricings
           properties:
             supplierIdGln:
-              type: string
-              pattern: ^[0-9]{13}$
+              $ref: '#/components/schemas/Gln'
               description: |
                 Global Location Number (GLN) uniquely identifying the supplier.
                 Part of the composite key for the trade item.
@@ -3261,11 +3238,10 @@ components:
             - allowanceSurcharges
           properties:
             supplierIdGln:
-              type: string
+              $ref: '#/components/schemas/Gln'
               description: |
                 GLN (Global Location Number) of the supplier.
                 **ETIM xChange**: `SupplierId.IdValue` where `IdScheme` = `GLN`
-              pattern: ^[0-9]{13}$
               examples:
                 - '1234567890123'
             supplierItemNumber:
@@ -3848,8 +3824,7 @@ components:
         - priceValidityDate
       properties:
         supplierIdGln:
-          type: string
-          pattern: ^[0-9]{13}$
+          $ref: '#/components/schemas/Gln'
           description: |
             Global Location Number (GLN) of the supplier. 13-digit GS1 identifier.
             Part of the composite key for the trade item.
