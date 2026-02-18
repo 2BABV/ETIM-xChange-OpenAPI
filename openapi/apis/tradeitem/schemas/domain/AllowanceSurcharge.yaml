@@ -92,9 +92,13 @@ properties:
           type: object
           additionalProperties: false
           required:
+            - language
             - allowanceSurchargeDescription
           properties:
             language:
+              description: |
+                Language code for the description.
+                Sourced from ETIM xChange `Language` at catalog level, denormalized into each description record.
               $ref: ../../../../shared/schemas/common/LanguageCode.yaml
             allowanceSurchargeDescription:
               type: string

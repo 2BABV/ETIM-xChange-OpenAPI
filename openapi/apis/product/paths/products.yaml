@@ -77,7 +77,8 @@ get:
                 data:
                   manufacturerIdGln: "1234567890123"
                   manufacturerProductNumber: "LED-12345-A"
-                  details: {}
+                  details:
+                    productValidityDate: "2025-01-01"
                   descriptions:
                     - descriptionLanguage: "en-GB"
                       minimalProductDescription: "LED Lamp"

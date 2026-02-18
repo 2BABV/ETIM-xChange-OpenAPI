@@ -118,7 +118,8 @@ paths:
                     data:
                       manufacturerIdGln: '1234567890123'
                       manufacturerProductNumber: LED-12345-A
-                      details: {}
+                      details:
+                        productValidityDate: '2025-01-01'
                       descriptions:
                         - descriptionLanguage: en-GB
                           minimalProductDescription: LED Lamp
@@ -1205,6 +1206,7 @@ components:
       required:
         - manufacturerIdGln
         - manufacturerProductNumber
+        - descriptionLanguage
         - minimalProductDescription
       properties:
         manufacturerIdGln:
@@ -1230,12 +1232,11 @@ components:
         descriptionLanguage:
           description: |
             Language code for the description in ISO 639-1 and ISO 3166-1 format (e.g., "en-GB", "de-DE").
+            Sourced from ETIM xChange `Language` at catalog level, denormalized into each description record.
 
             **ETIM xChange**: `DescriptionLanguage`  
             **Path**: `Supplier[].Product[].ProductDetails.ProductDescriptions[].DescriptionLanguage`
-          anyOf:
-            - $ref: '#/components/schemas/LanguageCode'
-            - type: 'null'
+          $ref: '#/components/schemas/LanguageCode'
           examples:
             - en-GB
             - de-DE
@@ -1389,22 +1390,21 @@ components:
       type: object
       additionalProperties: false
       required:
+        - descriptionLanguage
         - minimalProductDescription
       properties:
         descriptionLanguage:
           description: |
             Language code for the description in ISO 639-1 and ISO 3166-1 format (e.g., "en-GB", "de-DE").
+            Sourced from ETIM xChange `Language` at catalog level, denormalized into each description record.
 
             **ETIM xChange**: `DescriptionLanguage`  
             **Path**: `Supplier[].Product[].ProductDetails.ProductDescriptions[].DescriptionLanguage`
-          anyOf:
-            - $ref: '#/components/schemas/LanguageCode'
-            - type: 'null'
+          $ref: '#/components/schemas/LanguageCode'
           examples:
             - en-GB
             - de-DE
             - nl-NL
-            - null
         minimalProductDescription:
           type: string
           minLength: 1
@@ -1743,13 +1743,14 @@ components:
             type: object
             additionalProperties: false
             required:
+              - language
               - etimValueDetails
             properties:
               language:
-                description: Language code for the value details
-                anyOf:
-                  - $ref: '#/components/schemas/LanguageCode'
-                  - type: 'null'
+                description: |
+                  Language code for the value details.
+                  Sourced from ETIM xChange `Language` at catalog level, denormalized into each record.
+                $ref: '#/components/schemas/LanguageCode'
                 examples:
                   - en-GB
               etimValueDetails:
@@ -1996,13 +1997,14 @@ components:
             type: object
             additionalProperties: false
             required:
+              - language
               - etimValueDetails
             properties:
               language:
-                description: Language code for the value details
-                anyOf:
-                  - $ref: '#/components/schemas/LanguageCode'
-                  - type: 'null'
+                description: |
+                  Language code for the value details.
+                  Sourced from ETIM xChange `Language` at catalog level, denormalized into each record.
+                $ref: '#/components/schemas/LanguageCode'
                 examples:
                   - en-GB
                   - nl-NL
@@ -2165,13 +2167,14 @@ components:
             type: object
             additionalProperties: false
             required:
+              - language
               - functionalUnitDescription
             properties:
               language:
-                description: Language code for the description
-                anyOf:
-                  - $ref: '#/components/schemas/LanguageCode'
-                  - type: 'null'
+                description: |
+                  Language code for the description.
+                  Sourced from ETIM xChange `Language` at catalog level, denormalized into each record.
+                $ref: '#/components/schemas/LanguageCode'
                 examples:
                   - en-GB
               functionalUnitDescription:

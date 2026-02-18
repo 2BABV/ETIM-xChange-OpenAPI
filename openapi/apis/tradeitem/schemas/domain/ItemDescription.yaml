@@ -4,21 +4,20 @@ description: |
   Extracted from ETIM xChange `TradeItem.ItemDetails.ItemDescriptions[]` structure.
 additionalProperties: false
 required:
+  - descriptionLanguage
   - minimalItemDescription
 properties:
   descriptionLanguage:
     description: |
-      Language code for the description (e.g., 'en-US', 'de-DE', 'nl-NL').
+      Language code for the description in ISO 639-1 and ISO 3166-1 format (e.g., "en-GB", "de-DE").
+      Sourced from ETIM xChange `Language` at catalog level, denormalized into each description record.
       **ETIM xChange**: `DescriptionLanguage`
       **Path**: `Supplier[].Product[].TradeItem[].ItemDetails.ItemDescriptions[].DescriptionLanguage`
-    anyOf:
-      - $ref: ../../../../shared/schemas/common/LanguageCode.yaml
-      - type: "null"
+    $ref: ../../../../shared/schemas/common/LanguageCode.yaml
     examples:
-      - "en-US"
+      - "en-GB"
       - "de-DE"
       - "nl-NL"
-      - null
   minimalItemDescription:
     type: string
     description: |
@@ -47,4 +46,3 @@ examples:
     uniqueMainItemDescription: "Professional claw hammer with fiberglass handle, 500g head weight"
   - descriptionLanguage: "de-DE"
     minimalItemDescription: "Hammer 500g"
-    uniqueMainItemDescription: null

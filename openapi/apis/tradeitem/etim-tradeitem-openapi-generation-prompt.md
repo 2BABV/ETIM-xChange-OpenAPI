@@ -284,6 +284,71 @@ itemObsolescenceDate:
 - Make nullable with `type: ["string", "null"]` if date is optional
 - Common date fields: `itemValidityDate`, `itemObsolescenceDate`, `catalogueValidityStart`, `catalogueValidityEnd`, `generationDate`
 
+#### 2.5. Catalog-Level Field Denormalization (`CurrencyCode` and `Language`)
+
+**CRITICAL**: In the ETIM xChange schema, `CurrencyCode` and `Language` are defined **once at the catalogue root level** and apply to all records in the catalogue. In the OpenAPI specification, these fields are **denormalized** (copied) into each record that uses them, making them **required and non-nullable**.
+
+**ETIM xChange Catalogue Root**:
+```json
+"CurrencyCode": {"type": "string", "pattern": "^[A-Z]{3}$"},
+"Language": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z]{2}[-][A-Z]{2}$"}}
+```
+
+**Denormalization Rules**:
+
+| Catalog-Level Field | Denormalized Into | OpenAPI Property | Required | Nullable | $ref |
+|--------------------|--------------------|------------------|----------|----------|------|
+| `CurrencyCode` | Every pricing record | `currencyCode` | ✅ | ❌ | `CurrencyCode.yaml` |
+| `Language` | Every description record (`ItemDescriptions[]`) | `descriptionLanguage` | ✅ | ❌ | `LanguageCode.yaml` |
+| `Language` | Every multilingual sub-array item (e.g., `AllowanceSurchargeDescription[]`, `EtimValueDetails[]`, `AttachmentDescription[]`, `DiscountGroupDescription[]`, `BonusGroupDescription[]`) | `language` | ✅ | ❌ | `LanguageCode.yaml` |
+
+**Implementation Pattern**:
+
+```yaml
+# ✅ CORRECT — Required, non-nullable, plain $ref
+currencyCode:
+  description: |
+    Currency code for all monetary values in this pricing entry.
+    Sourced from ETIM xChange `CurrencyCode` at catalog level.
+  $ref: ../../../../shared/schemas/common/CurrencyCode.yaml
+  examples:
+    - EUR
+
+descriptionLanguage:
+  description: |
+    Language code for the description in ISO 639-1 and ISO 3166-1 format (e.g., "en-GB", "de-DE").
+    Sourced from ETIM xChange `Language` at catalog level, denormalized into each description record.
+    **ETIM xChange**: `DescriptionLanguage`
+    **Path**: `Supplier[].Product[].TradeItem[].ItemDetails.ItemDescriptions[].DescriptionLanguage`
+  $ref: ../../../../shared/schemas/common/LanguageCode.yaml
+  examples:
+    - "en-GB"
+    - "de-DE"
+    - "nl-NL"
+
+# For multilingual sub-array items (e.g., inside AllowanceSurchargeDescription[]):
+language:
+  description: |
+    Language code for the description.
+    Sourced from ETIM xChange `Language` at catalog level, denormalized into each description record.
+  $ref: ../../../../shared/schemas/common/LanguageCode.yaml
+```
+
+```yaml
+# ❌ INCORRECT — Do NOT use anyOf with null for denormalized catalog-level fields
+descriptionLanguage:
+  anyOf:
+    - $ref: ../../../../shared/schemas/common/LanguageCode.yaml
+    - type: "null"
+```
+
+**Key Points**:
+- These fields MUST be in the `required` array of their parent object
+- Use plain `$ref` — NOT `anyOf: [$ref, type: "null"]`
+- Description should note: "Sourced from ETIM xChange `CurrencyCode`/`Language` at catalog level"
+- The `LanguageCode` format is locale-based: `^[a-z]{2}[-][A-Z]{2}$` (e.g., `"en-GB"`, `"nl-NL"`, `"de-DE"`)
+- Apply consistently to ALL schemas that contain language or currency properties
+
 ### 2. Naming Conventions
 
 #### File Naming
@@ -1289,7 +1354,8 @@ Each schema file must include:
 
 - **Keep product reference**: TradeItem is nested under Product in ETIM, but flatten for API
 - **ETIM xChange documentation**: Every field must document its ETIM source with name and path
-- **Language handling**: Support multilingual descriptions where present (e.g., `DiscountGroupDescription[]`)
+- **Language handling**: Support multilingual descriptions where present (e.g., `DiscountGroupDescription[]`). Language fields are **required and non-nullable** — denormalized from catalog-level `Language` (see section 2.5)
+- **Currency handling**: `currencyCode` is **required and non-nullable** on all pricing records — denormalized from catalog-level `CurrencyCode` (see section 2.5)
 - **Attachment handling**: Reference URIs for documents/images
 - **Country-specific fields**: Design extensible pattern for custom fields
 - **Pricing complexity**: Handle multiple pricing scenarios, allowances, surcharges
@@ -1324,6 +1390,9 @@ Each schema file must include:
 ✅ `TechnicalId` schema used for `selectionId` parameter and `pricingRef` property  
 ✅ `pricingRef` used as join key between pricings and allowance/surcharges (replaces composite natural key)  
 ✅ `pricingRef` documented as server-generated, not present in ETIM xChange domain model  
+✅ **Catalog-level `CurrencyCode` denormalized into each pricing record as required, non-nullable `$ref`**  
+✅ **Catalog-level `Language` denormalized into each description/multilingual record as required, non-nullable `$ref`**  
+✅ **Language fields use locale format `^[a-z]{2}[-][A-Z]{2}$` (e.g., `"en-GB"`, `"nl-NL"`)**  
 
 ## Output Files Expected
 

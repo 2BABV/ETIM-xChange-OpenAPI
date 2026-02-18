@@ -50,13 +50,14 @@ properties:
       type: object
       additionalProperties: false
       required:
+        - language
         - attachmentDescription
       properties:
         language:
-          description: Language code for the description
-          anyOf:
-            - $ref: ../../../../shared/schemas/common/LanguageCode.yaml
-            - type: "null"
+          description: |
+            Language code for the description.
+            Sourced from ETIM xChange `Language` at catalog level, denormalized into each description record.
+          $ref: ../../../../shared/schemas/common/LanguageCode.yaml
           examples:
             - "en-GB"
             - "de-DE"

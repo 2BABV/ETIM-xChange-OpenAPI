@@ -99,13 +99,14 @@ properties:
       type: object
       additionalProperties: false
       required:
+        - language
         - etimValueDetails
       properties:
         language:
-          description: Language code for the value details
-          anyOf:
-            - $ref: ../../../../shared/schemas/common/LanguageCode.yaml
-            - type: "null"
+          description: |
+            Language code for the value details.
+            Sourced from ETIM xChange `Language` at catalog level, denormalized into each record.
+          $ref: ../../../../shared/schemas/common/LanguageCode.yaml
           examples:
             - "en-GB"
         etimValueDetails:
