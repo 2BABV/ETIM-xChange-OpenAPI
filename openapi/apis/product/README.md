@@ -15,6 +15,16 @@ This API provides both individual product operations and bulk data retrieval wit
 Products are uniquely identified by the composite key:
 - `manufacturerIdGln` (GLN - 13 digits) + `manufacturerProductNumber` (max 35 chars)
 
+Each product also carries a server-generated `productRef` (internal reference ID) for correlating nested subcomponents across bulk endpoints. Nested entities carry their own refs:
+- `ProductDescription` → `descriptionRef`
+- `ProductRelation` → `relationRef`  
+- `ProductAttachment` → `attachmentRef`
+- `AttachmentDetails` → `attachmentDetailRef`
+- `EtimClassification` → `classificationRef`
+- `EtimFeature` → `featureRef`
+
+Child bulk schemas use `productRef` only (no composite keys). Root bulk schemas (`ProductDetailsSummary`) include both composite keys and `productRef`.
+
 [Decision details](docs/product-key.md)
 
 ### Manufacturer identity

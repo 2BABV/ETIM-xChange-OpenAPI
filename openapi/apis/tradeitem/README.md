@@ -20,6 +20,16 @@ Each trade item links to its parent product via required reference fields:
 
 This enables joining trade item data with product specifications from the Product API.
 
+Each trade item also carries a server-generated `tradeItemRef` (internal reference ID) for correlating nested subcomponents across bulk endpoints. Nested entities carry their own refs:
+- `ItemDescription` → `descriptionRef`
+- `TradeItemPricing` → `pricingRef`
+- `AllowanceSurcharge` → `allowanceSurchargeRef`
+- `ItemRelation` → `relationRef`
+- `ItemAttachment` → `attachmentRef`
+- `ItemLogistics` → `logisticsRef`
+
+Child bulk schemas use `tradeItemRef` only (no composite keys). Root bulk schemas (`TradeItemDetailsSummary`) include both composite keys and `tradeItemRef`. The 1:1 `ordering` relationship does not require a separate ref.
+
 ### TradeItem Details
 
 TradeItem details (`TradeItemDetails`) combines identification and operational information into a single schema:

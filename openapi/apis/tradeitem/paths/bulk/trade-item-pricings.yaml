@@ -6,12 +6,12 @@ get:
     Returns pricing details including net prices, gross list prices, recommended retail prices,
     VAT, price validity periods, allowances/surcharges, and the catalog-level currency code.
     
-    **Flattened Structure**: Each row represents a single price entry with embedded composite key
-    (`supplierIdGln` + `supplierItemNumber`). This follows the same pattern as 
+    **Flattened Structure**: Each row represents a single price entry with `tradeItemRef`
+    for correlation. This follows the same pattern as 
     `/bulk/product-etim-classifications` - 1 row per data point.
     
     A trade item with multiple price tiers (e.g., quantity breaks, validity periods) will have
-    multiple rows with the same composite key but different pricing data.
+    multiple rows with the same `tradeItemRef` but different pricing data.
     
     This endpoint is optimized for:
     - Predictable payload sizes per row
@@ -41,8 +41,7 @@ get:
               summary: Successful bulk retrieval (flattened - 1 row per price entry)
               value:
                 data:
-                  - supplierIdGln: "8712423012485"
-                    supplierItemNumber: "SKU-LAMP-001"
+                  - tradeItemRef: "ti-001"
                     pricingRef: "price-c62-1-20250101"
                     priceUnit: "C62"
                     priceQuantity: 1
@@ -54,16 +53,14 @@ get:
                     vat: 21.0
                     priceValidityDate: "2025-01-01"
                     priceExpiryDate: "2025-12-31"
-                  - supplierIdGln: "8712423012485"
-                    supplierItemNumber: "SKU-CABLE-002"
+                  - tradeItemRef: "ti-002"
                     pricingRef: "price-mtr-1-20250101"
                     priceUnit: "MTR"
                     priceQuantity: 1
                     currencyCode: "EUR"
                     netPrice: 1.99
                     priceValidityDate: "2025-01-01"
-                  - supplierIdGln: "8712423012485"
-                    supplierItemNumber: "SKU-CABLE-002"
+                  - tradeItemRef: "ti-002"
                     pricingRef: "price-mtr-100-20250101"
                     priceUnit: "MTR"
                     priceQuantity: 100

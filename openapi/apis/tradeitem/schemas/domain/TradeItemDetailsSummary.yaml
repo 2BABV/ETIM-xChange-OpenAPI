@@ -11,12 +11,28 @@ description: |
   **Note**: Item descriptions are available via `/bulk/trade-item-descriptions` endpoint.
 additionalProperties: false
 required:
+  - tradeItemRef
   - supplierIdGln
   - supplierItemNumber
   - manufacturerIdGln
   - manufacturerProductNumber
   - itemValidityDate
 properties:
+  # =========================================================================
+  # INTERNAL REFERENCE ID
+  # =========================================================================
+  
+  tradeItemRef:
+    description: |
+      Server-generated opaque reference key that uniquely identifies this trade item.
+      Used to correlate trade item data across bulk endpoints (descriptions, orderings, pricings, etc.).
+      
+      This is a technical identifier not present in the ETIM xChange domain model.
+    $ref: ../../../../shared/schemas/identifiers/TechnicalId.yaml
+    examples:
+      - "ti-sku-lamp-001"
+      - "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+  
   # =========================================================================
   # KEY FIELDS (required for bulk retrieval)
   # =========================================================================
@@ -288,7 +304,8 @@ properties:
       - null
 
 examples:
-  - supplierIdGln: "8712423012485"
+  - tradeItemRef: "ti-sku-lamp-001"
+    supplierIdGln: "8712423012485"
     supplierItemNumber: "SKU-LAMP-001"
     supplierAltItemNumber: "ALT-SKU-001"
     manufacturerItemNumber: "MFR-12345"

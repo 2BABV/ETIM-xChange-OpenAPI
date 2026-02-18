@@ -10,11 +10,12 @@
 1. [Core Standards & Type System](#core-standards--type-system)
 2. [Naming Conventions](#naming-conventions)
 3. [Architecture Patterns](#architecture-patterns)
-4. [Schema Flattening Strategy](#schema-flattening-strategy)
-5. [Bulk Service Design](#bulk-service-design)
-6. [Documentation Requirements](#documentation-requirements)
-7. [Shared Component Reuse](#shared-component-reuse)
-8. [Validation & Error Handling](#validation--error-handling)
+4. [Entity Identity & Reference Keys](#entity-identity--reference-keys)
+5. [Schema Flattening Strategy](#schema-flattening-strategy)
+6. [Bulk Service Design](#bulk-service-design)
+7. [Documentation Requirements](#documentation-requirements)
+8. [Shared Component Reuse](#shared-component-reuse)
+9. [Validation & Error Handling](#validation--error-handling)
 
 ---
 
@@ -391,6 +392,122 @@ examples:
       hasPrev: false
       limit: 100
       estimatedTotal: 1543
+```
+
+---
+
+## Entity Identity & Reference Keys
+
+### Domain Boundaries
+
+The API defines four main entity domains, each with its own external identity:
+
+| Domain | External Key(s) | Description |
+|--------|----------------|-------------|
+| **Manufacturer** | `manufacturerIdGln` | GLN uniquely identifies a manufacturer |
+| **Supplier** | `supplierIdGln` | GLN uniquely identifies a supplier |
+| **Product** | `manufacturerIdGln` + `manufacturerProductNumber` | Composite key identifies a product |
+| **TradeItem** | `supplierIdGln` + `supplierItemNumber` | Composite key identifies a trade item |
+
+**Cross-entity references** use external keys only. For example, a TradeItem links to its parent Product via `manufacturerIdGln` + `manufacturerProductNumber` — these are business-meaningful identifiers visible in the ETIM xChange domain model.
+
+### Internal Reference IDs (`{entity}Ref`)
+
+Each main entity and its nested subcomponents receive a server-generated **internal reference ID** using the `{entity}Ref` naming pattern. These refs serve as opaque technical identifiers for **intra-entity correlation** across bulk endpoints.
+
+**Key principles**:
+- Internal refs are for correlating subcomponents **within** the same entity domain
+- Internal refs are **NOT** for cross-entity references (use external keys for that)
+- Refs use `TechnicalId` type: `string`, `minLength: 1`, `maxLength: 50` — flexible for UUID, integer, or any server-chosen format
+- Refs are server-generated and opaque to clients
+
+#### Reference ID Assignments
+
+**Product domain**:
+
+| Schema | Ref Field | Purpose |
+|--------|-----------|---------|
+| `Product` | `productRef` | Identifies the product across all product bulk endpoints |
+| `ProductDescription` | `descriptionRef` | Identifies a language-specific description |
+| `ProductRelation` | `relationRef` | Identifies a product relation group |
+| `ProductAttachment` | `attachmentRef` | Identifies an attachment group |
+| `AttachmentDetails` | `attachmentDetailRef` | Identifies a specific attachment file |
+| `EtimClassification` | `classificationRef` | Identifies an ETIM classification entry |
+| `EtimFeature` | `featureRef` | Identifies an ETIM feature value |
+
+**TradeItem domain**:
+
+| Schema | Ref Field | Purpose |
+|--------|-----------|---------|
+| `TradeItem` | `tradeItemRef` | Identifies the trade item across all trade item bulk endpoints |
+| `ItemDescription` | `descriptionRef` | Identifies a language-specific description |
+| `TradeItemPricing` | `pricingRef` | Identifies a pricing entry (already existed) |
+| `AllowanceSurcharge` | `allowanceSurchargeRef` | Identifies an allowance/surcharge entry |
+| `ItemRelation` | `relationRef` | Identifies an item relation |
+| `ItemAttachment` | `attachmentRef` | Identifies an item attachment |
+| `ItemLogistics` | `logisticsRef` | Identifies a logistics entry |
+
+**1:1 relationships** (e.g., `ordering` within TradeItem) do not require a separate ref — the parent's `tradeItemRef` is sufficient.
+
+### Bulk Endpoint Key Strategy
+
+#### Root Entity Bulk Schemas
+
+Root bulk schemas (e.g., `TradeItemDetailsSummary`, `ProductDetailsSummary`) include **both** external keys and internal ref:
+
+```yaml
+# TradeItemDetailsSummary
+required:
+  - supplierIdGln        # external key
+  - supplierItemNumber   # external key
+  - tradeItemRef         # internal ref
+```
+
+This gives consumers the full identity: external keys for business meaning, internal ref for correlation with child data.
+
+#### Child/Nested Bulk Schemas
+
+Child bulk schemas (e.g., `TradeItemPricingSummary`, `ItemDescriptionsSummary`) use **refs only** — no composite keys:
+
+```yaml
+# TradeItemPricingSummary
+required:
+  - tradeItemRef   # correlate to parent trade item
+  - pricingRef     # identify this pricing entry
+
+# AllowanceSurchargeSummary
+required:
+  - tradeItemRef            # correlate to parent trade item
+  - pricingRef              # correlate to parent pricing
+  - allowanceSurchargeRef   # identify this surcharge entry
+```
+
+Benefits:
+- Smaller payloads (no duplicated composite keys)
+- Cleaner joins via single ref fields
+- Consistent correlation pattern across all bulk endpoints
+
+### Join Patterns
+
+Consumers retrieve full identity from the root bulk endpoint, then join child data using refs:
+
+```sql
+-- Get trade items with their pricings
+SELECT d.supplierIdGln, d.supplierItemNumber, d.tradeItemRef, p.*
+FROM trade_item_details d
+JOIN trade_item_pricings p ON d.tradeItemRef = p.tradeItemRef
+
+-- Get pricings with allowances/surcharges
+SELECT p.*, a.*
+FROM trade_item_pricings p
+LEFT JOIN allowance_surcharges a
+  ON p.tradeItemRef = a.tradeItemRef
+  AND p.pricingRef = a.pricingRef
+
+-- Get products with descriptions
+SELECT d.manufacturerIdGln, d.manufacturerProductNumber, d.productRef, desc.*
+FROM product_details d
+JOIN product_descriptions desc ON d.productRef = desc.productRef
 ```
 
 ---

@@ -34,8 +34,7 @@ get:
               summary: Successful bulk retrieval
               value:
                 data:
-                  - supplierIdGln: "8712423012485"
-                    supplierItemNumber: "SKU-LAMP-001"
+                  - tradeItemRef: "ti-001"
                     orderUnit: "C62"
                     minimumOrderQuantity: 1
                     orderStepSize: 1
@@ -45,8 +44,7 @@ get:
                     singleUseUnitQuantity: null
                     alternativeUseUnit: null
                     alternativeUseUnitConversionFactor: null
-                  - supplierIdGln: "8712423012485"
-                    supplierItemNumber: "SKU-CABLE-002"
+                  - tradeItemRef: "ti-002"
                     orderUnit: "MTR"
                     minimumOrderQuantity: 10
                     orderStepSize: 5

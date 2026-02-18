@@ -12,42 +12,26 @@ description: |
   **Path**: `Supplier[].Product[].TradeItem[].Ordering`
 additionalProperties: false
 required:
-  - supplierIdGln
-  - supplierItemNumber
+  - tradeItemRef
   - orderUnit
   - minimumOrderQuantity
   - orderStepSize
 properties:
   # =========================================================================
-  # KEY FIELDS (required for bulk retrieval)
+  # INTERNAL REFERENCE ID
   # =========================================================================
   
-  supplierIdGln:
-    type: string
-    pattern: "^[0-9]{13}$"
+  tradeItemRef:
     description: |
-      Global Location Number (GLN) of the supplier. 13-digit GS1 identifier.
-      Part of the composite key for the trade item.
+      Server-generated opaque reference key that identifies the parent trade item.
+      Use this to correlate with the corresponding trade item record from the
+      `/bulk/trade-item-details` endpoint.
       
-      **ETIM xChange**: `SupplierIdGln`  
-      **Path**: `Supplier[].SupplierId.SupplierIdGln`
+      This is a technical identifier not present in the ETIM xChange domain model.
+    $ref: ../../../../shared/schemas/identifiers/TechnicalId.yaml
     examples:
-      - "1234567890123"
-      - "8712423012485"
-  
-  supplierItemNumber:
-    type: string
-    minLength: 1
-    maxLength: 35
-    description: |
-      Supplier's unique item number. Part of the composite key for the trade item.
-      This is the primary identifier for items in the supplier's catalog system.
-      
-      **ETIM xChange**: `SupplierItemNumber`  
-      **Path**: `Supplier[].Product[].TradeItem[].ItemIdentification.SupplierItemNumber`
-    examples:
-      - "SKU-12345"
-      - "ITEM-ABC-789"
+      - "ti-sku-lamp-001"
+      - "f47ac10b-58cc-4372-a567-0e02b2c3d479"
   
   # =========================================================================
   # ORDERING FIELDS (from TradeItem.Ordering)
@@ -181,8 +165,7 @@ properties:
       - null
 
 examples:
-  - supplierIdGln: "8712423012485"
-    supplierItemNumber: "SKU-LAMP-001"
+  - tradeItemRef: "ti-sku-lamp-001"
     orderUnit: C62
     minimumOrderQuantity: 1
     orderStepSize: 1
@@ -192,8 +175,7 @@ examples:
     singleUseUnitQuantity: null
     alternativeUseUnit: null
     alternativeUseUnitConversionFactor: null
-  - supplierIdGln: "8712423012485"
-    supplierItemNumber: "SKU-CABLE-002"
+  - tradeItemRef: "ti-sku-cable-002"
     orderUnit: MTR
     minimumOrderQuantity: 10
     orderStepSize: 5

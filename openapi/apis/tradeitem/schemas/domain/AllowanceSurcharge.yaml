@@ -5,9 +5,20 @@ description: |
   **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[]`
 additionalProperties: false
 required:
+  - allowanceSurchargeRef
   - allowanceSurchargeIndicator
   - allowanceSurchargeType
 properties:
+  allowanceSurchargeRef:
+    description: |
+      Server-generated opaque reference key that uniquely identifies this allowance/surcharge entry
+      within the scope of a pricing entry.
+      
+      This is a technical identifier not present in the ETIM xChange domain model.
+    $ref: ../../../../shared/schemas/identifiers/TechnicalId.yaml
+    examples:
+      - "as-aeq-001"
+      - "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
   allowanceSurchargeIndicator:
     type: string
     description: |
@@ -123,7 +134,8 @@ properties:
       - 1250.5
       - null
 examples:
-  - allowanceSurchargeIndicator: ALLOWANCE
+  - allowanceSurchargeRef: "as-aeq-001"
+    allowanceSurchargeIndicator: ALLOWANCE
     allowanceSurchargeValidityDate: "2025-01-01"
     allowanceSurchargeType: AEQ
     allowanceSurchargeAmount: null
@@ -133,7 +145,8 @@ examples:
       - language: en
         allowanceSurchargeDescription: Bulk quantity discount
     allowanceSurchargeMinimumQuantity: 50
-  - allowanceSurchargeIndicator: SURCHARGE
+  - allowanceSurchargeRef: "as-dbd-002"
+    allowanceSurchargeIndicator: SURCHARGE
     allowanceSurchargeValidityDate: null
     allowanceSurchargeType: DBD
     allowanceSurchargeAmount: 25.0

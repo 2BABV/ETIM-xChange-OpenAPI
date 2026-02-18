@@ -1,8 +1,20 @@
 type: object
 additionalProperties: false
 required:
+  - featureRef
   - etimFeatureCode
 properties:
+  featureRef:
+    description: |
+      Server-generated opaque reference key that uniquely identifies this feature value
+      within the scope of an ETIM classification.
+      
+      This is a technical identifier not present in the ETIM xChange domain model.
+    $ref: ../../../../shared/schemas/identifiers/TechnicalId.yaml
+    examples:
+      - "feat-ef000123-001"
+      - "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+  
   etimFeatureCode:
     type: string
     pattern: "^EF([0-9]{6}|I[0-9]{5}|[A-Z]{2}[0-9]{4})$"
@@ -145,14 +157,19 @@ properties:
       - null
 
 examples:
-  - etimFeatureCode: "EF000123"
+  - featureRef: "feat-ef000123-001"
+    etimFeatureCode: "EF000123"
     etimValueCode: "EV000789"
-  - etimFeatureCode: "EF000456"
+  - featureRef: "feat-ef000456-002"
+    etimFeatureCode: "EF000456"
     etimValueNumeric: 230.0
-  - etimFeatureCode: "EF000789"
+  - featureRef: "feat-ef000789-003"
+    etimFeatureCode: "EF000789"
     etimValueRangeLower: 100.0
     etimValueRangeUpper: 240.0
-  - etimFeatureCode: "EF001234"
+  - featureRef: "feat-ef001234-004"
+    etimFeatureCode: "EF001234"
     etimValueLogical: true
-  - etimFeatureCode: "EF005678"
+  - featureRef: "feat-ef005678-005"
+    etimFeatureCode: "EF005678"
     reasonNoValue: "NA"

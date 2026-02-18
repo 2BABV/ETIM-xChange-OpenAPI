@@ -174,13 +174,16 @@ paths:
                       supplierIdGln: '1234567890123'
                       supplierItemNumber: SKU-12345
                       descriptions:
-                        - descriptionLanguage: en-GB
+                        - descriptionRef: desc-001
+                          descriptionLanguage: en-GB
                           minimalItemDescription: LED Lamp 10W E27
                           uniqueMainItemDescription: Professional LED lamp with E27 socket, 10W warm white
-                        - descriptionLanguage: de-DE
+                        - descriptionRef: desc-002
+                          descriptionLanguage: de-DE
                           minimalItemDescription: LED Lampe 10W E27
                           uniqueMainItemDescription: Professionelle LED-Lampe mit E27-Fassung, 10W warmweiß
-                        - descriptionLanguage: nl-NL
+                        - descriptionRef: desc-003
+                          descriptionLanguage: nl-NL
                           minimalItemDescription: LED Lamp 10W E27
                           uniqueMainItemDescription: Professionele LED lamp met E27 fitting, 10W warm wit
                 singleLanguage:
@@ -190,7 +193,8 @@ paths:
                       supplierIdGln: '1234567890123'
                       supplierItemNumber: SKU-12345
                       descriptions:
-                        - descriptionLanguage: en-GB
+                        - descriptionRef: desc-001
+                          descriptionLanguage: en-GB
                           minimalItemDescription: LED Lamp 10W E27
                           uniqueMainItemDescription: Professional LED lamp with E27 socket, 10W warm white
                 noDescriptions:
@@ -490,6 +494,7 @@ paths:
                       supplierItemNumber: SKU-12345
                       allowanceSurcharges:
                         - pricingRef: price-c62-1-20250101
+                          allowanceSurchargeRef: as-001
                           allowanceSurchargeIndicator: ALLOWANCE
                           allowanceSurchargeValidityDate: '2025-01-01'
                           allowanceSurchargeType: AEQ
@@ -503,6 +508,7 @@ paths:
                               allowanceSurchargeDescription: Staffelkorting
                           allowanceSurchargeMinimumQuantity: 50
                         - pricingRef: price-c62-1-20250101
+                          allowanceSurchargeRef: as-002
                           allowanceSurchargeIndicator: SURCHARGE
                           allowanceSurchargeValidityDate: null
                           allowanceSurchargeType: DBD
@@ -526,6 +532,7 @@ paths:
                       supplierItemNumber: SKU-VOLUME-002
                       allowanceSurcharges:
                         - pricingRef: price-mtr-1-20250101
+                          allowanceSurchargeRef: as-003
                           allowanceSurchargeIndicator: ALLOWANCE
                           allowanceSurchargeValidityDate: '2025-01-01'
                           allowanceSurchargeType: AEQ
@@ -535,6 +542,7 @@ paths:
                           allowanceSurchargeDescription: null
                           allowanceSurchargeMinimumQuantity: 100
                         - pricingRef: price-mtr-100-20250101
+                          allowanceSurchargeRef: as-004
                           allowanceSurchargeIndicator: ALLOWANCE
                           allowanceSurchargeValidityDate: '2025-01-01'
                           allowanceSurchargeType: AEQ
@@ -606,7 +614,8 @@ paths:
                   summary: Multiple trade items with pagination
                   value:
                     data:
-                      - supplierIdGln: '8712423012485'
+                      - tradeItemRef: ti-001
+                        supplierIdGln: '8712423012485'
                         supplierItemNumber: SKU-LAMP-001
                         supplierAltItemNumber: ALT-SKU-001
                         manufacturerItemNumber: MFR-12345
@@ -625,7 +634,8 @@ paths:
                         itemCondition: NEW
                         stockItem: true
                         shelfLifePeriod: null
-                      - supplierIdGln: '8712423012485'
+                      - tradeItemRef: ti-002
+                        supplierIdGln: '8712423012485'
                         supplierItemNumber: SKU-TOOL-002
                         supplierAltItemNumber: null
                         manufacturerItemNumber: MFR-54321
@@ -706,18 +716,18 @@ paths:
                   summary: Multiple trade item descriptions
                   value:
                     data:
-                      - supplierIdGln: '1234567890123'
-                        supplierItemNumber: SKU-12345
+                      - tradeItemRef: ti-001
+                        descriptionRef: desc-001
                         descriptionLanguage: en-GB
                         minimalItemDescription: LED Lamp 10W E27
                         uniqueMainItemDescription: Professional LED lamp with E27 socket, 10W warm white
-                      - supplierIdGln: '1234567890123'
-                        supplierItemNumber: SKU-12345
+                      - tradeItemRef: ti-001
+                        descriptionRef: desc-002
                         descriptionLanguage: de-DE
                         minimalItemDescription: LED Lampe 10W E27
                         uniqueMainItemDescription: Professionelle LED-Lampe mit E27-Fassung, 10W warmweiß
-                      - supplierIdGln: '1234567890123'
-                        supplierItemNumber: SKU-67890
+                      - tradeItemRef: ti-002
+                        descriptionRef: desc-003
                         descriptionLanguage: en-GB
                         minimalItemDescription: Hammer 500g
                         uniqueMainItemDescription: Professional claw hammer with fiberglass handle
@@ -772,8 +782,7 @@ paths:
                   summary: Successful bulk retrieval
                   value:
                     data:
-                      - supplierIdGln: '8712423012485'
-                        supplierItemNumber: SKU-LAMP-001
+                      - tradeItemRef: ti-001
                         orderUnit: C62
                         minimumOrderQuantity: 1
                         orderStepSize: 1
@@ -783,8 +792,7 @@ paths:
                         singleUseUnitQuantity: null
                         alternativeUseUnit: null
                         alternativeUseUnitConversionFactor: null
-                      - supplierIdGln: '8712423012485'
-                        supplierItemNumber: SKU-CABLE-002
+                      - tradeItemRef: ti-002
                         orderUnit: MTR
                         minimumOrderQuantity: 10
                         orderStepSize: 5
@@ -817,12 +825,12 @@ paths:
         Returns pricing details including net prices, gross list prices, recommended retail prices,
         VAT, price validity periods, allowances/surcharges, and the catalog-level currency code.
 
-        **Flattened Structure**: Each row represents a single price entry with embedded composite key
-        (`supplierIdGln` + `supplierItemNumber`). This follows the same pattern as 
+        **Flattened Structure**: Each row represents a single price entry with `tradeItemRef`
+        for correlation. This follows the same pattern as 
         `/bulk/product-etim-classifications` - 1 row per data point.
 
         A trade item with multiple price tiers (e.g., quantity breaks, validity periods) will have
-        multiple rows with the same composite key but different pricing data.
+        multiple rows with the same `tradeItemRef` but different pricing data.
 
         This endpoint is optimized for:
         - Predictable payload sizes per row
@@ -852,8 +860,7 @@ paths:
                   summary: Successful bulk retrieval (flattened - 1 row per price entry)
                   value:
                     data:
-                      - supplierIdGln: '8712423012485'
-                        supplierItemNumber: SKU-LAMP-001
+                      - tradeItemRef: ti-001
                         pricingRef: price-c62-1-20250101
                         priceUnit: C62
                         priceQuantity: 1
@@ -865,16 +872,14 @@ paths:
                         vat: 21
                         priceValidityDate: '2025-01-01'
                         priceExpiryDate: '2025-12-31'
-                      - supplierIdGln: '8712423012485'
-                        supplierItemNumber: SKU-CABLE-002
+                      - tradeItemRef: ti-002
                         pricingRef: price-mtr-1-20250101
                         priceUnit: MTR
                         priceQuantity: 1
                         currencyCode: EUR
                         netPrice: 1.99
                         priceValidityDate: '2025-01-01'
-                      - supplierIdGln: '8712423012485'
-                        supplierItemNumber: SKU-CABLE-002
+                      - tradeItemRef: ti-002
                         pricingRef: price-mtr-100-20250101
                         priceUnit: MTR
                         priceQuantity: 100
@@ -903,8 +908,8 @@ paths:
         Retrieve trade item allowances and surcharges in bulk with cursor-based pagination.
         Returns discount allowances and additional charge surcharges applied to trade item pricing.
 
-        **Flattened Structure**: Each row represents a single allowance/surcharge entry with embedded 
-        composite key (`supplierIdGln` + `supplierItemNumber`) and a `pricingRef` to correlate
+        **Flattened Structure**: Each row represents a single allowance/surcharge entry with 
+        `tradeItemRef` and a `pricingRef` to correlate
         with the parent pricing entry.
 
         **Join Pattern**: Use this endpoint in combination with `/bulk/trade-item-pricings` to build
@@ -913,8 +918,7 @@ paths:
         SELECT p.*, a.*
         FROM pricings p
         LEFT JOIN allowance_surcharges a
-          ON p.supplierIdGln = a.supplierIdGln
-         AND p.supplierItemNumber = a.supplierItemNumber
+          ON p.tradeItemRef = a.tradeItemRef
          AND p.pricingRef = a.pricingRef
         ```
 
@@ -946,18 +950,18 @@ paths:
                   summary: Successful bulk retrieval (flattened - 1 row per surcharge entry)
                   value:
                     data:
-                      - supplierIdGln: '8712423012485'
-                        supplierItemNumber: SKU-LAMP-001
+                      - tradeItemRef: ti-001
                         pricingRef: price-c62-1-20250101
+                        allowanceSurchargeRef: as-001
                         allowanceSurchargeIndicator: ALLOWANCE
                         allowanceSurchargeType: AEQ
                         allowanceSurchargeSequenceNumber: 1
                         allowanceSurchargePercentage: 5.5
                         allowanceSurchargeMinimumQuantity: 50
                         allowanceSurchargeDescription: Bulk quantity discount
-                      - supplierIdGln: '8712423012485'
-                        supplierItemNumber: SKU-CABLE-002
+                      - tradeItemRef: ti-002
                         pricingRef: price-mtr-1-20250101
+                        allowanceSurchargeRef: as-002
                         allowanceSurchargeIndicator: SURCHARGE
                         allowanceSurchargeType: DBD
                         allowanceSurchargeSequenceNumber: 1
@@ -1277,12 +1281,23 @@ components:
         **Note**: Item descriptions are available via `/bulk/trade-item-descriptions` endpoint.
       additionalProperties: false
       required:
+        - tradeItemRef
         - supplierIdGln
         - supplierItemNumber
         - manufacturerIdGln
         - manufacturerProductNumber
         - itemValidityDate
       properties:
+        tradeItemRef:
+          description: |
+            Server-generated opaque reference key that uniquely identifies this trade item.
+            Used to correlate trade item data across bulk endpoints (descriptions, orderings, pricings, etc.).
+
+            This is a technical identifier not present in the ETIM xChange domain model.
+          $ref: '#/components/schemas/TechnicalId'
+          examples:
+            - ti-sku-lamp-001
+            - f47ac10b-58cc-4372-a567-0e02b2c3d479
         supplierIdGln:
           type: string
           pattern: ^[0-9]{13}$
@@ -1561,7 +1576,8 @@ components:
             - 730
             - null
       examples:
-        - supplierIdGln: '8712423012485'
+        - tradeItemRef: ti-sku-lamp-001
+          supplierIdGln: '8712423012485'
           supplierItemNumber: SKU-LAMP-001
           supplierAltItemNumber: ALT-SKU-001
           manufacturerItemNumber: MFR-12345
@@ -1601,31 +1617,30 @@ components:
         **Path**: `Supplier[].Product[].TradeItem[].ItemDetails.ItemDescriptions[]`
       additionalProperties: false
       required:
-        - supplierIdGln
-        - supplierItemNumber
+        - tradeItemRef
         - minimalItemDescription
       properties:
-        supplierIdGln:
-          type: string
-          pattern: ^[0-9]{13}$
+        tradeItemRef:
           description: |
-            Global Location Number (GLN) identifying the supplier.
-            13-digit GS1 identifier. Part of the composite trade item identifier.
-          examples:
-            - '1234567890123'
-        supplierItemNumber:
-          type: string
-          minLength: 1
-          maxLength: 35
-          description: |
-            Supplier's unique item identifier.
-            Part of the composite trade item identifier.
+            Server-generated opaque reference key that identifies the parent trade item.
+            Use this to correlate with the corresponding trade item record from the
+            `/bulk/trade-item-details` endpoint.
 
-            **ETIM xChange**: `SupplierItemNumber`  
-            **Path**: `Supplier[].Product[].TradeItem[].ItemIdentification.SupplierItemNumber`
+            This is a technical identifier not present in the ETIM xChange domain model.
+          $ref: '#/components/schemas/TechnicalId'
           examples:
-            - SKU-12345
-            - ITEM-ABC-789
+            - ti-sku-12345
+            - f47ac10b-58cc-4372-a567-0e02b2c3d479
+        descriptionRef:
+          description: |
+            Server-generated opaque reference key that uniquely identifies this description entry
+            within the scope of a trade item.
+
+            This is a technical identifier not present in the ETIM xChange domain model.
+          $ref: '#/components/schemas/TechnicalId'
+          examples:
+            - desc-en-gb-001
+            - a1b2c3d4-e5f6-7890-abcd-ef1234567890
         descriptionLanguage:
           type:
             - string
@@ -1668,18 +1683,18 @@ components:
             - Professional LED lamp with E27 socket, 10W warm white
             - Professional claw hammer with fiberglass handle, 500g head weight
       examples:
-        - supplierIdGln: '1234567890123'
-          supplierItemNumber: SKU-12345
+        - tradeItemRef: ti-sku-12345
+          descriptionRef: desc-en-gb-001
           descriptionLanguage: en-GB
           minimalItemDescription: LED Lamp 10W E27
           uniqueMainItemDescription: Professional LED lamp with E27 socket, 10W warm white
-        - supplierIdGln: '1234567890123'
-          supplierItemNumber: SKU-12345
+        - tradeItemRef: ti-sku-12345
+          descriptionRef: desc-de-de-002
           descriptionLanguage: de-DE
           minimalItemDescription: LED Lampe 10W E27
           uniqueMainItemDescription: Professionelle LED-Lampe mit E27-Fassung, 10W warmweiß
-        - supplierIdGln: '9876543210987'
-          supplierItemNumber: ITEM-67890
+        - tradeItemRef: ti-item-67890
+          descriptionRef: desc-en-gb-003
           descriptionLanguage: en-GB
           minimalItemDescription: Hammer 500g
     TradeItemOrdering:
@@ -1847,37 +1862,22 @@ components:
         **Path**: `Supplier[].Product[].TradeItem[].Ordering`
       additionalProperties: false
       required:
-        - supplierIdGln
-        - supplierItemNumber
+        - tradeItemRef
         - orderUnit
         - minimumOrderQuantity
         - orderStepSize
       properties:
-        supplierIdGln:
-          type: string
-          pattern: ^[0-9]{13}$
+        tradeItemRef:
           description: |
-            Global Location Number (GLN) of the supplier. 13-digit GS1 identifier.
-            Part of the composite key for the trade item.
+            Server-generated opaque reference key that identifies the parent trade item.
+            Use this to correlate with the corresponding trade item record from the
+            `/bulk/trade-item-details` endpoint.
 
-            **ETIM xChange**: `SupplierIdGln`  
-            **Path**: `Supplier[].SupplierId.SupplierIdGln`
+            This is a technical identifier not present in the ETIM xChange domain model.
+          $ref: '#/components/schemas/TechnicalId'
           examples:
-            - '1234567890123'
-            - '8712423012485'
-        supplierItemNumber:
-          type: string
-          minLength: 1
-          maxLength: 35
-          description: |
-            Supplier's unique item number. Part of the composite key for the trade item.
-            This is the primary identifier for items in the supplier's catalog system.
-
-            **ETIM xChange**: `SupplierItemNumber`  
-            **Path**: `Supplier[].Product[].TradeItem[].ItemIdentification.SupplierItemNumber`
-          examples:
-            - SKU-12345
-            - ITEM-ABC-789
+            - ti-sku-lamp-001
+            - f47ac10b-58cc-4372-a567-0e02b2c3d479
         orderUnit:
           description: |
             Unit in which the item can be ordered (e.g., pieces, boxes, meters).
@@ -2005,8 +2005,7 @@ components:
             - 1
             - null
       examples:
-        - supplierIdGln: '8712423012485'
-          supplierItemNumber: SKU-LAMP-001
+        - tradeItemRef: ti-sku-lamp-001
           orderUnit: C62
           minimumOrderQuantity: 1
           orderStepSize: 1
@@ -2016,8 +2015,7 @@ components:
           singleUseUnitQuantity: null
           alternativeUseUnit: null
           alternativeUseUnitConversionFactor: null
-        - supplierIdGln: '8712423012485'
-          supplierItemNumber: SKU-CABLE-002
+        - tradeItemRef: ti-sku-cable-002
           orderUnit: MTR
           minimumOrderQuantity: 10
           orderStepSize: 5
@@ -2291,7 +2289,6 @@ components:
               vat: 21
               priceValidityDate: '2025-01-01'
               priceExpiryDate: '2025-12-31'
-              allowanceSurcharges: null
         - supplierIdGln: '8712423012485'
           supplierItemNumber: SKU-CABLE-002
           pricings:
@@ -2307,7 +2304,6 @@ components:
               vat: 21
               priceValidityDate: '2025-01-01'
               priceExpiryDate: '2025-06-30'
-              allowanceSurcharges: null
             - pricingRef: price-mtr-100-20250101
               priceUnit: MTR
               priceUnitFactor: 1
@@ -2320,7 +2316,6 @@ components:
               vat: 21
               priceValidityDate: '2025-01-01'
               priceExpiryDate: '2025-06-30'
-              allowanceSurcharges: null
     AllowanceSurchargeSummary:
       type: object
       description: |
@@ -2334,43 +2329,30 @@ components:
         - ETL/data warehouse ingestion (star schema: pricing fact + surcharges fact)
         - Streaming data processing
 
-        **Join Keys**: Use `supplierIdGln` + `supplierItemNumber` + `pricingRef` to join
+        **Join Keys**: Use `tradeItemRef` + `pricingRef` to join
         with `/bulk/trade-item-pricings` data.
 
         **ETIM xChange**: `AllowanceSurcharge`
         **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[]`
       additionalProperties: false
       required:
-        - supplierIdGln
-        - supplierItemNumber
+        - tradeItemRef
         - pricingRef
+        - allowanceSurchargeRef
         - allowanceSurchargeIndicator
         - allowanceSurchargeType
       properties:
-        supplierIdGln:
-          type: string
-          pattern: ^[0-9]{13}$
+        tradeItemRef:
           description: |
-            Global Location Number (GLN) of the supplier. 13-digit GS1 identifier.
-            Part of the composite key for the trade item.
+            Server-generated opaque reference key that identifies the parent trade item.
+            Use this to correlate with the corresponding trade item record from the
+            `/bulk/trade-item-details` endpoint.
 
-            **ETIM xChange**: `SupplierIdGln`  
-            **Path**: `Supplier[].SupplierId.SupplierIdGln`
+            This is a technical identifier not present in the ETIM xChange domain model.
+          $ref: '#/components/schemas/TechnicalId'
           examples:
-            - '1234567890123'
-            - '8712423012485'
-        supplierItemNumber:
-          type: string
-          minLength: 1
-          maxLength: 35
-          description: |
-            Supplier's unique item number. Part of the composite key for the trade item.
-
-            **ETIM xChange**: `SupplierItemNumber`  
-            **Path**: `Supplier[].Product[].TradeItem[].ItemIdentification.SupplierItemNumber`
-          examples:
-            - SKU-12345
-            - ITEM-ABC-789
+            - ti-sku-lamp-001
+            - f47ac10b-58cc-4372-a567-0e02b2c3d479
         pricingRef:
           description: |
             Server-generated opaque reference key that identifies the parent pricing entry.
@@ -2382,6 +2364,16 @@ components:
           examples:
             - price-c62-1-20250101
             - f47ac10b-58cc-4372-a567-0e02b2c3d479
+        allowanceSurchargeRef:
+          description: |
+            Server-generated opaque reference key that uniquely identifies this allowance/surcharge entry
+            within the scope of a pricing entry.
+
+            This is a technical identifier not present in the ETIM xChange domain model.
+          $ref: '#/components/schemas/TechnicalId'
+          examples:
+            - as-aeq-001
+            - a1b2c3d4-e5f6-7890-abcd-ef1234567890
         allowanceSurchargeIndicator:
           type: string
           description: |
@@ -2489,35 +2481,35 @@ components:
             - Bulk quantity discount
             - Early payment discount
       examples:
-        - supplierIdGln: '8712423012485'
-          supplierItemNumber: SKU-LAMP-001
+        - tradeItemRef: ti-sku-lamp-001
           pricingRef: price-c62-1-20250101
+          allowanceSurchargeRef: as-aeq-001
           allowanceSurchargeIndicator: ALLOWANCE
           allowanceSurchargeType: AEQ
           allowanceSurchargeSequenceNumber: 1
           allowanceSurchargePercentage: 5.5
           allowanceSurchargeMinimumQuantity: 50
           allowanceSurchargeDescription: Bulk quantity discount
-        - supplierIdGln: '8712423012485'
-          supplierItemNumber: SKU-CABLE-002
+        - tradeItemRef: ti-sku-cable-002
           pricingRef: price-mtr-1-20250101
+          allowanceSurchargeRef: as-dbd-001
           allowanceSurchargeIndicator: SURCHARGE
           allowanceSurchargeType: DBD
           allowanceSurchargeSequenceNumber: 1
           allowanceSurchargeAmount: 25
           allowanceSurchargeDescription: Delivery surcharge
-        - supplierIdGln: '8712423012485'
-          supplierItemNumber: SKU-TOOL-003
+        - tradeItemRef: ti-sku-tool-003
           pricingRef: price-c62-1-20250101
+          allowanceSurchargeRef: as-aeq-002
           allowanceSurchargeIndicator: ALLOWANCE
           allowanceSurchargeType: AEQ
           allowanceSurchargeSequenceNumber: 1
           allowanceSurchargePercentage: 10
           allowanceSurchargeMinimumQuantity: 100
           allowanceSurchargeDescription: Volume discount tier 1
-        - supplierIdGln: '8712423012485'
-          supplierItemNumber: SKU-TOOL-003
+        - tradeItemRef: ti-sku-tool-003
           pricingRef: price-c62-1-20250101
+          allowanceSurchargeRef: as-aeq-003
           allowanceSurchargeIndicator: ALLOWANCE
           allowanceSurchargeType: AEQ
           allowanceSurchargeSequenceNumber: 2
@@ -2541,6 +2533,7 @@ components:
           $ref: '#/components/schemas/TradeItem'
       examples:
         - data:
+            tradeItemRef: ti-001
             supplierIdGln: '1234567890123'
             supplierItemNumber: ART-12345
             supplierAltItemNumber: ALT-12345
@@ -2579,7 +2572,8 @@ components:
                 priceExpiryDate: '2025-12-31'
             itemRelations: null
             itemLogistics:
-              - baseItemNetLength: 25.5
+              - logisticsRef: log-001
+                baseItemNetLength: 25.5
                 baseItemNetWidth: 15
                 baseItemNetHeight: 10
                 netDimensionUnit: CMT
@@ -2589,6 +2583,7 @@ components:
             packagingUnits: null
             itemCountrySpecificFields: null
         - data:
+            tradeItemRef: ti-002
             supplierIdGln: '9876543210987'
             supplierItemNumber: SKU-MIN-001
             supplierAltItemNumber: null
@@ -2734,10 +2729,12 @@ components:
             supplierIdGln: '1234567890123'
             supplierItemNumber: SKU-12345
             descriptions:
-              - descriptionLanguage: en-GB
+              - descriptionRef: desc-001
+                descriptionLanguage: en-GB
                 minimalItemDescription: LED Lamp 10W E27
                 uniqueMainItemDescription: Professional LED lamp with E27 socket, 10W warm white
-              - descriptionLanguage: de-DE
+              - descriptionRef: desc-002
+                descriptionLanguage: de-DE
                 minimalItemDescription: LED Lampe 10W E27
                 uniqueMainItemDescription: Professionelle LED-Lampe mit E27-Fassung, 10W warmweiß
         - data:
@@ -2768,7 +2765,8 @@ components:
           description: Cursor-based pagination metadata
       examples:
         - data:
-            - supplierIdGln: '8712423012485'
+            - tradeItemRef: ti-001
+              supplierIdGln: '8712423012485'
               supplierItemNumber: SKU-LAMP-001
               supplierAltItemNumber: ALT-SKU-001
               manufacturerItemNumber: MFR-12345
@@ -2788,7 +2786,8 @@ components:
               itemCondition: NEW
               stockItem: true
               shelfLifePeriod: null
-            - supplierIdGln: '8712423012485'
+            - tradeItemRef: ti-002
+              supplierIdGln: '8712423012485'
               supplierItemNumber: SKU-TOOL-002
               supplierAltItemNumber: null
               manufacturerItemNumber: MFR-54321
@@ -2837,18 +2836,18 @@ components:
           $ref: '#/components/schemas/CursorPaginationMetadata'
       examples:
         - data:
-            - supplierIdGln: '1234567890123'
-              supplierItemNumber: SKU-12345
+            - tradeItemRef: ti-001
+              descriptionRef: desc-001
               descriptionLanguage: en-GB
               minimalItemDescription: LED Lamp 10W E27
               uniqueMainItemDescription: Professional LED lamp with E27 socket, 10W warm white
-            - supplierIdGln: '1234567890123'
-              supplierItemNumber: SKU-12345
+            - tradeItemRef: ti-001
+              descriptionRef: desc-002
               descriptionLanguage: de-DE
               minimalItemDescription: LED Lampe 10W E27
               uniqueMainItemDescription: Professionelle LED-Lampe mit E27-Fassung, 10W warmweiß
-            - supplierIdGln: '1234567890123'
-              supplierItemNumber: SKU-67890
+            - tradeItemRef: ti-002
+              descriptionRef: desc-003
               descriptionLanguage: en-GB
               minimalItemDescription: Hammer 500g
               uniqueMainItemDescription: Professional claw hammer with fiberglass handle
@@ -2959,8 +2958,7 @@ components:
           description: Cursor-based pagination metadata
       examples:
         - data:
-            - supplierIdGln: '8712423012485'
-              supplierItemNumber: SKU-LAMP-001
+            - tradeItemRef: ti-001
               orderUnit: C62
               minimumOrderQuantity: 1
               orderStepSize: 1
@@ -2970,8 +2968,7 @@ components:
               singleUseUnitQuantity: null
               alternativeUseUnit: null
               alternativeUseUnitConversionFactor: null
-            - supplierIdGln: '8712423012485'
-              supplierItemNumber: SKU-CABLE-002
+            - tradeItemRef: ti-002
               orderUnit: MTR
               minimumOrderQuantity: 10
               orderStepSize: 5
@@ -3093,11 +3090,11 @@ components:
         Bulk response containing trade item pricing information with cursor-based pagination.
 
         **Flattened Structure**: Each row in the `data` array represents a single price entry
-        with embedded composite key (`supplierIdGln` + `supplierItemNumber`). This follows the
+        with `tradeItemRef` for correlation. This follows the
         same pattern as `ProductEtimClassificationFeature` - 1 row per data point.
 
         A trade item with multiple price tiers (e.g., quantity breaks) will have multiple rows
-        with the same composite key but different pricing data.
+        with the same `tradeItemRef` but different pricing data.
 
         Use the `cursor` from `meta` to retrieve the next page of results.
 
@@ -3118,8 +3115,7 @@ components:
           description: Cursor-based pagination metadata
       examples:
         - data:
-            - supplierIdGln: '8712423012485'
-              supplierItemNumber: SKU-LAMP-001
+            - tradeItemRef: ti-001
               pricingRef: price-c62-1-20250101
               priceUnit: C62
               priceQuantity: 1
@@ -3131,8 +3127,7 @@ components:
               vat: 21
               priceValidityDate: '2025-01-01'
               priceExpiryDate: '2025-12-31'
-            - supplierIdGln: '8712423012485'
-              supplierItemNumber: SKU-CABLE-002
+            - tradeItemRef: ti-002
               pricingRef: price-mtr-1-20250101
               priceUnit: MTR
               priceUnitFactor: 1
@@ -3145,8 +3140,7 @@ components:
               vat: 21
               priceValidityDate: '2025-01-01'
               priceExpiryDate: '2025-06-30'
-            - supplierIdGln: '8712423012485'
-              supplierItemNumber: SKU-CABLE-002
+            - tradeItemRef: ti-002
               pricingRef: price-mtr-100-20250101
               priceUnit: MTR
               priceUnitFactor: 1
@@ -3174,7 +3168,7 @@ components:
         with embedded keys for joining back to pricing data. This follows the same pattern as 
         `ProductEtimClassificationFeature` - 1 row per data point.
 
-        **Join Keys**: Use `supplierIdGln` + `supplierItemNumber` + `pricingRef` to join
+        **Join Keys**: Use `tradeItemRef` + `pricingRef` to join
         with `/bulk/trade-item-pricings` data.
 
         Use the `cursor` from `meta` to retrieve the next page of results.
@@ -3196,35 +3190,35 @@ components:
           description: Cursor-based pagination metadata
       examples:
         - data:
-            - supplierIdGln: '8712423012485'
-              supplierItemNumber: SKU-LAMP-001
+            - tradeItemRef: ti-001
               pricingRef: price-c62-1-20250101
+              allowanceSurchargeRef: as-001
               allowanceSurchargeIndicator: ALLOWANCE
               allowanceSurchargeType: AEQ
               allowanceSurchargeSequenceNumber: 1
               allowanceSurchargePercentage: 5.5
               allowanceSurchargeMinimumQuantity: 50
               allowanceSurchargeDescription: Bulk quantity discount
-            - supplierIdGln: '8712423012485'
-              supplierItemNumber: SKU-CABLE-002
+            - tradeItemRef: ti-002
               pricingRef: price-mtr-1-20250101
+              allowanceSurchargeRef: as-002
               allowanceSurchargeIndicator: SURCHARGE
               allowanceSurchargeType: DBD
               allowanceSurchargeSequenceNumber: 1
               allowanceSurchargeAmount: 25
               allowanceSurchargeDescription: Delivery surcharge
-            - supplierIdGln: '8712423012485'
-              supplierItemNumber: SKU-TOOL-003
+            - tradeItemRef: ti-003
               pricingRef: price-c62-1-20250101
+              allowanceSurchargeRef: as-003
               allowanceSurchargeIndicator: ALLOWANCE
               allowanceSurchargeType: AEQ
               allowanceSurchargeSequenceNumber: 1
               allowanceSurchargePercentage: 10
               allowanceSurchargeMinimumQuantity: 100
               allowanceSurchargeDescription: Volume discount tier 1
-            - supplierIdGln: '8712423012485'
-              supplierItemNumber: SKU-TOOL-003
+            - tradeItemRef: ti-003
               pricingRef: price-c62-1-20250101
+              allowanceSurchargeRef: as-004
               allowanceSurchargeIndicator: ALLOWANCE
               allowanceSurchargeType: AEQ
               allowanceSurchargeSequenceNumber: 2
@@ -3289,6 +3283,7 @@ components:
                 $ref: '#/components/schemas/TradeItemAllowanceSurchargeItem'
               examples:
                 - - pricingRef: price-c62-1-20250101
+                    allowanceSurchargeRef: as-001
                     allowanceSurchargeIndicator: ALLOWANCE
                     allowanceSurchargeType: AEQ
                     allowanceSurchargePercentage: 5.5
@@ -3299,6 +3294,7 @@ components:
             supplierItemNumber: SKU-12345
             allowanceSurcharges:
               - pricingRef: price-c62-1-20250101
+                allowanceSurchargeRef: as-001
                 allowanceSurchargeIndicator: ALLOWANCE
                 allowanceSurchargeValidityDate: '2025-01-01'
                 allowanceSurchargeType: AEQ
@@ -3310,6 +3306,7 @@ components:
                     allowanceSurchargeDescription: Bulk quantity discount
                 allowanceSurchargeMinimumQuantity: 50
               - pricingRef: price-c62-1-20250101
+                allowanceSurchargeRef: as-002
                 allowanceSurchargeIndicator: SURCHARGE
                 allowanceSurchargeValidityDate: null
                 allowanceSurchargeType: DBD
@@ -3330,6 +3327,7 @@ components:
       additionalProperties: false
       required:
         - pricingRef
+        - allowanceSurchargeRef
         - allowanceSurchargeIndicator
         - allowanceSurchargeType
       properties:
@@ -3342,6 +3340,17 @@ components:
           $ref: '#/components/schemas/TechnicalId'
           examples:
             - price-c62-1-20250101
+            - f47ac10b-58cc-4372-a567-0e02b2c3d479
+        allowanceSurchargeRef:
+          description: |
+            Server-generated opaque reference key that uniquely identifies this allowance/surcharge
+            within the trade item scope. Use this to correlate allowance/surcharge records
+            across bulk endpoints.
+
+            This is a technical identifier not present in the ETIM xChange domain model.
+          $ref: '#/components/schemas/TechnicalId'
+          examples:
+            - as-001
             - f47ac10b-58cc-4372-a567-0e02b2c3d479
         allowanceSurchargeIndicator:
           type: string
@@ -3445,6 +3454,7 @@ components:
             - null
       examples:
         - pricingRef: price-c62-1-20250101
+          allowanceSurchargeRef: as-001
           allowanceSurchargeIndicator: ALLOWANCE
           allowanceSurchargeValidityDate: '2025-01-01'
           allowanceSurchargeType: AEQ
@@ -3576,8 +3586,19 @@ components:
         Extracted from ETIM xChange `TradeItem.ItemDetails.ItemDescriptions[]` structure.
       additionalProperties: false
       required:
+        - descriptionRef
         - minimalItemDescription
       properties:
+        descriptionRef:
+          description: |
+            Server-generated opaque reference key that uniquely identifies this description entry
+            within the scope of a trade item.
+
+            This is a technical identifier not present in the ETIM xChange domain model.
+          $ref: '#/components/schemas/TechnicalId'
+          examples:
+            - desc-en-us-001
+            - a1b2c3d4-e5f6-7890-abcd-ef1234567890
         descriptionLanguage:
           type:
             - string
@@ -3617,10 +3638,12 @@ components:
             - Professional claw hammer with fiberglass handle, 500g head weight, ergonomic grip
             - null
       examples:
-        - descriptionLanguage: en-US
+        - descriptionRef: desc-en-us-001
+          descriptionLanguage: en-US
           minimalItemDescription: Hammer 500g
           uniqueMainItemDescription: Professional claw hammer with fiberglass handle, 500g head weight
-        - descriptionLanguage: de-DE
+        - descriptionRef: desc-de-de-002
+          descriptionLanguage: de-DE
           minimalItemDescription: Hammer 500g
           uniqueMainItemDescription: null
     UnitCodes:
@@ -3839,8 +3862,8 @@ components:
         A trade item may have multiple pricing entries (e.g., quantity tiers, validity periods),
         resulting in multiple rows with the same composite key but different pricing data.
 
-        **Allowances & Surcharges**: Available via separate `/bulk/trade-item-allowance-surcharges` endpoint.
-        Join using `pricingRef` to correlate pricing entries with their allowances/surcharges.
+        **Join Keys**: Use `tradeItemRef` to join with `/bulk/trade-item-details` data.
+        Use `tradeItemRef` + `pricingRef` to join with `/bulk/trade-item-allowance-surcharges` data.
 
         **Payload Optimization**: Optional properties with null values may be omitted from the response
         to minimize payload size. Clients should treat missing properties as null/not applicable.
@@ -3849,39 +3872,24 @@ components:
         **Path**: `Supplier[].Product[].TradeItem[].Pricing[]`
       additionalProperties: false
       required:
-        - supplierIdGln
-        - supplierItemNumber
+        - tradeItemRef
         - pricingRef
         - priceUnit
         - priceQuantity
         - currencyCode
         - priceValidityDate
       properties:
-        supplierIdGln:
-          type: string
-          pattern: ^[0-9]{13}$
+        tradeItemRef:
           description: |
-            Global Location Number (GLN) of the supplier. 13-digit GS1 identifier.
-            Part of the composite key for the trade item.
+            Server-generated opaque reference key that identifies the parent trade item.
+            Use this to correlate with the corresponding trade item record from the
+            `/bulk/trade-item-details` endpoint.
 
-            **ETIM xChange**: `SupplierIdGln`  
-            **Path**: `Supplier[].SupplierId.SupplierIdGln`
+            This is a technical identifier not present in the ETIM xChange domain model.
+          $ref: '#/components/schemas/TechnicalId'
           examples:
-            - '1234567890123'
-            - '8712423012485'
-        supplierItemNumber:
-          type: string
-          minLength: 1
-          maxLength: 35
-          description: |
-            Supplier's unique item number. Part of the composite key for the trade item.
-            This is the primary identifier for items in the supplier's catalog system.
-
-            **ETIM xChange**: `SupplierItemNumber`  
-            **Path**: `Supplier[].Product[].TradeItem[].ItemIdentification.SupplierItemNumber`
-          examples:
-            - SKU-12345
-            - ITEM-ABC-789
+            - ti-sku-lamp-001
+            - f47ac10b-58cc-4372-a567-0e02b2c3d479
         pricingRef:
           description: |
             Server-generated opaque reference key that uniquely identifies this pricing entry
@@ -4039,8 +4047,7 @@ components:
           examples:
             - '2025-12-31'
       examples:
-        - supplierIdGln: '8712423012485'
-          supplierItemNumber: SKU-LAMP-001
+        - tradeItemRef: ti-sku-lamp-001
           pricingRef: price-c62-1-20250101
           priceUnit: C62
           priceQuantity: 1
@@ -4052,8 +4059,7 @@ components:
           vat: 21
           priceValidityDate: '2025-01-01'
           priceExpiryDate: '2025-12-31'
-        - supplierIdGln: '8712423012485'
-          supplierItemNumber: SKU-CABLE-002
+        - tradeItemRef: ti-sku-cable-002
           pricingRef: price-mtr-1-20250101
           priceUnit: MTR
           priceUnitFactor: 1
@@ -4066,8 +4072,7 @@ components:
           vat: 21
           priceValidityDate: '2025-01-01'
           priceExpiryDate: '2025-06-30'
-        - supplierIdGln: '8712423012485'
-          supplierItemNumber: SKU-CABLE-002
+        - tradeItemRef: ti-sku-cable-002
           pricingRef: price-mtr-100-20250101
           priceUnit: MTR
           priceUnitFactor: 1
@@ -4177,10 +4182,21 @@ components:
         Extracted from ETIM xChange `TradeItem.ItemRelations[]` structure.
       additionalProperties: false
       required:
+        - relationRef
         - relatedSupplierItemNumber
         - relationType
         - relatedItemQuantity
       properties:
+        relationRef:
+          description: |
+            Server-generated opaque reference key that uniquely identifies this item relation
+            within the scope of a trade item.
+
+            This is a technical identifier not present in the ETIM xChange domain model.
+          $ref: '#/components/schemas/TechnicalId'
+          examples:
+            - rel-sparepart-001
+            - a1b2c3d4-e5f6-7890-abcd-ef1234567890
         relatedSupplierItemNumber:
           type: string
           description: |
@@ -4241,7 +4257,8 @@ components:
             - 4
             - 10
       examples:
-        - relatedSupplierItemNumber: SPART-001
+        - relationRef: rel-sparepart-001
+          relatedSupplierItemNumber: SPART-001
           relatedManufacturerItemNumber: MFG-SPART-100
           relatedItemGtins:
             - '4012345678918'
@@ -4253,7 +4270,19 @@ components:
         Logistic details including dimensions, weight, and volume of the base item.
         Extracted from ETIM xChange `TradeItem.ItemLogisticDetails[]` structure.
       additionalProperties: false
+      required:
+        - logisticsRef
       properties:
+        logisticsRef:
+          description: |
+            Server-generated opaque reference key that uniquely identifies this logistics entry
+            within the scope of a trade item.
+
+            This is a technical identifier not present in the ETIM xChange domain model.
+          $ref: '#/components/schemas/TechnicalId'
+          examples:
+            - log-001
+            - a1b2c3d4-e5f6-7890-abcd-ef1234567890
         baseItemNetLength:
           type:
             - number
@@ -4412,7 +4441,8 @@ components:
             - MTQ
             - null
       examples:
-        - baseItemNetLength: 25.5
+        - logisticsRef: log-001
+          baseItemNetLength: 25.5
           baseItemNetWidth: 15
           baseItemNetHeight: 10
           baseItemNetDiameter: null
@@ -4428,9 +4458,20 @@ components:
         Extracted from ETIM xChange `TradeItem.ItemAttachments[]` structure.
       additionalProperties: false
       required:
+        - attachmentRef
         - attachmentType
         - attachmentUri
       properties:
+        attachmentRef:
+          description: |
+            Server-generated opaque reference key that uniquely identifies this attachment
+            within the scope of a trade item.
+
+            This is a technical identifier not present in the ETIM xChange domain model.
+          $ref: '#/components/schemas/TechnicalId'
+          examples:
+            - att-image-001
+            - a1b2c3d4-e5f6-7890-abcd-ef1234567890
         attachmentType:
           type: string
           description: |
@@ -4619,7 +4660,8 @@ components:
             - '2026-12-31'
             - null
       examples:
-        - attachmentType: ATX001
+        - attachmentRef: att-image-001
+          attachmentType: ATX001
           attachmentTypeSpecification: MDX002
           attachmentLanguages: null
           attachmentFilename: product_image.jpg
@@ -5124,12 +5166,23 @@ components:
         **Path**: `Supplier[].Product[].TradeItem[]`
       additionalProperties: false
       required:
+        - tradeItemRef
         - supplierIdGln
         - supplierItemNumber
         - itemDetails
         - ordering
         - itemValidityDate
       properties:
+        tradeItemRef:
+          description: |
+            Server-generated opaque reference key that uniquely identifies this trade item.
+            Used to correlate trade item data across bulk endpoints (descriptions, orderings, pricings, etc.).
+
+            This is a technical identifier not present in the ETIM xChange domain model.
+          $ref: '#/components/schemas/TechnicalId'
+          examples:
+            - ti-art-12345
+            - f47ac10b-58cc-4372-a567-0e02b2c3d479
         supplierIdGln:
           description: |
             Global Location Number (GLN) of the supplier. Primary key component.
@@ -5390,7 +5443,8 @@ components:
           examples:
             - null
       examples:
-        - supplierIdGln: '1234567890123'
+        - tradeItemRef: ti-art-12345
+          supplierIdGln: '1234567890123'
           supplierItemNumber: ART-12345
           supplierAltItemNumber: ALT-12345
           manufacturerItemNumber: MFG-98765
@@ -5432,10 +5486,10 @@ components:
               vat: 21
               priceValidityDate: '2025-01-01'
               priceExpiryDate: '2025-12-31'
-              allowanceSurcharges: null
           itemRelations: null
           itemLogistics:
-            - baseItemNetLength: 25.5
+            - logisticsRef: log-001
+              baseItemNetLength: 25.5
               baseItemNetWidth: 15
               baseItemNetHeight: 10
               baseItemNetDiameter: null

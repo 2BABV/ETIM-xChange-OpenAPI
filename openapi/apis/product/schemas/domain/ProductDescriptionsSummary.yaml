@@ -17,31 +17,30 @@ description: |
   **Path**: `Supplier[].Product[].ProductDetails.ProductDescriptions[]`
 additionalProperties: false
 required:
-  - manufacturerIdGln
-  - manufacturerProductNumber
+  - productRef
   - minimalProductDescription
 properties:
-  manufacturerIdGln:
-    type: string
-    pattern: "^[0-9]{13}$"
+  productRef:
     description: |
-      Global Location Number (GLN) identifying the manufacturer.
-      13-digit GS1 identifier. Part of the composite product identifier.
-    examples:
-      - "1234567890123"
-  manufacturerProductNumber:
-    type: string
-    minLength: 1
-    maxLength: 35
-    description: |
-      Manufacturer's unique product identifier.
-      Part of the composite product identifier.
+      Server-generated opaque reference key that identifies the parent product.
+      Use this to correlate with the corresponding product record from the
+      `/bulk/product-details` endpoint.
       
-      **ETIM xChange**: `ManufacturerProductNumber`  
-      **Path**: `Supplier[].Product[].ProductIdentification.ManufacturerProductNumber`
+      This is a technical identifier not present in the ETIM xChange domain model.
+    $ref: ../../../../shared/schemas/identifiers/TechnicalId.yaml
     examples:
-      - "929002376910"
-      - "ABC-12345-XYZ"
+      - "prod-929002376910"
+      - "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+  descriptionRef:
+    description: |
+      Server-generated opaque reference key that uniquely identifies this description entry
+      within the scope of a product.
+      
+      This is a technical identifier not present in the ETIM xChange domain model.
+    $ref: ../../../../shared/schemas/identifiers/TechnicalId.yaml
+    examples:
+      - "desc-en-gb-001"
+      - "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
   descriptionLanguage:
     type: ["string", "null"]
     pattern: "^[a-z]{2}[-][A-Z]{2}$"
@@ -155,8 +154,8 @@ properties:
 
 examples:
   # English description
-  - manufacturerIdGln: "1234567890123"
-    manufacturerProductNumber: "929002376910"
+  - productRef: "prod-929002376910"
+    descriptionRef: "desc-en-gb-001"
     descriptionLanguage: "en-GB"
     minimalProductDescription: "LED Smart Bulb E27"
     uniqueMainProductDescription: "Philips Hue White and Color Ambiance E27 LED Smart Bulb"
@@ -165,8 +164,8 @@ examples:
     productPageUrl: "https://www.philips.com/products/hue-white-color-e27"
   
   # German description for same product
-  - manufacturerIdGln: "1234567890123"
-    manufacturerProductNumber: "929002376910"
+  - productRef: "prod-929002376910"
+    descriptionRef: "desc-de-de-002"
     descriptionLanguage: "de-DE"
     minimalProductDescription: "LED Smart Lampe E27"
     uniqueMainProductDescription: "Philips Hue White and Color Ambiance E27 LED Smart Lampe"
@@ -175,7 +174,7 @@ examples:
     productPageUrl: "https://www.philips.de/products/hue-white-color-e27"
   
   # Minimal description only
-  - manufacturerIdGln: "9876543210987"
-    manufacturerProductNumber: "LED-12345-A"
+  - productRef: "prod-led-12345"
+    descriptionRef: "desc-en-gb-003"
     descriptionLanguage: "en-GB"
     minimalProductDescription: "LED Downlight 10W 4000K"

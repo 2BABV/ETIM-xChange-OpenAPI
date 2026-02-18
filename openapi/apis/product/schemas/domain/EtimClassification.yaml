@@ -1,9 +1,21 @@
 type: object
 additionalProperties: false
 required:
+  - classificationRef
   - etimClassCode
   - etimReleaseVersion
 properties:
+  classificationRef:
+    description: |
+      Server-generated opaque reference key that uniquely identifies this ETIM classification
+      within the scope of a product.
+      
+      This is a technical identifier not present in the ETIM xChange domain model.
+    $ref: ../../../../shared/schemas/identifiers/TechnicalId.yaml
+    examples:
+      - "class-ec002745-9.0"
+      - "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+  
   etimClassCode:
     type: string
     pattern: "^EC[0-9]{6}$"
@@ -69,9 +81,11 @@ properties:
       **ETIM xChange**: `EtimFeatures`  
       **Path**: `Supplier[].Product[].EtimClassification[].EtimFeatures[]`
     examples:
-      - - etimFeatureCode: "EF000123"
+      - - featureRef: "feat-001"
+          etimFeatureCode: "EF000123"
           etimValueCode: "EV000789"
-        - etimFeatureCode: "EF000456"
+        - featureRef: "feat-002"
+          etimFeatureCode: "EF000456"
           etimValueNumeric: 230.0
       - null
 
@@ -81,19 +95,25 @@ properties:
   # See: Supplier[].Product[].EtimClassification[].EtimModellingClassVersion
 
 examples:
-  - etimClassCode: "EC002745"
+  - classificationRef: "class-ec002745-9.0"
+    etimClassCode: "EC002745"
     etimClassVersion: 1
     etimReleaseVersion: "9.0"
     etimFeatures:
-      - etimFeatureCode: "EF000123"
+      - featureRef: "feat-001"
+        etimFeatureCode: "EF000123"
         etimValueCode: "EV000789"
-      - etimFeatureCode: "EF000456"
+      - featureRef: "feat-002"
+        etimFeatureCode: "EF000456"
         etimValueNumeric: 230.0
-      - etimFeatureCode: "EF000789"
+      - featureRef: "feat-003"
+        etimFeatureCode: "EF000789"
         etimValueLogical: true
-  - etimClassCode: "EC000123"
+  - classificationRef: "class-ec000123-11.0"
+    etimClassCode: "EC000123"
     etimClassVersion: 2
     etimReleaseVersion: "11.0"
-  - etimClassCode: "EC001234"
+  - classificationRef: "class-ec001234-10.0"
+    etimClassCode: "EC001234"
     etimClassVersion: null
     etimReleaseVersion: "10.0"

@@ -40,17 +40,22 @@ examples:
       manufacturerIdGln: "1234567890123"
       manufacturerProductNumber: "929002376910"
       etimClassifications:
-        - etimClassCode: "EC002745"
+        - classificationRef: "cls-001"
+          etimClassCode: "EC002745"
           etimClassVersion: 1
           etimReleaseVersion: "9.0"
           etimFeatures:
-            - etimFeatureCode: "EF000123"
+            - featureRef: "feat-001"
+              etimFeatureCode: "EF000123"
               etimValueCode: "EV000789"
-            - etimFeatureCode: "EF000456"
+            - featureRef: "feat-002"
+              etimFeatureCode: "EF000456"
               etimValueNumeric: 230.0
-        - etimClassCode: "EC001234"
+        - classificationRef: "cls-002"
+          etimClassCode: "EC001234"
           etimClassVersion: 2
           etimReleaseVersion: "11.0"
           etimFeatures:
-            - etimFeatureCode: "EF000789"
+            - featureRef: "feat-003"
+              etimFeatureCode: "EF000789"
               etimValueLogical: true

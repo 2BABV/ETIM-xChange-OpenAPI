@@ -10,48 +10,34 @@ description: |
   - ETL/data warehouse ingestion (star schema: pricing fact + surcharges fact)
   - Streaming data processing
   
-  **Join Keys**: Use `supplierIdGln` + `supplierItemNumber` + `pricingRef` to join
+  **Join Keys**: Use `tradeItemRef` + `pricingRef` to join
   with `/bulk/trade-item-pricings` data.
   
   **ETIM xChange**: `AllowanceSurcharge`
   **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[]`
 additionalProperties: false
 required:
-  - supplierIdGln
-  - supplierItemNumber
+  - tradeItemRef
   - pricingRef
+  - allowanceSurchargeRef
   - allowanceSurchargeIndicator
   - allowanceSurchargeType
 properties:
   # =========================================================================
-  # TRADE ITEM KEY FIELDS
+  # REFERENCE KEYS
   # =========================================================================
   
-  supplierIdGln:
-    type: string
-    pattern: "^[0-9]{13}$"
+  tradeItemRef:
     description: |
-      Global Location Number (GLN) of the supplier. 13-digit GS1 identifier.
-      Part of the composite key for the trade item.
+      Server-generated opaque reference key that identifies the parent trade item.
+      Use this to correlate with the corresponding trade item record from the
+      `/bulk/trade-item-details` endpoint.
       
-      **ETIM xChange**: `SupplierIdGln`  
-      **Path**: `Supplier[].SupplierId.SupplierIdGln`
+      This is a technical identifier not present in the ETIM xChange domain model.
+    $ref: ../../../../shared/schemas/identifiers/TechnicalId.yaml
     examples:
-      - "1234567890123"
-      - "8712423012485"
-  
-  supplierItemNumber:
-    type: string
-    minLength: 1
-    maxLength: 35
-    description: |
-      Supplier's unique item number. Part of the composite key for the trade item.
-      
-      **ETIM xChange**: `SupplierItemNumber`  
-      **Path**: `Supplier[].Product[].TradeItem[].ItemIdentification.SupplierItemNumber`
-    examples:
-      - "SKU-12345"
-      - "ITEM-ABC-789"
+      - "ti-sku-lamp-001"
+      - "f47ac10b-58cc-4372-a567-0e02b2c3d479"
   
   pricingRef:
     description: |
@@ -65,6 +51,16 @@ properties:
       - "price-c62-1-20250101"
       - "f47ac10b-58cc-4372-a567-0e02b2c3d479"
   
+  allowanceSurchargeRef:
+    description: |
+      Server-generated opaque reference key that uniquely identifies this allowance/surcharge entry
+      within the scope of a pricing entry.
+      
+      This is a technical identifier not present in the ETIM xChange domain model.
+    $ref: ../../../../shared/schemas/identifiers/TechnicalId.yaml
+    examples:
+      - "as-aeq-001"
+      - "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
   # =========================================================================
   # ALLOWANCE/SURCHARGE FIELDS
   # =========================================================================
@@ -173,9 +169,9 @@ properties:
 
 examples:
   # Percentage-based allowance (discount)
-  - supplierIdGln: "8712423012485"
-    supplierItemNumber: "SKU-LAMP-001"
+  - tradeItemRef: "ti-sku-lamp-001"
     pricingRef: "price-c62-1-20250101"
+    allowanceSurchargeRef: "as-aeq-001"
     allowanceSurchargeIndicator: ALLOWANCE
     allowanceSurchargeType: AEQ
     allowanceSurchargeSequenceNumber: 1
@@ -184,9 +180,9 @@ examples:
     allowanceSurchargeDescription: "Bulk quantity discount"
   
   # Fixed amount surcharge
-  - supplierIdGln: "8712423012485"
-    supplierItemNumber: "SKU-CABLE-002"
+  - tradeItemRef: "ti-sku-cable-002"
     pricingRef: "price-mtr-1-20250101"
+    allowanceSurchargeRef: "as-dbd-001"
     allowanceSurchargeIndicator: SURCHARGE
     allowanceSurchargeType: DBD
     allowanceSurchargeSequenceNumber: 1
@@ -194,18 +190,18 @@ examples:
     allowanceSurchargeDescription: "Delivery surcharge"
   
   # Multiple surcharges for same price (different sequence numbers)
-  - supplierIdGln: "8712423012485"
-    supplierItemNumber: "SKU-TOOL-003"
+  - tradeItemRef: "ti-sku-tool-003"
     pricingRef: "price-c62-1-20250101"
+    allowanceSurchargeRef: "as-aeq-002"
     allowanceSurchargeIndicator: ALLOWANCE
     allowanceSurchargeType: AEQ
     allowanceSurchargeSequenceNumber: 1
     allowanceSurchargePercentage: 10.0
     allowanceSurchargeMinimumQuantity: 100
     allowanceSurchargeDescription: "Volume discount tier 1"
-  - supplierIdGln: "8712423012485"
-    supplierItemNumber: "SKU-TOOL-003"
+  - tradeItemRef: "ti-sku-tool-003"
     pricingRef: "price-c62-1-20250101"
+    allowanceSurchargeRef: "as-aeq-003"
     allowanceSurchargeIndicator: ALLOWANCE
     allowanceSurchargeType: AEQ
     allowanceSurchargeSequenceNumber: 2

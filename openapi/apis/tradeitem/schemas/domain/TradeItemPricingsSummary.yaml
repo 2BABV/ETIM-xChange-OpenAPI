@@ -79,7 +79,6 @@ examples:
         vat: 21.0
         priceValidityDate: "2025-01-01"
         priceExpiryDate: "2025-12-31"
-        allowanceSurcharges: null
   - supplierIdGln: "8712423012485"
     supplierItemNumber: "SKU-CABLE-002"
     pricings:
@@ -95,7 +94,6 @@ examples:
         vat: 21.0
         priceValidityDate: "2025-01-01"
         priceExpiryDate: "2025-06-30"
-        allowanceSurcharges: null
       - pricingRef: "price-mtr-100-20250101"
         priceUnit: MTR
         priceUnitFactor: 1.0
@@ -108,4 +106,3 @@ examples:
         vat: 21.0
         priceValidityDate: "2025-01-01"
         priceExpiryDate: "2025-06-30"
-        allowanceSurcharges: null

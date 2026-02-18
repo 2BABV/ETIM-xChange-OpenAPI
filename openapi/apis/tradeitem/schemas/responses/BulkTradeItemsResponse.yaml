@@ -25,7 +25,8 @@ properties:
     $ref: ../../../../shared/schemas/common/CursorPaginationMetadata.yaml
 examples:
   - data:
-      - supplierIdGln: "8712423012485"
+      - tradeItemRef: "ti-001"
+        supplierIdGln: "8712423012485"
         supplierItemNumber: "SKU-LAMP-001"
         supplierAltItemNumber: "ALT-SKU-001"
         manufacturerItemNumber: "MFR-12345"
@@ -46,7 +47,8 @@ examples:
           stockItem: true
           shelfLifePeriod: null
           itemDescriptions:
-            - descriptionLanguage: "en-US"
+            - descriptionRef: "desc-001"
+              descriptionLanguage: "en-US"
               minimalItemDescription: "LED Lamp 10W E27"
               uniqueMainItemDescription: "Professional LED lamp with E27 socket, 10W power consumption"
         ordering:
@@ -73,7 +75,8 @@ examples:
             allowanceSurcharges: null
         itemRelations: null
         itemLogistics:
-          - baseItemNetLength: 12.0
+          - logisticsRef: "log-001"
+            baseItemNetLength: 12.0
             baseItemNetWidth: 6.0
             baseItemNetHeight: 12.0
             baseItemNetDiameter: null

@@ -1,9 +1,21 @@
 type: object
 additionalProperties: false
 required:
+  - relationRef
   - relationType
   - relatedProducts
 properties:
+  relationRef:
+    description: |
+      Server-generated opaque reference key that uniquely identifies this relation group
+      within the scope of a product.
+      
+      This is a technical identifier not present in the ETIM xChange domain model.
+    $ref: ../../../../shared/schemas/identifiers/TechnicalId.yaml
+    examples:
+      - "rel-accessory-001"
+      - "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+  
   relationType:
     $ref: ../enums/ProductRelationType.yaml
     description: |
@@ -24,12 +36,14 @@ properties:
       **Path**: `Supplier[].Product[].ProductRelations[].RelatedProducts[]`
 
 examples:
-  - relationType: "ACCESSORY"
+  - relationRef: "rel-accessory-001"
+    relationType: "ACCESSORY"
     relatedProducts:
       - relatedManufacturerProductNumber: "LED-REMOTE-001"
         relatedProductGtin: ["8718699673840"]
         relatedProductQuantity: 1
-  - relationType: "SPAREPART"
+  - relationRef: "rel-sparepart-002"
+    relationType: "SPAREPART"
     relatedProducts:
       - relatedManufacturerProductNumber: "SPARE-LENS-42"
         relatedProductQuantity: 1

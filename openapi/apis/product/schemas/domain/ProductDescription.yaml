@@ -1,8 +1,20 @@
 type: object
 additionalProperties: false
 required:
+  - descriptionRef
   - minimalProductDescription
 properties:
+  descriptionRef:
+    description: |
+      Server-generated opaque reference key that uniquely identifies this description entry
+      within the scope of a product.
+      
+      This is a technical identifier not present in the ETIM xChange domain model.
+    $ref: ../../../../shared/schemas/identifiers/TechnicalId.yaml
+    examples:
+      - "desc-en-gb-001"
+      - "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+  
   descriptionLanguage:
     type: ["string", "null"]
     pattern: "^[a-z]{2}[-][A-Z]{2}$"
@@ -131,7 +143,8 @@ properties:
       - null
 
 examples:
-  - descriptionLanguage: "en-GB"
+  - descriptionRef: "desc-en-gb-001"
+    descriptionLanguage: "en-GB"
     minimalProductDescription: "LED Smart Bulb E27 White & Color"
     uniqueMainProductDescription: "Philips Hue White and Color Ambiance E27 LED Smart Bulb, 806 lumens, Bluetooth"
     fullProductDescription: "The Philips Hue White and Color Ambiance E27 LED Smart Bulb offers 16 million colors and 50,000 shades of white light. Control it with your smartphone or voice using Alexa, Google Assistant, or Apple HomeKit."

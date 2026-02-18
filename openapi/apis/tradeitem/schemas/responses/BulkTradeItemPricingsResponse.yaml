@@ -3,11 +3,11 @@ description: |
   Bulk response containing trade item pricing information with cursor-based pagination.
   
   **Flattened Structure**: Each row in the `data` array represents a single price entry
-  with embedded composite key (`supplierIdGln` + `supplierItemNumber`). This follows the
+  with `tradeItemRef` for correlation. This follows the
   same pattern as `ProductEtimClassificationFeature` - 1 row per data point.
   
   A trade item with multiple price tiers (e.g., quantity breaks) will have multiple rows
-  with the same composite key but different pricing data.
+  with the same `tradeItemRef` but different pricing data.
   
   Use the `cursor` from `meta` to retrieve the next page of results.
   
@@ -30,8 +30,7 @@ properties:
 examples:
   - data:
       # Single price entry
-      - supplierIdGln: "8712423012485"
-        supplierItemNumber: "SKU-LAMP-001"
+      - tradeItemRef: "ti-001"
         pricingRef: "price-c62-1-20250101"
         priceUnit: C62
         priceQuantity: 1
@@ -44,8 +43,7 @@ examples:
         priceValidityDate: "2025-01-01"
         priceExpiryDate: "2025-12-31"
       # Multiple price tiers for same item (quantity breaks)
-      - supplierIdGln: "8712423012485"
-        supplierItemNumber: "SKU-CABLE-002"
+      - tradeItemRef: "ti-002"
         pricingRef: "price-mtr-1-20250101"
         priceUnit: MTR
         priceUnitFactor: 1.0
@@ -58,8 +56,7 @@ examples:
         vat: 21.0
         priceValidityDate: "2025-01-01"
         priceExpiryDate: "2025-06-30"
-      - supplierIdGln: "8712423012485"
-        supplierItemNumber: "SKU-CABLE-002"
+      - tradeItemRef: "ti-002"
         pricingRef: "price-mtr-100-20250101"
         priceUnit: MTR
         priceUnitFactor: 1.0

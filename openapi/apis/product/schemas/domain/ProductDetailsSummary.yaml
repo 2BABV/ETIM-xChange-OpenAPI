@@ -7,10 +7,26 @@ description: |
   which supports language filtering.
 additionalProperties: false
 required:
+  - productRef
   - manufacturerIdGln
   - manufacturerProductNumber
   - productValidityDate
 properties:
+  # =========================================================================
+  # INTERNAL REFERENCE ID
+  # =========================================================================
+  
+  productRef:
+    description: |
+      Server-generated opaque reference key that uniquely identifies this product.
+      Used to correlate product data across bulk endpoints (descriptions, classifications, etc.).
+      
+      This is a technical identifier not present in the ETIM xChange domain model.
+    $ref: ../../../../shared/schemas/identifiers/TechnicalId.yaml
+    examples:
+      - "prod-929002376910"
+      - "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+  
   # =========================================================================
   # KEY FIELDS (required for bulk retrieval)
   # =========================================================================
@@ -179,7 +195,8 @@ properties:
       **Path**: `Supplier[].Product[].ProductDetails.RelatedManufacturerProductGroup[]`
 
 examples:
-  - manufacturerIdGln: "1234567890123"
+  - productRef: "prod-929002376910"
+    manufacturerIdGln: "1234567890123"
     manufacturerProductNumber: "929002376910"
     productGtins: ["8718699673826"]
     brandName: "Hue"

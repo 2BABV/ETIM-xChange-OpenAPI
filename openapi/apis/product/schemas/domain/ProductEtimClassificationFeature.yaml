@@ -16,30 +16,46 @@ description: |
   with `etimFeatureCode` omitted (or null if explicitly set).
 additionalProperties: false
 required:
-  - manufacturerIdGln
-  - manufacturerProductNumber
+  - productRef
+  - classificationRef
   - etimClassCode
   - etimReleaseVersion
 properties:
-  manufacturerIdGln:
-    type: string
-    pattern: "^[0-9]{13}$"
+  productRef:
     description: |
-      GLN (Global Location Number) of the product manufacturer.
-      Part of the composite product identifier.
+      Server-generated opaque reference key that identifies the parent product.
+      Use this to correlate with the corresponding product record from the
+      `/bulk/product-details` endpoint.
+      
+      This is a technical identifier not present in the ETIM xChange domain model.
+    $ref: ../../../../shared/schemas/identifiers/TechnicalId.yaml
     examples:
-      - "1234567890123"
+      - "prod-929002376910"
+      - "f47ac10b-58cc-4372-a567-0e02b2c3d479"
   
-  manufacturerProductNumber:
-    type: string
-    minLength: 1
-    maxLength: 35
+  classificationRef:
     description: |
-      Manufacturer's product number/code.
-      Part of the composite product identifier.
+      Server-generated opaque reference key that identifies the parent ETIM classification.
+      Use this to correlate with the corresponding classification record from the
+      `/bulk/product-etim-classifications` endpoint.
+      
+      This is a technical identifier not present in the ETIM xChange domain model.
+    $ref: ../../../../shared/schemas/identifiers/TechnicalId.yaml
     examples:
-      - "929002376910"
-      - "LED-12345-A"
+      - "class-ec002745-9.0"
+      - "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+  
+  featureRef:
+    description: |
+      Server-generated opaque reference key that uniquely identifies this feature value
+      within the scope of an ETIM classification.
+      Omitted for classification-only rows (no features).
+      
+      This is a technical identifier not present in the ETIM xChange domain model.
+    $ref: ../../../../shared/schemas/identifiers/TechnicalId.yaml
+    examples:
+      - "feat-ef000123-001"
+      - "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
   
   etimClassCode:
     type: string
@@ -239,8 +255,9 @@ properties:
 
 examples:
   # Alphanumeric feature with value code
-  - manufacturerIdGln: "1234567890123"
-    manufacturerProductNumber: "929002376910"
+  - productRef: "prod-929002376910"
+    classificationRef: "class-ec002745-9.0"
+    featureRef: "feat-ef000123-001"
     etimClassCode: "EC002745"
     etimClassVersion: 1
     etimReleaseVersion: "9.0"
@@ -248,8 +265,9 @@ examples:
     etimValueCode: "EV000789"
   
   # Numeric feature
-  - manufacturerIdGln: "1234567890123"
-    manufacturerProductNumber: "929002376910"
+  - productRef: "prod-929002376910"
+    classificationRef: "class-ec002745-9.0"
+    featureRef: "feat-ef000456-002"
     etimClassCode: "EC002745"
     etimClassVersion: 1
     etimReleaseVersion: "9.0"
@@ -257,8 +275,9 @@ examples:
     etimValueNumeric: 230.0
   
   # Range feature
-  - manufacturerIdGln: "1234567890123"
-    manufacturerProductNumber: "929002376910"
+  - productRef: "prod-929002376910"
+    classificationRef: "class-ec002745-10.0"
+    featureRef: "feat-ef000789-003"
     etimClassCode: "EC002745"
     etimClassVersion: 1
     etimReleaseVersion: "10.0"
@@ -267,8 +286,9 @@ examples:
     etimValueRangeUpper: 240.0
   
   # Logical/boolean feature
-  - manufacturerIdGln: "1234567890123"
-    manufacturerProductNumber: "929002376910"
+  - productRef: "prod-929002376910"
+    classificationRef: "class-ec002745-10.0"
+    featureRef: "feat-ef001234-004"
     etimClassCode: "EC002745"
     etimClassVersion: 1
     etimReleaseVersion: "10.0"
@@ -276,15 +296,16 @@ examples:
     etimValueLogical: true
   
   # Classification-only row (no features)
-  - manufacturerIdGln: "9876543210987"
-    manufacturerProductNumber: "LED-12345-A"
+  - productRef: "prod-led-12345"
+    classificationRef: "class-ec001234-11.0"
     etimClassCode: "EC001234"
     etimClassVersion: 2
     etimReleaseVersion: "11.0"
   
   # Feature with reason no value
-  - manufacturerIdGln: "1234567890123"
-    manufacturerProductNumber: "929002376910"
+  - productRef: "prod-929002376910"
+    classificationRef: "class-ec002745-9.0"
+    featureRef: "feat-ef005678-005"
     etimClassCode: "EC002745"
     etimClassVersion: 1
     etimReleaseVersion: "9.0"

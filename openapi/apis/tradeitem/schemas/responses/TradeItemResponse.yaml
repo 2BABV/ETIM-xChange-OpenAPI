@@ -14,6 +14,7 @@ properties:
     $ref: ../domain/TradeItem.yaml
 examples:
   - data:
+      tradeItemRef: "ti-001"
       supplierIdGln: "1234567890123"
       supplierItemNumber: "ART-12345"
       supplierAltItemNumber: "ALT-12345"
@@ -51,7 +52,8 @@ examples:
           priceExpiryDate: "2025-12-31"
       itemRelations: null
       itemLogistics:
-        - baseItemNetLength: 25.5
+        - logisticsRef: "log-001"
+          baseItemNetLength: 25.5
           baseItemNetWidth: 15.0
           baseItemNetHeight: 10.0
           netDimensionUnit: CMT
@@ -61,6 +63,7 @@ examples:
       packagingUnits: null
       itemCountrySpecificFields: null
   - data:
+      tradeItemRef: "ti-002"
       supplierIdGln: "9876543210987"
       supplierItemNumber: "SKU-MIN-001"
       supplierAltItemNumber: null

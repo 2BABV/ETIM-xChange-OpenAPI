@@ -7,12 +7,25 @@ description: |
   **Path**: `Supplier[].Product[].TradeItem[]`
 additionalProperties: false
 required:
+  - tradeItemRef
   - supplierIdGln
   - supplierItemNumber
   - itemDetails
   - ordering
   - itemValidityDate
 properties:
+  # Internal reference ID
+  tradeItemRef:
+    description: |
+      Server-generated opaque reference key that uniquely identifies this trade item.
+      Used to correlate trade item data across bulk endpoints (descriptions, orderings, pricings, etc.).
+      
+      This is a technical identifier not present in the ETIM xChange domain model.
+    $ref: ../../../../shared/schemas/identifiers/TechnicalId.yaml
+    examples:
+      - "ti-art-12345"
+      - "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+  
   # Core identifiers (required)
   supplierIdGln:
     description: |
@@ -267,7 +280,8 @@ properties:
       - null
 
 examples:
-  - supplierIdGln: "1234567890123"
+  - tradeItemRef: "ti-art-12345"
+    supplierIdGln: "1234567890123"
     supplierItemNumber: "ART-12345"
     supplierAltItemNumber: "ALT-12345"
     manufacturerItemNumber: "MFG-98765"
@@ -308,10 +322,10 @@ examples:
         vat: 21.0
         priceValidityDate: "2025-01-01"
         priceExpiryDate: "2025-12-31"
-        allowanceSurcharges: null
     itemRelations: null
     itemLogistics:
-      - baseItemNetLength: 25.5
+      - logisticsRef: "log-001"
+        baseItemNetLength: 25.5
         baseItemNetWidth: 15.0
         baseItemNetHeight: 10.0
         baseItemNetDiameter: null

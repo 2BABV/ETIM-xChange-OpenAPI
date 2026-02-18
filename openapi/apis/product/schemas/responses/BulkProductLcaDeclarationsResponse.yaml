@@ -18,7 +18,7 @@ description: |
   to provide necessary context for interpreting the environmental indicators.
   
   **Data Reconstruction**: To reconstruct the hierarchical structure:
-  1. Group rows by `manufacturerIdGln` + `manufacturerProductNumber` for products
+  1. Group rows by `productRef` for products
   2. All rows for a product share the same parent context (declared unit, lifetime, verification)
   3. Each row represents a different life cycle stage (A1-A3, B1-B7, C1-C4, D)
 additionalProperties: false
@@ -33,9 +33,8 @@ properties:
       Each item represents a single life cycle stage declaration for a product.
       
       Rows are ordered by:
-      1. `manufacturerIdGln` (ascending)
-      2. `manufacturerProductNumber` (ascending)
-      3. `lifeCycleStage` (ascending)
+      1. `productRef` (ascending)
+      2. `lifeCycleStage` (ascending)
     items:
       $ref: ../domain/ProductLcaDeclarationSummary.yaml
   meta:
@@ -44,13 +43,12 @@ properties:
       Cursor-based pagination metadata.
       
       The cursor encodes the position based on the composite key:
-      `manufacturerIdGln` + `manufacturerProductNumber` + `lifeCycleStage`
+      `productRef` + `lifeCycleStage`
 
 examples:
   - data:
       # Product 1, Production stage (A1-A3)
-      - manufacturerIdGln: "1234567890123"
-        manufacturerProductNumber: "929002376910"
+      - productRef: "prod-001"
         declaredUnitUnit: "PCE"
         declaredUnitQuantity: 1
         lcaReferenceLifetime: 25
@@ -63,8 +61,7 @@ examples:
         declaredUnitAp: 0.05
         declaredUnitAdpf: 185.5
       # Product 1, End-of-life stage (C1-C4)
-      - manufacturerIdGln: "1234567890123"
-        manufacturerProductNumber: "929002376910"
+      - productRef: "prod-001"
         declaredUnitUnit: "PCE"
         declaredUnitQuantity: 1
         lcaReferenceLifetime: 25
@@ -74,8 +71,7 @@ examples:
         declaredUnitGwpTotal: 2.5
         declaredUnitAdpf: 35.0
       # Product 1, Module D (benefits)
-      - manufacturerIdGln: "1234567890123"
-        manufacturerProductNumber: "929002376910"
+      - productRef: "prod-001"
         declaredUnitUnit: "PCE"
         declaredUnitQuantity: 1
         lcaReferenceLifetime: 25
@@ -85,8 +81,7 @@ examples:
         declaredUnitGwpTotal: -5.2
         declaredUnitAdpf: -45.0
       # Product 2, Production stage
-      - manufacturerIdGln: "9876543210987"
-        manufacturerProductNumber: "CABLE-CU-100M"
+      - productRef: "prod-002"
         declaredUnitUnit: "KGM"
         declaredUnitQuantity: 1
         lcaReferenceLifetime: 50

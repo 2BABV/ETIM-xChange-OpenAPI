@@ -17,8 +17,7 @@ description: |
   to provide necessary context for interpreting the environmental indicators.
 additionalProperties: false
 required:
-  - manufacturerIdGln
-  - manufacturerProductNumber
+  - productRef
   - lifeCycleStage
   - lcaDeclarationIndicator
   - declaredUnitUnit
@@ -26,32 +25,18 @@ required:
   - lcaReferenceLifetime
   - thirdPartyVerification
 properties:
-  # Product key fields
-  manufacturerIdGln:
-    type: string
-    pattern: "^[0-9]{13}$"
+  # Product reference
+  productRef:
     description: |
-      GLN (Global Location Number) of the product manufacturer.
-      Part of the composite product identifier.
+      Server-generated opaque reference key that identifies the parent product.
+      Use this to correlate with the corresponding product record from the
+      `/bulk/product-details` endpoint.
       
-      **ETIM xChange**: `ManufacturerIdGln`
-      **Path**: `Supplier[].Product[].ProductIdentification.ManufacturerIdGln`
+      This is a technical identifier not present in the ETIM xChange domain model.
+    $ref: ../../../../shared/schemas/identifiers/TechnicalId.yaml
     examples:
-      - "1234567890123"
-  
-  manufacturerProductNumber:
-    type: string
-    minLength: 1
-    maxLength: 35
-    description: |
-      Manufacturer's product number/code.
-      Part of the composite product identifier.
-      
-      **ETIM xChange**: `ManufacturerProductNumber`
-      **Path**: `Supplier[].Product[].ProductIdentification.ManufacturerProductNumber`
-    examples:
-      - "929002376910"
-      - "LED-12345-A"
+      - "prod-929002376910"
+      - "f47ac10b-58cc-4372-a567-0e02b2c3d479"
   
   # Parent LcaEnvironmental context fields
   declaredUnitUnit:
@@ -455,8 +440,7 @@ properties:
 
 examples:
   # Production stage declaration with common indicators
-  - manufacturerIdGln: "1234567890123"
-    manufacturerProductNumber: "929002376910"
+  - productRef: "prod-929002376910"
     declaredUnitUnit: "PCE"
     declaredUnitQuantity: 1
     lcaReferenceLifetime: 25
@@ -476,8 +460,7 @@ examples:
     declaredUnitPenrt: 195.8
   
   # End-of-life stage declaration
-  - manufacturerIdGln: "1234567890123"
-    manufacturerProductNumber: "929002376910"
+  - productRef: "prod-929002376910"
     declaredUnitUnit: "PCE"
     declaredUnitQuantity: 1
     lcaReferenceLifetime: 25
@@ -489,8 +472,7 @@ examples:
     declaredUnitAdpf: 35.0
   
   # Benefits beyond system boundary (Module D)
-  - manufacturerIdGln: "1234567890123"
-    manufacturerProductNumber: "929002376910"
+  - productRef: "prod-929002376910"
     declaredUnitUnit: "PCE"
     declaredUnitQuantity: 1
     lcaReferenceLifetime: 25
@@ -501,8 +483,7 @@ examples:
     declaredUnitAdpf: -45.0
   
   # Different product with kg-based declared unit
-  - manufacturerIdGln: "9876543210987"
-    manufacturerProductNumber: "CABLE-CU-100M"
+  - productRef: "prod-cable-cu-100m"
     declaredUnitUnit: "KGM"
     declaredUnitQuantity: 1
     lcaReferenceLifetime: 50

@@ -4,9 +4,20 @@ description: |
   Extracted from ETIM xChange `TradeItem.ItemAttachments[]` structure.
 additionalProperties: false
 required:
+  - attachmentRef
   - attachmentType
   - attachmentUri
 properties:
+  attachmentRef:
+    description: |
+      Server-generated opaque reference key that uniquely identifies this attachment
+      within the scope of a trade item.
+      
+      This is a technical identifier not present in the ETIM xChange domain model.
+    $ref: ../../../../shared/schemas/identifiers/TechnicalId.yaml
+    examples:
+      - "att-image-001"
+      - "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
   attachmentType:
     type: string
     description: |
@@ -182,7 +193,8 @@ properties:
       - "2026-12-31"
       - null
 examples:
-  - attachmentType: ATX001
+  - attachmentRef: "att-image-001"
+    attachmentType: ATX001
     attachmentTypeSpecification: MDX002
     attachmentLanguages: null
     attachmentFilename: "product_image.jpg"

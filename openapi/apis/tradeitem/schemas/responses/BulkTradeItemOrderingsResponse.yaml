@@ -25,8 +25,7 @@ properties:
 
 examples:
   - data:
-      - supplierIdGln: "8712423012485"
-        supplierItemNumber: "SKU-LAMP-001"
+      - tradeItemRef: "ti-001"
         orderUnit: C62
         minimumOrderQuantity: 1
         orderStepSize: 1
@@ -36,8 +35,7 @@ examples:
         singleUseUnitQuantity: null
         alternativeUseUnit: null
         alternativeUseUnitConversionFactor: null
-      - supplierIdGln: "8712423012485"
-        supplierItemNumber: "SKU-CABLE-002"
+      - tradeItemRef: "ti-002"
         orderUnit: MTR
         minimumOrderQuantity: 10
         orderStepSize: 5

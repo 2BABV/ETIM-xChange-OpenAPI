@@ -38,6 +38,7 @@ get:
                   supplierItemNumber: "SKU-12345"
                   allowanceSurcharges:
                     - pricingRef: "price-c62-1-20250101"
+                      allowanceSurchargeRef: "as-001"
                       allowanceSurchargeIndicator: "ALLOWANCE"
                       allowanceSurchargeValidityDate: "2025-01-01"
                       allowanceSurchargeType: "AEQ"
@@ -51,6 +52,7 @@ get:
                           allowanceSurchargeDescription: "Staffelkorting"
                       allowanceSurchargeMinimumQuantity: 50
                     - pricingRef: "price-c62-1-20250101"
+                      allowanceSurchargeRef: "as-002"
                       allowanceSurchargeIndicator: "SURCHARGE"
                       allowanceSurchargeValidityDate: null
                       allowanceSurchargeType: "DBD"
@@ -74,6 +76,7 @@ get:
                   supplierItemNumber: "SKU-VOLUME-002"
                   allowanceSurcharges:
                     - pricingRef: "price-mtr-1-20250101"
+                      allowanceSurchargeRef: "as-003"
                       allowanceSurchargeIndicator: "ALLOWANCE"
                       allowanceSurchargeValidityDate: "2025-01-01"
                       allowanceSurchargeType: "AEQ"
@@ -83,6 +86,7 @@ get:
                       allowanceSurchargeDescription: null
                       allowanceSurchargeMinimumQuantity: 100
                     - pricingRef: "price-mtr-100-20250101"
+                      allowanceSurchargeRef: "as-004"
                       allowanceSurchargeIndicator: "ALLOWANCE"
                       allowanceSurchargeValidityDate: "2025-01-01"
                       allowanceSurchargeType: "AEQ"

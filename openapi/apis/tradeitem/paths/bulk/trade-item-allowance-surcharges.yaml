@@ -5,8 +5,8 @@ get:
     Retrieve trade item allowances and surcharges in bulk with cursor-based pagination.
     Returns discount allowances and additional charge surcharges applied to trade item pricing.
     
-    **Flattened Structure**: Each row represents a single allowance/surcharge entry with embedded 
-    composite key (`supplierIdGln` + `supplierItemNumber`) and a `pricingRef` to correlate
+    **Flattened Structure**: Each row represents a single allowance/surcharge entry with 
+    `tradeItemRef` and a `pricingRef` to correlate
     with the parent pricing entry.
     
     **Join Pattern**: Use this endpoint in combination with `/bulk/trade-item-pricings` to build
@@ -15,8 +15,7 @@ get:
     SELECT p.*, a.*
     FROM pricings p
     LEFT JOIN allowance_surcharges a
-      ON p.supplierIdGln = a.supplierIdGln
-     AND p.supplierItemNumber = a.supplierItemNumber
+      ON p.tradeItemRef = a.tradeItemRef
      AND p.pricingRef = a.pricingRef
     ```
     
@@ -48,18 +47,18 @@ get:
               summary: Successful bulk retrieval (flattened - 1 row per surcharge entry)
               value:
                 data:
-                  - supplierIdGln: "8712423012485"
-                    supplierItemNumber: "SKU-LAMP-001"
+                  - tradeItemRef: "ti-001"
                     pricingRef: "price-c62-1-20250101"
+                    allowanceSurchargeRef: "as-001"
                     allowanceSurchargeIndicator: ALLOWANCE
                     allowanceSurchargeType: AEQ
                     allowanceSurchargeSequenceNumber: 1
                     allowanceSurchargePercentage: 5.5
                     allowanceSurchargeMinimumQuantity: 50
                     allowanceSurchargeDescription: "Bulk quantity discount"
-                  - supplierIdGln: "8712423012485"
-                    supplierItemNumber: "SKU-CABLE-002"
+                  - tradeItemRef: "ti-002"
                     pricingRef: "price-mtr-1-20250101"
+                    allowanceSurchargeRef: "as-002"
                     allowanceSurchargeIndicator: SURCHARGE
                     allowanceSurchargeType: DBD
                     allowanceSurchargeSequenceNumber: 1

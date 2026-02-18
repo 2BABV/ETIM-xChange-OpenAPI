@@ -4,10 +4,21 @@ description: |
   Extracted from ETIM xChange `TradeItem.ItemRelations[]` structure.
 additionalProperties: false
 required:
+  - relationRef
   - relatedSupplierItemNumber
   - relationType
   - relatedItemQuantity
 properties:
+  relationRef:
+    description: |
+      Server-generated opaque reference key that uniquely identifies this item relation
+      within the scope of a trade item.
+      
+      This is a technical identifier not present in the ETIM xChange domain model.
+    $ref: ../../../../shared/schemas/identifiers/TechnicalId.yaml
+    examples:
+      - "rel-sparepart-001"
+      - "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
   relatedSupplierItemNumber:
     type: string
     description: |
@@ -64,7 +75,8 @@ properties:
       - 4
       - 10
 examples:
-  - relatedSupplierItemNumber: "SPART-001"
+  - relationRef: "rel-sparepart-001"
+    relatedSupplierItemNumber: "SPART-001"
     relatedManufacturerItemNumber: "MFG-SPART-100"
     relatedItemGtins: ["4012345678918"]
     relationType: SPAREPART

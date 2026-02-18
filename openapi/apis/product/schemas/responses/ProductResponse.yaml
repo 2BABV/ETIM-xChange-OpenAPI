@@ -76,7 +76,8 @@ examples:
         warrantyConsumer: 24
         warrantyBusiness: 36
       descriptions:
-        - descriptionLanguage: "en-GB"
+        - descriptionRef: "desc-001"
+          descriptionLanguage: "en-GB"
           minimalProductDescription: "LED Smart Bulb E27"
           uniqueMainProductDescription: "Philips Hue White and Color Ambiance E27 LED Smart Bulb with Bluetooth"
           productKeyword:
@@ -84,9 +85,11 @@ examples:
             - "LED"
             - "color"
       etimClassifications:
-        - etimClassCode: "EC002745"
+        - classificationRef: "cls-001"
+          etimClassCode: "EC002745"
           etimClassVersion: 1
           etimReleaseVersion: "9.0"
           etimFeatures:
-            - etimFeatureCode: "EF012345"
+            - featureRef: "feat-001"
+              etimFeatureCode: "EF012345"
               etimValueNumeric: 10

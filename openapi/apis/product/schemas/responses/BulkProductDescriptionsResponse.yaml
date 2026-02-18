@@ -17,21 +17,21 @@ properties:
 
 examples:
   - data:
-      - manufacturerIdGln: "1234567890123"
-        manufacturerProductNumber: "929002376910"
+      - productRef: "prod-001"
+        descriptionRef: "desc-001"
         descriptionLanguage: "en-GB"
         minimalProductDescription: "LED Smart Bulb E27"
         uniqueMainProductDescription: "Philips Hue White and Color Ambiance E27 LED Smart Bulb"
         fullProductDescription: "The Philips Hue White and Color Ambiance E27 LED Smart Bulb offers 16 million colors..."
         productKeyword: ["smart lighting", "LED", "color"]
         productPageUrl: "https://www.philips.com/products/hue-white-color-e27"
-      - manufacturerIdGln: "1234567890123"
-        manufacturerProductNumber: "929002376910"
+      - productRef: "prod-001"
+        descriptionRef: "desc-002"
         descriptionLanguage: "de-DE"
         minimalProductDescription: "LED Smart Lampe E27"
         uniqueMainProductDescription: "Philips Hue White and Color Ambiance E27 LED Smart Lampe"
-      - manufacturerIdGln: "1234567890123"
-        manufacturerProductNumber: "929002376911"
+      - productRef: "prod-002"
+        descriptionRef: "desc-003"
         descriptionLanguage: "en-GB"
         minimalProductDescription: "LED Downlight 10W"
         uniqueMainProductDescription: "Philips CoreLine Recessed LED Downlight 10W 4000K"

@@ -9,6 +9,7 @@ description: |
 additionalProperties: false
 required:
   - pricingRef
+  - allowanceSurchargeRef
   - allowanceSurchargeIndicator
   - allowanceSurchargeType
 properties:
@@ -22,6 +23,19 @@ properties:
     $ref: ../../../../shared/schemas/identifiers/TechnicalId.yaml
     examples:
       - "price-c62-1-20250101"
+      - "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+
+  # --- Allowance/Surcharge Reference Key ---
+  allowanceSurchargeRef:
+    description: |
+      Server-generated opaque reference key that uniquely identifies this allowance/surcharge
+      within the trade item scope. Use this to correlate allowance/surcharge records
+      across bulk endpoints.
+      
+      This is a technical identifier not present in the ETIM xChange domain model.
+    $ref: ../../../../shared/schemas/identifiers/TechnicalId.yaml
+    examples:
+      - "as-001"
       - "f47ac10b-58cc-4372-a567-0e02b2c3d479"
 
   # --- Allowance/Surcharge Fields ---
@@ -118,6 +132,7 @@ properties:
 
 examples:
   - pricingRef: "price-c62-1-20250101"
+    allowanceSurchargeRef: "as-001"
     allowanceSurchargeIndicator: ALLOWANCE
     allowanceSurchargeValidityDate: "2025-01-01"
     allowanceSurchargeType: AEQ

@@ -15,7 +15,8 @@ properties:
 
 examples:
   - data:
-      - manufacturerIdGln: "1234567890123"
+      - productRef: "prod-001"
+        manufacturerIdGln: "1234567890123"
         manufacturerProductNumber: "929002376910"
         productGtins: ["8718699673826"]
         brandName: "Hue"
@@ -23,7 +24,8 @@ examples:
         productType: "PHYSICAL"
         warrantyConsumer: 24
         productDescriptions:
-          - descriptionLanguage: "en-GB"
+          - descriptionRef: "desc-001"
+            descriptionLanguage: "en-GB"
             minimalProductDescription: "LED Smart Bulb E27"
             uniqueMainProductDescription: "Philips Hue White and Color Ambiance E27 LED Smart Bulb"
     meta:

@@ -102,15 +102,18 @@ paths:
                         warrantyConsumer: 24
                         warrantyBusiness: 36
                       descriptions:
-                        - descriptionLanguage: en-GB
+                        - descriptionRef: desc-001
+                          descriptionLanguage: en-GB
                           minimalProductDescription: LED Smart Bulb
                           uniqueMainProductDescription: Philips Hue White and Color Ambiance E27 LED Smart Bulb
                       etimClassifications:
-                        - etimClassCode: EC002745
+                        - classificationRef: cls-001
+                          etimClassCode: EC002745
                           etimClassVersion: 1
                           etimReleaseVersion: '9.0'
                           etimFeatures:
-                            - etimFeatureCode: EF012345
+                            - featureRef: feat-001
+                              etimFeatureCode: EF012345
                               etimValueNumeric: 10
                 minimalProduct:
                   summary: Minimal product with required fields only
@@ -120,7 +123,8 @@ paths:
                       manufacturerProductNumber: LED-12345-A
                       details: {}
                       descriptions:
-                        - descriptionLanguage: en-GB
+                        - descriptionRef: desc-001
+                          descriptionLanguage: en-GB
                           minimalProductDescription: LED Lamp
                       etimClassifications: null
         '400':
@@ -267,7 +271,8 @@ paths:
                       manufacturerIdGln: '1234567890123'
                       manufacturerProductNumber: '929002376910'
                       descriptions:
-                        - descriptionLanguage: en-GB
+                        - descriptionRef: desc-001
+                          descriptionLanguage: en-GB
                           minimalProductDescription: LED Smart Bulb E27 White & Color
                           uniqueMainProductDescription: Philips Hue White and Color Ambiance E27 LED Smart Bulb, 806 lumens, Bluetooth
                           fullProductDescription: The Philips Hue White and Color Ambiance E27 LED Smart Bulb offers 16 million colors and 50,000 shades of white light.
@@ -276,7 +281,8 @@ paths:
                             - LED
                             - color
                           productPageUrl: https://www.philips.com/products/hue-white-color-e27
-                        - descriptionLanguage: de-DE
+                        - descriptionRef: desc-002
+                          descriptionLanguage: de-DE
                           minimalProductDescription: LED Smart-Lampe E27 Weiß & Farbe
                           uniqueMainProductDescription: Philips Hue White and Color Ambiance E27 LED Smart-Lampe, 806 Lumen, Bluetooth
                 singleLanguage:
@@ -286,7 +292,8 @@ paths:
                       manufacturerIdGln: '1234567890123'
                       manufacturerProductNumber: '929002376910'
                       descriptions:
-                        - descriptionLanguage: en-GB
+                        - descriptionRef: desc-001
+                          descriptionLanguage: en-GB
                           minimalProductDescription: LED Smart Bulb E27
                           uniqueMainProductDescription: Philips Hue LED Smart Bulb
                 noDescriptions:
@@ -356,19 +363,24 @@ paths:
                       manufacturerIdGln: '1234567890123'
                       manufacturerProductNumber: '929002376910'
                       etimClassifications:
-                        - etimClassCode: EC002745
+                        - classificationRef: cls-001
+                          etimClassCode: EC002745
                           etimClassVersion: 1
                           etimReleaseVersion: '9.0'
                           etimFeatures:
-                            - etimFeatureCode: EF000123
+                            - featureRef: feat-001
+                              etimFeatureCode: EF000123
                               etimValueCode: EV000789
-                            - etimFeatureCode: EF000456
+                            - featureRef: feat-002
+                              etimFeatureCode: EF000456
                               etimValueNumeric: 230
-                        - etimClassCode: EC001234
+                        - classificationRef: cls-002
+                          etimClassCode: EC001234
                           etimClassVersion: 2
                           etimReleaseVersion: '11.0'
                           etimFeatures:
-                            - etimFeatureCode: EF000789
+                            - featureRef: feat-003
+                              etimFeatureCode: EF000789
                               etimValueLogical: true
                 noClassifications:
                   summary: Product without ETIM classifications
@@ -579,8 +591,8 @@ paths:
         to minimize payload size. Clients should treat missing properties as null/not applicable.
 
         **Data Reconstruction**: To reconstruct the hierarchical structure:
-        1. Group rows by `manufacturerIdGln` + `manufacturerProductNumber` for products
-        2. Within each product, group by `etimClassCode` + `etimReleaseVersion` for classifications
+        1. Group rows by `productRef` for products
+        2. Within each product, group by `classificationRef` for classifications
         3. Features are individual rows within each classification group
 
         **Classification-Only Rows**: Products with classifications but no features are represented
@@ -610,29 +622,32 @@ paths:
                   summary: Multiple products with various feature types
                   value:
                     data:
-                      - manufacturerIdGln: '1234567890123'
-                        manufacturerProductNumber: '929002376910'
+                      - productRef: prod-001
+                        classificationRef: cls-001
+                        featureRef: feat-001
                         etimClassCode: EC002745
                         etimClassVersion: 1
                         etimReleaseVersion: '9.0'
                         etimFeatureCode: EF000123
                         etimValueCode: EV000789
-                      - manufacturerIdGln: '1234567890123'
-                        manufacturerProductNumber: '929002376910'
+                      - productRef: prod-001
+                        classificationRef: cls-001
+                        featureRef: feat-002
                         etimClassCode: EC002745
                         etimClassVersion: 1
                         etimReleaseVersion: '9.0'
                         etimFeatureCode: EF000456
                         etimValueNumeric: 230
-                      - manufacturerIdGln: '1234567890123'
-                        manufacturerProductNumber: '929002376910'
+                      - productRef: prod-001
+                        classificationRef: cls-001
+                        featureRef: feat-003
                         etimClassCode: EC002745
                         etimClassVersion: 1
                         etimReleaseVersion: '9.0'
                         etimFeatureCode: EF000789
                         etimValueLogical: true
-                      - manufacturerIdGln: '9876543210987'
-                        manufacturerProductNumber: LED-12345-A
+                      - productRef: prod-002
+                        classificationRef: cls-002
                         etimClassCode: EC001234
                         etimClassVersion: 2
                         etimReleaseVersion: '9.0'
@@ -686,7 +701,7 @@ paths:
         to provide necessary context for interpreting the environmental indicators.
 
         **Data Reconstruction**: To reconstruct the hierarchical structure:
-        1. Group rows by `manufacturerIdGln` + `manufacturerProductNumber` for products
+        1. Group rows by `productRef` for products
         2. All rows for a product share the same parent context (declared unit, lifetime, verification)
         3. Each row represents a different life cycle stage (A1-A3, B1-B7, C1-C4, D)
 
@@ -714,8 +729,7 @@ paths:
                   summary: Multiple products with various life cycle stages
                   value:
                     data:
-                      - manufacturerIdGln: '1234567890123'
-                        manufacturerProductNumber: '929002376910'
+                      - productRef: prod-001
                         declaredUnitUnit: PCE
                         declaredUnitQuantity: 1
                         lcaReferenceLifetime: 25
@@ -727,8 +741,7 @@ paths:
                         declaredUnitGwpBiogenic: 1.2
                         declaredUnitAp: 0.05
                         declaredUnitAdpf: 185.5
-                      - manufacturerIdGln: '1234567890123'
-                        manufacturerProductNumber: '929002376910'
+                      - productRef: prod-001
                         declaredUnitUnit: PCE
                         declaredUnitQuantity: 1
                         lcaReferenceLifetime: 25
@@ -737,8 +750,7 @@ paths:
                         lcaDeclarationIndicator: AGG
                         declaredUnitGwpTotal: 2.5
                         declaredUnitAdpf: 35
-                      - manufacturerIdGln: '1234567890123'
-                        manufacturerProductNumber: '929002376910'
+                      - productRef: prod-001
                         declaredUnitUnit: PCE
                         declaredUnitQuantity: 1
                         lcaReferenceLifetime: 25
@@ -747,8 +759,7 @@ paths:
                         lcaDeclarationIndicator: MDE
                         declaredUnitGwpTotal: -5.2
                         declaredUnitAdpf: -45
-                      - manufacturerIdGln: '9876543210987'
-                        manufacturerProductNumber: CABLE-CU-100M
+                      - productRef: prod-002
                         declaredUnitUnit: KGM
                         declaredUnitQuantity: 1
                         lcaReferenceLifetime: 50
@@ -768,8 +779,7 @@ paths:
                   summary: Filtered to production stage only
                   value:
                     data:
-                      - manufacturerIdGln: '1234567890123'
-                        manufacturerProductNumber: '929002376910'
+                      - productRef: prod-001
                         declaredUnitUnit: PCE
                         declaredUnitQuantity: 1
                         lcaReferenceLifetime: 25
@@ -1009,10 +1019,21 @@ components:
         which supports language filtering.
       additionalProperties: false
       required:
+        - productRef
         - manufacturerIdGln
         - manufacturerProductNumber
         - productValidityDate
       properties:
+        productRef:
+          description: |
+            Server-generated opaque reference key that uniquely identifies this product.
+            Used to correlate product data across bulk endpoints (descriptions, classifications, etc.).
+
+            This is a technical identifier not present in the ETIM xChange domain model.
+          $ref: '#/components/schemas/TechnicalId'
+          examples:
+            - prod-929002376910
+            - f47ac10b-58cc-4372-a567-0e02b2c3d479
         manufacturerIdGln:
           type: string
           pattern: ^[0-9]{13}$
@@ -1169,7 +1190,8 @@ components:
             **ETIM xChange**: `RelatedManufacturerProductGroup`  
             **Path**: `Supplier[].Product[].ProductDetails.RelatedManufacturerProductGroup[]`
       examples:
-        - manufacturerIdGln: '1234567890123'
+        - productRef: prod-929002376910
+          manufacturerIdGln: '1234567890123'
           manufacturerProductNumber: '929002376910'
           productGtins:
             - '8718699673826'
@@ -1206,31 +1228,30 @@ components:
         **Path**: `Supplier[].Product[].ProductDetails.ProductDescriptions[]`
       additionalProperties: false
       required:
-        - manufacturerIdGln
-        - manufacturerProductNumber
+        - productRef
         - minimalProductDescription
       properties:
-        manufacturerIdGln:
-          type: string
-          pattern: ^[0-9]{13}$
+        productRef:
           description: |
-            Global Location Number (GLN) identifying the manufacturer.
-            13-digit GS1 identifier. Part of the composite product identifier.
-          examples:
-            - '1234567890123'
-        manufacturerProductNumber:
-          type: string
-          minLength: 1
-          maxLength: 35
-          description: |
-            Manufacturer's unique product identifier.
-            Part of the composite product identifier.
+            Server-generated opaque reference key that identifies the parent product.
+            Use this to correlate with the corresponding product record from the
+            `/bulk/product-details` endpoint.
 
-            **ETIM xChange**: `ManufacturerProductNumber`  
-            **Path**: `Supplier[].Product[].ProductIdentification.ManufacturerProductNumber`
+            This is a technical identifier not present in the ETIM xChange domain model.
+          $ref: '#/components/schemas/TechnicalId'
           examples:
-            - '929002376910'
-            - ABC-12345-XYZ
+            - prod-929002376910
+            - f47ac10b-58cc-4372-a567-0e02b2c3d479
+        descriptionRef:
+          description: |
+            Server-generated opaque reference key that uniquely identifies this description entry
+            within the scope of a product.
+
+            This is a technical identifier not present in the ETIM xChange domain model.
+          $ref: '#/components/schemas/TechnicalId'
+          examples:
+            - desc-en-gb-001
+            - a1b2c3d4-e5f6-7890-abcd-ef1234567890
         descriptionLanguage:
           type:
             - string
@@ -1362,8 +1383,8 @@ components:
           examples:
             - https://www.philips.com/products/hue-white-color-e27
       examples:
-        - manufacturerIdGln: '1234567890123'
-          manufacturerProductNumber: '929002376910'
+        - productRef: prod-929002376910
+          descriptionRef: desc-en-gb-001
           descriptionLanguage: en-GB
           minimalProductDescription: LED Smart Bulb E27
           uniqueMainProductDescription: Philips Hue White and Color Ambiance E27 LED Smart Bulb
@@ -1374,8 +1395,8 @@ components:
             - color
             - Bluetooth
           productPageUrl: https://www.philips.com/products/hue-white-color-e27
-        - manufacturerIdGln: '1234567890123'
-          manufacturerProductNumber: '929002376910'
+        - productRef: prod-929002376910
+          descriptionRef: desc-de-de-002
           descriptionLanguage: de-DE
           minimalProductDescription: LED Smart Lampe E27
           uniqueMainProductDescription: Philips Hue White and Color Ambiance E27 LED Smart Lampe
@@ -1386,16 +1407,27 @@ components:
             - Farbe
             - Bluetooth
           productPageUrl: https://www.philips.de/products/hue-white-color-e27
-        - manufacturerIdGln: '9876543210987'
-          manufacturerProductNumber: LED-12345-A
+        - productRef: prod-led-12345
+          descriptionRef: desc-en-gb-003
           descriptionLanguage: en-GB
           minimalProductDescription: LED Downlight 10W 4000K
     ProductDescription:
       type: object
       additionalProperties: false
       required:
+        - descriptionRef
         - minimalProductDescription
       properties:
+        descriptionRef:
+          description: |
+            Server-generated opaque reference key that uniquely identifies this description entry
+            within the scope of a product.
+
+            This is a technical identifier not present in the ETIM xChange domain model.
+          $ref: '#/components/schemas/TechnicalId'
+          examples:
+            - desc-en-gb-001
+            - a1b2c3d4-e5f6-7890-abcd-ef1234567890
         descriptionLanguage:
           type:
             - string
@@ -1535,7 +1567,8 @@ components:
             - https://www.philips.com/products/hue-white-color-e27
             - null
       examples:
-        - descriptionLanguage: en-GB
+        - descriptionRef: desc-en-gb-001
+          descriptionLanguage: en-GB
           minimalProductDescription: LED Smart Bulb E27 White & Color
           uniqueMainProductDescription: Philips Hue White and Color Ambiance E27 LED Smart Bulb, 806 lumens, Bluetooth
           fullProductDescription: The Philips Hue White and Color Ambiance E27 LED Smart Bulb offers 16 million colors and 50,000 shades of white light. Control it with your smartphone or voice using Alexa, Google Assistant, or Apple HomeKit.
@@ -1549,9 +1582,20 @@ components:
       type: object
       additionalProperties: false
       required:
+        - classificationRef
         - etimClassCode
         - etimReleaseVersion
       properties:
+        classificationRef:
+          description: |
+            Server-generated opaque reference key that uniquely identifies this ETIM classification
+            within the scope of a product.
+
+            This is a technical identifier not present in the ETIM xChange domain model.
+          $ref: '#/components/schemas/TechnicalId'
+          examples:
+            - class-ec002745-9.0
+            - a1b2c3d4-e5f6-7890-abcd-ef1234567890
         etimClassCode:
           type: string
           pattern: ^EC[0-9]{6}$
@@ -1619,34 +1663,53 @@ components:
             **ETIM xChange**: `EtimFeatures`  
             **Path**: `Supplier[].Product[].EtimClassification[].EtimFeatures[]`
           examples:
-            - - etimFeatureCode: EF000123
+            - - featureRef: feat-001
+                etimFeatureCode: EF000123
                 etimValueCode: EV000789
-              - etimFeatureCode: EF000456
+              - featureRef: feat-002
+                etimFeatureCode: EF000456
                 etimValueNumeric: 230
             - null
       examples:
-        - etimClassCode: EC002745
+        - classificationRef: class-ec002745-9.0
+          etimClassCode: EC002745
           etimClassVersion: 1
           etimReleaseVersion: '9.0'
           etimFeatures:
-            - etimFeatureCode: EF000123
+            - featureRef: feat-001
+              etimFeatureCode: EF000123
               etimValueCode: EV000789
-            - etimFeatureCode: EF000456
+            - featureRef: feat-002
+              etimFeatureCode: EF000456
               etimValueNumeric: 230
-            - etimFeatureCode: EF000789
+            - featureRef: feat-003
+              etimFeatureCode: EF000789
               etimValueLogical: true
-        - etimClassCode: EC000123
+        - classificationRef: class-ec000123-11.0
+          etimClassCode: EC000123
           etimClassVersion: 2
           etimReleaseVersion: '11.0'
-        - etimClassCode: EC001234
+        - classificationRef: class-ec001234-10.0
+          etimClassCode: EC001234
           etimClassVersion: null
           etimReleaseVersion: '10.0'
     EtimFeature:
       type: object
       additionalProperties: false
       required:
+        - featureRef
         - etimFeatureCode
       properties:
+        featureRef:
+          description: |
+            Server-generated opaque reference key that uniquely identifies this feature value
+            within the scope of an ETIM classification.
+
+            This is a technical identifier not present in the ETIM xChange domain model.
+          $ref: '#/components/schemas/TechnicalId'
+          examples:
+            - feat-ef000123-001
+            - a1b2c3d4-e5f6-7890-abcd-ef1234567890
         etimFeatureCode:
           type: string
           pattern: ^EF([0-9]{6}|I[0-9]{5}|[A-Z]{2}[0-9]{4})$
@@ -1797,16 +1860,21 @@ components:
             - NA
             - null
       examples:
-        - etimFeatureCode: EF000123
+        - featureRef: feat-ef000123-001
+          etimFeatureCode: EF000123
           etimValueCode: EV000789
-        - etimFeatureCode: EF000456
+        - featureRef: feat-ef000456-002
+          etimFeatureCode: EF000456
           etimValueNumeric: 230
-        - etimFeatureCode: EF000789
+        - featureRef: feat-ef000789-003
+          etimFeatureCode: EF000789
           etimValueRangeLower: 100
           etimValueRangeUpper: 240
-        - etimFeatureCode: EF001234
+        - featureRef: feat-ef001234-004
+          etimFeatureCode: EF001234
           etimValueLogical: true
-        - etimFeatureCode: EF005678
+        - featureRef: feat-ef005678-005
+          etimFeatureCode: EF005678
           reasonNoValue: NA
     ProductEtimClassificationFeature:
       type: object
@@ -1827,29 +1895,44 @@ components:
         with `etimFeatureCode` omitted (or null if explicitly set).
       additionalProperties: false
       required:
-        - manufacturerIdGln
-        - manufacturerProductNumber
+        - productRef
+        - classificationRef
         - etimClassCode
         - etimReleaseVersion
       properties:
-        manufacturerIdGln:
-          type: string
-          pattern: ^[0-9]{13}$
+        productRef:
           description: |
-            GLN (Global Location Number) of the product manufacturer.
-            Part of the composite product identifier.
+            Server-generated opaque reference key that identifies the parent product.
+            Use this to correlate with the corresponding product record from the
+            `/bulk/product-details` endpoint.
+
+            This is a technical identifier not present in the ETIM xChange domain model.
+          $ref: '#/components/schemas/TechnicalId'
           examples:
-            - '1234567890123'
-        manufacturerProductNumber:
-          type: string
-          minLength: 1
-          maxLength: 35
+            - prod-929002376910
+            - f47ac10b-58cc-4372-a567-0e02b2c3d479
+        classificationRef:
           description: |
-            Manufacturer's product number/code.
-            Part of the composite product identifier.
+            Server-generated opaque reference key that identifies the parent ETIM classification.
+            Use this to correlate with the corresponding classification record from the
+            `/bulk/product-etim-classifications` endpoint.
+
+            This is a technical identifier not present in the ETIM xChange domain model.
+          $ref: '#/components/schemas/TechnicalId'
           examples:
-            - '929002376910'
-            - LED-12345-A
+            - class-ec002745-9.0
+            - a1b2c3d4-e5f6-7890-abcd-ef1234567890
+        featureRef:
+          description: |
+            Server-generated opaque reference key that uniquely identifies this feature value
+            within the scope of an ETIM classification.
+            Omitted for classification-only rows (no features).
+
+            This is a technical identifier not present in the ETIM xChange domain model.
+          $ref: '#/components/schemas/TechnicalId'
+          examples:
+            - feat-ef000123-001
+            - a1b2c3d4-e5f6-7890-abcd-ef1234567890
         etimClassCode:
           type: string
           pattern: ^EC[0-9]{6}$
@@ -2054,42 +2137,47 @@ components:
             - NA
             - MV
       examples:
-        - manufacturerIdGln: '1234567890123'
-          manufacturerProductNumber: '929002376910'
+        - productRef: prod-929002376910
+          classificationRef: class-ec002745-9.0
+          featureRef: feat-ef000123-001
           etimClassCode: EC002745
           etimClassVersion: 1
           etimReleaseVersion: '9.0'
           etimFeatureCode: EF000123
           etimValueCode: EV000789
-        - manufacturerIdGln: '1234567890123'
-          manufacturerProductNumber: '929002376910'
+        - productRef: prod-929002376910
+          classificationRef: class-ec002745-9.0
+          featureRef: feat-ef000456-002
           etimClassCode: EC002745
           etimClassVersion: 1
           etimReleaseVersion: '9.0'
           etimFeatureCode: EF000456
           etimValueNumeric: 230
-        - manufacturerIdGln: '1234567890123'
-          manufacturerProductNumber: '929002376910'
+        - productRef: prod-929002376910
+          classificationRef: class-ec002745-10.0
+          featureRef: feat-ef000789-003
           etimClassCode: EC002745
           etimClassVersion: 1
           etimReleaseVersion: '10.0'
           etimFeatureCode: EF000789
           etimValueRangeLower: 100
           etimValueRangeUpper: 240
-        - manufacturerIdGln: '1234567890123'
-          manufacturerProductNumber: '929002376910'
+        - productRef: prod-929002376910
+          classificationRef: class-ec002745-10.0
+          featureRef: feat-ef001234-004
           etimClassCode: EC002745
           etimClassVersion: 1
           etimReleaseVersion: '10.0'
           etimFeatureCode: EF001234
           etimValueLogical: true
-        - manufacturerIdGln: '9876543210987'
-          manufacturerProductNumber: LED-12345-A
+        - productRef: prod-led-12345
+          classificationRef: class-ec001234-11.0
           etimClassCode: EC001234
           etimClassVersion: 2
           etimReleaseVersion: '11.0'
-        - manufacturerIdGln: '1234567890123'
-          manufacturerProductNumber: '929002376910'
+        - productRef: prod-929002376910
+          classificationRef: class-ec002745-9.0
+          featureRef: feat-ef005678-005
           etimClassCode: EC002745
           etimClassVersion: 1
           etimReleaseVersion: '9.0'
@@ -2823,8 +2911,7 @@ components:
         to provide necessary context for interpreting the environmental indicators.
       additionalProperties: false
       required:
-        - manufacturerIdGln
-        - manufacturerProductNumber
+        - productRef
         - lifeCycleStage
         - lcaDeclarationIndicator
         - declaredUnitUnit
@@ -2832,30 +2919,17 @@ components:
         - lcaReferenceLifetime
         - thirdPartyVerification
       properties:
-        manufacturerIdGln:
-          type: string
-          pattern: ^[0-9]{13}$
+        productRef:
           description: |
-            GLN (Global Location Number) of the product manufacturer.
-            Part of the composite product identifier.
+            Server-generated opaque reference key that identifies the parent product.
+            Use this to correlate with the corresponding product record from the
+            `/bulk/product-details` endpoint.
 
-            **ETIM xChange**: `ManufacturerIdGln`
-            **Path**: `Supplier[].Product[].ProductIdentification.ManufacturerIdGln`
+            This is a technical identifier not present in the ETIM xChange domain model.
+          $ref: '#/components/schemas/TechnicalId'
           examples:
-            - '1234567890123'
-        manufacturerProductNumber:
-          type: string
-          minLength: 1
-          maxLength: 35
-          description: |
-            Manufacturer's product number/code.
-            Part of the composite product identifier.
-
-            **ETIM xChange**: `ManufacturerProductNumber`
-            **Path**: `Supplier[].Product[].ProductIdentification.ManufacturerProductNumber`
-          examples:
-            - '929002376910'
-            - LED-12345-A
+            - prod-929002376910
+            - f47ac10b-58cc-4372-a567-0e02b2c3d479
         declaredUnitUnit:
           type: string
           enum:
@@ -3269,8 +3343,7 @@ components:
           examples:
             - 15.5
       examples:
-        - manufacturerIdGln: '1234567890123'
-          manufacturerProductNumber: '929002376910'
+        - productRef: prod-929002376910
           declaredUnitUnit: PCE
           declaredUnitQuantity: 1
           lcaReferenceLifetime: 25
@@ -3288,8 +3361,7 @@ components:
           declaredUnitAdpf: 185.5
           declaredUnitPert: 45.2
           declaredUnitPenrt: 195.8
-        - manufacturerIdGln: '1234567890123'
-          manufacturerProductNumber: '929002376910'
+        - productRef: prod-929002376910
           declaredUnitUnit: PCE
           declaredUnitQuantity: 1
           lcaReferenceLifetime: 25
@@ -3299,8 +3371,7 @@ components:
           declaredUnitGwpTotal: 2.5
           declaredUnitGwpFossil: 2.3
           declaredUnitAdpf: 35
-        - manufacturerIdGln: '1234567890123'
-          manufacturerProductNumber: '929002376910'
+        - productRef: prod-929002376910
           declaredUnitUnit: PCE
           declaredUnitQuantity: 1
           lcaReferenceLifetime: 25
@@ -3309,8 +3380,7 @@ components:
           lcaDeclarationIndicator: MDE
           declaredUnitGwpTotal: -5.2
           declaredUnitAdpf: -45
-        - manufacturerIdGln: '9876543210987'
-          manufacturerProductNumber: CABLE-CU-100M
+        - productRef: prod-cable-cu-100m
           declaredUnitUnit: KGM
           declaredUnitQuantity: 1
           lcaReferenceLifetime: 50
@@ -3484,7 +3554,8 @@ components:
               warrantyConsumer: 24
               warrantyBusiness: 36
             descriptions:
-              - descriptionLanguage: en-GB
+              - descriptionRef: desc-001
+                descriptionLanguage: en-GB
                 minimalProductDescription: LED Smart Bulb E27
                 uniqueMainProductDescription: Philips Hue White and Color Ambiance E27 LED Smart Bulb with Bluetooth
                 productKeyword:
@@ -3492,11 +3563,13 @@ components:
                   - LED
                   - color
             etimClassifications:
-              - etimClassCode: EC002745
+              - classificationRef: cls-001
+                etimClassCode: EC002745
                 etimClassVersion: 1
                 etimReleaseVersion: '9.0'
                 etimFeatures:
-                  - etimFeatureCode: EF012345
+                  - featureRef: feat-001
+                    etimFeatureCode: EF012345
                     etimValueNumeric: 10
     ProductDetailsResponse:
       type: object
@@ -3610,7 +3683,8 @@ components:
             manufacturerIdGln: '1234567890123'
             manufacturerProductNumber: '929002376910'
             descriptions:
-              - descriptionLanguage: en-GB
+              - descriptionRef: desc-001
+                descriptionLanguage: en-GB
                 minimalProductDescription: LED Smart Bulb E27 White & Color
                 uniqueMainProductDescription: Philips Hue White and Color Ambiance E27 LED Smart Bulb, 806 lumens, Bluetooth
                 fullProductDescription: The Philips Hue White and Color Ambiance E27 LED Smart Bulb offers 16 million colors and 50,000 shades of white light. Control it with your smartphone or voice using Alexa, Google Assistant, or Apple HomeKit.
@@ -3620,7 +3694,8 @@ components:
                   - color
                   - Bluetooth
                 productPageUrl: https://www.philips.com/products/hue-white-color-e27
-              - descriptionLanguage: de-DE
+              - descriptionRef: desc-002
+                descriptionLanguage: de-DE
                 minimalProductDescription: LED Smart-Lampe E27 Weiß & Farbe
                 uniqueMainProductDescription: Philips Hue White and Color Ambiance E27 LED Smart-Lampe, 806 Lumen, Bluetooth
         - data:
@@ -3671,19 +3746,24 @@ components:
             manufacturerIdGln: '1234567890123'
             manufacturerProductNumber: '929002376910'
             etimClassifications:
-              - etimClassCode: EC002745
+              - classificationRef: cls-001
+                etimClassCode: EC002745
                 etimClassVersion: 1
                 etimReleaseVersion: '9.0'
                 etimFeatures:
-                  - etimFeatureCode: EF000123
+                  - featureRef: feat-001
+                    etimFeatureCode: EF000123
                     etimValueCode: EV000789
-                  - etimFeatureCode: EF000456
+                  - featureRef: feat-002
+                    etimFeatureCode: EF000456
                     etimValueNumeric: 230
-              - etimClassCode: EC001234
+              - classificationRef: cls-002
+                etimClassCode: EC001234
                 etimClassVersion: 2
                 etimReleaseVersion: '11.0'
                 etimFeatures:
-                  - etimFeatureCode: EF000789
+                  - featureRef: feat-003
+                    etimFeatureCode: EF000789
                     etimValueLogical: true
     BulkProductDetailsResponse:
       type: object
@@ -3702,7 +3782,8 @@ components:
           description: Cursor-based pagination metadata
       examples:
         - data:
-            - manufacturerIdGln: '1234567890123'
+            - productRef: prod-001
+              manufacturerIdGln: '1234567890123'
               manufacturerProductNumber: '929002376910'
               productGtins:
                 - '8718699673826'
@@ -3744,8 +3825,8 @@ components:
           description: Cursor-based pagination metadata
       examples:
         - data:
-            - manufacturerIdGln: '1234567890123'
-              manufacturerProductNumber: '929002376910'
+            - productRef: prod-001
+              descriptionRef: desc-001
               descriptionLanguage: en-GB
               minimalProductDescription: LED Smart Bulb E27
               uniqueMainProductDescription: Philips Hue White and Color Ambiance E27 LED Smart Bulb
@@ -3755,13 +3836,13 @@ components:
                 - LED
                 - color
               productPageUrl: https://www.philips.com/products/hue-white-color-e27
-            - manufacturerIdGln: '1234567890123'
-              manufacturerProductNumber: '929002376910'
+            - productRef: prod-001
+              descriptionRef: desc-002
               descriptionLanguage: de-DE
               minimalProductDescription: LED Smart Lampe E27
               uniqueMainProductDescription: Philips Hue White and Color Ambiance E27 LED Smart Lampe
-            - manufacturerIdGln: '1234567890123'
-              manufacturerProductNumber: '929002376911'
+            - productRef: prod-002
+              descriptionRef: desc-003
               descriptionLanguage: en-GB
               minimalProductDescription: LED Downlight 10W
               uniqueMainProductDescription: Philips CoreLine Recessed LED Downlight 10W 4000K
@@ -3787,8 +3868,8 @@ components:
         to minimize payload size. Clients should treat missing properties as null/not applicable.
 
         **Data Reconstruction**: To reconstruct the hierarchical structure:
-        1. Group rows by `manufacturerIdGln` + `manufacturerProductNumber` for products
-        2. Within each product, group by `etimClassCode` + `etimClassVersion` for classifications
+        1. Group rows by `productRef` for products
+        2. Within each product, group by `classificationRef` for classifications
         3. Features are individual rows within each classification group
 
         **Classification-Only Rows**: Products with classifications but no features are represented
@@ -3805,10 +3886,9 @@ components:
             Each item represents a single feature value for a product classification.
 
             Rows are ordered by:
-            1. `manufacturerIdGln` (ascending)
-            2. `manufacturerProductNumber` (ascending)
-            3. `etimClassCode` (ascending)
-            4. `etimFeatureCode` (ascending, nulls first)
+            1. `productRef` (ascending)
+            2. `classificationRef` (ascending)
+            3. `featureRef` (ascending, nulls first)
           items:
             $ref: '#/components/schemas/ProductEtimClassificationFeature'
         meta:
@@ -3817,32 +3897,35 @@ components:
             Cursor-based pagination metadata.
 
             The cursor encodes the position based on the composite key:
-            `manufacturerIdGln` + `manufacturerProductNumber` + `etimClassCode` + `etimFeatureCode`
+            `productRef` + `classificationRef` + `featureRef`
       examples:
         - data:
-            - manufacturerIdGln: '1234567890123'
-              manufacturerProductNumber: '929002376910'
+            - productRef: prod-001
+              classificationRef: cls-001
+              featureRef: feat-001
               etimClassCode: EC002745
               etimClassVersion: 1
               etimReleaseVersion: '9.0'
               etimFeatureCode: EF000123
               etimValueCode: EV000789
-            - manufacturerIdGln: '1234567890123'
-              manufacturerProductNumber: '929002376910'
+            - productRef: prod-001
+              classificationRef: cls-001
+              featureRef: feat-002
               etimClassCode: EC002745
               etimClassVersion: 1
               etimReleaseVersion: '9.0'
               etimFeatureCode: EF000456
               etimValueNumeric: 230
-            - manufacturerIdGln: '1234567890123'
-              manufacturerProductNumber: '929002376910'
+            - productRef: prod-001
+              classificationRef: cls-001
+              featureRef: feat-003
               etimClassCode: EC002745
               etimClassVersion: 1
               etimReleaseVersion: '10.0'
               etimFeatureCode: EF000789
               etimValueLogical: true
-            - manufacturerIdGln: '9876543210987'
-              manufacturerProductNumber: LED-12345-A
+            - productRef: prod-002
+              classificationRef: cls-002
               etimClassCode: EC001234
               etimClassVersion: 2
               etimReleaseVersion: '11.0'
@@ -3944,7 +4027,7 @@ components:
         to provide necessary context for interpreting the environmental indicators.
 
         **Data Reconstruction**: To reconstruct the hierarchical structure:
-        1. Group rows by `manufacturerIdGln` + `manufacturerProductNumber` for products
+        1. Group rows by `productRef` for products
         2. All rows for a product share the same parent context (declared unit, lifetime, verification)
         3. Each row represents a different life cycle stage (A1-A3, B1-B7, C1-C4, D)
       additionalProperties: false
@@ -3959,9 +4042,8 @@ components:
             Each item represents a single life cycle stage declaration for a product.
 
             Rows are ordered by:
-            1. `manufacturerIdGln` (ascending)
-            2. `manufacturerProductNumber` (ascending)
-            3. `lifeCycleStage` (ascending)
+            1. `productRef` (ascending)
+            2. `lifeCycleStage` (ascending)
           items:
             $ref: '#/components/schemas/ProductLcaDeclarationSummary'
         meta:
@@ -3970,11 +4052,10 @@ components:
             Cursor-based pagination metadata.
 
             The cursor encodes the position based on the composite key:
-            `manufacturerIdGln` + `manufacturerProductNumber` + `lifeCycleStage`
+            `productRef` + `lifeCycleStage`
       examples:
         - data:
-            - manufacturerIdGln: '1234567890123'
-              manufacturerProductNumber: '929002376910'
+            - productRef: prod-001
               declaredUnitUnit: PCE
               declaredUnitQuantity: 1
               lcaReferenceLifetime: 25
@@ -3986,8 +4067,7 @@ components:
               declaredUnitGwpBiogenic: 1.2
               declaredUnitAp: 0.05
               declaredUnitAdpf: 185.5
-            - manufacturerIdGln: '1234567890123'
-              manufacturerProductNumber: '929002376910'
+            - productRef: prod-001
               declaredUnitUnit: PCE
               declaredUnitQuantity: 1
               lcaReferenceLifetime: 25
@@ -3996,8 +4076,7 @@ components:
               lcaDeclarationIndicator: AGG
               declaredUnitGwpTotal: 2.5
               declaredUnitAdpf: 35
-            - manufacturerIdGln: '1234567890123'
-              manufacturerProductNumber: '929002376910'
+            - productRef: prod-001
               declaredUnitUnit: PCE
               declaredUnitQuantity: 1
               lcaReferenceLifetime: 25
@@ -4006,8 +4085,7 @@ components:
               lcaDeclarationIndicator: MDE
               declaredUnitGwpTotal: -5.2
               declaredUnitAdpf: -45
-            - manufacturerIdGln: '9876543210987'
-              manufacturerProductNumber: CABLE-CU-100M
+            - productRef: prod-002
               declaredUnitUnit: KGM
               declaredUnitQuantity: 1
               lcaReferenceLifetime: 50

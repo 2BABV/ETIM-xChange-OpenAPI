@@ -1,9 +1,21 @@
 type: object
 additionalProperties: false
 required:
+  - attachmentRef
   - attachmentType
   - attachmentDetails
 properties:
+  attachmentRef:
+    description: |
+      Server-generated opaque reference key that uniquely identifies this attachment group
+      within the scope of a product.
+      
+      This is a technical identifier not present in the ETIM xChange domain model.
+    $ref: ../../../../shared/schemas/identifiers/TechnicalId.yaml
+    examples:
+      - "att-image-001"
+      - "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+  
   attachmentType:
     $ref: ../enums/AttachmentType.yaml
     description: |
@@ -47,7 +59,8 @@ properties:
       **Path**: `Supplier[].Product[].ProductAttachments[].AttachmentDetails[]`
 
 examples:
-  - attachmentType: "ATX001"
+  - attachmentRef: "att-image-001"
+    attachmentType: "ATX001"
     attachmentTypeSpecification: "MDX002"
     attachmentOrder: 1
     attachmentDetails:
@@ -57,7 +70,8 @@ examples:
         attachmentDescription:
           - language: "en-GB"
             attachmentDescription: "Front view product image"
-  - attachmentType: "ATX014"
+  - attachmentRef: "att-datasheet-002"
+    attachmentType: "ATX014"
     attachmentOrder: 2
     attachmentDetails:
       - attachmentUri: "https://cdn.manufacturer.com/products/datasheets/LED-12345-en.pdf"

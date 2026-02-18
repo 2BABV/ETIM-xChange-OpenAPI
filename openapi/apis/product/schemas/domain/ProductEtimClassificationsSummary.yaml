@@ -4,24 +4,26 @@ description: |
   Contains ETIM class codes, versions, and feature data.
 additionalProperties: false
 required:
-  - manufacturerIdGln
-  - manufacturerProductNumber
+  - productRef
 properties:
-  manufacturerIdGln:
-    type: string
-    pattern: "^[0-9]{13}$"
-  manufacturerProductNumber:
-    type: string
-    minLength: 1
-    maxLength: 35
+  productRef:
+    description: |
+      Server-generated opaque reference key that identifies the parent product.
+      Use this to correlate with the corresponding product record from the
+      `/bulk/product-details` endpoint.
+      
+      This is a technical identifier not present in the ETIM xChange domain model.
+    $ref: ../../../../shared/schemas/identifiers/TechnicalId.yaml
+    examples:
+      - "prod-929002376910"
+      - "f47ac10b-58cc-4372-a567-0e02b2c3d479"
   etimClassifications:
     type: ["array", "null"]
     items:
       $ref: ./EtimClassification.yaml
 
 examples:
-  - manufacturerIdGln: "1234567890123"
-    manufacturerProductNumber: "929002376910"
+  - productRef: "prod-929002376910"
     etimClassifications:
       - etimClassCode: "EC002745"
         etimClassVersion: 1

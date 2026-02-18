@@ -6,7 +6,7 @@ description: |
   with embedded keys for joining back to pricing data. This follows the same pattern as 
   `ProductEtimClassificationFeature` - 1 row per data point.
   
-  **Join Keys**: Use `supplierIdGln` + `supplierItemNumber` + `pricingRef` to join
+  **Join Keys**: Use `tradeItemRef` + `pricingRef` to join
   with `/bulk/trade-item-pricings` data.
   
   Use the `cursor` from `meta` to retrieve the next page of results.
@@ -30,9 +30,9 @@ properties:
 examples:
   - data:
       # Percentage-based allowance
-      - supplierIdGln: "8712423012485"
-        supplierItemNumber: "SKU-LAMP-001"
+      - tradeItemRef: "ti-001"
         pricingRef: "price-c62-1-20250101"
+        allowanceSurchargeRef: "as-001"
         allowanceSurchargeIndicator: ALLOWANCE
         allowanceSurchargeType: AEQ
         allowanceSurchargeSequenceNumber: 1
@@ -40,27 +40,27 @@ examples:
         allowanceSurchargeMinimumQuantity: 50
         allowanceSurchargeDescription: "Bulk quantity discount"
       # Fixed amount surcharge
-      - supplierIdGln: "8712423012485"
-        supplierItemNumber: "SKU-CABLE-002"
+      - tradeItemRef: "ti-002"
         pricingRef: "price-mtr-1-20250101"
+        allowanceSurchargeRef: "as-002"
         allowanceSurchargeIndicator: SURCHARGE
         allowanceSurchargeType: DBD
         allowanceSurchargeSequenceNumber: 1
         allowanceSurchargeAmount: 25.00
         allowanceSurchargeDescription: "Delivery surcharge"
       # Multiple allowances for same price (volume tiers)
-      - supplierIdGln: "8712423012485"
-        supplierItemNumber: "SKU-TOOL-003"
+      - tradeItemRef: "ti-003"
         pricingRef: "price-c62-1-20250101"
+        allowanceSurchargeRef: "as-003"
         allowanceSurchargeIndicator: ALLOWANCE
         allowanceSurchargeType: AEQ
         allowanceSurchargeSequenceNumber: 1
         allowanceSurchargePercentage: 10.0
         allowanceSurchargeMinimumQuantity: 100
         allowanceSurchargeDescription: "Volume discount tier 1"
-      - supplierIdGln: "8712423012485"
-        supplierItemNumber: "SKU-TOOL-003"
+      - tradeItemRef: "ti-003"
         pricingRef: "price-c62-1-20250101"
+        allowanceSurchargeRef: "as-004"
         allowanceSurchargeIndicator: ALLOWANCE
         allowanceSurchargeType: AEQ
         allowanceSurchargeSequenceNumber: 2

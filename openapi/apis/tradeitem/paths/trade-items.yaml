@@ -23,6 +23,7 @@ get:
               summary: Complete trade item with all optional fields
               value:
                 data:
+                  tradeItemRef: "ti-001"
                   supplierIdGln: "1234567890123"
                   supplierItemNumber: "ART-12345"
                   supplierAltItemNumber: "ALT-12345"
@@ -60,13 +61,15 @@ get:
                       priceValidityDate: "2025-01-01"
                       priceExpiryDate: "2025-12-31"
                   itemRelations:
-                    - relatedSupplierItemNumber: "ART-12346"
+                    - relationRef: "rel-001"
+                      relatedSupplierItemNumber: "ART-12346"
                       relatedManufacturerItemNumber: "MFG-98766"
                       relatedItemGtins: ["4012345678902"]
                       relationType: ACCESSORY
                       relatedItemQuantity: 2
                   itemLogistics:
-                    - baseItemNetLength: 25.5
+                    - logisticsRef: "log-001"
+                      baseItemNetLength: 25.5
                       baseItemNetWidth: 15.0
                       baseItemNetHeight: 10.0
                       baseItemNetDiameter: null
@@ -76,7 +79,8 @@ get:
                       baseItemNetVolume: 3.825
                       netVolumeUnit: LTR
                   itemAttachments:
-                    - attachmentType: ATX001
+                    - attachmentRef: "att-001"
+                      attachmentType: ATX001
                       attachmentUri: "https://example.com/images/hammer-main.jpg"
                       attachmentDescription: "Product main image"
                       attachmentFilename: "hammer-main.jpg"
@@ -96,6 +100,7 @@ get:
               summary: Minimal trade item with only required fields
               value:
                 data:
+                  tradeItemRef: "ti-002"
                   supplierIdGln: "9876543210987"
                   supplierItemNumber: "SKU-MIN-001"
                   supplierAltItemNumber: null

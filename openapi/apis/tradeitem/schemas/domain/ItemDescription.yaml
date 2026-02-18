@@ -4,8 +4,19 @@ description: |
   Extracted from ETIM xChange `TradeItem.ItemDetails.ItemDescriptions[]` structure.
 additionalProperties: false
 required:
+  - descriptionRef
   - minimalItemDescription
 properties:
+  descriptionRef:
+    description: |
+      Server-generated opaque reference key that uniquely identifies this description entry
+      within the scope of a trade item.
+      
+      This is a technical identifier not present in the ETIM xChange domain model.
+    $ref: ../../../../shared/schemas/identifiers/TechnicalId.yaml
+    examples:
+      - "desc-en-us-001"
+      - "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
   descriptionLanguage:
     type: ["string", "null"]
     description: |
@@ -41,9 +52,11 @@ properties:
       - "Professional claw hammer with fiberglass handle, 500g head weight, ergonomic grip"
       - null
 examples:
-  - descriptionLanguage: "en-US"
+  - descriptionRef: "desc-en-us-001"
+    descriptionLanguage: "en-US"
     minimalItemDescription: "Hammer 500g"
     uniqueMainItemDescription: "Professional claw hammer with fiberglass handle, 500g head weight"
-  - descriptionLanguage: "de-DE"
+  - descriptionRef: "desc-de-de-002"
+    descriptionLanguage: "de-DE"
     minimalItemDescription: "Hammer 500g"
     uniqueMainItemDescription: null

@@ -17,31 +17,30 @@ description: |
   **Path**: `Supplier[].Product[].TradeItem[].ItemDetails.ItemDescriptions[]`
 additionalProperties: false
 required:
-  - supplierIdGln
-  - supplierItemNumber
+  - tradeItemRef
   - minimalItemDescription
 properties:
-  supplierIdGln:
-    type: string
-    pattern: "^[0-9]{13}$"
+  tradeItemRef:
     description: |
-      Global Location Number (GLN) identifying the supplier.
-      13-digit GS1 identifier. Part of the composite trade item identifier.
-    examples:
-      - "1234567890123"
-  supplierItemNumber:
-    type: string
-    minLength: 1
-    maxLength: 35
-    description: |
-      Supplier's unique item identifier.
-      Part of the composite trade item identifier.
+      Server-generated opaque reference key that identifies the parent trade item.
+      Use this to correlate with the corresponding trade item record from the
+      `/bulk/trade-item-details` endpoint.
       
-      **ETIM xChange**: `SupplierItemNumber`  
-      **Path**: `Supplier[].Product[].TradeItem[].ItemIdentification.SupplierItemNumber`
+      This is a technical identifier not present in the ETIM xChange domain model.
+    $ref: ../../../../shared/schemas/identifiers/TechnicalId.yaml
     examples:
-      - "SKU-12345"
-      - "ITEM-ABC-789"
+      - "ti-sku-12345"
+      - "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+  descriptionRef:
+    description: |
+      Server-generated opaque reference key that uniquely identifies this description entry
+      within the scope of a trade item.
+      
+      This is a technical identifier not present in the ETIM xChange domain model.
+    $ref: ../../../../shared/schemas/identifiers/TechnicalId.yaml
+    examples:
+      - "desc-en-gb-001"
+      - "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
   descriptionLanguage:
     type: ["string", "null"]
     pattern: "^[a-z]{2}[-][A-Z]{2}$"
@@ -82,21 +81,21 @@ properties:
 
 examples:
   # English description
-  - supplierIdGln: "1234567890123"
-    supplierItemNumber: "SKU-12345"
+  - tradeItemRef: "ti-sku-12345"
+    descriptionRef: "desc-en-gb-001"
     descriptionLanguage: "en-GB"
     minimalItemDescription: "LED Lamp 10W E27"
     uniqueMainItemDescription: "Professional LED lamp with E27 socket, 10W warm white"
   
   # German description for same item
-  - supplierIdGln: "1234567890123"
-    supplierItemNumber: "SKU-12345"
+  - tradeItemRef: "ti-sku-12345"
+    descriptionRef: "desc-de-de-002"
     descriptionLanguage: "de-DE"
     minimalItemDescription: "LED Lampe 10W E27"
     uniqueMainItemDescription: "Professionelle LED-Lampe mit E27-Fassung, 10W warmweiß"
   
   # Minimal description only
-  - supplierIdGln: "9876543210987"
-    supplierItemNumber: "ITEM-67890"
+  - tradeItemRef: "ti-item-67890"
+    descriptionRef: "desc-en-gb-003"
     descriptionLanguage: "en-GB"
     minimalItemDescription: "Hammer 500g"

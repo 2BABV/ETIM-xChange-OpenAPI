@@ -40,7 +40,8 @@ get:
               summary: Multiple trade items with pagination
               value:
                 data:
-                  - supplierIdGln: "8712423012485"
+                  - tradeItemRef: "ti-001"
+                    supplierIdGln: "8712423012485"
                     supplierItemNumber: "SKU-LAMP-001"
                     supplierAltItemNumber: "ALT-SKU-001"
                     manufacturerItemNumber: "MFR-12345"
@@ -59,7 +60,8 @@ get:
                     itemCondition: "NEW"
                     stockItem: true
                     shelfLifePeriod: null
-                  - supplierIdGln: "8712423012485"
+                  - tradeItemRef: "ti-002"
+                    supplierIdGln: "8712423012485"
                     supplierItemNumber: "SKU-TOOL-002"
                     supplierAltItemNumber: null
                     manufacturerItemNumber: "MFR-54321"

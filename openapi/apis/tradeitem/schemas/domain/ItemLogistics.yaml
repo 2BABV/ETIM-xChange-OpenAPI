@@ -3,7 +3,19 @@ description: |
   Logistic details including dimensions, weight, and volume of the base item.
   Extracted from ETIM xChange `TradeItem.ItemLogisticDetails[]` structure.
 additionalProperties: false
+required:
+  - logisticsRef
 properties:
+  logisticsRef:
+    description: |
+      Server-generated opaque reference key that uniquely identifies this logistics entry
+      within the scope of a trade item.
+      
+      This is a technical identifier not present in the ETIM xChange domain model.
+    $ref: ../../../../shared/schemas/identifiers/TechnicalId.yaml
+    examples:
+      - "log-001"
+      - "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
   baseItemNetLength:
     type: ["number", "null"]
     description: |
@@ -144,7 +156,8 @@ properties:
       - MTQ
       - null
 examples:
-  - baseItemNetLength: 25.5
+  - logisticsRef: "log-001"
+    baseItemNetLength: 25.5
     baseItemNetWidth: 15.0
     baseItemNetHeight: 10.0
     baseItemNetDiameter: null

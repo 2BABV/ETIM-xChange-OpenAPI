@@ -47,6 +47,7 @@ properties:
           $ref: ./TradeItemAllowanceSurchargeItem.yaml
         examples:
           - - pricingRef: "price-c62-1-20250101"
+              allowanceSurchargeRef: "as-001"
               allowanceSurchargeIndicator: ALLOWANCE
               allowanceSurchargeType: AEQ
               allowanceSurchargePercentage: 5.5
@@ -58,6 +59,7 @@ examples:
       supplierItemNumber: "SKU-12345"
       allowanceSurcharges:
         - pricingRef: "price-c62-1-20250101"
+          allowanceSurchargeRef: "as-001"
           allowanceSurchargeIndicator: ALLOWANCE
           allowanceSurchargeValidityDate: "2025-01-01"
           allowanceSurchargeType: AEQ
@@ -69,6 +71,7 @@ examples:
               allowanceSurchargeDescription: Bulk quantity discount
           allowanceSurchargeMinimumQuantity: 50
         - pricingRef: "price-c62-1-20250101"
+          allowanceSurchargeRef: "as-002"
           allowanceSurchargeIndicator: SURCHARGE
           allowanceSurchargeValidityDate: null
           allowanceSurchargeType: DBD
