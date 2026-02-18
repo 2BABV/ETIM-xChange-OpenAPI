@@ -10,8 +10,7 @@ required: false
 schema:
   type: array
   items:
-    type: string
-    pattern: "^[a-z]{2}[-][A-Z]{2}$"
+    $ref: ../../schemas/common/LanguageCode.yaml
 style: form
 explode: true
 examples:

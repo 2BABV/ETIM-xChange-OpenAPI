@@ -7,8 +7,7 @@ properties:
     type: ["array", "null"]
     uniqueItems: true
     items:
-      type: string
-      pattern: "^[a-z]{2}[-][A-Z]{2}$"
+      $ref: ../../../../shared/schemas/common/LanguageCode.yaml
     description: |
       Languages applicable to this attachment in ISO 639-1 and ISO 3166-1 format (e.g., "en-GB", "de-DE").
       Multiple languages can be specified if the attachment is multilingual.
@@ -54,9 +53,10 @@ properties:
         - attachmentDescription
       properties:
         language:
-          type: ["string", "null"]
-          pattern: "^[a-z]{2}[-][A-Z]{2}$"
           description: Language code for the description
+          anyOf:
+            - $ref: ../../../../shared/schemas/common/LanguageCode.yaml
+            - type: "null"
           examples:
             - "en-GB"
             - "de-DE"

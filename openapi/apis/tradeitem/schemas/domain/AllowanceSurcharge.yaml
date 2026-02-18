@@ -103,9 +103,9 @@ properties:
       - type: "null"
     examples:
       - null
-      - - language: en
+      - - language: "en-GB"
           allowanceSurchargeDescription: Early payment discount
-        - language: nl
+        - language: "nl-NL"
           allowanceSurchargeDescription: Korting voor snelle betaling
   allowanceSurchargeMinimumQuantity:
     type:
@@ -130,7 +130,7 @@ examples:
     allowanceSurchargeSequenceNumber: 1
     allowanceSurchargePercentage: 5.5
     allowanceSurchargeDescription:
-      - language: en
+      - language: "en-GB"
         allowanceSurchargeDescription: Bulk quantity discount
     allowanceSurchargeMinimumQuantity: 50
   - allowanceSurchargeIndicator: SURCHARGE

@@ -102,7 +102,7 @@ properties:
       - type: "null"
     examples:
       - null
-      - - language: en
+      - - language: "en-GB"
           allowanceSurchargeDescription: Early payment discount
   allowanceSurchargeMinimumQuantity:
     type: ["number", "null"]
@@ -125,6 +125,6 @@ examples:
     allowanceSurchargeSequenceNumber: 1
     allowanceSurchargePercentage: 5.5
     allowanceSurchargeDescription:
-      - language: en
+      - language: "en-GB"
         allowanceSurchargeDescription: Bulk quantity discount
     allowanceSurchargeMinimumQuantity: 50

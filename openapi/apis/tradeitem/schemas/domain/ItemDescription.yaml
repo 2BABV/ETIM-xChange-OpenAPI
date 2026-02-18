@@ -7,12 +7,13 @@ required:
   - minimalItemDescription
 properties:
   descriptionLanguage:
-    type: ["string", "null"]
     description: |
       Language code for the description (e.g., 'en-US', 'de-DE', 'nl-NL').
       **ETIM xChange**: `DescriptionLanguage`
       **Path**: `Supplier[].Product[].TradeItem[].ItemDetails.ItemDescriptions[].DescriptionLanguage`
-    pattern: "^[a-z]{2}[-][A-Z]{2}$"
+    anyOf:
+      - $ref: ../../../../shared/schemas/common/LanguageCode.yaml
+      - type: "null"
     examples:
       - "en-US"
       - "de-DE"

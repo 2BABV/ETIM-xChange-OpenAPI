@@ -1627,15 +1627,14 @@ components:
             - SKU-12345
             - ITEM-ABC-789
         descriptionLanguage:
-          type:
-            - string
-            - 'null'
-          pattern: ^[a-z]{2}[-][A-Z]{2}$
           description: |
             Language code for the description in ISO 639-1 and ISO 3166-1 format (e.g., "en-GB", "de-DE").
 
             **ETIM xChange**: `DescriptionLanguage`  
             **Path**: `Supplier[].Product[].TradeItem[].ItemDetails.ItemDescriptions[].DescriptionLanguage`
+          anyOf:
+            - $ref: '#/components/schemas/LanguageCode'
+            - type: 'null'
           examples:
             - en-GB
             - de-DE
@@ -3428,7 +3427,7 @@ components:
             - type: 'null'
           examples:
             - null
-            - - language: en
+            - - language: en-GB
                 allowanceSurchargeDescription: Early payment discount
         allowanceSurchargeMinimumQuantity:
           type:
@@ -3452,7 +3451,7 @@ components:
           allowanceSurchargeSequenceNumber: 1
           allowanceSurchargePercentage: 5.5
           allowanceSurchargeDescription:
-            - language: en
+            - language: en-GB
               allowanceSurchargeDescription: Bulk quantity discount
           allowanceSurchargeMinimumQuantity: 50
     Gln:
@@ -3569,6 +3568,17 @@ components:
           errors:
             email:
               - Email must be a valid email address.
+    LanguageCode:
+      type: string
+      description: |
+        Language code in ISO 639-1 + ISO 3166-1 format (e.g., "en-GB", "de-DE").
+
+        **ETIM xChange**: `Language`
+      pattern: ^[a-z]{2}[-][A-Z]{2}$
+      examples:
+        - en-GB
+        - nl-NL
+        - de-DE
     ItemDescription:
       type: object
       description: |
@@ -3579,14 +3589,13 @@ components:
         - minimalItemDescription
       properties:
         descriptionLanguage:
-          type:
-            - string
-            - 'null'
           description: |
             Language code for the description (e.g., 'en-US', 'de-DE', 'nl-NL').
             **ETIM xChange**: `DescriptionLanguage`
             **Path**: `Supplier[].Product[].TradeItem[].ItemDetails.ItemDescriptions[].DescriptionLanguage`
-          pattern: ^[a-z]{2}[-][A-Z]{2}$
+          anyOf:
+            - $ref: '#/components/schemas/LanguageCode'
+            - type: 'null'
           examples:
             - en-US
             - de-DE
@@ -3750,25 +3759,6 @@ components:
         - TD
         - WHE
         - X21
-    LanguageCode:
-      type: string
-      description: ISO 639-1 language code
-      enum:
-        - en
-        - de
-        - fr
-        - nl
-        - es
-        - it
-        - sv
-        - 'no'
-        - da
-        - pl
-        - cs
-      examples:
-        - en
-        - nl
-        - de
     CursorPaginationMetadata:
       type: object
       description: |
@@ -4550,8 +4540,7 @@ components:
             **Path**: `Supplier[].Product[].TradeItem[].ItemAttachments[].AttachmentDetails[].AttachmentLanguage[]`
           uniqueItems: true
           items:
-            type: string
-            pattern: ^[a-z]{2}[-][A-Z]{2}$
+            $ref: '#/components/schemas/LanguageCode'
           examples:
             - - en-US
               - de-DE
@@ -5502,8 +5491,7 @@ components:
       schema:
         type: array
         items:
-          type: string
-          pattern: ^[a-z]{2}[-][A-Z]{2}$
+          $ref: '#/components/schemas/LanguageCode'
       style: form
       explode: true
       examples:

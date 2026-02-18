@@ -193,9 +193,10 @@ properties:
         - etimValueDetails
       properties:
         language:
-          type: ["string", "null"]
-          pattern: "^[a-z]{2}[-][A-Z]{2}$"
           description: Language code for the value details
+          anyOf:
+            - $ref: ../../../../shared/schemas/common/LanguageCode.yaml
+            - type: "null"
           examples:
             - "en-GB"
             - "nl-NL"

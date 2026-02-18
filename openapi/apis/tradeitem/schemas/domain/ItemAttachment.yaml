@@ -122,8 +122,7 @@ properties:
       **Path**: `Supplier[].Product[].TradeItem[].ItemAttachments[].AttachmentDetails[].AttachmentLanguage[]`
     uniqueItems: true
     items:
-      type: string
-      pattern: "^[a-z]{2}[-][A-Z]{2}$"
+      $ref: ../../../../shared/schemas/common/LanguageCode.yaml
     examples:
       - ["en-US", "de-DE"]
       - null

@@ -1232,15 +1232,14 @@ components:
             - '929002376910'
             - ABC-12345-XYZ
         descriptionLanguage:
-          type:
-            - string
-            - 'null'
-          pattern: ^[a-z]{2}[-][A-Z]{2}$
           description: |
             Language code for the description in ISO 639-1 and ISO 3166-1 format (e.g., "en-GB", "de-DE").
 
             **ETIM xChange**: `DescriptionLanguage`  
             **Path**: `Supplier[].Product[].ProductDetails.ProductDescriptions[].DescriptionLanguage`
+          anyOf:
+            - $ref: '#/components/schemas/LanguageCode'
+            - type: 'null'
           examples:
             - en-GB
             - de-DE
@@ -1397,15 +1396,14 @@ components:
         - minimalProductDescription
       properties:
         descriptionLanguage:
-          type:
-            - string
-            - 'null'
-          pattern: ^[a-z]{2}[-][A-Z]{2}$
           description: |
             Language code for the description in ISO 639-1 and ISO 3166-1 format (e.g., "en-GB", "de-DE").
 
             **ETIM xChange**: `DescriptionLanguage`  
             **Path**: `Supplier[].Product[].ProductDetails.ProductDescriptions[].DescriptionLanguage`
+          anyOf:
+            - $ref: '#/components/schemas/LanguageCode'
+            - type: 'null'
           examples:
             - en-GB
             - de-DE
@@ -1752,11 +1750,10 @@ components:
               - etimValueDetails
             properties:
               language:
-                type:
-                  - string
-                  - 'null'
-                pattern: ^[a-z]{2}[-][A-Z]{2}$
                 description: Language code for the value details
+                anyOf:
+                  - $ref: '#/components/schemas/LanguageCode'
+                  - type: 'null'
                 examples:
                   - en-GB
               etimValueDetails:
@@ -2007,11 +2004,10 @@ components:
               - etimValueDetails
             properties:
               language:
-                type:
-                  - string
-                  - 'null'
-                pattern: ^[a-z]{2}[-][A-Z]{2}$
                 description: Language code for the value details
+                anyOf:
+                  - $ref: '#/components/schemas/LanguageCode'
+                  - type: 'null'
                 examples:
                   - en-GB
                   - nl-NL
@@ -2177,11 +2173,10 @@ components:
               - functionalUnitDescription
             properties:
               language:
-                type:
-                  - string
-                  - 'null'
-                pattern: ^[a-z]{2}[-][A-Z]{2}$
                 description: Language code for the description
+                anyOf:
+                  - $ref: '#/components/schemas/LanguageCode'
+                  - type: 'null'
                 examples:
                   - en-GB
               functionalUnitDescription:
@@ -4123,6 +4118,17 @@ components:
         - cursor
         - hasNext
         - limit
+    LanguageCode:
+      type: string
+      description: |
+        Language code in ISO 639-1 + ISO 3166-1 format (e.g., "en-GB", "de-DE").
+
+        **ETIM xChange**: `Language`
+      pattern: ^[a-z]{2}[-][A-Z]{2}$
+      examples:
+        - en-GB
+        - nl-NL
+        - de-DE
     ValidationProblemDetails:
       allOf:
         - $ref: '#/components/schemas/ProblemDetails'
@@ -4237,8 +4243,7 @@ components:
       schema:
         type: array
         items:
-          type: string
-          pattern: ^[a-z]{2}[-][A-Z]{2}$
+          $ref: '#/components/schemas/LanguageCode'
       style: form
       explode: true
       examples:

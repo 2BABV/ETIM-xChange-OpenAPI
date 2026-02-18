@@ -43,13 +43,14 @@ properties:
       - "SKU-12345"
       - "ITEM-ABC-789"
   descriptionLanguage:
-    type: ["string", "null"]
-    pattern: "^[a-z]{2}[-][A-Z]{2}$"
     description: |
       Language code for the description in ISO 639-1 and ISO 3166-1 format (e.g., "en-GB", "de-DE").
       
       **ETIM xChange**: `DescriptionLanguage`  
       **Path**: `Supplier[].Product[].TradeItem[].ItemDetails.ItemDescriptions[].DescriptionLanguage`
+    anyOf:
+      - $ref: ../../../../shared/schemas/common/LanguageCode.yaml
+      - type: "null"
     examples:
       - "en-GB"
       - "de-DE"
