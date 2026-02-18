@@ -22,8 +22,7 @@ required:
   - minimalProductDescription
 properties:
   manufacturerIdGln:
-    type: string
-    pattern: "^[0-9]{13}$"
+    $ref: ../../../../shared/schemas/identifiers/Gln.yaml
     description: |
       Global Location Number (GLN) identifying the manufacturer.
       13-digit GS1 identifier. Part of the composite product identifier.

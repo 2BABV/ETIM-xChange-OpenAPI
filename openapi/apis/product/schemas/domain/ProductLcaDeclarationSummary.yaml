@@ -28,8 +28,7 @@ required:
 properties:
   # Product key fields
   manufacturerIdGln:
-    type: string
-    pattern: "^[0-9]{13}$"
+    $ref: ../../../../shared/schemas/identifiers/Gln.yaml
     description: |
       GLN (Global Location Number) of the product manufacturer.
       Part of the composite product identifier.

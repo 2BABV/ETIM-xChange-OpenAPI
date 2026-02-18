@@ -56,6 +56,12 @@ enum:
   - "MDX102"
   - "MDX103"
   - "MDX104"
+  - "MDX105"
+  - "MDX106"
+  - "MDX107"
+  - "MDX108"
+  - "MDX109"
+  - "MDX999"
   - null
 description: |
   ETIM standardized media/attachment specification codes providing additional detail about the attachment type.
@@ -68,6 +74,12 @@ description: |
   - `MDX020`: Assembly instructions
   - `MDX100`: Video
   - `MDX101`: 3D model
+  - `MDX105`: M4A
+  - `MDX106`: WMA
+  - `MDX107`: AIFF
+  - `MDX108`: APE
+  - `MDX109`: WEBM
+  - `MDX999`: Other
   
   **ETIM xChange**: `AttachmentTypeSpecification`  
   **Path**: `Supplier[].Product[].ProductAttachments[].AttachmentTypeSpecification`

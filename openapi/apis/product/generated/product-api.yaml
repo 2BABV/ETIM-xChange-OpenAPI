@@ -827,8 +827,7 @@ components:
             - 'null'
           uniqueItems: true
           items:
-            type: string
-            pattern: ^[0-9]{8,14}$
+            $ref: '#/components/schemas/Gtin'
           description: |
             Global Trade Item Numbers (GTINs) for the product.
             Can include GTIN-8, GTIN-12, GTIN-13, or GTIN-14.
@@ -1014,8 +1013,7 @@ components:
         - productValidityDate
       properties:
         manufacturerIdGln:
-          type: string
-          pattern: ^[0-9]{13}$
+          $ref: '#/components/schemas/Gln'
           description: |
             Global Location Number (GLN) identifying the manufacturer.
             13-digit GS1 identifier.
@@ -1039,8 +1037,7 @@ components:
             - 'null'
           uniqueItems: true
           items:
-            type: string
-            pattern: ^[0-9]{8,14}$
+            $ref: '#/components/schemas/Gtin'
           description: |
             Global Trade Item Numbers (GTINs) for the product.
             Can include GTIN-8, GTIN-12, GTIN-13, or GTIN-14.
@@ -1211,8 +1208,7 @@ components:
         - minimalProductDescription
       properties:
         manufacturerIdGln:
-          type: string
-          pattern: ^[0-9]{13}$
+          $ref: '#/components/schemas/Gln'
           description: |
             Global Location Number (GLN) identifying the manufacturer.
             13-digit GS1 identifier. Part of the composite product identifier.
@@ -1830,8 +1826,7 @@ components:
         - etimReleaseVersion
       properties:
         manufacturerIdGln:
-          type: string
-          pattern: ^[0-9]{13}$
+          $ref: '#/components/schemas/Gln'
           description: |
             GLN (Global Location Number) of the product manufacturer.
             Part of the composite product identifier.
@@ -2828,8 +2823,7 @@ components:
         - thirdPartyVerification
       properties:
         manufacturerIdGln:
-          type: string
-          pattern: ^[0-9]{13}$
+          $ref: '#/components/schemas/Gln'
           description: |
             GLN (Global Location Number) of the product manufacturer.
             Part of the composite product identifier.
@@ -3422,8 +3416,7 @@ components:
             - details
           properties:
             manufacturerIdGln:
-              type: string
-              pattern: ^[0-9]{13}$
+              $ref: '#/components/schemas/Gln'
               description: Global Location Number (GLN) uniquely identifying the manufacturer
               examples:
                 - '1234567890123'
@@ -3516,8 +3509,7 @@ components:
             - manufacturerProductNumber
           properties:
             manufacturerIdGln:
-              type: string
-              pattern: ^[0-9]{13}$
+              $ref: '#/components/schemas/Gln'
               description: Global Location Number (GLN) uniquely identifying the manufacturer
               examples:
                 - '1234567890123'
@@ -3578,8 +3570,7 @@ components:
             - manufacturerProductNumber
           properties:
             manufacturerIdGln:
-              type: string
-              pattern: ^[0-9]{13}$
+              $ref: '#/components/schemas/Gln'
               description: Global Location Number (GLN) uniquely identifying the manufacturer
               examples:
                 - '1234567890123'
@@ -3639,8 +3630,7 @@ components:
             - manufacturerProductNumber
           properties:
             manufacturerIdGln:
-              type: string
-              pattern: ^[0-9]{13}$
+              $ref: '#/components/schemas/Gln'
               description: Global Location Number (GLN) uniquely identifying the manufacturer
               examples:
                 - '1234567890123'
@@ -3871,8 +3861,7 @@ components:
             - manufacturerProductNumber
           properties:
             manufacturerIdGln:
-              type: string
-              pattern: ^[0-9]{13}$
+              $ref: '#/components/schemas/Gln'
               description: Global Location Number (GLN) uniquely identifying the manufacturer
               examples:
                 - '1234567890123'
@@ -4118,6 +4107,24 @@ components:
         - cursor
         - hasNext
         - limit
+    Gln:
+      type: string
+      description: Global Location Number (GLN) - 13 digit GS1 identifier
+      pattern: ^\d{13}$
+      minLength: 13
+      maxLength: 13
+      examples:
+        - '4012345000016'
+        - '8712345678906'
+    Gtin:
+      type: string
+      description: Global Trade Item Number (GTIN) - Can be GTIN-8, GTIN-12, GTIN-13, or GTIN-14
+      pattern: ^[0-9]{8,14}$
+      examples:
+        - '12345678'
+        - '012345678905'
+        - '4012345678901'
+        - '04012345678901'
     LanguageCode:
       type: string
       description: |
@@ -4160,15 +4167,6 @@ components:
           errors:
             email:
               - Email must be a valid email address.
-    Gln:
-      type: string
-      description: Global Location Number (GLN) - 13 digit GS1 identifier
-      pattern: ^\d{13}$
-      minLength: 13
-      maxLength: 13
-      examples:
-        - '4012345000016'
-        - '8712345678906'
   parameters:
     ManufacturerIdGlnPath:
       $ref: '#/components/parameters/manufacturer-id-gln'

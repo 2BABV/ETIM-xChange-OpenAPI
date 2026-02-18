@@ -21,8 +21,7 @@ properties:
     type: ["array", "null"]
     uniqueItems: true
     items:
-      type: string
-      pattern: "^[0-9]{8,14}$"
+      $ref: ../../../../shared/schemas/identifiers/Gtin.yaml
     description: |
       Global Trade Item Numbers (GTINs) for the product.
       Can include GTIN-8, GTIN-12, GTIN-13, or GTIN-14.

@@ -17,8 +17,7 @@ properties:
   # =========================================================================
   
   manufacturerIdGln:
-    type: string
-    pattern: "^[0-9]{13}$"
+    $ref: ../../../../shared/schemas/identifiers/Gln.yaml
     description: |
       Global Location Number (GLN) of the manufacturer. Part of the primary composite key together with manufacturerProductNumber.
       
@@ -44,8 +43,7 @@ properties:
     type: ["array", "null"]
     uniqueItems: true
     items:
-      type: string
-      pattern: "^[0-9]{8,14}$"
+      $ref: ../../../../shared/schemas/identifiers/Gtin.yaml
     description: |
       Array of Global Trade Item Numbers (GTIN-8, GTIN-12, GTIN-13, GTIN-14).
       
