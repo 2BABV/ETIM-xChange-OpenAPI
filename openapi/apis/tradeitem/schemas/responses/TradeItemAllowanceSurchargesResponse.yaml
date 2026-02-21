@@ -63,9 +63,6 @@ examples:
           allowanceSurchargeAmount: null
           allowanceSurchargeSequenceNumber: 1
           allowanceSurchargePercentage: 5.5
-          allowanceSurchargeDescription:
-            - language: en
-              allowanceSurchargeDescription: Bulk quantity discount
           allowanceSurchargeMinimumQuantity: 50
         - pricingRef: "price-c62-1-20250101"
           allowanceSurchargeIndicator: SURCHARGE
@@ -74,5 +71,4 @@ examples:
           allowanceSurchargeAmount: 25.0
           allowanceSurchargeSequenceNumber: 2
           allowanceSurchargePercentage: null
-          allowanceSurchargeDescription: null
           allowanceSurchargeMinimumQuantity: null

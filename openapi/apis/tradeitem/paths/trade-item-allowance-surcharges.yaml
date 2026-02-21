@@ -44,11 +44,6 @@ get:
                       allowanceSurchargeAmount: null
                       allowanceSurchargeSequenceNumber: 1
                       allowanceSurchargePercentage: 5.5
-                      allowanceSurchargeDescription:
-                        - language: "en-GB"
-                          allowanceSurchargeDescription: "Bulk quantity discount"
-                        - language: "nl-NL"
-                          allowanceSurchargeDescription: "Staffelkorting"
                       allowanceSurchargeMinimumQuantity: 50
                     - pricingRef: "price-c62-1-20250101"
                       allowanceSurchargeIndicator: "SURCHARGE"
@@ -57,7 +52,6 @@ get:
                       allowanceSurchargeAmount: 25.0
                       allowanceSurchargeSequenceNumber: 2
                       allowanceSurchargePercentage: null
-                      allowanceSurchargeDescription: null
                       allowanceSurchargeMinimumQuantity: null
             noSurcharges:
               summary: Trade item without allowances or surcharges
@@ -80,7 +74,6 @@ get:
                       allowanceSurchargeAmount: null
                       allowanceSurchargeSequenceNumber: 1
                       allowanceSurchargePercentage: 2.0
-                      allowanceSurchargeDescription: null
                       allowanceSurchargeMinimumQuantity: 100
                     - pricingRef: "price-mtr-100-20250101"
                       allowanceSurchargeIndicator: "ALLOWANCE"
@@ -89,7 +82,6 @@ get:
                       allowanceSurchargeAmount: null
                       allowanceSurchargeSequenceNumber: 1
                       allowanceSurchargePercentage: 5.0
-                      allowanceSurchargeDescription: null
                       allowanceSurchargeMinimumQuantity: 500
     '400':
       $ref: '../../../shared/responses/400-bad-request.yaml'

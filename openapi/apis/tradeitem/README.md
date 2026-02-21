@@ -112,6 +112,12 @@ The bulk API consolidates ETIM xChange sections for efficient data retrieval:
 - Related items: accessories, spareparts, consumables, successors
 - Relation types: `ACCESSORY`, `CONSISTS_OF`, `CONSUMABLES`, `MANDATORY`, `SPAREPART`, `SUCCESSOR`, `OTHER`
 
+**AllowanceSurchargeDescription**
+- Multilingual description for allowances/surcharges: `AllowanceSurchargeDescription[]`
+- Each entry has `language` (IETF tag) + `allowanceSurchargeDescription` (max 35 chars)
+- Single-item endpoints: nested array (like other multilingual fields)
+- Bulk endpoint: flattened to primary language string
+
 **Country-Specific Fields**
 - `ItemCountrySpecificFields[]` with typed values
 - Decision needed: simplified model vs full type support (same as Product API)

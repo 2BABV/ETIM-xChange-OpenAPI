@@ -56,7 +56,6 @@ get:
                     allowanceSurchargeSequenceNumber: 1
                     allowanceSurchargePercentage: 5.5
                     allowanceSurchargeMinimumQuantity: 50
-                    allowanceSurchargeDescription: "Bulk quantity discount"
                   - supplierIdGln: "8712423012485"
                     supplierItemNumber: "SKU-CABLE-002"
                     pricingRef: "price-mtr-1-20250101"
@@ -64,7 +63,6 @@ get:
                     allowanceSurchargeType: DBD
                     allowanceSurchargeSequenceNumber: 1
                     allowanceSurchargeAmount: 25.00
-                    allowanceSurchargeDescription: "Delivery surcharge"
                 meta:
                   cursor: "eyJzdXBwbGllcklkR2xuIjoiODcxMjQyMzAxMjQ4NSJ9"
                   hasNext: true

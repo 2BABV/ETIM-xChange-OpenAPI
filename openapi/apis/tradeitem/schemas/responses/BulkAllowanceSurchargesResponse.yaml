@@ -38,7 +38,6 @@ examples:
         allowanceSurchargeSequenceNumber: 1
         allowanceSurchargePercentage: 5.5
         allowanceSurchargeMinimumQuantity: 50
-        allowanceSurchargeDescription: "Bulk quantity discount"
       # Fixed amount surcharge
       - supplierIdGln: "8712423012485"
         supplierItemNumber: "SKU-CABLE-002"
@@ -47,7 +46,6 @@ examples:
         allowanceSurchargeType: DBD
         allowanceSurchargeSequenceNumber: 1
         allowanceSurchargeAmount: 25.00
-        allowanceSurchargeDescription: "Delivery surcharge"
       # Multiple allowances for same price (volume tiers)
       - supplierIdGln: "8712423012485"
         supplierItemNumber: "SKU-TOOL-003"
@@ -57,7 +55,6 @@ examples:
         allowanceSurchargeSequenceNumber: 1
         allowanceSurchargePercentage: 10.0
         allowanceSurchargeMinimumQuantity: 100
-        allowanceSurchargeDescription: "Volume discount tier 1"
       - supplierIdGln: "8712423012485"
         supplierItemNumber: "SKU-TOOL-003"
         pricingRef: "price-c62-1-20250101"
@@ -66,7 +63,6 @@ examples:
         allowanceSurchargeSequenceNumber: 2
         allowanceSurchargePercentage: 15.0
         allowanceSurchargeMinimumQuantity: 500
-        allowanceSurchargeDescription: "Volume discount tier 2"
     meta:
       cursor: "eyJzdXBwbGllcklkR2xuIjoiODcxMjQyMzAxMjQ4NSIsInNlcXVlbmNlIjoyfQ=="
       hasNext: true

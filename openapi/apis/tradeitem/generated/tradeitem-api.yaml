@@ -502,11 +502,6 @@ paths:
                           allowanceSurchargeAmount: null
                           allowanceSurchargeSequenceNumber: 1
                           allowanceSurchargePercentage: 5.5
-                          allowanceSurchargeDescription:
-                            - language: en-GB
-                              allowanceSurchargeDescription: Bulk quantity discount
-                            - language: nl-NL
-                              allowanceSurchargeDescription: Staffelkorting
                           allowanceSurchargeMinimumQuantity: 50
                         - pricingRef: price-c62-1-20250101
                           allowanceSurchargeIndicator: SURCHARGE
@@ -515,7 +510,6 @@ paths:
                           allowanceSurchargeAmount: 25
                           allowanceSurchargeSequenceNumber: 2
                           allowanceSurchargePercentage: null
-                          allowanceSurchargeDescription: null
                           allowanceSurchargeMinimumQuantity: null
                 noSurcharges:
                   summary: Trade item without allowances or surcharges
@@ -538,7 +532,6 @@ paths:
                           allowanceSurchargeAmount: null
                           allowanceSurchargeSequenceNumber: 1
                           allowanceSurchargePercentage: 2
-                          allowanceSurchargeDescription: null
                           allowanceSurchargeMinimumQuantity: 100
                         - pricingRef: price-mtr-100-20250101
                           allowanceSurchargeIndicator: ALLOWANCE
@@ -547,7 +540,6 @@ paths:
                           allowanceSurchargeAmount: null
                           allowanceSurchargeSequenceNumber: 1
                           allowanceSurchargePercentage: 5
-                          allowanceSurchargeDescription: null
                           allowanceSurchargeMinimumQuantity: 500
         '400':
           $ref: '#/components/responses/400-bad-request'
@@ -963,7 +955,6 @@ paths:
                         allowanceSurchargeSequenceNumber: 1
                         allowanceSurchargePercentage: 5.5
                         allowanceSurchargeMinimumQuantity: 50
-                        allowanceSurchargeDescription: Bulk quantity discount
                       - supplierIdGln: '8712423012485'
                         supplierItemNumber: SKU-CABLE-002
                         pricingRef: price-mtr-1-20250101
@@ -971,7 +962,6 @@ paths:
                         allowanceSurchargeType: DBD
                         allowanceSurchargeSequenceNumber: 1
                         allowanceSurchargeAmount: 25
-                        allowanceSurchargeDescription: Delivery surcharge
                     meta:
                       cursor: eyJzdXBwbGllcklkR2xuIjoiODcxMjQyMzAxMjQ4NSJ9
                       hasNext: true
@@ -2221,9 +2211,6 @@ components:
                 allowanceSurchargeSequenceNumber: 1
                 allowanceSurchargePercentage: 10
                 allowanceSurchargeMinimumQuantity: 100
-                allowanceSurchargeDescription:
-                  - language: en-GB
-                    allowanceSurchargeDescription: Volume discount tier 1
             - null
       examples:
         - pricingRef: price-c62-1-20250101
@@ -2244,9 +2231,6 @@ components:
               allowanceSurchargeSequenceNumber: 1
               allowanceSurchargePercentage: 10
               allowanceSurchargeMinimumQuantity: 100
-              allowanceSurchargeDescription:
-                - language: en-GB
-                  allowanceSurchargeDescription: Volume discount tier 1
         - pricingRef: price-mtr-1-20250101
           priceUnit: MTR
           priceUnitFactor: 1
@@ -2444,36 +2428,6 @@ components:
             - 5.5
             - 12.75
             - null
-        allowanceSurchargeDescription:
-          description: |
-            Multilingual description of the allowance or surcharge, flattened from the ETIM language array.
-            **ETIM xChange**: `AllowanceSurchargeDescription[]`
-            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[].AllowanceSurchargeDescription[]`
-          anyOf:
-            - type: array
-              items:
-                type: object
-                additionalProperties: false
-                required:
-                  - language
-                  - allowanceSurchargeDescription
-                properties:
-                  language:
-                    description: |
-                      Language code for the description.
-                      Sourced from ETIM xChange `Language` at catalog level, denormalized into each description record.
-                    $ref: '#/components/schemas/LanguageCode'
-                  allowanceSurchargeDescription:
-                    type: string
-                    minLength: 1
-                    maxLength: 35
-            - type: 'null'
-          examples:
-            - null
-            - - language: en-GB
-                allowanceSurchargeDescription: Early payment discount
-              - language: nl-NL
-                allowanceSurchargeDescription: Korting voor snelle betaling
         allowanceSurchargeMinimumQuantity:
           type:
             - number
@@ -2496,9 +2450,6 @@ components:
           allowanceSurchargeAmount: null
           allowanceSurchargeSequenceNumber: 1
           allowanceSurchargePercentage: 5.5
-          allowanceSurchargeDescription:
-            - language: en-GB
-              allowanceSurchargeDescription: Bulk quantity discount
           allowanceSurchargeMinimumQuantity: 50
         - allowanceSurchargeIndicator: SURCHARGE
           allowanceSurchargeValidityDate: null
@@ -2506,7 +2457,6 @@ components:
           allowanceSurchargeAmount: 25
           allowanceSurchargeSequenceNumber: null
           allowanceSurchargePercentage: null
-          allowanceSurchargeDescription: null
           allowanceSurchargeMinimumQuantity: null
     AllowanceSurchargeSummary:
       type: object
@@ -2660,20 +2610,6 @@ components:
           examples:
             - 10
             - 50
-        allowanceSurchargeDescription:
-          type:
-            - string
-            - 'null'
-          minLength: 1
-          maxLength: 35
-          description: |
-            Description of the allowance or surcharge (flattened from multilingual array to primary language).
-
-            **ETIM xChange**: `AllowanceSurchargeDescription[].AllowanceSurchargeDescription`
-            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[].AllowanceSurchargeDescription[]`
-          examples:
-            - Bulk quantity discount
-            - Early payment discount
       examples:
         - supplierIdGln: '8712423012485'
           supplierItemNumber: SKU-LAMP-001
@@ -2683,7 +2619,6 @@ components:
           allowanceSurchargeSequenceNumber: 1
           allowanceSurchargePercentage: 5.5
           allowanceSurchargeMinimumQuantity: 50
-          allowanceSurchargeDescription: Bulk quantity discount
         - supplierIdGln: '8712423012485'
           supplierItemNumber: SKU-CABLE-002
           pricingRef: price-mtr-1-20250101
@@ -2691,7 +2626,6 @@ components:
           allowanceSurchargeType: DBD
           allowanceSurchargeSequenceNumber: 1
           allowanceSurchargeAmount: 25
-          allowanceSurchargeDescription: Delivery surcharge
         - supplierIdGln: '8712423012485'
           supplierItemNumber: SKU-TOOL-003
           pricingRef: price-c62-1-20250101
@@ -2700,7 +2634,6 @@ components:
           allowanceSurchargeSequenceNumber: 1
           allowanceSurchargePercentage: 10
           allowanceSurchargeMinimumQuantity: 100
-          allowanceSurchargeDescription: Volume discount tier 1
         - supplierIdGln: '8712423012485'
           supplierItemNumber: SKU-TOOL-003
           pricingRef: price-c62-1-20250101
@@ -2709,7 +2642,6 @@ components:
           allowanceSurchargeSequenceNumber: 2
           allowanceSurchargePercentage: 15
           allowanceSurchargeMinimumQuantity: 500
-          allowanceSurchargeDescription: Volume discount tier 2
     TradeItemResponse:
       type: object
       description: |
@@ -2769,9 +2701,6 @@ components:
                     allowanceSurchargeSequenceNumber: 1
                     allowanceSurchargePercentage: 10
                     allowanceSurchargeMinimumQuantity: 100
-                    allowanceSurchargeDescription:
-                      - language: en-GB
-                        allowanceSurchargeDescription: Volume discount tier 1
             itemRelations: null
             itemLogistics:
               - baseItemNetLength: 25.5
@@ -3395,7 +3324,6 @@ components:
               allowanceSurchargeSequenceNumber: 1
               allowanceSurchargePercentage: 5.5
               allowanceSurchargeMinimumQuantity: 50
-              allowanceSurchargeDescription: Bulk quantity discount
             - supplierIdGln: '8712423012485'
               supplierItemNumber: SKU-CABLE-002
               pricingRef: price-mtr-1-20250101
@@ -3403,7 +3331,6 @@ components:
               allowanceSurchargeType: DBD
               allowanceSurchargeSequenceNumber: 1
               allowanceSurchargeAmount: 25
-              allowanceSurchargeDescription: Delivery surcharge
             - supplierIdGln: '8712423012485'
               supplierItemNumber: SKU-TOOL-003
               pricingRef: price-c62-1-20250101
@@ -3412,7 +3339,6 @@ components:
               allowanceSurchargeSequenceNumber: 1
               allowanceSurchargePercentage: 10
               allowanceSurchargeMinimumQuantity: 100
-              allowanceSurchargeDescription: Volume discount tier 1
             - supplierIdGln: '8712423012485'
               supplierItemNumber: SKU-TOOL-003
               pricingRef: price-c62-1-20250101
@@ -3421,7 +3347,6 @@ components:
               allowanceSurchargeSequenceNumber: 2
               allowanceSurchargePercentage: 15
               allowanceSurchargeMinimumQuantity: 500
-              allowanceSurchargeDescription: Volume discount tier 2
           meta:
             cursor: eyJzdXBwbGllcklkR2xuIjoiODcxMjQyMzAxMjQ4NSIsInNlcXVlbmNlIjoyfQ==
             hasNext: true
@@ -3495,9 +3420,6 @@ components:
                 allowanceSurchargeAmount: null
                 allowanceSurchargeSequenceNumber: 1
                 allowanceSurchargePercentage: 5.5
-                allowanceSurchargeDescription:
-                  - language: en
-                    allowanceSurchargeDescription: Bulk quantity discount
                 allowanceSurchargeMinimumQuantity: 50
               - pricingRef: price-c62-1-20250101
                 allowanceSurchargeIndicator: SURCHARGE
@@ -3506,7 +3428,6 @@ components:
                 allowanceSurchargeAmount: 25
                 allowanceSurchargeSequenceNumber: 2
                 allowanceSurchargePercentage: null
-                allowanceSurchargeDescription: null
                 allowanceSurchargeMinimumQuantity: null
     TradeItemAllowanceSurchargeItem:
       type: object
@@ -3597,33 +3518,6 @@ components:
           examples:
             - 5.5
             - null
-        allowanceSurchargeDescription:
-          description: |
-            Multilingual description of the allowance or surcharge.
-            **ETIM xChange**: `AllowanceSurchargeDescription[]`
-          anyOf:
-            - type: array
-              items:
-                type: object
-                additionalProperties: false
-                required:
-                  - language
-                  - allowanceSurchargeDescription
-                properties:
-                  language:
-                    description: |
-                      Language code for the description.
-                      Sourced from ETIM xChange `Language` at catalog level, denormalized into each description record.
-                    $ref: '#/components/schemas/LanguageCode'
-                  allowanceSurchargeDescription:
-                    type: string
-                    minLength: 1
-                    maxLength: 35
-            - type: 'null'
-          examples:
-            - null
-            - - language: en-GB
-                allowanceSurchargeDescription: Early payment discount
         allowanceSurchargeMinimumQuantity:
           type:
             - number
@@ -3645,9 +3539,6 @@ components:
           allowanceSurchargeAmount: null
           allowanceSurchargeSequenceNumber: 1
           allowanceSurchargePercentage: 5.5
-          allowanceSurchargeDescription:
-            - language: en-GB
-              allowanceSurchargeDescription: Bulk quantity discount
           allowanceSurchargeMinimumQuantity: 50
     Gln:
       type: string
@@ -5619,15 +5510,11 @@ components:
                   allowanceSurchargeSequenceNumber: 1
                   allowanceSurchargePercentage: 10
                   allowanceSurchargeMinimumQuantity: 100
-                  allowanceSurchargeDescription:
-                    - language: en-GB
-                      allowanceSurchargeDescription: Volume discount tier 1
                 - allowanceSurchargeIndicator: SURCHARGE
                   allowanceSurchargeType: DBD
                   allowanceSurchargeSequenceNumber: 2
                   allowanceSurchargeAmount: 25
                   allowanceSurchargeMinimumQuantity: null
-                  allowanceSurchargeDescription: null
           itemRelations: null
           itemLogistics:
             - baseItemNetLength: 25.5

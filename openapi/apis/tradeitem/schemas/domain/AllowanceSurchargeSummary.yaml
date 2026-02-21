@@ -156,19 +156,6 @@ properties:
     examples:
       - 10
       - 50
-  
-  allowanceSurchargeDescription:
-    type: ["string", "null"]
-    minLength: 1
-    maxLength: 35
-    description: |
-      Description of the allowance or surcharge (flattened from multilingual array to primary language).
-      
-      **ETIM xChange**: `AllowanceSurchargeDescription[].AllowanceSurchargeDescription`
-      **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[].AllowanceSurchargeDescription[]`
-    examples:
-      - "Bulk quantity discount"
-      - "Early payment discount"
 
 examples:
   # Percentage-based allowance (discount)
@@ -180,7 +167,6 @@ examples:
     allowanceSurchargeSequenceNumber: 1
     allowanceSurchargePercentage: 5.5
     allowanceSurchargeMinimumQuantity: 50
-    allowanceSurchargeDescription: "Bulk quantity discount"
   
   # Fixed amount surcharge
   - supplierIdGln: "8712423012485"
@@ -190,7 +176,6 @@ examples:
     allowanceSurchargeType: DBD
     allowanceSurchargeSequenceNumber: 1
     allowanceSurchargeAmount: 25.00
-    allowanceSurchargeDescription: "Delivery surcharge"
   
   # Multiple surcharges for same price (different sequence numbers)
   - supplierIdGln: "8712423012485"
@@ -201,7 +186,6 @@ examples:
     allowanceSurchargeSequenceNumber: 1
     allowanceSurchargePercentage: 10.0
     allowanceSurchargeMinimumQuantity: 100
-    allowanceSurchargeDescription: "Volume discount tier 1"
   - supplierIdGln: "8712423012485"
     supplierItemNumber: "SKU-TOOL-003"
     pricingRef: "price-c62-1-20250101"
@@ -210,4 +194,3 @@ examples:
     allowanceSurchargeSequenceNumber: 2
     allowanceSurchargePercentage: 15.0
     allowanceSurchargeMinimumQuantity: 500
-    allowanceSurchargeDescription: "Volume discount tier 2"

@@ -55,9 +55,6 @@ examples:
               allowanceSurchargeSequenceNumber: 1
               allowanceSurchargePercentage: 10
               allowanceSurchargeMinimumQuantity: 100
-              allowanceSurchargeDescription:
-                - language: "en-GB"
-                  allowanceSurchargeDescription: "Volume discount tier 1"
       itemRelations: null
       itemLogistics:
         - baseItemNetLength: 25.5

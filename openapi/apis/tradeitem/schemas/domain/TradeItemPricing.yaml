@@ -184,9 +184,6 @@ properties:
           allowanceSurchargeSequenceNumber: 1
           allowanceSurchargePercentage: 10
           allowanceSurchargeMinimumQuantity: 100
-          allowanceSurchargeDescription:
-            - language: "en-GB"
-              allowanceSurchargeDescription: "Volume discount tier 1"
       - null
 
 examples:
@@ -208,9 +205,6 @@ examples:
         allowanceSurchargeSequenceNumber: 1
         allowanceSurchargePercentage: 10
         allowanceSurchargeMinimumQuantity: 100
-        allowanceSurchargeDescription:
-          - language: "en-GB"
-            allowanceSurchargeDescription: "Volume discount tier 1"
   - pricingRef: "price-mtr-1-20250101"
     priceUnit: MTR
     priceUnitFactor: 1.0

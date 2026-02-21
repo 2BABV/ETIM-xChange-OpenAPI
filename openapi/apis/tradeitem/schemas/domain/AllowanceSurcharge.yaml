@@ -81,36 +81,6 @@ properties:
       - 5.5
       - 12.75
       - null
-  allowanceSurchargeDescription:
-    description: |
-      Multilingual description of the allowance or surcharge, flattened from the ETIM language array.
-      **ETIM xChange**: `AllowanceSurchargeDescription[]`
-      **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[].AllowanceSurchargeDescription[]`
-    anyOf:
-      - type: array
-        items:
-          type: object
-          additionalProperties: false
-          required:
-            - language
-            - allowanceSurchargeDescription
-          properties:
-            language:
-              description: |
-                Language code for the description.
-                Sourced from ETIM xChange `Language` at catalog level, denormalized into each description record.
-              $ref: ../../../../shared/schemas/common/LanguageCode.yaml
-            allowanceSurchargeDescription:
-              type: string
-              minLength: 1
-              maxLength: 35
-      - type: "null"
-    examples:
-      - null
-      - - language: "en-GB"
-          allowanceSurchargeDescription: Early payment discount
-        - language: "nl-NL"
-          allowanceSurchargeDescription: Korting voor snelle betaling
   allowanceSurchargeMinimumQuantity:
     type:
       - number
@@ -133,9 +103,6 @@ examples:
     allowanceSurchargeAmount: null
     allowanceSurchargeSequenceNumber: 1
     allowanceSurchargePercentage: 5.5
-    allowanceSurchargeDescription:
-      - language: "en-GB"
-        allowanceSurchargeDescription: Bulk quantity discount
     allowanceSurchargeMinimumQuantity: 50
   - allowanceSurchargeIndicator: SURCHARGE
     allowanceSurchargeValidityDate: null
@@ -143,5 +110,4 @@ examples:
     allowanceSurchargeAmount: 25.0
     allowanceSurchargeSequenceNumber: null
     allowanceSurchargePercentage: null
-    allowanceSurchargeDescription: null
     allowanceSurchargeMinimumQuantity: null
