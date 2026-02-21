@@ -99,6 +99,8 @@ components:
       $ref: './schemas/domain/TradeItemPricing.yaml'
     TradeItemPricingsSummary:
       $ref: './schemas/domain/TradeItemPricingsSummary.yaml'
+    AllowanceSurcharge:
+      $ref: './schemas/domain/AllowanceSurcharge.yaml'
     AllowanceSurchargeSummary:
       $ref: './schemas/domain/AllowanceSurchargeSummary.yaml'
     

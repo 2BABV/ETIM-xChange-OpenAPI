@@ -337,7 +337,9 @@ paths:
         - Price validity and expiry dates
         - Currency code (catalog-level `CurrencyCode`)
 
-        **Allowances & Surcharges**: Available via separate `/{supplierIdGln}/{supplierItemNumber}/allowance-surcharges` endpoint.
+        **Allowances & Surcharges**: The `allowanceSurcharges` property is always `null` in this response.
+        Use the separate `/{supplierIdGln}/{supplierItemNumber}/allowance-surcharges` endpoint for flat retrieval,
+        or the complete trade item endpoint for nested retrieval within each pricing entry.
 
         A trade item may have multiple pricing entries for different conditions,
         customer groups, or validity periods.
@@ -379,6 +381,7 @@ paths:
                           vat: 21
                           priceValidityDate: '2025-01-01'
                           priceExpiryDate: '2025-12-31'
+                          allowanceSurcharges: null
                 multiplePricings:
                   summary: Trade item with volume pricing
                   value:
@@ -398,6 +401,7 @@ paths:
                           vat: 21
                           priceValidityDate: '2025-01-01'
                           priceExpiryDate: '2025-06-30'
+                          allowanceSurcharges: null
                         - pricingRef: price-mtr-100-20250101
                           priceUnit: MTR
                           priceUnitFactor: 1
@@ -410,6 +414,7 @@ paths:
                           vat: 21
                           priceValidityDate: '2025-01-01'
                           priceExpiryDate: '2025-06-30'
+                          allowanceSurcharges: null
                 priceOnRequest:
                   summary: Trade item with price on request
                   value:
@@ -429,6 +434,7 @@ paths:
                           vat: 21
                           priceValidityDate: '2025-01-01'
                           priceExpiryDate: null
+                          allowanceSurcharges: null
         '400':
           $ref: '#/components/responses/400-bad-request'
         '401':
@@ -815,7 +821,10 @@ paths:
       description: |
         Retrieve trade item pricing information in bulk with cursor-based pagination.
         Returns pricing details including net prices, gross list prices, recommended retail prices,
-        VAT, price validity periods, allowances/surcharges, and the catalog-level currency code.
+        VAT, price validity periods, and the catalog-level currency code.
+
+        **Allowances & Surcharges**: The `allowanceSurcharges` property is always `null` in this response.
+        Use the separate `/bulk/trade-item-allowance-surcharges` endpoint for flat retrieval.
 
         **Flattened Structure**: Each row represents a single price entry with embedded composite key
         (`supplierIdGln` + `supplierItemNumber`). This follows the same pattern as 
@@ -2015,7 +2024,9 @@ components:
         Pricing information for a trade item including prices, price unit, and validity dates.
         Extracted from ETIM xChange `TradeItem.Pricing[]` structure.
 
-        **Allowances & Surcharges**: Available via separate `/{supplierIdGln}/{supplierItemNumber}/allowance-surcharges` endpoint.
+        **Allowances & Surcharges**: Included as nested array in the complete `TradeItemResponse`.
+        Always `null` in subresource (`/pricings`) and bulk (`/bulk/trade-item-pricings`) responses —
+        use the separate `/allowance-surcharges` or `/bulk/trade-item-allowance-surcharges` endpoints for flat retrieval.
 
         **ETIM xChange**: `Pricing`
         **Path**: `Supplier[].Product[].TradeItem[].Pricing[]`
@@ -2189,6 +2200,31 @@ components:
           examples:
             - '2025-12-31'
             - null
+        allowanceSurcharges:
+          type:
+            - array
+            - 'null'
+          description: |
+            Allowances and surcharges applied to this pricing entry.
+
+            **Populated** in the complete `TradeItemResponse` (nested inside each pricing entry).
+            **Always `null`** in subresource (`/pricings`) and bulk (`/bulk/trade-item-pricings`) responses.
+            For flat retrieval, use the dedicated `/allowance-surcharges` or `/bulk/trade-item-allowance-surcharges` endpoints.
+
+            **ETIM xChange**: `AllowanceSurcharge[]`
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[]`
+          items:
+            $ref: '#/components/schemas/AllowanceSurcharge'
+          examples:
+            - - allowanceSurchargeIndicator: ALLOWANCE
+                allowanceSurchargeType: AEQ
+                allowanceSurchargeSequenceNumber: 1
+                allowanceSurchargePercentage: 10
+                allowanceSurchargeMinimumQuantity: 100
+                allowanceSurchargeDescription:
+                  - language: en-GB
+                    allowanceSurchargeDescription: Volume discount tier 1
+            - null
       examples:
         - pricingRef: price-c62-1-20250101
           priceUnit: C62
@@ -2202,6 +2238,28 @@ components:
           vat: 21
           priceValidityDate: '2025-01-01'
           priceExpiryDate: '2025-12-31'
+          allowanceSurcharges:
+            - allowanceSurchargeIndicator: ALLOWANCE
+              allowanceSurchargeType: AEQ
+              allowanceSurchargeSequenceNumber: 1
+              allowanceSurchargePercentage: 10
+              allowanceSurchargeMinimumQuantity: 100
+              allowanceSurchargeDescription:
+                - language: en-GB
+                  allowanceSurchargeDescription: Volume discount tier 1
+        - pricingRef: price-mtr-1-20250101
+          priceUnit: MTR
+          priceUnitFactor: 1
+          priceQuantity: 1
+          currencyCode: EUR
+          priceOnRequest: false
+          grossListPrice: 2.5
+          netPrice: 1.99
+          recommendedRetailPrice: 3.49
+          vat: 21
+          priceValidityDate: '2025-01-01'
+          priceExpiryDate: '2025-06-30'
+          allowanceSurcharges: null
     TradeItemPricingsSummary:
       type: object
       description: |
@@ -2302,6 +2360,154 @@ components:
               priceValidityDate: '2025-01-01'
               priceExpiryDate: '2025-06-30'
               allowanceSurcharges: null
+    AllowanceSurcharge:
+      type: object
+      description: |
+        Allowance or surcharge applied to trade item pricing, including fixed and percentage-based adjustments.
+        **ETIM xChange**: `AllowanceSurcharge`
+        **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[]`
+      additionalProperties: false
+      required:
+        - allowanceSurchargeIndicator
+        - allowanceSurchargeType
+      properties:
+        allowanceSurchargeIndicator:
+          type: string
+          description: |
+            Indicates whether this price adjustment is an allowance (discount) or a surcharge (additional charge).
+            **ETIM xChange**: `AllowanceSurchargeIndicator`
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[].AllowanceSurchargeIndicator`
+          enum:
+            - ALLOWANCE
+            - SURCHARGE
+          examples:
+            - ALLOWANCE
+            - SURCHARGE
+        allowanceSurchargeValidityDate:
+          type:
+            - string
+            - 'null'
+          description: |
+            Date from which the allowance or surcharge becomes valid. ISO 8601 date format (YYYY-MM-DD).
+            **ETIM xChange**: `AllowanceSurchargeValidityDate`
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[].AllowanceSurchargeValidityDate`
+          format: date
+          examples:
+            - '2025-01-01'
+            - null
+        allowanceSurchargeType:
+          description: |
+            Code describing the reason for the allowance or surcharge. Uses shared enumeration aligned with ETIM codes.
+            **ETIM xChange**: `AllowanceSurchargeType`
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[].AllowanceSurchargeType`
+          $ref: '#/components/schemas/AllowanceSurchargeTypes'
+        allowanceSurchargeAmount:
+          type:
+            - number
+            - 'null'
+          description: |
+            Fixed monetary amount of the allowance or surcharge (converted from ETIM string pattern to numeric form).
+            **ETIM xChange**: `AllowanceSurchargeAmount`
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[].AllowanceSurchargeAmount`
+          minimum: 0
+          multipleOf: 0.0001
+          maximum: 99999999999.9999
+          examples:
+            - 15.5
+            - 250
+            - null
+        allowanceSurchargeSequenceNumber:
+          type:
+            - integer
+            - 'null'
+          description: |
+            Sequence number used to order multiple allowances or surcharges applied to the same price.
+            **ETIM xChange**: `AllowanceSurchargeSequenceNumber`
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[].AllowanceSurchargeSequenceNumber`
+          minimum: 1
+          examples:
+            - 1
+            - 3
+            - null
+        allowanceSurchargePercentage:
+          type:
+            - number
+            - 'null'
+          description: |
+            Percentage rate of the allowance or surcharge (converted from ETIM string pattern to numeric form).
+            **ETIM xChange**: `AllowanceSurchargePercentage`
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[].AllowanceSurchargePercentage`
+          minimum: 0
+          multipleOf: 0.001
+          maximum: 999.999
+          examples:
+            - 5.5
+            - 12.75
+            - null
+        allowanceSurchargeDescription:
+          description: |
+            Multilingual description of the allowance or surcharge, flattened from the ETIM language array.
+            **ETIM xChange**: `AllowanceSurchargeDescription[]`
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[].AllowanceSurchargeDescription[]`
+          anyOf:
+            - type: array
+              items:
+                type: object
+                additionalProperties: false
+                required:
+                  - language
+                  - allowanceSurchargeDescription
+                properties:
+                  language:
+                    description: |
+                      Language code for the description.
+                      Sourced from ETIM xChange `Language` at catalog level, denormalized into each description record.
+                    $ref: '#/components/schemas/LanguageCode'
+                  allowanceSurchargeDescription:
+                    type: string
+                    minLength: 1
+                    maxLength: 35
+            - type: 'null'
+          examples:
+            - null
+            - - language: en-GB
+                allowanceSurchargeDescription: Early payment discount
+              - language: nl-NL
+                allowanceSurchargeDescription: Korting voor snelle betaling
+        allowanceSurchargeMinimumQuantity:
+          type:
+            - number
+            - 'null'
+          description: |
+            Minimum ordered quantity required for the allowance or surcharge to apply (converted from ETIM string pattern to numeric form).
+            **ETIM xChange**: `AllowanceSurchargeMinimumQuantity`
+            **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[].AllowanceSurchargeMinimumQuantity`
+          minimum: 0
+          multipleOf: 0.0001
+          maximum: 999999999999.9999
+          examples:
+            - 10
+            - 1250.5
+            - null
+      examples:
+        - allowanceSurchargeIndicator: ALLOWANCE
+          allowanceSurchargeValidityDate: '2025-01-01'
+          allowanceSurchargeType: AEQ
+          allowanceSurchargeAmount: null
+          allowanceSurchargeSequenceNumber: 1
+          allowanceSurchargePercentage: 5.5
+          allowanceSurchargeDescription:
+            - language: en-GB
+              allowanceSurchargeDescription: Bulk quantity discount
+          allowanceSurchargeMinimumQuantity: 50
+        - allowanceSurchargeIndicator: SURCHARGE
+          allowanceSurchargeValidityDate: null
+          allowanceSurchargeType: DBD
+          allowanceSurchargeAmount: 25
+          allowanceSurchargeSequenceNumber: null
+          allowanceSurchargePercentage: null
+          allowanceSurchargeDescription: null
+          allowanceSurchargeMinimumQuantity: null
     AllowanceSurchargeSummary:
       type: object
       description: |
@@ -2557,6 +2763,15 @@ components:
                 vat: 21
                 priceValidityDate: '2025-01-01'
                 priceExpiryDate: '2025-12-31'
+                allowanceSurcharges:
+                  - allowanceSurchargeIndicator: ALLOWANCE
+                    allowanceSurchargeType: AEQ
+                    allowanceSurchargeSequenceNumber: 1
+                    allowanceSurchargePercentage: 10
+                    allowanceSurchargeMinimumQuantity: 100
+                    allowanceSurchargeDescription:
+                      - language: en-GB
+                        allowanceSurchargeDescription: Volume discount tier 1
             itemRelations: null
             itemLogistics:
               - baseItemNetLength: 25.5
@@ -5398,7 +5613,21 @@ components:
               vat: 21
               priceValidityDate: '2025-01-01'
               priceExpiryDate: '2025-12-31'
-              allowanceSurcharges: null
+              allowanceSurcharges:
+                - allowanceSurchargeIndicator: ALLOWANCE
+                  allowanceSurchargeType: AEQ
+                  allowanceSurchargeSequenceNumber: 1
+                  allowanceSurchargePercentage: 10
+                  allowanceSurchargeMinimumQuantity: 100
+                  allowanceSurchargeDescription:
+                    - language: en-GB
+                      allowanceSurchargeDescription: Volume discount tier 1
+                - allowanceSurchargeIndicator: SURCHARGE
+                  allowanceSurchargeType: DBD
+                  allowanceSurchargeSequenceNumber: 2
+                  allowanceSurchargeAmount: 25
+                  allowanceSurchargeMinimumQuantity: null
+                  allowanceSurchargeDescription: null
           itemRelations: null
           itemLogistics:
             - baseItemNetLength: 25.5

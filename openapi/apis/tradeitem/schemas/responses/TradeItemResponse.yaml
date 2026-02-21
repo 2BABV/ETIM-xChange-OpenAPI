@@ -49,6 +49,15 @@ examples:
           vat: 21.0
           priceValidityDate: "2025-01-01"
           priceExpiryDate: "2025-12-31"
+          allowanceSurcharges:
+            - allowanceSurchargeIndicator: ALLOWANCE
+              allowanceSurchargeType: AEQ
+              allowanceSurchargeSequenceNumber: 1
+              allowanceSurchargePercentage: 10
+              allowanceSurchargeMinimumQuantity: 100
+              allowanceSurchargeDescription:
+                - language: "en-GB"
+                  allowanceSurchargeDescription: "Volume discount tier 1"
       itemRelations: null
       itemLogistics:
         - baseItemNetLength: 25.5

@@ -3,7 +3,9 @@ description: |
   Pricing information for a trade item including prices, price unit, and validity dates.
   Extracted from ETIM xChange `TradeItem.Pricing[]` structure.
   
-  **Allowances & Surcharges**: Available via separate `/{supplierIdGln}/{supplierItemNumber}/allowance-surcharges` endpoint.
+  **Allowances & Surcharges**: Included as nested array in the complete `TradeItemResponse`.
+  Always `null` in subresource (`/pricings`) and bulk (`/bulk/trade-item-pricings`) responses —
+  use the separate `/allowance-surcharges` or `/bulk/trade-item-allowance-surcharges` endpoints for flat retrieval.
   
   **ETIM xChange**: `Pricing`
   **Path**: `Supplier[].Product[].TradeItem[].Pricing[]`
@@ -163,6 +165,29 @@ properties:
     examples:
       - "2025-12-31"
       - null
+  allowanceSurcharges:
+    type: ["array", "null"]
+    description: |
+      Allowances and surcharges applied to this pricing entry.
+      
+      **Populated** in the complete `TradeItemResponse` (nested inside each pricing entry).
+      **Always `null`** in subresource (`/pricings`) and bulk (`/bulk/trade-item-pricings`) responses.
+      For flat retrieval, use the dedicated `/allowance-surcharges` or `/bulk/trade-item-allowance-surcharges` endpoints.
+      
+      **ETIM xChange**: `AllowanceSurcharge[]`
+      **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[]`
+    items:
+      $ref: ./AllowanceSurcharge.yaml
+    examples:
+      - - allowanceSurchargeIndicator: ALLOWANCE
+          allowanceSurchargeType: AEQ
+          allowanceSurchargeSequenceNumber: 1
+          allowanceSurchargePercentage: 10
+          allowanceSurchargeMinimumQuantity: 100
+          allowanceSurchargeDescription:
+            - language: "en-GB"
+              allowanceSurchargeDescription: "Volume discount tier 1"
+      - null
 
 examples:
   - pricingRef: "price-c62-1-20250101"
@@ -177,3 +202,25 @@ examples:
     vat: 21.0
     priceValidityDate: "2025-01-01"
     priceExpiryDate: "2025-12-31"
+    allowanceSurcharges:
+      - allowanceSurchargeIndicator: ALLOWANCE
+        allowanceSurchargeType: AEQ
+        allowanceSurchargeSequenceNumber: 1
+        allowanceSurchargePercentage: 10
+        allowanceSurchargeMinimumQuantity: 100
+        allowanceSurchargeDescription:
+          - language: "en-GB"
+            allowanceSurchargeDescription: "Volume discount tier 1"
+  - pricingRef: "price-mtr-1-20250101"
+    priceUnit: MTR
+    priceUnitFactor: 1.0
+    priceQuantity: 1
+    currencyCode: EUR
+    priceOnRequest: false
+    grossListPrice: 2.50
+    netPrice: 1.99
+    recommendedRetailPrice: 3.49
+    vat: 21.0
+    priceValidityDate: "2025-01-01"
+    priceExpiryDate: "2025-06-30"
+    allowanceSurcharges: null
