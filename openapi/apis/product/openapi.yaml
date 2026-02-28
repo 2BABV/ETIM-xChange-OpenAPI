@@ -139,12 +139,20 @@ components:
     # Response schemas
     ProductResponse:
       $ref: schemas/responses/ProductResponse.yaml
+    ProductResponseData:
+      $ref: schemas/responses/ProductResponseData.yaml
     ProductDetailsResponse:
       $ref: schemas/responses/ProductDetailsResponse.yaml
+    ProductDetailsResponseData:
+      $ref: schemas/responses/ProductDetailsResponseData.yaml
     ProductDescriptionsResponse:
       $ref: schemas/responses/ProductDescriptionsResponse.yaml
+    ProductDescriptionsResponseData:
+      $ref: schemas/responses/ProductDescriptionsResponseData.yaml
     ProductEtimClassificationsResponse:
       $ref: schemas/responses/ProductEtimClassificationsResponse.yaml
+    ProductEtimClassificationsResponseData:
+      $ref: schemas/responses/ProductEtimClassificationsResponseData.yaml
     # BulkProductsResponse:
     #   $ref: schemas/responses/BulkProductsResponse.yaml
     BulkProductDetailsResponse:
@@ -157,6 +165,8 @@ components:
       $ref: schemas/responses/BulkProductEtimClassificationFeaturesResponse.yaml
     ProductLcaEnvironmentalResponse:
       $ref: schemas/responses/ProductLcaEnvironmentalResponse.yaml
+    ProductLcaEnvironmentalResponseData:
+      $ref: schemas/responses/ProductLcaEnvironmentalResponseData.yaml
     BulkProductLcaDeclarationsResponse:
       $ref: schemas/responses/BulkProductLcaDeclarationsResponse.yaml
     

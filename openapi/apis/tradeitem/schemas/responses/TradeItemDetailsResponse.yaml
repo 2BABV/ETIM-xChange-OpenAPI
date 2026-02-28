@@ -12,35 +12,7 @@ required:
   - data
 properties:
   data:
-    type: object
-    additionalProperties: false
-    required:
-      - supplierIdGln
-      - supplierItemNumber
-      - details
-    properties:
-      supplierIdGln:
-        $ref: ../../../../shared/schemas/identifiers/Gln.yaml
-        description: |
-          Global Location Number (GLN) uniquely identifying the supplier.
-          Part of the composite key for the trade item.
-        examples:
-          - "1234567890123"
-      supplierItemNumber:
-        type: string
-        minLength: 1
-        maxLength: 35
-        description: |
-          Supplier's unique item number/code.
-          Part of the composite key for the trade item.
-        examples:
-          - "SKU-12345"
-      details:
-        $ref: ../domain/TradeItemDetails.yaml
-        description: |
-          Trade item identification and details including alternative item numbers,
-          GTINs, discount/bonus groups, validity dates, status, condition, and descriptions.
-
+    $ref: ./TradeItemDetailsResponseData.yaml
 examples:
   - data:
       supplierIdGln: "1234567890123"

@@ -15,32 +15,7 @@ required:
   - data
 properties:
   data:
-    type: object
-    additionalProperties: false
-    required:
-      - supplierIdGln
-      - supplierItemNumber
-    properties:
-      supplierIdGln:
-        $ref: ../../../../shared/schemas/identifiers/Gln.yaml
-        description: Global Location Number (GLN) uniquely identifying the supplier
-        examples:
-          - "1234567890123"
-      supplierItemNumber:
-        type: string
-        minLength: 1
-        maxLength: 35
-        description: Supplier's unique item number
-        examples:
-          - "SKU-12345"
-      descriptions:
-        type: ["array", "null"]
-        description: |
-          Array of trade item descriptions. Each item contains descriptions in a specific language.
-          Returns null if no descriptions are available, or an empty array if filtering
-          by language yields no matches.
-        items:
-          $ref: ../domain/ItemDescription.yaml
+    $ref: ./TradeItemDescriptionsResponseData.yaml
 examples:
   - data:
       supplierIdGln: "1234567890123"

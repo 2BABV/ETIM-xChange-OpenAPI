@@ -7,33 +7,7 @@ required:
   - data
 properties:
   data:
-    type: object
-    additionalProperties: false
-    required:
-      - manufacturerIdGln
-      - manufacturerProductNumber
-    properties:
-      manufacturerIdGln:
-        $ref: ../../../../shared/schemas/identifiers/Gln.yaml
-        description: Global Location Number (GLN) uniquely identifying the manufacturer
-        examples:
-          - "1234567890123"
-      manufacturerProductNumber:
-        type: string
-        minLength: 1
-        maxLength: 35
-        description: Manufacturer's unique product number/code
-        examples:
-          - "929002376910"
-      etimClassifications:
-        type: ["array", "null"]
-        description: |
-          Array of ETIM classifications for this product.
-          May be null if the product has no ETIM classifications.
-          Multiple classifications can exist across different ETIM releases.
-        items:
-          $ref: ../domain/EtimClassification.yaml
-
+    $ref: ./ProductEtimClassificationsResponseData.yaml
 examples:
   - data:
       manufacturerIdGln: "1234567890123"

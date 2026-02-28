@@ -15,35 +15,7 @@ required:
   - data
 properties:
   data:
-    type: object
-    additionalProperties: false
-    required:
-      - supplierIdGln
-      - supplierItemNumber
-      - ordering
-    properties:
-      supplierIdGln:
-        $ref: ../../../../shared/schemas/identifiers/Gln.yaml
-        description: |
-          Global Location Number (GLN) uniquely identifying the supplier.
-          Part of the composite key for the trade item.
-        examples:
-          - "1234567890123"
-      supplierItemNumber:
-        type: string
-        minLength: 1
-        maxLength: 35
-        description: |
-          Supplier's unique item number/code.
-          Part of the composite key for the trade item.
-        examples:
-          - "SKU-12345"
-      ordering:
-        $ref: ../domain/TradeItemOrdering.yaml
-        description: |
-          Trade item ordering details including order unit, minimum quantities,
-          order step size, lead time, and unit conversions.
-
+    $ref: ./TradeItemOrderingsResponseData.yaml
 examples:
   - data:
       supplierIdGln: "1234567890123"

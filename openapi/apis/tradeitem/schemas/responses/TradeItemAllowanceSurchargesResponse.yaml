@@ -14,43 +14,7 @@ required:
   - data
 properties:
   data:
-    type: object
-    additionalProperties: false
-    required:
-      - supplierIdGln
-      - supplierItemNumber
-      - allowanceSurcharges
-    properties:
-      supplierIdGln:
-        $ref: ../../../../shared/schemas/identifiers/Gln.yaml
-        description: |
-          GLN (Global Location Number) of the supplier.
-          **ETIM xChange**: `SupplierId.IdValue` where `IdScheme` = `GLN`
-        examples:
-          - "1234567890123"
-      supplierItemNumber:
-        type: string
-        description: |
-          The supplier's own item number for this trade item.
-          **ETIM xChange**: `TradeItemSupplierItemNumber`
-        minLength: 1
-        maxLength: 35
-        examples:
-          - "SKU-12345"
-      allowanceSurcharges:
-        type: ["array", "null"]
-        description: |
-          Array of allowances and surcharges linked to pricing entries via `pricingRef`.
-          Each item includes a `pricingRef` to correlate with pricing entries.
-        items:
-          $ref: ./TradeItemAllowanceSurchargeItem.yaml
-        examples:
-          - - pricingRef: "price-c62-1-20250101"
-              allowanceSurchargeIndicator: ALLOWANCE
-              allowanceSurchargeType: AEQ
-              allowanceSurchargePercentage: 5.5
-              allowanceSurchargeMinimumQuantity: 50
-
+    $ref: ./TradeItemAllowanceSurchargesResponseData.yaml
 examples:
   - data:
       supplierIdGln: "1234567890123"

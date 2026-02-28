@@ -2642,6 +2642,60 @@ components:
           allowanceSurchargeSequenceNumber: 2
           allowanceSurchargePercentage: 15
           allowanceSurchargeMinimumQuantity: 500
+    CursorPaginationMetadata:
+      type: object
+      description: |
+        Cursor-based pagination metadata exposed in the `meta` object. Includes the opaque pagination cursor,
+        navigation flags, the requested page size, and an optional estimated total count for windowed scans.
+      additionalProperties: false
+      properties:
+        cursor:
+          type:
+            - string
+            - 'null'
+          description: Cursor bookmark to request the next page of data. Always opaque and URL-safe. Null when no next page exists.
+          minLength: 1
+          examples:
+            - eyJpZCI6MTIzNDU2Nzg5MCwic29ydCI6ImFzYyJ9
+            - null
+        prevCursor:
+          type:
+            - string
+            - 'null'
+          description: Cursor bookmark that replays the previous page of data when present.
+          examples:
+            - eyJpZCI6MTIzNDU2NzAwMCwic29ydCI6ImFzYyJ9
+            - null
+        hasNext:
+          type: boolean
+          description: Indicates whether another page of data is available after the current window.
+          examples:
+            - true
+        hasPrev:
+          type: boolean
+          description: Indicates whether a previous page of data can be fetched using `prevCursor`.
+          examples:
+            - false
+        limit:
+          type: integer
+          description: Effective page size applied for this request.
+          minimum: 1
+          maximum: 1000
+          examples:
+            - 100
+        estimatedTotal:
+          type:
+            - integer
+            - 'null'
+          description: Estimated total number of records that satisfy the filter window. May be null when unknown or expensive to calculate.
+          minimum: 0
+          examples:
+            - 15234
+            - null
+      required:
+        - cursor
+        - hasNext
+        - limit
     TradeItemResponse:
       type: object
       description: |
@@ -2755,34 +2809,7 @@ components:
         - data
       properties:
         data:
-          type: object
-          additionalProperties: false
-          required:
-            - supplierIdGln
-            - supplierItemNumber
-            - details
-          properties:
-            supplierIdGln:
-              $ref: '#/components/schemas/Gln'
-              description: |
-                Global Location Number (GLN) uniquely identifying the supplier.
-                Part of the composite key for the trade item.
-              examples:
-                - '1234567890123'
-            supplierItemNumber:
-              type: string
-              minLength: 1
-              maxLength: 35
-              description: |
-                Supplier's unique item number/code.
-                Part of the composite key for the trade item.
-              examples:
-                - SKU-12345
-            details:
-              $ref: '#/components/schemas/TradeItemDetails'
-              description: |
-                Trade item identification and details including alternative item numbers,
-                GTINs, discount/bonus groups, validity dates, status, condition, and descriptions.
+          $ref: '#/components/schemas/TradeItemDetailsResponseData'
       examples:
         - data:
             supplierIdGln: '1234567890123'
@@ -2805,6 +2832,61 @@ components:
               itemCondition: NEW
               stockItem: true
               shelfLifePeriod: null
+    TradeItemDetailsResponseData:
+      type: object
+      description: |
+        Single trade item identification keys with details.
+
+        The trade item key (`supplierIdGln` + `supplierItemNumber`) is at the root level,
+        with the `details` object containing all identification and details fields.
+      additionalProperties: false
+      required:
+        - supplierIdGln
+        - supplierItemNumber
+        - details
+      properties:
+        supplierIdGln:
+          $ref: '#/components/schemas/Gln'
+          description: |
+            Global Location Number (GLN) uniquely identifying the supplier.
+            Part of the composite key for the trade item.
+          examples:
+            - '1234567890123'
+        supplierItemNumber:
+          type: string
+          minLength: 1
+          maxLength: 35
+          description: |
+            Supplier's unique item number/code.
+            Part of the composite key for the trade item.
+          examples:
+            - SKU-12345
+        details:
+          $ref: '#/components/schemas/TradeItemDetails'
+          description: |
+            Trade item identification and details including alternative item numbers,
+            GTINs, discount/bonus groups, validity dates, status, condition, and descriptions.
+      examples:
+        - supplierIdGln: '1234567890123'
+          supplierItemNumber: SKU-12345
+          details:
+            supplierAltItemNumber: ALT-12345
+            manufacturerItemNumber: MFG-98765
+            manufacturerIdGln: '9876543210987'
+            manufacturerProductNumber: '929002376910'
+            itemGtins:
+              - '4012345678901'
+            buyerItemNumber: null
+            discountGroupId: DG-001
+            discountGroupDescription: Standard discount group
+            bonusGroupId: null
+            bonusGroupDescription: null
+            itemValidityDate: '2024-01-01'
+            itemObsolescenceDate: null
+            itemStatus: ACTIVE
+            itemCondition: NEW
+            stockItem: true
+            shelfLifePeriod: null
     TradeItemDescriptionsResponse:
       type: object
       description: |
@@ -2823,34 +2905,7 @@ components:
         - data
       properties:
         data:
-          type: object
-          additionalProperties: false
-          required:
-            - supplierIdGln
-            - supplierItemNumber
-          properties:
-            supplierIdGln:
-              $ref: '#/components/schemas/Gln'
-              description: Global Location Number (GLN) uniquely identifying the supplier
-              examples:
-                - '1234567890123'
-            supplierItemNumber:
-              type: string
-              minLength: 1
-              maxLength: 35
-              description: Supplier's unique item number
-              examples:
-                - SKU-12345
-            descriptions:
-              type:
-                - array
-                - 'null'
-              description: |
-                Array of trade item descriptions. Each item contains descriptions in a specific language.
-                Returns null if no descriptions are available, or an empty array if filtering
-                by language yields no matches.
-              items:
-                $ref: '#/components/schemas/ItemDescription'
+          $ref: '#/components/schemas/TradeItemDescriptionsResponseData'
       examples:
         - data:
             supplierIdGln: '1234567890123'
@@ -2866,6 +2921,50 @@ components:
             supplierIdGln: '1234567890123'
             supplierItemNumber: SKU-12345
             descriptions: null
+    TradeItemDescriptionsResponseData:
+      type: object
+      description: |
+        Single trade item identification keys with multilingual descriptions.
+      additionalProperties: false
+      required:
+        - supplierIdGln
+        - supplierItemNumber
+      properties:
+        supplierIdGln:
+          $ref: '#/components/schemas/Gln'
+          description: Global Location Number (GLN) uniquely identifying the supplier
+          examples:
+            - '1234567890123'
+        supplierItemNumber:
+          type: string
+          minLength: 1
+          maxLength: 35
+          description: Supplier's unique item number
+          examples:
+            - SKU-12345
+        descriptions:
+          type:
+            - array
+            - 'null'
+          description: |
+            Array of trade item descriptions. Each item contains descriptions in a specific language.
+            Returns null if no descriptions are available, or an empty array if filtering
+            by language yields no matches.
+          items:
+            $ref: '#/components/schemas/ItemDescription'
+      examples:
+        - supplierIdGln: '1234567890123'
+          supplierItemNumber: SKU-12345
+          descriptions:
+            - descriptionLanguage: en-GB
+              minimalItemDescription: LED Lamp 10W E27
+              uniqueMainItemDescription: Professional LED lamp with E27 socket, 10W warm white
+            - descriptionLanguage: de-DE
+              minimalItemDescription: LED Lampe 10W E27
+              uniqueMainItemDescription: Professionelle LED-Lampe mit E27-Fassung, 10W warmweiß
+        - supplierIdGln: '1234567890123'
+          supplierItemNumber: SKU-12345
+          descriptions: null
     BulkTradeItemDetailsResponse:
       type: object
       description: |
@@ -2998,34 +3097,7 @@ components:
         - data
       properties:
         data:
-          type: object
-          additionalProperties: false
-          required:
-            - supplierIdGln
-            - supplierItemNumber
-            - ordering
-          properties:
-            supplierIdGln:
-              $ref: '#/components/schemas/Gln'
-              description: |
-                Global Location Number (GLN) uniquely identifying the supplier.
-                Part of the composite key for the trade item.
-              examples:
-                - '1234567890123'
-            supplierItemNumber:
-              type: string
-              minLength: 1
-              maxLength: 35
-              description: |
-                Supplier's unique item number/code.
-                Part of the composite key for the trade item.
-              examples:
-                - SKU-12345
-            ordering:
-              $ref: '#/components/schemas/TradeItemOrdering'
-              description: |
-                Trade item ordering details including order unit, minimum quantities,
-                order step size, lead time, and unit conversions.
+          $ref: '#/components/schemas/TradeItemOrderingsResponseData'
       examples:
         - data:
             supplierIdGln: '1234567890123'
@@ -3053,6 +3125,65 @@ components:
               singleUseUnitQuantity: 1
               alternativeUseUnit: null
               alternativeUseUnitConversionFactor: null
+    TradeItemOrderingsResponseData:
+      type: object
+      description: |
+        Single trade item identification keys with ordering information.
+
+        **ETIM xChange**: `Ordering`
+        **Path**: `Supplier[].Product[].TradeItem[].Ordering`
+      additionalProperties: false
+      required:
+        - supplierIdGln
+        - supplierItemNumber
+        - ordering
+      properties:
+        supplierIdGln:
+          $ref: '#/components/schemas/Gln'
+          description: |
+            Global Location Number (GLN) uniquely identifying the supplier.
+            Part of the composite key for the trade item.
+          examples:
+            - '1234567890123'
+        supplierItemNumber:
+          type: string
+          minLength: 1
+          maxLength: 35
+          description: |
+            Supplier's unique item number/code.
+            Part of the composite key for the trade item.
+          examples:
+            - SKU-12345
+        ordering:
+          $ref: '#/components/schemas/TradeItemOrdering'
+          description: |
+            Trade item ordering details including order unit, minimum quantities,
+            order step size, lead time, and unit conversions.
+      examples:
+        - supplierIdGln: '1234567890123'
+          supplierItemNumber: SKU-12345
+          ordering:
+            orderUnit: C62
+            minimumOrderQuantity: 1
+            orderStepSize: 1
+            standardOrderLeadTime: 5
+            useUnit: null
+            useUnitConversionFactor: null
+            singleUseUnitQuantity: null
+            alternativeUseUnit: null
+            alternativeUseUnitConversionFactor: null
+        - supplierIdGln: '8712423012485'
+          supplierItemNumber: SKU-CABLE-002
+          ordering:
+            orderUnit: MTR
+            minimumOrderQuantity: 10
+            orderStepSize: 5
+            standardOrderLeadTime: 3
+            useUnit: MTR
+            useUnitConversionFactor: 1
+            singleUseUnitQuantity: 1
+            alternativeUseUnit: null
+            alternativeUseUnitConversionFactor: null
     BulkTradeItemOrderingsResponse:
       type: object
       description: |
@@ -3131,37 +3262,7 @@ components:
         - data
       properties:
         data:
-          type: object
-          additionalProperties: false
-          required:
-            - supplierIdGln
-            - supplierItemNumber
-            - pricings
-          properties:
-            supplierIdGln:
-              $ref: '#/components/schemas/Gln'
-              description: |
-                Global Location Number (GLN) uniquely identifying the supplier.
-                Part of the composite key for the trade item.
-              examples:
-                - '1234567890123'
-            supplierItemNumber:
-              type: string
-              minLength: 1
-              maxLength: 35
-              description: |
-                Supplier's unique item number/code.
-                Part of the composite key for the trade item.
-              examples:
-                - SKU-12345
-            pricings:
-              type: array
-              description: |
-                Array of pricing information for this trade item. A trade item may have
-                multiple pricing entries for different conditions, customer groups, or
-                validity periods.
-              items:
-                $ref: '#/components/schemas/TradeItemPricing'
+          $ref: '#/components/schemas/TradeItemPricingsResponseData'
       examples:
         - data:
             supplierIdGln: '1234567890123'
@@ -3207,6 +3308,89 @@ components:
                 vat: 21
                 priceValidityDate: '2025-01-01'
                 priceExpiryDate: '2025-06-30'
+    TradeItemPricingsResponseData:
+      type: object
+      description: |
+        Single trade item identification keys with pricing information.
+
+        A trade item may have multiple pricing entries for different conditions, 
+        customer groups, or validity periods.
+
+        **ETIM xChange**: `Pricing[]`
+        **Path**: `Supplier[].Product[].TradeItem[].Pricing[]`
+      additionalProperties: false
+      required:
+        - supplierIdGln
+        - supplierItemNumber
+        - pricings
+      properties:
+        supplierIdGln:
+          $ref: '#/components/schemas/Gln'
+          description: |
+            Global Location Number (GLN) uniquely identifying the supplier.
+            Part of the composite key for the trade item.
+          examples:
+            - '1234567890123'
+        supplierItemNumber:
+          type: string
+          minLength: 1
+          maxLength: 35
+          description: |
+            Supplier's unique item number/code.
+            Part of the composite key for the trade item.
+          examples:
+            - SKU-12345
+        pricings:
+          type: array
+          description: |
+            Array of pricing information for this trade item. A trade item may have
+            multiple pricing entries for different conditions, customer groups, or
+            validity periods.
+          items:
+            $ref: '#/components/schemas/TradeItemPricing'
+      examples:
+        - supplierIdGln: '1234567890123'
+          supplierItemNumber: SKU-12345
+          pricings:
+            - pricingRef: price-c62-1-20250101
+              priceUnit: C62
+              priceUnitFactor: null
+              priceQuantity: 1
+              currencyCode: EUR
+              priceOnRequest: false
+              grossListPrice: 130
+              netPrice: 100
+              recommendedRetailPrice: 150
+              vat: 21
+              priceValidityDate: '2025-01-01'
+              priceExpiryDate: '2025-12-31'
+        - supplierIdGln: '8712423012485'
+          supplierItemNumber: SKU-CABLE-002
+          pricings:
+            - pricingRef: price-mtr-1-20250101
+              priceUnit: MTR
+              priceUnitFactor: 1
+              priceQuantity: 1
+              currencyCode: EUR
+              priceOnRequest: false
+              grossListPrice: 2.5
+              netPrice: 1.99
+              recommendedRetailPrice: 3.49
+              vat: 21
+              priceValidityDate: '2025-01-01'
+              priceExpiryDate: '2025-06-30'
+            - pricingRef: price-mtr-100-20250101
+              priceUnit: MTR
+              priceUnitFactor: 1
+              priceQuantity: 100
+              currencyCode: EUR
+              priceOnRequest: false
+              grossListPrice: 2
+              netPrice: 1.59
+              recommendedRetailPrice: 2.99
+              vat: 21
+              priceValidityDate: '2025-01-01'
+              priceExpiryDate: '2025-06-30'
     BulkTradeItemPricingsResponse:
       type: object
       description: |
@@ -3370,44 +3554,7 @@ components:
         - data
       properties:
         data:
-          type: object
-          additionalProperties: false
-          required:
-            - supplierIdGln
-            - supplierItemNumber
-            - allowanceSurcharges
-          properties:
-            supplierIdGln:
-              $ref: '#/components/schemas/Gln'
-              description: |
-                GLN (Global Location Number) of the supplier.
-                **ETIM xChange**: `SupplierId.IdValue` where `IdScheme` = `GLN`
-              examples:
-                - '1234567890123'
-            supplierItemNumber:
-              type: string
-              description: |
-                The supplier's own item number for this trade item.
-                **ETIM xChange**: `TradeItemSupplierItemNumber`
-              minLength: 1
-              maxLength: 35
-              examples:
-                - SKU-12345
-            allowanceSurcharges:
-              type:
-                - array
-                - 'null'
-              description: |
-                Array of allowances and surcharges linked to pricing entries via `pricingRef`.
-                Each item includes a `pricingRef` to correlate with pricing entries.
-              items:
-                $ref: '#/components/schemas/TradeItemAllowanceSurchargeItem'
-              examples:
-                - - pricingRef: price-c62-1-20250101
-                    allowanceSurchargeIndicator: ALLOWANCE
-                    allowanceSurchargeType: AEQ
-                    allowanceSurchargePercentage: 5.5
-                    allowanceSurchargeMinimumQuantity: 50
+          $ref: '#/components/schemas/TradeItemAllowanceSurchargesResponseData'
       examples:
         - data:
             supplierIdGln: '1234567890123'
@@ -3429,6 +3576,73 @@ components:
                 allowanceSurchargeSequenceNumber: 2
                 allowanceSurchargePercentage: null
                 allowanceSurchargeMinimumQuantity: null
+    TradeItemAllowanceSurchargesResponseData:
+      type: object
+      description: |
+        Single trade item identification keys with allowances and surcharges.
+
+        **Pricing Reference**: Each allowance/surcharge includes a `pricingRef` to enable 
+        correlation with the corresponding pricing entry from the `/pricings` endpoint.
+
+        **ETIM xChange**: `AllowanceSurcharge[]`
+        **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[]`
+      additionalProperties: false
+      required:
+        - supplierIdGln
+        - supplierItemNumber
+        - allowanceSurcharges
+      properties:
+        supplierIdGln:
+          $ref: '#/components/schemas/Gln'
+          description: |
+            GLN (Global Location Number) of the supplier.
+            **ETIM xChange**: `SupplierId.IdValue` where `IdScheme` = `GLN`
+          examples:
+            - '1234567890123'
+        supplierItemNumber:
+          type: string
+          description: |
+            The supplier's own item number for this trade item.
+            **ETIM xChange**: `TradeItemSupplierItemNumber`
+          minLength: 1
+          maxLength: 35
+          examples:
+            - SKU-12345
+        allowanceSurcharges:
+          type:
+            - array
+            - 'null'
+          description: |
+            Array of allowances and surcharges linked to pricing entries via `pricingRef`.
+            Each item includes a `pricingRef` to correlate with pricing entries.
+          items:
+            $ref: '#/components/schemas/TradeItemAllowanceSurchargeItem'
+          examples:
+            - - pricingRef: price-c62-1-20250101
+                allowanceSurchargeIndicator: ALLOWANCE
+                allowanceSurchargeType: AEQ
+                allowanceSurchargePercentage: 5.5
+                allowanceSurchargeMinimumQuantity: 50
+      examples:
+        - supplierIdGln: '1234567890123'
+          supplierItemNumber: SKU-12345
+          allowanceSurcharges:
+            - pricingRef: price-c62-1-20250101
+              allowanceSurchargeIndicator: ALLOWANCE
+              allowanceSurchargeValidityDate: '2025-01-01'
+              allowanceSurchargeType: AEQ
+              allowanceSurchargeAmount: null
+              allowanceSurchargeSequenceNumber: 1
+              allowanceSurchargePercentage: 5.5
+              allowanceSurchargeMinimumQuantity: 50
+            - pricingRef: price-c62-1-20250101
+              allowanceSurchargeIndicator: SURCHARGE
+              allowanceSurchargeValidityDate: null
+              allowanceSurchargeType: DBD
+              allowanceSurchargeAmount: 25
+              allowanceSurchargeSequenceNumber: 2
+              allowanceSurchargePercentage: null
+              allowanceSurchargeMinimumQuantity: null
     TradeItemAllowanceSurchargeItem:
       type: object
       description: |
@@ -3843,60 +4057,6 @@ components:
         - TD
         - WHE
         - X21
-    CursorPaginationMetadata:
-      type: object
-      description: |
-        Cursor-based pagination metadata exposed in the `meta` object. Includes the opaque pagination cursor,
-        navigation flags, the requested page size, and an optional estimated total count for windowed scans.
-      additionalProperties: false
-      properties:
-        cursor:
-          type:
-            - string
-            - 'null'
-          description: Cursor bookmark to request the next page of data. Always opaque and URL-safe. Null when no next page exists.
-          minLength: 1
-          examples:
-            - eyJpZCI6MTIzNDU2Nzg5MCwic29ydCI6ImFzYyJ9
-            - null
-        prevCursor:
-          type:
-            - string
-            - 'null'
-          description: Cursor bookmark that replays the previous page of data when present.
-          examples:
-            - eyJpZCI6MTIzNDU2NzAwMCwic29ydCI6ImFzYyJ9
-            - null
-        hasNext:
-          type: boolean
-          description: Indicates whether another page of data is available after the current window.
-          examples:
-            - true
-        hasPrev:
-          type: boolean
-          description: Indicates whether a previous page of data can be fetched using `prevCursor`.
-          examples:
-            - false
-        limit:
-          type: integer
-          description: Effective page size applied for this request.
-          minimum: 1
-          maximum: 1000
-          examples:
-            - 100
-        estimatedTotal:
-          type:
-            - integer
-            - 'null'
-          description: Estimated total number of records that satisfy the filter window. May be null when unknown or expensive to calculate.
-          minimum: 0
-          examples:
-            - 15234
-            - null
-      required:
-        - cursor
-        - hasNext
-        - limit
     TradeItemPricingSummary:
       type: object
       description: |

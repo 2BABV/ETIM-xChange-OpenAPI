@@ -16,55 +16,7 @@ required:
   - data
 properties:
   data:
-    type: object
-    additionalProperties: false
-    required:
-      - manufacturerIdGln
-      - manufacturerProductNumber
-      - details
-    properties:
-      manufacturerIdGln:
-        $ref: ../../../../shared/schemas/identifiers/Gln.yaml
-        description: Global Location Number (GLN) uniquely identifying the manufacturer
-        examples:
-          - "1234567890123"
-      manufacturerProductNumber:
-        type: string
-        minLength: 1
-        maxLength: 35
-        description: Manufacturer's unique product number/code
-        examples:
-          - "929002376910"
-      details:
-        $ref: ../domain/ProductDetails.yaml
-        description: |
-          Core product information including GTINs, brand,
-          dates, customs data, status, type, warranties, and product groups.
-      descriptions:
-        type: ["array", "null"]
-        description: |
-          Array of multilingual product descriptions. Each item contains descriptions
-          in a specific language. Returns null if no descriptions are available.
-        items:
-          $ref: ../domain/ProductDescription.yaml
-      etimClassifications:
-        type: ["array", "null"]
-        description: |
-          Array of ETIM classifications for this product with embedded features.
-          Returns null if the product has no ETIM classifications.
-          Multiple classifications can exist across different ETIM releases.
-        items:
-          $ref: ../domain/EtimClassification.yaml
-      lcaEnvironmental:
-        anyOf:
-          - $ref: ../domain/LcaEnvironmental.yaml
-          - type: "null"
-        description: |
-          Life Cycle Assessment and Environmental Product Declaration (EPD) data.
-          Returns null if the product has no LCA/EPD data.
-          
-          **ETIM xChange**: `LcaEnvironmental`  
-          **Path**: `Supplier[].Product[].LcaEnvironmental`
+    $ref: ./ProductResponseData.yaml
 examples:
   - data:
       manufacturerIdGln: "1234567890123"

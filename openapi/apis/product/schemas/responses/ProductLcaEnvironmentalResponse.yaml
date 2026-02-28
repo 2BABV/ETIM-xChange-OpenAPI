@@ -14,32 +14,7 @@ required:
   - data
 properties:
   data:
-    type: object
-    additionalProperties: false
-    required:
-      - manufacturerIdGln
-      - manufacturerProductNumber
-    properties:
-      manufacturerIdGln:
-        $ref: ../../../../shared/schemas/identifiers/Gln.yaml
-        description: Global Location Number (GLN) uniquely identifying the manufacturer
-        examples:
-          - "1234567890123"
-      manufacturerProductNumber:
-        type: string
-        minLength: 1
-        maxLength: 35
-        description: Manufacturer's unique product number/code
-        examples:
-          - "929002376910"
-      lcaEnvironmental:
-        anyOf:
-          - $ref: ../domain/LcaEnvironmental.yaml
-          - type: "null"
-        description: |
-          LCA environmental data including EPD information, declared units,
-          and life cycle assessment declarations. Null if no LCA data is available
-          for this product.
+    $ref: ./ProductLcaEnvironmentalResponseData.yaml
 examples:
   - data:
       manufacturerIdGln: "1234567890123"

@@ -15,32 +15,7 @@ required:
   - data
 properties:
   data:
-    type: object
-    additionalProperties: false
-    required:
-      - manufacturerIdGln
-      - manufacturerProductNumber
-    properties:
-      manufacturerIdGln:
-        $ref: ../../../../shared/schemas/identifiers/Gln.yaml
-        description: Global Location Number (GLN) uniquely identifying the manufacturer
-        examples:
-          - "1234567890123"
-      manufacturerProductNumber:
-        type: string
-        minLength: 1
-        maxLength: 35
-        description: Manufacturer's unique product number/code
-        examples:
-          - "929002376910"
-      descriptions:
-        type: ["array", "null"]
-        description: |
-          Array of product descriptions. Each item contains descriptions in a specific language.
-          Returns null if no descriptions are available, or an empty array if filtering
-          by language yields no matches.
-        items:
-          $ref: ../domain/ProductDescription.yaml
+    $ref: ./ProductDescriptionsResponseData.yaml
 examples:
   - data:
       manufacturerIdGln: "1234567890123"

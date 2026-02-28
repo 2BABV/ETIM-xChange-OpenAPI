@@ -13,29 +13,7 @@ required:
   - data
 properties:
   data:
-    type: object
-    additionalProperties: false
-    required:
-      - manufacturerIdGln
-      - manufacturerProductNumber
-    properties:
-      manufacturerIdGln:
-        $ref: ../../../../shared/schemas/identifiers/Gln.yaml
-        description: Global Location Number (GLN) uniquely identifying the manufacturer
-        examples:
-          - "1234567890123"
-      manufacturerProductNumber:
-        type: string
-        minLength: 1
-        maxLength: 35
-        description: Manufacturer's unique product number/code
-        examples:
-          - "929002376910"
-      details:
-        $ref: ../domain/ProductDetails.yaml
-        description: |
-          Core product information including identifiers,
-          brand, dates, customs data, status, warranties, and product groups.
+    $ref: ./ProductDetailsResponseData.yaml
 examples:
   - data:
       manufacturerIdGln: "1234567890123"

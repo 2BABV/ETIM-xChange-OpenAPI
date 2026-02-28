@@ -104,29 +104,43 @@ components:
     AllowanceSurchargeSummary:
       $ref: './schemas/domain/AllowanceSurchargeSummary.yaml'
     
+    # Shared schemas
+    CursorPaginationMetadata:
+      $ref: ../../shared/schemas/common/CursorPaginationMetadata.yaml
+    
     # Response schemas
     TradeItemResponse:
       $ref: './schemas/responses/TradeItemResponse.yaml'
     TradeItemDetailsResponse:
       $ref: './schemas/responses/TradeItemDetailsResponse.yaml'
+    TradeItemDetailsResponseData:
+      $ref: './schemas/responses/TradeItemDetailsResponseData.yaml'
     TradeItemDescriptionsResponse:
       $ref: './schemas/responses/TradeItemDescriptionsResponse.yaml'
+    TradeItemDescriptionsResponseData:
+      $ref: './schemas/responses/TradeItemDescriptionsResponseData.yaml'
     BulkTradeItemDetailsResponse:
       $ref: './schemas/responses/BulkTradeItemDetailsResponse.yaml'
     BulkTradeItemDescriptionsResponse:
       $ref: './schemas/responses/BulkTradeItemDescriptionsResponse.yaml'
     TradeItemOrderingsResponse:
       $ref: './schemas/responses/TradeItemOrderingsResponse.yaml'
+    TradeItemOrderingsResponseData:
+      $ref: './schemas/responses/TradeItemOrderingsResponseData.yaml'
     BulkTradeItemOrderingsResponse:
       $ref: './schemas/responses/BulkTradeItemOrderingsResponse.yaml'
     TradeItemPricingsResponse:
       $ref: './schemas/responses/TradeItemPricingsResponse.yaml'
+    TradeItemPricingsResponseData:
+      $ref: './schemas/responses/TradeItemPricingsResponseData.yaml'
     BulkTradeItemPricingsResponse:
       $ref: './schemas/responses/BulkTradeItemPricingsResponse.yaml'
     BulkAllowanceSurchargesResponse:
       $ref: './schemas/responses/BulkAllowanceSurchargesResponse.yaml'
     TradeItemAllowanceSurchargesResponse:
       $ref: './schemas/responses/TradeItemAllowanceSurchargesResponse.yaml'
+    TradeItemAllowanceSurchargesResponseData:
+      $ref: './schemas/responses/TradeItemAllowanceSurchargesResponseData.yaml'
     TradeItemAllowanceSurchargeItem:
       $ref: './schemas/responses/TradeItemAllowanceSurchargeItem.yaml'
 

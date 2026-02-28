@@ -20,38 +20,7 @@ required:
   - data
 properties:
   data:
-    type: object
-    additionalProperties: false
-    required:
-      - supplierIdGln
-      - supplierItemNumber
-      - pricings
-    properties:
-      supplierIdGln:
-        $ref: ../../../../shared/schemas/identifiers/Gln.yaml
-        description: |
-          Global Location Number (GLN) uniquely identifying the supplier.
-          Part of the composite key for the trade item.
-        examples:
-          - "1234567890123"
-      supplierItemNumber:
-        type: string
-        minLength: 1
-        maxLength: 35
-        description: |
-          Supplier's unique item number/code.
-          Part of the composite key for the trade item.
-        examples:
-          - "SKU-12345"
-      pricings:
-        type: array
-        description: |
-          Array of pricing information for this trade item. A trade item may have
-          multiple pricing entries for different conditions, customer groups, or
-          validity periods.
-        items:
-          $ref: ../domain/TradeItemPricing.yaml
-
+    $ref: ./TradeItemPricingsResponseData.yaml
 examples:
   - data:
       supplierIdGln: "1234567890123"

@@ -3412,59 +3412,7 @@ components:
         - data
       properties:
         data:
-          type: object
-          additionalProperties: false
-          required:
-            - manufacturerIdGln
-            - manufacturerProductNumber
-            - details
-          properties:
-            manufacturerIdGln:
-              $ref: '#/components/schemas/Gln'
-              description: Global Location Number (GLN) uniquely identifying the manufacturer
-              examples:
-                - '1234567890123'
-            manufacturerProductNumber:
-              type: string
-              minLength: 1
-              maxLength: 35
-              description: Manufacturer's unique product number/code
-              examples:
-                - '929002376910'
-            details:
-              $ref: '#/components/schemas/ProductDetails'
-              description: |
-                Core product information including GTINs, brand,
-                dates, customs data, status, type, warranties, and product groups.
-            descriptions:
-              type:
-                - array
-                - 'null'
-              description: |
-                Array of multilingual product descriptions. Each item contains descriptions
-                in a specific language. Returns null if no descriptions are available.
-              items:
-                $ref: '#/components/schemas/ProductDescription'
-            etimClassifications:
-              type:
-                - array
-                - 'null'
-              description: |
-                Array of ETIM classifications for this product with embedded features.
-                Returns null if the product has no ETIM classifications.
-                Multiple classifications can exist across different ETIM releases.
-              items:
-                $ref: '#/components/schemas/EtimClassification'
-            lcaEnvironmental:
-              anyOf:
-                - $ref: '#/components/schemas/LcaEnvironmental'
-                - type: 'null'
-              description: |
-                Life Cycle Assessment and Environmental Product Declaration (EPD) data.
-                Returns null if the product has no LCA/EPD data.
-
-                **ETIM xChange**: `LcaEnvironmental`  
-                **Path**: `Supplier[].Product[].LcaEnvironmental`
+          $ref: '#/components/schemas/ProductResponseData'
       examples:
         - data:
             manufacturerIdGln: '1234567890123'
@@ -3518,6 +3466,124 @@ components:
                 - lifeCycleStage: C1-C4
                   lcaDeclarationIndicator: AGG
                   declaredUnitGwpTotal: 2.5
+    ProductResponseData:
+      type: object
+      description: |
+        Single product data with all its components.
+
+        The product key (`manufacturerIdGln` + `manufacturerProductNumber`) is at the root level,
+        with nested objects for each component:
+        - `details`: GTINs, brand, dates, customs data, status, warranties
+        - `descriptions`: Array of multilingual descriptions (nested, not flattened)
+        - `etimClassifications`: Array of ETIM classifications with embedded features (nested)
+        - `lcaEnvironmental`: Life Cycle Assessment and Environmental Product Declaration (EPD) data
+
+        This structure aligns with the subresource endpoints (`/details`, 
+        `/descriptions`, `/etim-classifications`, `/lca-environmental`) which all include the key at the root level.
+      additionalProperties: false
+      required:
+        - manufacturerIdGln
+        - manufacturerProductNumber
+        - details
+      properties:
+        manufacturerIdGln:
+          $ref: '#/components/schemas/Gln'
+          description: Global Location Number (GLN) uniquely identifying the manufacturer
+          examples:
+            - '1234567890123'
+        manufacturerProductNumber:
+          type: string
+          minLength: 1
+          maxLength: 35
+          description: Manufacturer's unique product number/code
+          examples:
+            - '929002376910'
+        details:
+          $ref: '#/components/schemas/ProductDetails'
+          description: |
+            Core product information including GTINs, brand,
+            dates, customs data, status, type, warranties, and product groups.
+        descriptions:
+          type:
+            - array
+            - 'null'
+          description: |
+            Array of multilingual product descriptions. Each item contains descriptions
+            in a specific language. Returns null if no descriptions are available.
+          items:
+            $ref: '#/components/schemas/ProductDescription'
+        etimClassifications:
+          type:
+            - array
+            - 'null'
+          description: |
+            Array of ETIM classifications for this product with embedded features.
+            Returns null if the product has no ETIM classifications.
+            Multiple classifications can exist across different ETIM releases.
+          items:
+            $ref: '#/components/schemas/EtimClassification'
+        lcaEnvironmental:
+          anyOf:
+            - $ref: '#/components/schemas/LcaEnvironmental'
+            - type: 'null'
+          description: |
+            Life Cycle Assessment and Environmental Product Declaration (EPD) data.
+            Returns null if the product has no LCA/EPD data.
+
+            **ETIM xChange**: `LcaEnvironmental`  
+            **Path**: `Supplier[].Product[].LcaEnvironmental`
+      examples:
+        - manufacturerIdGln: '1234567890123'
+          manufacturerProductNumber: '929002376910'
+          details:
+            productGtins:
+              - '8718699673826'
+            brandName: Hue
+            productAnnouncementDate: '2024-01-15'
+            productValidityDate: '2024-03-01'
+            productObsolescenceDate: null
+            customsCommodityCode: '8539502090'
+            countryOfOrigin:
+              - NL
+            productStatus: ACTIVE
+            productType: PHYSICAL
+            customisableProduct: false
+            hasSerialNumber: true
+            warrantyConsumer: 24
+            warrantyBusiness: 36
+          descriptions:
+            - descriptionLanguage: en-GB
+              minimalProductDescription: LED Smart Bulb E27
+              uniqueMainProductDescription: Philips Hue White and Color Ambiance E27 LED Smart Bulb with Bluetooth
+              productKeyword:
+                - smart lighting
+                - LED
+                - color
+          etimClassifications:
+            - etimClassCode: EC002745
+              etimClassVersion: 1
+              etimReleaseVersion: '9.0'
+              etimFeatures:
+                - etimFeatureCode: EF012345
+                  etimValueNumeric: 10
+          lcaEnvironmental:
+            declaredUnitUnit: PCE
+            declaredUnitQuantity: 1
+            lcaReferenceLifetime: 25
+            thirdPartyVerification: externally
+            epdValidityStartDate: '2024-01-01'
+            epdValidityExpiryDate: '2029-12-31'
+            epdOperatorName: The International EPD System
+            epdOperatorUri: https://www.environdec.com
+            operatorEpdId: S-P-12345
+            lcaDeclaration:
+              - lifeCycleStage: A1-A3
+                lcaDeclarationIndicator: MDE
+                declaredUnitGwpTotal: 15.75
+                declaredUnitGwpFossil: 14.25
+              - lifeCycleStage: C1-C4
+                lcaDeclarationIndicator: AGG
+                declaredUnitGwpTotal: 2.5
     ProductDetailsResponse:
       type: object
       description: |
@@ -3534,29 +3600,7 @@ components:
         - data
       properties:
         data:
-          type: object
-          additionalProperties: false
-          required:
-            - manufacturerIdGln
-            - manufacturerProductNumber
-          properties:
-            manufacturerIdGln:
-              $ref: '#/components/schemas/Gln'
-              description: Global Location Number (GLN) uniquely identifying the manufacturer
-              examples:
-                - '1234567890123'
-            manufacturerProductNumber:
-              type: string
-              minLength: 1
-              maxLength: 35
-              description: Manufacturer's unique product number/code
-              examples:
-                - '929002376910'
-            details:
-              $ref: '#/components/schemas/ProductDetails'
-              description: |
-                Core product information including identifiers,
-                brand, dates, customs data, status, warranties, and product groups.
+          $ref: '#/components/schemas/ProductDetailsResponseData'
       examples:
         - data:
             manufacturerIdGln: '1234567890123'
@@ -3577,6 +3621,52 @@ components:
               relatedManufacturerProductGroup:
                 - Smart Lighting
                 - LED Bulbs
+    ProductDetailsResponseData:
+      type: object
+      description: |
+        Single product identification keys with core product details.
+        The product key is at the root level, with details nested inside.
+      additionalProperties: false
+      required:
+        - manufacturerIdGln
+        - manufacturerProductNumber
+      properties:
+        manufacturerIdGln:
+          $ref: '#/components/schemas/Gln'
+          description: Global Location Number (GLN) uniquely identifying the manufacturer
+          examples:
+            - '1234567890123'
+        manufacturerProductNumber:
+          type: string
+          minLength: 1
+          maxLength: 35
+          description: Manufacturer's unique product number/code
+          examples:
+            - '929002376910'
+        details:
+          $ref: '#/components/schemas/ProductDetails'
+          description: |
+            Core product information including identifiers,
+            brand, dates, customs data, status, warranties, and product groups.
+      examples:
+        - manufacturerIdGln: '1234567890123'
+          manufacturerProductNumber: '929002376910'
+          details:
+            productGtins:
+              - '8718699673826'
+            brandName: Hue
+            productValidityDate: '2024-03-01'
+            countryOfOrigin:
+              - NL
+            productStatus: ACTIVE
+            productType: PHYSICAL
+            customisableProduct: false
+            hasSerialNumber: true
+            warrantyConsumer: 24
+            warrantyBusiness: 36
+            relatedManufacturerProductGroup:
+              - Smart Lighting
+              - LED Bulbs
     ProductDescriptionsResponse:
       type: object
       description: |
@@ -3595,34 +3685,7 @@ components:
         - data
       properties:
         data:
-          type: object
-          additionalProperties: false
-          required:
-            - manufacturerIdGln
-            - manufacturerProductNumber
-          properties:
-            manufacturerIdGln:
-              $ref: '#/components/schemas/Gln'
-              description: Global Location Number (GLN) uniquely identifying the manufacturer
-              examples:
-                - '1234567890123'
-            manufacturerProductNumber:
-              type: string
-              minLength: 1
-              maxLength: 35
-              description: Manufacturer's unique product number/code
-              examples:
-                - '929002376910'
-            descriptions:
-              type:
-                - array
-                - 'null'
-              description: |
-                Array of product descriptions. Each item contains descriptions in a specific language.
-                Returns null if no descriptions are available, or an empty array if filtering
-                by language yields no matches.
-              items:
-                $ref: '#/components/schemas/ProductDescription'
+          $ref: '#/components/schemas/ProductDescriptionsResponseData'
       examples:
         - data:
             manufacturerIdGln: '1234567890123'
@@ -3645,6 +3708,57 @@ components:
             manufacturerIdGln: '1234567890123'
             manufacturerProductNumber: '929002376910'
             descriptions: null
+    ProductDescriptionsResponseData:
+      type: object
+      description: |
+        Single product identification keys with multilingual product descriptions.
+      additionalProperties: false
+      required:
+        - manufacturerIdGln
+        - manufacturerProductNumber
+      properties:
+        manufacturerIdGln:
+          $ref: '#/components/schemas/Gln'
+          description: Global Location Number (GLN) uniquely identifying the manufacturer
+          examples:
+            - '1234567890123'
+        manufacturerProductNumber:
+          type: string
+          minLength: 1
+          maxLength: 35
+          description: Manufacturer's unique product number/code
+          examples:
+            - '929002376910'
+        descriptions:
+          type:
+            - array
+            - 'null'
+          description: |
+            Array of product descriptions. Each item contains descriptions in a specific language.
+            Returns null if no descriptions are available, or an empty array if filtering
+            by language yields no matches.
+          items:
+            $ref: '#/components/schemas/ProductDescription'
+      examples:
+        - manufacturerIdGln: '1234567890123'
+          manufacturerProductNumber: '929002376910'
+          descriptions:
+            - descriptionLanguage: en-GB
+              minimalProductDescription: LED Smart Bulb E27 White & Color
+              uniqueMainProductDescription: Philips Hue White and Color Ambiance E27 LED Smart Bulb, 806 lumens, Bluetooth
+              fullProductDescription: The Philips Hue White and Color Ambiance E27 LED Smart Bulb offers 16 million colors and 50,000 shades of white light. Control it with your smartphone or voice using Alexa, Google Assistant, or Apple HomeKit.
+              productKeyword:
+                - smart lighting
+                - LED
+                - color
+                - Bluetooth
+              productPageUrl: https://www.philips.com/products/hue-white-color-e27
+            - descriptionLanguage: de-DE
+              minimalProductDescription: LED Smart-Lampe E27 Weiß & Farbe
+              uniqueMainProductDescription: Philips Hue White and Color Ambiance E27 LED Smart-Lampe, 806 Lumen, Bluetooth
+        - manufacturerIdGln: '1234567890123'
+          manufacturerProductNumber: '929002376910'
+          descriptions: null
     ProductEtimClassificationsResponse:
       type: object
       description: |
@@ -3655,34 +3769,7 @@ components:
         - data
       properties:
         data:
-          type: object
-          additionalProperties: false
-          required:
-            - manufacturerIdGln
-            - manufacturerProductNumber
-          properties:
-            manufacturerIdGln:
-              $ref: '#/components/schemas/Gln'
-              description: Global Location Number (GLN) uniquely identifying the manufacturer
-              examples:
-                - '1234567890123'
-            manufacturerProductNumber:
-              type: string
-              minLength: 1
-              maxLength: 35
-              description: Manufacturer's unique product number/code
-              examples:
-                - '929002376910'
-            etimClassifications:
-              type:
-                - array
-                - 'null'
-              description: |
-                Array of ETIM classifications for this product.
-                May be null if the product has no ETIM classifications.
-                Multiple classifications can exist across different ETIM releases.
-              items:
-                $ref: '#/components/schemas/EtimClassification'
+          $ref: '#/components/schemas/ProductEtimClassificationsResponseData'
       examples:
         - data:
             manufacturerIdGln: '1234567890123'
@@ -3702,6 +3789,55 @@ components:
                 etimFeatures:
                   - etimFeatureCode: EF000789
                     etimValueLogical: true
+    ProductEtimClassificationsResponseData:
+      type: object
+      description: |
+        Single product identification keys with all associated ETIM classifications.
+      additionalProperties: false
+      required:
+        - manufacturerIdGln
+        - manufacturerProductNumber
+      properties:
+        manufacturerIdGln:
+          $ref: '#/components/schemas/Gln'
+          description: Global Location Number (GLN) uniquely identifying the manufacturer
+          examples:
+            - '1234567890123'
+        manufacturerProductNumber:
+          type: string
+          minLength: 1
+          maxLength: 35
+          description: Manufacturer's unique product number/code
+          examples:
+            - '929002376910'
+        etimClassifications:
+          type:
+            - array
+            - 'null'
+          description: |
+            Array of ETIM classifications for this product.
+            May be null if the product has no ETIM classifications.
+            Multiple classifications can exist across different ETIM releases.
+          items:
+            $ref: '#/components/schemas/EtimClassification'
+      examples:
+        - manufacturerIdGln: '1234567890123'
+          manufacturerProductNumber: '929002376910'
+          etimClassifications:
+            - etimClassCode: EC002745
+              etimClassVersion: 1
+              etimReleaseVersion: '9.0'
+              etimFeatures:
+                - etimFeatureCode: EF000123
+                  etimValueCode: EV000789
+                - etimFeatureCode: EF000456
+                  etimValueNumeric: 230
+            - etimClassCode: EC001234
+              etimClassVersion: 2
+              etimReleaseVersion: '11.0'
+              etimFeatures:
+                - etimFeatureCode: EF000789
+                  etimValueLogical: true
     BulkProductDetailsResponse:
       type: object
       additionalProperties: false
@@ -3886,32 +4022,7 @@ components:
         - data
       properties:
         data:
-          type: object
-          additionalProperties: false
-          required:
-            - manufacturerIdGln
-            - manufacturerProductNumber
-          properties:
-            manufacturerIdGln:
-              $ref: '#/components/schemas/Gln'
-              description: Global Location Number (GLN) uniquely identifying the manufacturer
-              examples:
-                - '1234567890123'
-            manufacturerProductNumber:
-              type: string
-              minLength: 1
-              maxLength: 35
-              description: Manufacturer's unique product number/code
-              examples:
-                - '929002376910'
-            lcaEnvironmental:
-              anyOf:
-                - $ref: '#/components/schemas/LcaEnvironmental'
-                - type: 'null'
-              description: |
-                LCA environmental data including EPD information, declared units,
-                and life cycle assessment declarations. Null if no LCA data is available
-                for this product.
+          $ref: '#/components/schemas/ProductLcaEnvironmentalResponseData'
       examples:
         - data:
             manufacturerIdGln: '1234567890123'
@@ -3939,6 +4050,60 @@ components:
             manufacturerIdGln: '1234567890123'
             manufacturerProductNumber: LED-NO-EPD-001
             lcaEnvironmental: null
+    ProductLcaEnvironmentalResponseData:
+      type: object
+      description: |
+        Single product identification keys with LCA environmental data.
+      additionalProperties: false
+      required:
+        - manufacturerIdGln
+        - manufacturerProductNumber
+      properties:
+        manufacturerIdGln:
+          $ref: '#/components/schemas/Gln'
+          description: Global Location Number (GLN) uniquely identifying the manufacturer
+          examples:
+            - '1234567890123'
+        manufacturerProductNumber:
+          type: string
+          minLength: 1
+          maxLength: 35
+          description: Manufacturer's unique product number/code
+          examples:
+            - '929002376910'
+        lcaEnvironmental:
+          anyOf:
+            - $ref: '#/components/schemas/LcaEnvironmental'
+            - type: 'null'
+          description: |
+            LCA environmental data including EPD information, declared units,
+            and life cycle assessment declarations. Null if no LCA data is available
+            for this product.
+      examples:
+        - manufacturerIdGln: '1234567890123'
+          manufacturerProductNumber: '929002376910'
+          lcaEnvironmental:
+            declaredUnitUnit: PCE
+            declaredUnitQuantity: 1
+            lcaReferenceLifetime: 25
+            thirdPartyVerification: externally
+            epdValidityStartDate: '2024-01-01'
+            epdValidityExpiryDate: '2029-12-31'
+            epdOperatorName: The International EPD System
+            operatorEpdId: S-P-12345
+            productCategoryRulesDescription: PCR 2019:14 Lighting equipment
+            lcaDeclaration:
+              - lifeCycleStage: A1-A3
+                lcaDeclarationIndicator: MDE
+                declaredUnitGwpTotal: 15.75
+                declaredUnitGwpFossil: 14.25
+                declaredUnitGwpBiogenic: 1.2
+              - lifeCycleStage: C1-C4
+                lcaDeclarationIndicator: AGG
+                declaredUnitGwpTotal: 2.5
+        - manufacturerIdGln: '1234567890123'
+          manufacturerProductNumber: LED-NO-EPD-001
+          lcaEnvironmental: null
     BulkProductLcaDeclarationsResponse:
       type: object
       description: |

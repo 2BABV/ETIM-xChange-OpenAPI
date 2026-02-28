@@ -342,23 +342,67 @@ GET /bulk/item-pricings
 
 ### Response Envelope Patterns
 
+All API responses use a `{ data: ... }` envelope. The `data` property **must always use a named `$ref`** — never an inline anonymous object.
+
+**Why**: Code generators like NSwag cannot name inline anonymous objects. When multiple responses each define `data` as an inline `type: object`, NSwag generates ambiguous types (`Data`, `Data2`, `Data3`, etc.) that are meaningless to developers and unstable across spec changes (adding/removing a response shifts the numbering).
+
 #### Single-Item Response
 
+For single-item responses, the `data` property references a named `*ResponseData` schema that contains the composite key + domain data:
+
 ```yaml
-# ProductResponse.yaml
+# ProductDetailsResponse.yaml (envelope)
 type: object
 additionalProperties: false
 required:
   - data
 properties:
   data:
-    $ref: ../domain/Product.yaml
+    $ref: ./ProductDetailsResponseData.yaml    # ← named $ref, NOT inline object
 examples:
   - data:
       manufacturerIdGln: "1234567890123"
-      manufacturerProductNumber: "LED-12345-A"
-      manufacturerName: "Philips Lighting B.V."
-      # ... full product object
+      manufacturerProductNumber: "929002376910"
+      details:
+        productGtins: ["8718699673826"]
+        brandName: "Hue"
+        productStatus: "ACTIVE"
+```
+
+```yaml
+# ProductDetailsResponseData.yaml (named data schema)
+type: object
+additionalProperties: false
+required:
+  - manufacturerIdGln
+  - manufacturerProductNumber
+properties:
+  manufacturerIdGln:
+    $ref: ../../../../shared/schemas/identifiers/Gln.yaml
+  manufacturerProductNumber:
+    type: string
+    minLength: 1
+    maxLength: 35
+  details:
+    $ref: ../domain/ProductDetails.yaml
+```
+
+**Naming convention**: `{Entity}{Aspect}ResponseData.yaml` — e.g., `ProductDetailsResponseData`, `TradeItemPricingsResponseData`. The `*ResponseData` files live in `schemas/responses/` alongside their envelope and must be registered in `openapi.yaml` under `components/schemas`.
+
+```yaml
+# ❌ INCORRECT — inline anonymous object causes NSwag to generate "Data", "Data2", etc.
+properties:
+  data:
+    type: object
+    properties:
+      manufacturerIdGln: ...
+      details:
+        $ref: ../domain/ProductDetails.yaml
+
+# ✅ CORRECT — named $ref produces "ProductDetailsResponseData" in generated code
+properties:
+  data:
+    $ref: ./ProductDetailsResponseData.yaml
 ```
 
 #### Bulk Response with Cursor Pagination

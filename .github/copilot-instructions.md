@@ -23,10 +23,15 @@ When working with this repository:
    **API Paths**:
    - **kebab-case** for path segments: `/netprices`, `/trade-items`
    
-  **Response Structure for Large Datasets**:
-  - Use `data` (plural) for the array of items
+  **Response Envelope Pattern (Single-Item and Bulk)**:
+  - All responses wrap content in a `data` property — never return domain objects directly
+  - The `data` property **must always use a named `$ref`** — NEVER define `data` as an inline anonymous `type: object`
+  - Inline anonymous objects cause code generators (NSwag) to produce ambiguous types (`Data`, `Data2`, `Data3`)
+  - For single-item responses: `data: { $ref: ./XxxResponseData.yaml }` where the `*ResponseData` schema contains composite key + domain data
+  - For bulk responses: `data: { type: array, items: { $ref: ... } }` with `meta: { $ref: CursorPaginationMetadata }`
+  - Naming: `{Entity}{Aspect}ResponseData.yaml` (e.g., `ProductDetailsResponseData`, `TradeItemPricingsResponseData`)
+  - `*ResponseData` files go in `schemas/responses/` and must be registered in `openapi.yaml` under `components/schemas`
   - Use `meta` for cursor pagination information (reuse `CursorPaginationMetadata` with `cursor`, `prevCursor`, `hasNext`, `hasPrev`, `limit`, `estimatedTotal`)
-  - Example: `{ data: [...], meta: { cursor, hasNext, hasPrev, limit, estimatedTotal } }`
 
 2. **OpenAPI 3.1 / JSON Schema 2020-12 Requirements**:
    - Use `type: ["string", "null"]` for nullable fields (NOT `nullable: true`)
@@ -153,9 +158,43 @@ properties:
     type: string
 ```
 
-### Large Dataset Responses (Cursor Pagination)
+### Response Envelope — Named `$ref` for `data` (Code Generation)
+
+The `data` property in response envelopes **must** use a named `$ref` — never an inline anonymous object. This is critical for code generators like NSwag.
+
 ```yaml
-# ✅ CORRECT - Use data and meta
+# ❌ INCORRECT — inline object → NSwag generates "Data", "Data2", "Data3"
+type: object
+properties:
+  data:
+    type: object
+    properties:
+      manufacturerIdGln: ...
+      details:
+        $ref: ../domain/ProductDetails.yaml
+
+# ✅ CORRECT — named $ref → NSwag generates "ProductDetailsResponseData"
+type: object
+properties:
+  data:
+    $ref: ./ProductDetailsResponseData.yaml
+```
+
+**Single-item response** — `data` references a `*ResponseData` schema:
+```yaml
+# ProductDetailsResponse.yaml
+type: object
+additionalProperties: false
+required:
+  - data
+properties:
+  data:
+    $ref: ./ProductDetailsResponseData.yaml
+```
+
+**Bulk response** — `data` is an array with named `items`, plus `meta`:
+```yaml
+# BulkProductDetailsResponse.yaml
 type: object
 additionalProperties: false
 required:
@@ -164,21 +203,10 @@ required:
 properties:
   data:
     type: array
-    description: Array of items
     items:
-      $ref: ../domain/Item.yaml
+      $ref: ../domain/ProductDetailsSummary.yaml
   meta:
     $ref: ../../../../shared/schemas/common/CursorPaginationMetadata.yaml
-examples:
-  - data:
-      - id: "123"
-        name: "Item 1"
-    meta:
-      cursor: "eyJpZCI6MTIzfQ=="
-      hasNext: true
-      hasPrev: false
-      limit: 100
-      estimatedTotal: 245
 ```
 
 Always prioritize clarity, reusability, and adherence to OpenAPI 3.1+ and JSON Schema 2020-12 standards while respecting the established project patterns and business domain requirements.
