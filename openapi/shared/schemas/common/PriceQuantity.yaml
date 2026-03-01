@@ -1,3 +1,6 @@
+description: |
+  Decimal quantity value representing the number of items for which a price applies.
+  Supports up to 5 digits before the decimal and 4 digits after (max 99999.9999).
 type: number
 format: decimal # hint only, ignored by many tools
 minimum: 0

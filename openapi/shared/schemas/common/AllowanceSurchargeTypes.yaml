@@ -28,3 +28,7 @@ enum:
   - TD     # Trade discount
   - WHE    # Warehousing
   - X21    # Extended ETIM allowance/surcharge code
+examples:
+  - "TD"
+  - "QD"
+  - "FC"

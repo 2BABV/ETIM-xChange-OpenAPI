@@ -1,4 +1,9 @@
 type: object
+description: |
+  Pricing information for a trade item, including list prices, net prices, VAT rates, and validity periods.
+  Each pricing entry represents a price point for a specific unit and quantity combination.
+
+  **ETIM xChange Path**: `Supplier[].Product[].TradeItem[].Pricing[]`
 additionalProperties: false
 required:
   - priceUnit
@@ -9,18 +14,16 @@ properties:
   priceUnit:
     $ref: ../../../../shared/schemas/common/UnitCodes.yaml
   priceUnitFactor:
-    anyOf:
-      - type: number
-        format: decimal
-        minimum: 0
-        multipleOf: 0.0001
-        maximum: 99999999999.9999
-        description: Factor to convert the price unit to a base unit. Maximum 11 digits before decimal, 4 after.
-        examples:
-          - 1000
-          - 1.5
-          - 0.001
-      - type: "null"
+    type: ["number", "null"]
+    format: decimal
+    minimum: 0
+    multipleOf: 0.0001
+    maximum: 99999999999.9999
+    description: Factor to convert the price unit to a base unit. Maximum 11 digits before decimal, 4 after.
+    examples:
+      - 1000
+      - 1.5
+      - 0.001
   priceQuantity:
     type: number
     format: decimal
@@ -57,18 +60,16 @@ properties:
       - $ref: ../../../../shared/schemas/common/Price.yaml
       - type: "null"
   vat:
-    anyOf:
-      - type: number
-        format: decimal
-        minimum: 0
-        maximum: 99.99
-        multipleOf: 0.01
-        description: Value Added Tax (VAT) percentage rate. Maximum 2 digits before decimal, 2 after.
-        examples:
-          - 21
-          - 19.5
-          - 6.5
-      - type: "null"
+    type: ["number", "null"]
+    format: decimal
+    minimum: 0
+    maximum: 99.99
+    multipleOf: 0.01
+    description: Value Added Tax (VAT) percentage rate. Maximum 2 digits before decimal, 2 after.
+    examples:
+      - 21
+      - 19.5
+      - 6.5
   priceValidityDate:
     type: string
     format: date
@@ -85,10 +86,3 @@ properties:
     description: The date when the price expires
     examples:
       - "2025-12-31"
-  # allowanceSurcharges:
-  #   description: List of allowances (discounts) or surcharges (additional charges) applied to the price
-  #   anyOf:
-  #     - type: array
-  #       items:
-  #         $ref: ./AllowanceSurcharge.yaml
-  #     - type: "null"

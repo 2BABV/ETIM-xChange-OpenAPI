@@ -85,3 +85,8 @@ enum:
   # Other units
   - D99    # Other unit
   - KG     # Kilogram (alternative)
+examples:
+  - "C62"
+  - "KGM"
+  - "MTR"
+  - "LTR"

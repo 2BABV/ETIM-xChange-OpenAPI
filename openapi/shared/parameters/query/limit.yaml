@@ -7,3 +7,7 @@ schema:
   default: 100
   minimum: 1
   maximum: 1000
+  examples:
+    - 10
+    - 50
+    - 100
