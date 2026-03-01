@@ -44,13 +44,13 @@
 
 ## 🟢 Low Severity
 
-### L1 — Standardize 404 responses to use `examples` (plural) across all paths
+### ~~L1 — Standardize 404 responses to use `examples` (plural) across all paths~~ ✅
 - **Files:** All 11 single-item path files (5 product + 6 tradeitem)
-- **Issue:** 404 responses use `example` (singular) while 200 responses use `examples` (plural named map). Technically valid for media type examples but inconsistent.
+- **Resolution:** Converted `example` (singular) to `examples` (plural named map) with `notFound` key matching the 200 response pattern.
 
-### L2 — Standardize `$ref` quoting in tradeitem bulk paths
+### ~~L2 — Standardize `$ref` quoting in tradeitem bulk paths~~ ✅
 - **Files:** `openapi/apis/tradeitem/paths/bulk/trade-item-allowance-surcharges.yaml`, `trade-item-orderings.yaml`, `trade-item-pricings.yaml`
-- **Issue:** Unquoted `$ref` values while other bulk files use quoted strings.
+- **Resolution:** Added single-quote strings to all `$ref` values, matching `trade-item-details.yaml` and `trade-item-descriptions.yaml`.
 
 ### L3 — Add `minLength`/`maxLength` to pattern-validated strings; `format: uuid` to `scipNumber`
 - **Files:** `openapi/shared/schemas/common/LanguageCode.yaml`, `openapi/shared/schemas/identifiers/Gtin.yaml`, `openapi/shared/parameters/query/cursor.yaml`, `openapi/apis/product/schemas/domain/Legislation.yaml`

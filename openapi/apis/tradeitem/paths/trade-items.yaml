@@ -129,12 +129,15 @@ get:
         application/json:
           schema:
             $ref: '../../../shared/schemas/common/ProblemDetails.yaml'
-          example:
-            type: "https://api.tradeitem.2ba.nl/problems/not-found"
-            title: "Trade Item Not Found"
-            status: 404
-            detail: "No trade item found for supplier GLN '1234567890123' and item number 'UNKNOWN-SKU'"
-            instance: "https://api.tradeitem.2ba.nl/v1/trade-items/1234567890123/UNKNOWN-SKU"
+          examples:
+            notFound:
+              summary: Trade item not found
+              value:
+                type: "https://api.tradeitem.2ba.nl/problems/not-found"
+                title: "Trade Item Not Found"
+                status: 404
+                detail: "No trade item found for supplier GLN '1234567890123' and item number 'UNKNOWN-SKU'"
+                instance: "https://api.tradeitem.2ba.nl/v1/trade-items/1234567890123/UNKNOWN-SKU"
     '400':
       $ref: '../../../shared/responses/400-bad-request.yaml'
     '401':

@@ -73,11 +73,14 @@ get:
         application/json:
           schema:
             $ref: ../../../shared/schemas/common/ProblemDetails.yaml
-          example:
-            type: "https://api.product.2ba.nl/problems/not-found"
-            title: "Product Not Found"
-            status: 404
-            detail: "No product found with manufacturer GLN '1234567890123' and product number '929002376910'"
-            instance: "https://api.product.2ba.nl/v1/products/1234567890123/929002376910/details"
+          examples:
+            notFound:
+              summary: Product not found
+              value:
+                type: "https://api.product.2ba.nl/problems/not-found"
+                title: "Product Not Found"
+                status: 404
+                detail: "No product found with manufacturer GLN '1234567890123' and product number '929002376910'"
+                instance: "https://api.product.2ba.nl/v1/products/1234567890123/929002376910/details"
     '500':
       $ref: ../../../shared/responses/500-internal-server-error.yaml
