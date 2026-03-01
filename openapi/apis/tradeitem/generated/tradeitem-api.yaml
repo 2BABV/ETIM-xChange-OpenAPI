@@ -127,12 +127,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetails'
-              example:
-                type: https://api.tradeitem.2ba.nl/problems/not-found
-                title: Trade Item Not Found
-                status: 404
-                detail: No trade item found with supplier GLN '1234567890123' and item number 'UNKNOWN-SKU'
-                instance: https://api.tradeitem.2ba.nl/v1/1234567890123/UNKNOWN-SKU/details
+              examples:
+                notFound:
+                  summary: Trade item not found
+                  value:
+                    type: https://api.tradeitem.2ba.nl/problems/not-found
+                    title: Trade Item Not Found
+                    status: 404
+                    detail: No trade item found with supplier GLN '1234567890123' and item number 'UNKNOWN-SKU'
+                    instance: https://api.tradeitem.2ba.nl/v1/1234567890123/UNKNOWN-SKU/details
         '500':
           $ref: '#/components/responses/500-internal-server-error'
   /{supplierIdGln}/{supplierItemNumber}/descriptions:
@@ -212,12 +215,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetails'
-              example:
-                type: https://api.tradeitem.2ba.nl/problems/not-found
-                title: Trade Item Not Found
-                status: 404
-                detail: No trade item found with supplier GLN '1234567890123' and item number 'UNKNOWN-SKU'
-                instance: https://api.tradeitem.2ba.nl/v1/1234567890123/UNKNOWN-SKU/descriptions
+              examples:
+                notFound:
+                  summary: Trade item not found
+                  value:
+                    type: https://api.tradeitem.2ba.nl/problems/not-found
+                    title: Trade Item Not Found
+                    status: 404
+                    detail: No trade item found with supplier GLN '1234567890123' and item number 'UNKNOWN-SKU'
+                    instance: https://api.tradeitem.2ba.nl/v1/1234567890123/UNKNOWN-SKU/descriptions
         '500':
           $ref: '#/components/responses/500-internal-server-error'
   /{supplierIdGln}/{supplierItemNumber}/orderings:
@@ -313,12 +319,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetails'
-              example:
-                type: https://api.tradeitem.2ba.nl/problems/not-found
-                title: Trade Item Not Found
-                status: 404
-                detail: No trade item found with supplier GLN '1234567890123' and item number 'UNKNOWN-SKU'
-                instance: https://api.tradeitem.2ba.nl/v1/1234567890123/UNKNOWN-SKU/orderings
+              examples:
+                notFound:
+                  summary: Trade item not found
+                  value:
+                    type: https://api.tradeitem.2ba.nl/problems/not-found
+                    title: Trade Item Not Found
+                    status: 404
+                    detail: No trade item found with supplier GLN '1234567890123' and item number 'UNKNOWN-SKU'
+                    instance: https://api.tradeitem.2ba.nl/v1/1234567890123/UNKNOWN-SKU/orderings
         '500':
           $ref: '#/components/responses/500-internal-server-error'
   /{supplierIdGln}/{supplierItemNumber}/pricings:
@@ -447,12 +456,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetails'
-              example:
-                type: https://api.tradeitem.2ba.nl/problems/not-found
-                title: Trade Item Not Found
-                status: 404
-                detail: No trade item found with supplier GLN '1234567890123' and item number 'UNKNOWN-SKU'
-                instance: https://api.tradeitem.2ba.nl/v1/1234567890123/UNKNOWN-SKU/pricings
+              examples:
+                notFound:
+                  summary: Trade item not found
+                  value:
+                    type: https://api.tradeitem.2ba.nl/problems/not-found
+                    title: Trade Item Not Found
+                    status: 404
+                    detail: No trade item found with supplier GLN '1234567890123' and item number 'UNKNOWN-SKU'
+                    instance: https://api.tradeitem.2ba.nl/v1/1234567890123/UNKNOWN-SKU/pricings
         '500':
           $ref: '#/components/responses/500-internal-server-error'
   /{supplierIdGln}/{supplierItemNumber}/allowance-surcharges:
@@ -553,12 +565,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetails'
-              example:
-                type: https://api.tradeitem.2ba.nl/problems/not-found
-                title: Trade Item Not Found
-                status: 404
-                detail: No trade item found with supplier GLN '1234567890123' and item number 'UNKNOWN-SKU'
-                instance: https://api.tradeitem.2ba.nl/v1/1234567890123/UNKNOWN-SKU/allowance-surcharges
+              examples:
+                notFound:
+                  summary: Trade item not found
+                  value:
+                    type: https://api.tradeitem.2ba.nl/problems/not-found
+                    title: Trade Item Not Found
+                    status: 404
+                    detail: No trade item found with supplier GLN '1234567890123' and item number 'UNKNOWN-SKU'
+                    instance: https://api.tradeitem.2ba.nl/v1/1234567890123/UNKNOWN-SKU/allowance-surcharges
         '500':
           $ref: '#/components/responses/500-internal-server-error'
   /bulk/trade-item-details:
@@ -4010,6 +4025,11 @@ components:
         - Z3
         - D99
         - KG
+      examples:
+        - C62
+        - KGM
+        - MTR
+        - LTR
     CurrencyCode:
       type: string
       description: ISO 4217 currency code
@@ -4057,6 +4077,10 @@ components:
         - TD
         - WHE
         - X21
+      examples:
+        - TD
+        - QD
+        - FC
     TradeItemPricingSummary:
       type: object
       description: |
@@ -5775,7 +5799,11 @@ components:
         type: integer
         default: 100
         minimum: 1
-        maximum: 1000000
+        maximum: 1000
+        examples:
+          - 10
+          - 50
+          - 100
     selection-id:
       name: selectionId
       in: query
