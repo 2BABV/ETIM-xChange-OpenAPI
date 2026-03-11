@@ -1,6 +1,6 @@
 # 2BA ETIM xChange OpenAPI
 
-This repository contains the OpenAPI 3.1 specifications for the 2BA (Building Blocks Architecture) ecosystem. It provides comprehensive API documentation for multiple domains including product information, trade items, pricing data, and ETIM classification standards.
+This repository contains the OpenAPI 3.1 specifications for the 2BA ecosystem. It provides comprehensive API documentation for multiple domains including product information, trade items, pricing data, and ETIM classification standards.
 
 ## Purpose
 
