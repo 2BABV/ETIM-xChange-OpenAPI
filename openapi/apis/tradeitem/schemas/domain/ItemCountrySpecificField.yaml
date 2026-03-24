@@ -40,6 +40,7 @@ properties:
       - null
   csItemCharacteristicValueNumeric:
     type: ["number", "null"]
+    format: decimal
     description: |
       Numeric value for the country-specific characteristic (converted from ETIM xChange string to number).
       **ETIM xChange**: `CSItemCharacteristicValueNumeric` (string with pattern)
@@ -53,6 +54,7 @@ properties:
       - null
   csItemCharacteristicValueRangeLower:
     type: ["number", "null"]
+    format: decimal
     description: |
       Lower bound of numeric range value (converted from ETIM xChange string to number).
       **ETIM xChange**: `CSItemCharacteristicValueRangeLower` (string with pattern)
@@ -65,6 +67,7 @@ properties:
       - null
   csItemCharacteristicValueRangeUpper:
     type: ["number", "null"]
+    format: decimal
     description: |
       Upper bound of numeric range value (converted from ETIM xChange string to number).
       **ETIM xChange**: `CSItemCharacteristicValueRangeUpper` (string with pattern)

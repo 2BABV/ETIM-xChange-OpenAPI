@@ -41,6 +41,7 @@ properties:
     type:
       - number
       - "null"
+    format: decimal
     description: |
       Fixed monetary amount of the allowance or surcharge (converted from ETIM string pattern to numeric form).
       **ETIM xChange**: `AllowanceSurchargeAmount`
@@ -69,6 +70,7 @@ properties:
     type:
       - number
       - "null"
+    format: decimal
     description: |
       Percentage rate of the allowance or surcharge (converted from ETIM string pattern to numeric form).
       **ETIM xChange**: `AllowanceSurchargePercentage`
@@ -84,6 +86,7 @@ properties:
     type:
       - number
       - "null"
+    format: decimal
     description: |
       Minimum ordered quantity required for the allowance or surcharge to apply (converted from ETIM string pattern to numeric form).
       **ETIM xChange**: `AllowanceSurchargeMinimumQuantity`

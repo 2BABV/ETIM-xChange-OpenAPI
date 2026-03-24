@@ -26,7 +26,7 @@ All schemas must adhere to OpenAPI 3.1 and JSON Schema 2020-12 standards:
 
 - **Nullable Fields**: Use `type: ["string", "null"]` for nullable fields (NOT deprecated `nullable: true` from OpenAPI 3.0)
 - **Examples**: Use `examples` (plural array) in schemas, not `example` (singular, deprecated)
-- **Format Hints**: Include `format` for type validation: `uri`, `email`, `date`, `date-time`, `uuid`, `decimal`. (The Microsoft documentation shows that some implementations (like ASP.NET Core) use `format: decimal` as a custom format hint for tooling purposes, but it's not part of the official OpenAPI 3.1 standard.)
+- **Format Hints**: Include `format` for type validation: `uri`, `email`, `date`, `date-time`, `uuid`. Use `format: decimal` for all ETIM-converted number fields as a code-generator hint (see [`format: decimal` — Code Generator Hint](#format-decimal--code-generator-hint) below). Note: `format: decimal` is not part of the official OpenAPI 3.1 standard but is recognized by NSwag (.NET → `decimal`) and configurable in OpenAPI Generator (Java → `BigDecimal`).
 - **Validation Constraints**: Apply `minLength`, `maxLength`, `minimum`, `maximum`, `multipleOf` for validation
 - **Backward-Compatible Object Evolution**: Allow additional properties throughout the object model, including nested models, so optional fields can be added without breaking existing clients
 - **Composition**: Use `anyOf`, `oneOf`, `allOf` for complex type compositions
@@ -37,6 +37,9 @@ All schemas must adhere to OpenAPI 3.1 and JSON Schema 2020-12 standards:
 #### 1. String-to-Number Conversion
 
 **CRITICAL**: ETIM xChange schema stores all numeric values as strings with regex patterns. The OpenAPI specification MUST convert these to proper `number` type with appropriate constraints.
+
+**Why Numbers Instead of Strings?**  
+The ETIM xChange canonical model uses `type: string` with regex patterns because it was designed for catalog file exchange (BMEcat/XML), where strings preserve exact textual representation during file transfer and avoid parser-dependent numeric formatting. The OpenAPI API model converts these to `type: number` because a REST API is consumed programmatically: numeric types enable **filtering** (`?minPrice=10`), **sorting**, **range queries**, **arithmetic comparison**, and **strongly-typed code generation** (e.g., C# `decimal`, Java `BigDecimal`) without requiring callers to parse strings.
 
 | ETIM xChange Pattern | OpenAPI Type | Constraints | Example Fields |
 |---------------------|--------------|-------------|----------------|
@@ -76,6 +79,30 @@ factorCustomsCommodityCode:
 - **ETIM Features**: Numeric feature values with string patterns
 
 **Integer-Only Fields**: Keep as `integer` type for true integers (e.g., `warrantyConsumer`, `warrantyBusiness`, whole-unit reference lifetimes)
+
+#### `format: decimal` — Code Generator Hint
+
+All converted number fields SHOULD include `format: decimal`. This is a **custom** (non-standard) OpenAPI format hint — the official specification defines `float` and `double` but not `decimal`. We use it because:
+
+- **NSwag / .NET**: Maps `format: decimal` to C# `decimal` (128-bit, 28–29 significant digits) — exact representation for financial values.
+- **OpenAPI Generator / Java**: Can be configured to map `format: decimal` to `BigDecimal`.
+- **Tools that ignore it**: Fall back to IEEE 754 `double` (64-bit), which is acceptable for the vast majority of real-world values (see Precision Considerations below).
+- **`multipleOf` enforces precision independently**: Even when `format: decimal` is ignored, the `multipleOf: 0.0001` constraint still communicates the intended decimal precision to validators and documentation renderers.
+
+#### Precision Considerations (IEEE 754)
+
+JSON's `number` type has no inherent precision limit, but most language runtimes parse JSON numbers as IEEE 754 double-precision floats (~15.9 significant digits). This has implications for the largest values in the schema:
+
+| Maximum Schema Value | Significant Digits | IEEE 754 Safe? |
+|---------------------|-------------------|----------------|
+| `99999.9999` | 9 | ✅ Well within range |
+| `99999999999.9999` | 15 | ✅ Safe (15 digits) |
+| `999999999999.9999` | 16 | ⚠️ Theoretical edge case |
+
+**In practice this is a non-issue** because:
+1. Real-world prices, quantities, and measurements rarely approach the theoretical maximum.
+2. The `format: decimal` hint causes well-behaved generators to use arbitrary-precision types (`decimal`, `BigDecimal`), avoiding IEEE 754 entirely.
+3. Even without `format: decimal`, values with ≤15 significant digits round-trip safely through `double`, covering virtually all real data.
 
 #### 2. Nullable Fields Pattern
 

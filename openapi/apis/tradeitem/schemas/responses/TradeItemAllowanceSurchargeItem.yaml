@@ -51,6 +51,7 @@ properties:
     $ref: ../../../../shared/schemas/common/AllowanceSurchargeTypes.yaml
   allowanceSurchargeAmount:
     type: ["number", "null"]
+    format: decimal
     description: |
       Fixed monetary amount of the allowance or surcharge.
       **ETIM xChange**: `AllowanceSurchargeAmount`
@@ -71,6 +72,7 @@ properties:
       - null
   allowanceSurchargePercentage:
     type: ["number", "null"]
+    format: decimal
     description: |
       Percentage rate of the allowance or surcharge.
       **ETIM xChange**: `AllowanceSurchargePercentage`
@@ -82,6 +84,7 @@ properties:
       - null
   allowanceSurchargeMinimumQuantity:
     type: ["number", "null"]
+    format: decimal
     description: |
       Minimum ordered quantity required for the allowance or surcharge to apply.
       **ETIM xChange**: `AllowanceSurchargeMinimumQuantity`

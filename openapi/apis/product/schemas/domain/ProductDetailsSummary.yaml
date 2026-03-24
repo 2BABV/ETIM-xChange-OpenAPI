@@ -105,7 +105,15 @@ properties:
     multipleOf: 0.0001
     maximum: 99999999999.9999
     description: |
-      Factor for customs commodity code calculation.
+      Factor for customs commodity code calculations. Supports up to 4 decimal places.
+      Converted from ETIM xChange string pattern to number type.
+      
+      **ETIM xChange**: `FactorCustomsCommodityCode` (string with pattern)  
+      **Path**: `Supplier[].Product[].ProductIdentification.FactorCustomsCommodityCode`
+    examples:
+      - 1.0
+      - 0.75
+      - null
   
   countryOfOrigin:
     type: ["array", "null"]

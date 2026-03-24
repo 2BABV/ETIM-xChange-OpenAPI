@@ -39,6 +39,7 @@ When working with this repository:
   - Allow `additionalProperties` throughout the object model, including nested models, to preserve backward compatibility when optional fields are added
    - Use `examples` array (plural) in schemas, not `example` (singular, deprecated)
    - Include `format` for type hints: `uri`, `email`, `date-time`, `uuid`, etc.
+   - Use `format: decimal` on all ETIM-converted number fields (code-gen hint for NSwag/.NET `decimal`; see [design decisions](../docs/etim-xchange-openapi-design-decisions.md#format-decimal--code-generator-hint))
    - Use `minLength`, `maxLength`, `minimum`, `maximum` for validation
    - Prefer `const` over single-value `enum` for literal values
 
@@ -135,10 +136,13 @@ productId:
   examples:
     - "PROD-12345"
 
+# ETIM-converted number field: use format: decimal and multipleOf: 0.0001
 price:
   type: number
+  format: decimal
   minimum: 0
-  multipleOf: 0.01
+  multipleOf: 0.0001
+  maximum: 99999999999.9999
   examples:
     - 19.99
 ```

@@ -41,6 +41,7 @@ properties:
       - MTR  # Meter
   priceUnitFactor:
     type: ["number", "null"]
+    format: decimal
     description: |
       Factor to convert price unit to order unit (converted from ETIM xChange string to number).
       
@@ -55,6 +56,7 @@ properties:
       - null
   priceQuantity:
     type: number
+    format: decimal
     description: |
       Quantity for which the price applies (converted from ETIM xChange string to number).
       
@@ -87,6 +89,7 @@ properties:
       - null
   grossListPrice:
     type: ["number", "null"]
+    format: decimal
     description: |
       Gross list price (before discounts) (converted from ETIM xChange string to number).
       
@@ -101,6 +104,7 @@ properties:
       - null
   netPrice:
     type: ["number", "null"]
+    format: decimal
     description: |
       Net price (after discounts, before tax) (converted from ETIM xChange string to number).
       
@@ -115,6 +119,7 @@ properties:
       - null
   recommendedRetailPrice:
     type: ["number", "null"]
+    format: decimal
     description: |
       Recommended retail price (MSRP) (converted from ETIM xChange string to number).
       
@@ -129,6 +134,7 @@ properties:
       - null
   vat:
     type: ["number", "null"]
+    format: decimal
     description: |
       VAT/tax percentage (converted from ETIM xChange string to number).
       

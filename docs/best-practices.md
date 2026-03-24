@@ -188,10 +188,14 @@ productId:
   examples:
     - "PROD-12345"
 
+# ETIM-converted numeric field — use format: decimal and multipleOf: 0.0001
+# See design-decisions.md for the full string-to-number conversion rules
 price:
   type: number
+  format: decimal
   minimum: 0
-  multipleOf: 0.01
+  multipleOf: 0.0001
+  maximum: 99999999999.9999
   examples:
     - 19.99
 
@@ -214,6 +218,7 @@ createdAt:
 - `email` - Email address
 - `uri` - URI reference
 - `uuid` - UUID string
+- `decimal` - Code-generator hint for exact decimal types (non-standard; see [design decisions](etim-xchange-openapi-design-decisions.md#format-decimal--code-generator-hint))
 
 ### Composition Patterns
 

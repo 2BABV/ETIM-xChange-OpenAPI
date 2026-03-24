@@ -232,6 +232,7 @@ properties:
   # Environmental indicators
   declaredUnitGwpTotal:
     type: ["number", "null"]
+    format: decimal
     description: |
       Total Global Warming Potential (GWP) in kg CO2 equivalent per declared unit.
       
@@ -243,6 +244,7 @@ properties:
   
   declaredUnitGwpFossil:
     type: ["number", "null"]
+    format: decimal
     description: |
       Fossil Global Warming Potential in kg CO2 equivalent per declared unit.
       
@@ -253,6 +255,7 @@ properties:
   
   declaredUnitGwpBiogenic:
     type: ["number", "null"]
+    format: decimal
     description: |
       Biogenic Global Warming Potential in kg CO2 equivalent per declared unit.
       
@@ -263,6 +266,7 @@ properties:
   
   declaredUnitGwpLuluc:
     type: ["number", "null"]
+    format: decimal
     description: |
       Global Warming Potential from Land Use and Land Use Change (GWP-LULUC) 
       in kg CO2 equivalent per declared unit.
@@ -274,6 +278,7 @@ properties:
   
   declaredUnitAp:
     type: ["number", "null"]
+    format: decimal
     description: |
       Acidification Potential (AP) in kg SO2 equivalent per declared unit.
       
@@ -284,6 +289,7 @@ properties:
   
   declaredUnitEpFreshwater:
     type: ["number", "null"]
+    format: decimal
     description: |
       Eutrophication Potential for freshwater in kg PO4 equivalent per declared unit.
       
@@ -294,6 +300,7 @@ properties:
   
   declaredUnitEpMarine:
     type: ["number", "null"]
+    format: decimal
     description: |
       Eutrophication Potential for marine water (EP-marine) in kg N equivalent per declared unit.
       
@@ -304,6 +311,7 @@ properties:
   
   declaredUnitEpTerrestrial:
     type: ["number", "null"]
+    format: decimal
     description: |
       Eutrophication Potential for terrestrial ecosystems (EP-terrestrial) 
       in mol N equivalent per declared unit.
@@ -315,6 +323,7 @@ properties:
   
   declaredUnitPocp:
     type: ["number", "null"]
+    format: decimal
     description: |
       Photochemical Ozone Creation Potential (POCP) in kg NMVOC equivalent per declared unit.
       Also known as summer smog potential.
@@ -326,6 +335,7 @@ properties:
   
   declaredUnitOdp:
     type: ["number", "null"]
+    format: decimal
     description: |
       Ozone Depletion Potential (ODP) in kg CFC-11 equivalent per declared unit.
       
@@ -336,6 +346,7 @@ properties:
   
   declaredUnitAdpe:
     type: ["number", "null"]
+    format: decimal
     description: |
       Abiotic Depletion Potential for non-fossil resources (ADP-elements) 
       in kg Sb equivalent per declared unit.
@@ -347,6 +358,7 @@ properties:
   
   declaredUnitAdpf:
     type: ["number", "null"]
+    format: decimal
     description: |
       Abiotic Depletion Potential for fossil resources (ADP-fossil) in MJ per declared unit.
       
@@ -357,6 +369,7 @@ properties:
   
   declaredUnitWdp:
     type: ["number", "null"]
+    format: decimal
     description: |
       Water Deprivation Potential (WDP) in m³ world equivalent per declared unit.
       
@@ -367,6 +380,7 @@ properties:
   
   declaredUnitPert:
     type: ["number", "null"]
+    format: decimal
     description: |
       Use of renewable primary energy resources (PERT) in MJ per declared unit.
       Total renewable primary energy.
@@ -378,6 +392,7 @@ properties:
   
   declaredUnitPenrt:
     type: ["number", "null"]
+    format: decimal
     description: |
       Use of non-renewable primary energy resources (PENRT) in MJ per declared unit.
       Total non-renewable primary energy.
@@ -389,6 +404,7 @@ properties:
   
   declaredUnitPm:
     type: ["number", "null"]
+    format: decimal
     description: |
       Particulate Matter emissions (PM) expressed as disease incidence per declared unit.
       
@@ -399,6 +415,7 @@ properties:
   
   declaredUnitIrp:
     type: ["number", "null"]
+    format: decimal
     description: |
       Ionising Radiation Potential (IRP) in kBq U235 equivalent per declared unit.
       
@@ -409,6 +426,7 @@ properties:
   
   declaredUnitEtpfw:
     type: ["number", "null"]
+    format: decimal
     description: |
       Ecotoxicity Potential for freshwater (ETP-fw) in CTUe (Comparative Toxic Unit for ecosystems) 
       per declared unit.
@@ -420,6 +438,7 @@ properties:
   
   declaredUnitHtpc:
     type: ["number", "null"]
+    format: decimal
     description: |
       Human Toxicity Potential - cancer effects (HTP-c) in CTUh (Comparative Toxic Unit for humans) 
       per declared unit.
@@ -431,6 +450,7 @@ properties:
   
   declaredUnitHtpnc:
     type: ["number", "null"]
+    format: decimal
     description: |
       Human Toxicity Potential - non-cancer effects (HTP-nc) in CTUh (Comparative Toxic Unit for humans) 
       per declared unit.
@@ -442,6 +462,7 @@ properties:
   
   declaredUnitSqp:
     type: ["number", "null"]
+    format: decimal
     description: |
       Soil Quality Potential (SQP) - dimensionless indicator per declared unit.
       Measures the impact on soil quality.

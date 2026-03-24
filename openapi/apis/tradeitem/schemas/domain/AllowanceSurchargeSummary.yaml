@@ -114,6 +114,7 @@ properties:
   
   allowanceSurchargeAmount:
     type: ["number", "null"]
+    format: decimal
     description: |
       Fixed monetary amount of the allowance or surcharge.
       Mutually exclusive with `allowanceSurchargePercentage` (typically one or the other is set).
@@ -129,6 +130,7 @@ properties:
   
   allowanceSurchargePercentage:
     type: ["number", "null"]
+    format: decimal
     description: |
       Percentage rate of the allowance or surcharge.
       Mutually exclusive with `allowanceSurchargeAmount` (typically one or the other is set).
@@ -144,6 +146,7 @@ properties:
   
   allowanceSurchargeMinimumQuantity:
     type: ["number", "null"]
+    format: decimal
     description: |
       Minimum ordered quantity required for the allowance or surcharge to apply.
       

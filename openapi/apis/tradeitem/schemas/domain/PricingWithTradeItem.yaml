@@ -54,6 +54,7 @@ properties:
   
   priceUnitFactor:
     type: ["number", "null"]
+    format: decimal
     description: |
       Factor to convert price unit to order unit (converted from ETIM xChange string to number).
       **ETIM xChange**: `PriceUnitFactor` (string with pattern)
@@ -67,6 +68,7 @@ properties:
   
   priceQuantity:
     type: number
+    format: decimal
     description: |
       Quantity for which the price applies (converted from ETIM xChange string to number).
       **ETIM xChange**: `PriceQuantity` (string with pattern)
@@ -97,6 +99,7 @@ properties:
   
   grossListPrice:
     type: ["number", "null"]
+    format: decimal
     description: |
       Gross list price (before discounts) (converted from ETIM xChange string to number).
       **ETIM xChange**: `GrossListPrice` (string with pattern)
@@ -110,6 +113,7 @@ properties:
   
   netPrice:
     type: ["number", "null"]
+    format: decimal
     description: |
       Net price (after discounts, before tax) (converted from ETIM xChange string to number).
       **ETIM xChange**: `NetPrice` (string with pattern)
@@ -123,6 +127,7 @@ properties:
   
   recommendedRetailPrice:
     type: ["number", "null"]
+    format: decimal
     description: |
       Recommended retail price (MSRP) (converted from ETIM xChange string to number).
       **ETIM xChange**: `RecommendedRetailPrice` (string with pattern)
@@ -136,6 +141,7 @@ properties:
   
   vat:
     type: ["number", "null"]
+    format: decimal
     description: |
       VAT/tax percentage (converted from ETIM xChange string to number).
       **ETIM xChange**: `Vat` (string with pattern)

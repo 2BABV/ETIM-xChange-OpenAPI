@@ -65,6 +65,7 @@ properties:
   
   minimumOrderQuantity:
     type: number
+    format: decimal
     description: |
       Minimum quantity that must be ordered (converted from ETIM xChange string to number).
       
@@ -80,6 +81,7 @@ properties:
   
   orderStepSize:
     type: number
+    format: decimal
     description: |
       Quantity increment for orders beyond minimum (converted from ETIM xChange string to number).
       For example, if minimum is 10 and step is 5, you can order 10, 15, 20, etc.
@@ -123,6 +125,7 @@ properties:
   
   useUnitConversionFactor:
     type: ["number", "null"]
+    format: decimal
     description: |
       Conversion factor from order unit to use unit (converted from ETIM xChange string to number).
       
@@ -138,6 +141,7 @@ properties:
   
   singleUseUnitQuantity:
     type: ["number", "null"]
+    format: decimal
     description: |
       Quantity of use units in a single order unit (converted from ETIM xChange string to number).
       
@@ -166,6 +170,7 @@ properties:
   
   alternativeUseUnitConversionFactor:
     type: ["number", "null"]
+    format: decimal
     description: |
       Conversion factor from order unit to alternative use unit (converted from ETIM xChange string to number).
       

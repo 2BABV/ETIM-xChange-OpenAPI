@@ -5,6 +5,7 @@ description: |
 properties:
   baseItemNetLength:
     type: ["number", "null"]
+    format: decimal
     description: |
       Net length of the base item in specified unit (converted from ETIM xChange string to number).
       **ETIM xChange**: `BaseItemNetLength` (string with pattern)
@@ -18,6 +19,7 @@ properties:
       - null
   baseItemNetWidth:
     type: ["number", "null"]
+    format: decimal
     description: |
       Net width of the base item in specified unit (converted from ETIM xChange string to number).
       **ETIM xChange**: `BaseItemNetWidth` (string with pattern)
@@ -31,6 +33,7 @@ properties:
       - null
   baseItemNetHeight:
     type: ["number", "null"]
+    format: decimal
     description: |
       Net height of the base item in specified unit (converted from ETIM xChange string to number).
       **ETIM xChange**: `BaseItemNetHeight` (string with pattern)
@@ -44,6 +47,7 @@ properties:
       - null
   baseItemNetDiameter:
     type: ["number", "null"]
+    format: decimal
     description: |
       Net diameter of the base item in specified unit (for cylindrical items) (converted from ETIM xChange string to number).
       **ETIM xChange**: `BaseItemNetDiameter` (string with pattern)
@@ -77,6 +81,7 @@ properties:
       - null
   baseItemNetWeight:
     type: ["number", "null"]
+    format: decimal
     description: |
       Net weight of the base item in specified unit (converted from ETIM xChange string to number).
       **ETIM xChange**: `BaseItemNetWeight` (string with pattern)
@@ -109,6 +114,7 @@ properties:
       - null
   baseItemNetVolume:
     type: ["number", "null"]
+    format: decimal
     description: |
       Net volume of the base item in specified unit (converted from ETIM xChange string to number).
       **ETIM xChange**: `BaseItemNetVolume` (string with pattern)

@@ -63,6 +63,7 @@ properties:
       - null
   packagingQuantity:
     type: ["number", "null"]
+    format: decimal
     description: |
       Quantity of base items in this packaging unit (converted from ETIM xChange string to number).
       **ETIM xChange**: `PackagingQuantity` (string with pattern)
@@ -98,6 +99,7 @@ properties:
       - null
   grossLength:
     type: ["number", "null"]
+    format: decimal
     description: |
       Gross length of the packaging in specified unit (converted from ETIM xChange string to number).
       **ETIM xChange**: `GrossLength` (string with pattern)
@@ -111,6 +113,7 @@ properties:
       - null
   grossWidth:
     type: ["number", "null"]
+    format: decimal
     description: |
       Gross width of the packaging in specified unit (converted from ETIM xChange string to number).
       **ETIM xChange**: `GrossWidth` (string with pattern)
@@ -124,6 +127,7 @@ properties:
       - null
   grossHeight:
     type: ["number", "null"]
+    format: decimal
     description: |
       Gross height of the packaging in specified unit (converted from ETIM xChange string to number).
       **ETIM xChange**: `GrossHeight` (string with pattern)
@@ -137,6 +141,7 @@ properties:
       - null
   grossDiameter:
     type: ["number", "null"]
+    format: decimal
     description: |
       Gross diameter of the packaging in specified unit (for cylindrical packaging) (converted from ETIM xChange string to number).
       **ETIM xChange**: `GrossDiameter` (string with pattern)
@@ -170,6 +175,7 @@ properties:
       - null
   grossWeight:
     type: ["number", "null"]
+    format: decimal
     description: |
       Gross weight of the packaging in specified unit (converted from ETIM xChange string to number).
       **ETIM xChange**: `GrossWeight` (string with pattern)
