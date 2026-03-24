@@ -841,8 +841,47 @@ Leverage existing shared schemas to maintain consistency:
 $ref: ../../../../shared/schemas/identifiers/Gln.yaml
 $ref: ../../../../shared/schemas/identifiers/Gtin.yaml
 $ref: ../../../../shared/schemas/identifiers/Duns.yaml
+$ref: ../../../../shared/schemas/identifiers/TechnicalId.yaml
 $ref: ../../../../shared/schemas/identifiers/OrganizationIdentifier.yaml
 ```
+
+### Technical Identifiers
+
+Use `TechnicalId` for opaque technical keys that are introduced by the API or platform rather than sourced from the ETIM xChange business model.
+
+`TechnicalId` is the shared schema for identifiers whose format is intentionally not prescribed beyond basic validation constraints. The current shared schema is a `string` with `minLength: 1` and `maxLength: 50`, with examples such as `SELECTION-2024-Q1`, `123456`, and `f47ac10b-58cc-4372-a567-0e02b2c3d479`.
+
+**Why use `TechnicalId`**:
+- Preserve implementation flexibility for server-generated references
+- Allow the same logical identifier type to be represented as a slug, numeric string, or UUID
+- Avoid leaking business semantics into identifiers that clients should treat as opaque
+- Keep shared technical identifier behavior consistent across APIs and query parameters
+
+**Usage rules**:
+- Use business identifiers and composite keys when the identifier is part of the ETIM xChange domain model, such as `manufacturerIdGln` + `manufacturerProductNumber` or `supplierIdGln` + `supplierItemNumber`
+- Use `TechnicalId` when the identifier is server-generated, implementation-defined, or acts as a technical correlation key
+- Clients must treat `TechnicalId` values as opaque and must not parse business meaning from their format
+- Documentation may show readable examples, but example formatting does not imply a fixed structure contract
+
+**Current uses of `TechnicalId`**:
+
+1. `selectionId` query parameter
+
+  `selectionId` is a shared query parameter used to request a predefined subset of records. It references the shared `TechnicalId` schema so clients can supply a stable opaque selection key without the specification prescribing how that key is generated.
+
+2. `pricingRef` response property
+
+  `pricingRef` is a server-generated correlation key used in the TradeItem API. It is not part of the ETIM xChange source model. It exists because ETIM xChange nests `AllowanceSurcharge[]` inside `Pricing[]`, while the OpenAPI design also exposes pricing and allowance/surcharge data through separate single-item and bulk endpoints.
+
+  - For single-item responses, use `pricingRef` to correlate entries returned from `/pricings` with entries returned from `/allowance-surcharges`
+  - For bulk responses, join allowance/surcharge rows back to pricing rows using `supplierIdGln` + `supplierItemNumber` + `pricingRef`
+
+**Examples**:
+- `SELECTION-2024-Q1`
+- `123456`
+- `f47ac10b-58cc-4372-a567-0e02b2c3d479`
+
+**Decision rule**: if consumers need to understand the identifier as business data, model it as a domain identifier. If consumers only need to store it, echo it back, or use it for correlation, model it as `TechnicalId`.
 
 #### Common Types
 ```yaml
