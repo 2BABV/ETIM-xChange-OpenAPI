@@ -1,5 +1,4 @@
 type: object
-additionalProperties: false
 description: Stock availability and quantity information for a trade item
 required:
   - quantity

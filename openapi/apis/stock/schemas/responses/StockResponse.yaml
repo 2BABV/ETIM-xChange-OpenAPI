@@ -1,5 +1,4 @@
 type: object
-additionalProperties: false
 description: Response containing stock availability and quantity information for a specific trade item
 required:
   - data

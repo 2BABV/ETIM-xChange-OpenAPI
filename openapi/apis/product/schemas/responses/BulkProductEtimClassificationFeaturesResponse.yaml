@@ -19,7 +19,6 @@ description: |
   
   **Classification-Only Rows**: Products with classifications but no features are represented
   with `etimFeatureCode` omitted to ensure all classifications are included.
-additionalProperties: false
 required:
   - data
   - meta

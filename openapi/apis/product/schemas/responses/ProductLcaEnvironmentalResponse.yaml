@@ -9,7 +9,6 @@ description: |
   Contains Environmental Product Declaration (EPD) information, declared units,
   reference lifetime, third-party verification status, and life cycle assessment
   declarations for different stages.
-additionalProperties: false
 required:
   - data
 properties:

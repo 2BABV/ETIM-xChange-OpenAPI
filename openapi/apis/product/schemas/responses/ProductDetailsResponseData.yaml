@@ -2,7 +2,6 @@ type: object
 description: |
   Single product identification keys with core product details.
   The product key is at the root level, with details nested inside.
-additionalProperties: false
 required:
   - manufacturerIdGln
   - manufacturerProductNumber

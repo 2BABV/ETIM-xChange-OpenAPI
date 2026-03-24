@@ -2,7 +2,6 @@ type: object
 description: |
   Identification information for a trade item, including supplier item numbers, GTINs, and validity dates.
   Extracted from ETIM xChange `TradeItem.ItemIdentification` structure.
-additionalProperties: false
 required:
   - supplierItemNumber
   - itemValidityDate

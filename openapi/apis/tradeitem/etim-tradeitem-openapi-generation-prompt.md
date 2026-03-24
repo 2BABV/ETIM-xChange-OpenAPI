@@ -14,7 +14,7 @@ Generate a comprehensive OpenAPI 3.1 specification for the **TradeItem** part of
 - Use `examples` array (plural) in schemas, not `example` (singular)
 - Include `format` for type hints: `uri`, `email`, `date`, `uuid`, etc.
 - Use `minLength`, `maxLength`, `minimum`, `maximum` for validation
-- Set `additionalProperties: false` for strict validation
+- Allow `additionalProperties` throughout the object model, including nested models, so optional fields can be added without breaking clients
 - Use `anyOf`, `oneOf`, `allOf` for composition patterns
 - Prefer `const` over single-value `enum` for literal values
 - **Convert ETIM xChange string-based numeric fields to proper `number` type** (see section 2.1)
@@ -657,7 +657,6 @@ All bulk endpoints return paginated responses using this structure pattern:
 
 ```yaml
 type: object
-additionalProperties: false
 required:
   - data
   - meta
@@ -705,13 +704,11 @@ description: |
   - `logistics`: Array of logistic details
   - `packagingUnits`: Array of packaging unit information
   - `itemRelations`: Array of related items
-additionalProperties: false
 required:
   - data
 properties:
   data:
     type: object
-    additionalProperties: false
     required:
       - supplierIdGln
       - supplierItemNumber
@@ -1101,7 +1098,6 @@ Bulk responses use `*Summary` schemas that include the composite key fields:
 ```yaml
 # BulkTradeItemDetailsResponse.yaml
 type: object
-additionalProperties: false
 required:
   - data
   - meta
@@ -1289,7 +1285,7 @@ Use existing shared error responses:
 
 ### 17. Validation Rules
 
-Apply strict validation from ETIM xChange schema:
+Apply explicit validation constraints from the ETIM xChange schema while keeping object models open to additive fields:
 - `supplierIdGln`: pattern `^[0-9]{13}$`
 - `supplierItemNumber`: minLength 1, maxLength 35
 - `itemGtins`: pattern `^[0-9]{8,14}$` per item

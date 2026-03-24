@@ -4,7 +4,6 @@ description: |
   Each pricing entry represents a price point for a specific unit and quantity combination.
 
   **ETIM xChange Path**: `Supplier[].Product[].TradeItem[].Pricing[]`
-additionalProperties: false
 required:
   - priceUnit
   - priceQuantity

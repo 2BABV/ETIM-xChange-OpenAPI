@@ -2,7 +2,6 @@ type: object
 description: |
   Product ETIM classification information for bulk retrieval.
   Contains ETIM class codes, versions, and feature data.
-additionalProperties: false
 required:
   - manufacturerIdGln
   - manufacturerProductNumber

@@ -11,7 +11,6 @@ description: |
   
   This structure aligns with the subresource endpoints (`/details`, 
   `/descriptions`, `/etim-classifications`, `/lca-environmental`) which all include the key at the root level.
-additionalProperties: false
 required:
   - manufacturerIdGln
   - manufacturerProductNumber

@@ -5,7 +5,6 @@ description: |
   
   This schema flattens the ETIM xChange Product structure for efficient API consumption,
   with key identification fields at the top level and complex nested structures as references.
-additionalProperties: false
 required:
   - manufacturerIdGln
   - manufacturerProductNumber

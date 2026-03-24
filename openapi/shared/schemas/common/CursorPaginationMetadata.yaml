@@ -2,7 +2,6 @@ type: object
 description: |
   Cursor-based pagination metadata exposed in the `meta` object. Includes the opaque pagination cursor,
   navigation flags, the requested page size, and an optional estimated total count for windowed scans.
-additionalProperties: false
 properties:
   cursor:
     type:

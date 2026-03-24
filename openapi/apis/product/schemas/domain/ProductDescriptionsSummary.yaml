@@ -15,7 +15,6 @@ description: |
   
   **ETIM xChange**: `ProductDetails.ProductDescriptions`  
   **Path**: `Supplier[].Product[].ProductDetails.ProductDescriptions[]`
-additionalProperties: false
 required:
   - manufacturerIdGln
   - manufacturerProductNumber

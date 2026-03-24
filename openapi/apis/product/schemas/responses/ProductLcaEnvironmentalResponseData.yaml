@@ -1,7 +1,6 @@
 type: object
 description: |
   Single product identification keys with LCA environmental data.
-additionalProperties: false
 required:
   - manufacturerIdGln
   - manufacturerProductNumber

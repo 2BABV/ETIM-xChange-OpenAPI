@@ -1,5 +1,4 @@
 type: object
-additionalProperties: false
 description: |
   Pricing information with associated trade item identifiers for bulk pricing queries.
   Combines trade item identification with pricing details in a flattened structure.

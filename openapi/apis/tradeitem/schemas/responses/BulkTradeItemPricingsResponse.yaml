@@ -13,7 +13,6 @@ description: |
   
   **ETIM xChange**: Response wrapper for `Pricing[]` data
   **Path**: `Supplier[].Product[].TradeItem[].Pricing[]`
-additionalProperties: false
 required:
   - data
   - meta

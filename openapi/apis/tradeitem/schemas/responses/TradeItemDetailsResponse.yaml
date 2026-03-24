@@ -7,7 +7,6 @@ description: |
   
   This structure aligns with other single-item subresource responses
   (`/orderings`, `/pricings`).
-additionalProperties: false
 required:
   - data
 properties:

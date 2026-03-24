@@ -28,7 +28,7 @@ All schemas must adhere to OpenAPI 3.1 and JSON Schema 2020-12 standards:
 - **Examples**: Use `examples` (plural array) in schemas, not `example` (singular, deprecated)
 - **Format Hints**: Include `format` for type validation: `uri`, `email`, `date`, `date-time`, `uuid`, `decimal`. (The Microsoft documentation shows that some implementations (like ASP.NET Core) use `format: decimal` as a custom format hint for tooling purposes, but it's not part of the official OpenAPI 3.1 standard.)
 - **Validation Constraints**: Apply `minLength`, `maxLength`, `minimum`, `maximum`, `multipleOf` for validation
-- **Strict Validation**: Set `additionalProperties: false` for strict object validation when appropriate
+- **Backward-Compatible Object Evolution**: Allow additional properties throughout the object model, including nested models, so optional fields can be added without breaking existing clients
 - **Composition**: Use `anyOf`, `oneOf`, `allOf` for complex type compositions
 - **Literal Values**: Prefer `const` over single-value `enum` for literal values
 
@@ -353,7 +353,6 @@ For single-item responses, the `data` property references a named `*ResponseData
 ```yaml
 # ProductDetailsResponse.yaml (envelope)
 type: object
-additionalProperties: false
 required:
   - data
 properties:
@@ -372,7 +371,6 @@ examples:
 ```yaml
 # ProductDetailsResponseData.yaml (named data schema)
 type: object
-additionalProperties: false
 required:
   - manufacturerIdGln
   - manufacturerProductNumber
@@ -410,7 +408,6 @@ properties:
 ```yaml
 # BulkProductsResponse.yaml
 type: object
-additionalProperties: false
 required:
   - data
   - meta
@@ -638,7 +635,6 @@ example: "2025-01-15"
 ```yaml
 # CursorPaginationMetadata.yaml
 type: object
-additionalProperties: false
 required:
   - hasNext
   - hasPrev
@@ -923,7 +919,7 @@ responses:
 
 ### Validation Constraints
 
-Apply strict validation constraints to all fields:
+Apply explicit validation constraints to all documented fields while keeping object shapes open to additive fields:
 
 #### String Patterns
 
@@ -1052,7 +1048,6 @@ All error responses follow RFC 7807 Problem Details format:
 
 ```yaml
 type: object
-additionalProperties: false
 required:
   - type
   - title
@@ -1181,7 +1176,7 @@ allOf:
 
 These design decisions establish a consistent, standards-compliant OpenAPI 3.1 specification for the ETIM xChange V2.0 schema, focusing on:
 
-1. **Type Safety**: Proper numeric types, nullable patterns, and strict validation
+1. **Type Safety**: Proper numeric types, nullable patterns, and explicit validation constraints
 2. **Consistency**: Uniform naming conventions across files, components, properties, and paths
 3. **Efficiency**: Flattened schemas with cursor-based pagination for bulk operations
 4. **Traceability**: Complete documentation mapping back to ETIM xChange source

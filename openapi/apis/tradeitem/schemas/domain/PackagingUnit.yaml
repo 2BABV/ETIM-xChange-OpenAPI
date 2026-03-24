@@ -2,7 +2,6 @@ type: object
 description: |
   Packaging unit information describing hierarchical packaging levels (e.g., piece, box, pallet).
   Extracted from ETIM xChange `TradeItem.PackagingUnit[]` structure.
-additionalProperties: false
 required:
   - packagingTypeCode
 properties:

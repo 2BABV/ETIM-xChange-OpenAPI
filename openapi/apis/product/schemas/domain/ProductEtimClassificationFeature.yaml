@@ -14,7 +14,6 @@ description: |
   
   **Classification-only rows**: Products with classification but no features are represented
   with `etimFeatureCode` omitted (or null if explicitly set).
-additionalProperties: false
 required:
   - manufacturerIdGln
   - manufacturerProductNumber
@@ -187,7 +186,6 @@ properties:
     type: ["array", "null"]
     items:
       type: object
-      additionalProperties: false
       required:
         - language
         - etimValueDetails

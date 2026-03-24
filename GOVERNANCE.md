@@ -1,112 +1,112 @@
-# Governance Model  
+# Governance Model
 **Products & TradeItems API**
 
-## 1. Doel
+## 1. Purpose
 
-Dit document beschrijft de governance, wijzigingsprocessen en release-strategie voor de Products & TradeItems API.  
-Het doel is:
+This document describes the governance model, change process, and release strategy for the Products & TradeItems API.
+Its goals are:
 
-- Stabiliteit voor internationale implementaties
-- Transparantie van wijzigingen
-- Voorspelbare versionering
-- Zorgvuldige omgang met breaking changes
-
----
-
-## 2. Principes
-
-1. **Stabiliteit boven snelheid**
-2. **Geen breaking changes binnen een major versie**
-3. **Volledige transparantie (public repository)**
-4. **Traceerbaarheid van elke wijziging**
-5. **Internationale participatie via formeel proces**
+- Stability for international implementations
+- Transparency of changes
+- Predictable versioning
+- Careful handling of breaking changes
 
 ---
 
-## 3. Rollen & Rechten
+## 2. Principles
+
+1. **Stability over speed**
+2. **No breaking changes within a major version**
+3. **Full transparency (public repository)**
+4. **Traceability of every change**
+5. **International participation through a formal process**
+
+---
+
+## 3. Roles and Permissions
 
 ### 3.1 Maintainers (Core Team)
-- Merge rechten
-- Release rechten
-- Eindbeslissing bij conflicten
-- Verantwoordelijk voor versionering
+- Merge permissions
+- Release permissions
+- Final decision in case of conflicts
+- Responsible for versioning
 
-### 3.2 National Centers / Belanghebbende organisaties
-- Mogen Issues openen
-- Mogen RFC’s indienen
-- Mogen Pull Requests indienen
-- Geen directe merge rechten
+### 3.2 National Centers / Stakeholder Organizations
+- May open issues
+- May submit RFCs
+- May submit pull requests
+- No direct merge permissions
 
 ### 3.3 Community
-- Read-only toegang
-- Mag Issues openen
-- Mag deelnemen aan discussies
+- Read-only access
+- May open issues
+- May participate in discussions
 
-Repository is **public**.  
-Write access is beperkt tot maintainers.
-
----
-
-## 4. Wijzigingsproces
-
-Alle wijzigingen volgen hetzelfde traceerbare proces.
-
-### Stap 1 — Change Request (Issue)
-
-Elke wijziging start als GitHub Issue met:
-
-- Business motivatie
-- Impactanalyse
-- Backwards compatible? (ja/nee)
-- Betrokken endpoints / modellen
-- National Center (indien van toepassing)
+The repository is **public**.
+Write access is limited to maintainers.
 
 ---
 
-### Stap 2 — RFC (verplicht bij majeure wijzigingen)
+## 4. Change Process
 
-Een RFC is verplicht bij:
+All changes follow the same traceable process.
+
+### Step 1 — Change Request (Issue)
+
+Every change starts as a GitHub issue containing:
+
+- Business motivation
+- Impact analysis
+- Backward compatible? (yes/no)
+- Affected endpoints / models
+- National Center (if applicable)
+
+---
+
+### Step 2 — RFC (required for major changes)
+
+An RFC is required for:
 
 - Breaking changes
-- Nieuwe resources
-- Wijziging van Products of TradeItems model
-- Semantische wijzigingen
+- New resources
+- Changes to the Products or TradeItems model
+- Semantic changes
 
-RFC wordt ingediend als Markdown document in `/rfcs` via Pull Request.
+The RFC is submitted as a Markdown document in `/rfcs` through a pull request.
 
-RFC bevat:
+An RFC contains:
 
 - Context
-- Probleemstelling
-- Voorgestelde oplossing
-- JSON/OpenAPI voorbeeld
-- Impactanalyse
-- Migratiestrategie
-- Alternatieven
+- Problem statement
+- Proposed solution
+- JSON/OpenAPI example
+- Impact analysis
+- Migration strategy
+- Alternatives
 
-Discussieperiode: **3–4 weken**
+Discussion period: **3–4 weeks**
 
-Merge van de RFC PR betekent formele goedkeuring.
-
----
-
-### Stap 3 — Implementatie PR
-
-Na goedgekeurde RFC:
-
-- Nieuwe Pull Request tegen `main`
-- Moet refereren aan Issue en RFC
-- Moet CHANGELOG bijwerken
-- Moet versie aanpassen indien nodig
-- Moet CI-validatie succesvol doorlopen
-
-Minimaal **2 maintainer reviews** vereist.
+Merging the RFC pull request constitutes formal approval.
 
 ---
 
-## 5. Versioneringsstrategie
+### Step 3 — Implementation PR
 
-De API gebruikt **Semantic Versioning (SemVer)**:
+After RFC approval:
+
+- Create a new pull request against `main`
+- Reference the issue and RFC
+- Update the CHANGELOG
+- Update the version when required
+- Pass CI validation
+
+At least **2 maintainer reviews** are required.
+
+---
+
+## 5. Versioning Strategy
+
+The API uses **Semantic Versioning (SemVer)**:
 
 ```
 MAJOR.MINOR.PATCH
@@ -114,13 +114,13 @@ MAJOR.MINOR.PATCH
 
 ### MAJOR
 Breaking changes:
-- Required veld toegevoegd
-- Veld verwijderd
-- Type gewijzigd
-- Endpoint verwijderd
-- Semantiek gewijzigd
+- Required field added
+- Field removed
+- Type changed
+- Endpoint removed
+- Semantics changed
 
-Nieuwe major → nieuw URL pad:
+New major versions use a new URL path:
 
 ```
 /api/v1/
@@ -130,41 +130,44 @@ Nieuwe major → nieuw URL pad:
 ---
 
 ### MINOR
-Backwards compatible toevoegingen:
-- Nieuw optional veld
-- Nieuwe endpoint
-- Enum uitbreiding
-- Nieuwe filtermogelijkheden
+Backward-compatible additions:
+- New optional field
+- New endpoint
+- Enum expansion
+- New filtering capability
+
+Optional fields added anywhere in the object model, including nested models, remain a MINOR change because clients are expected to accept unknown properties.
 
 ---
 
 ### PATCH
-- Documentatieverbetering
-- Bugfix in schema
-- Non-functionele correcties
+- Documentation improvements
+- Schema bug fixes
+- Non-functional corrections
 
 ---
 
 ## 6. Breaking Change Policy
 
-- Geen breaking changes binnen een major versie
-- Deprecatieperiode: minimaal **24 maanden**
-- Parallelle major versies toegestaan
-- Clients moeten onbekende enum-waarden negeren
+- No breaking changes within a major version
+- Deprecation period: at least **24 months**
+- Parallel major versions are allowed
+- Clients must ignore unknown enum values
+- Clients must accept and ignore unknown properties in response payloads
 
 ---
 
-## 7. Releaseproces
+## 7. Release Process
 
-Elke release bevat:
+Each release contains:
 
 - Git tag (`vX.Y.Z`)
 - GitHub Release
 - OpenAPI YAML & JSON
-- Release Notes
-- Bijgewerkte CHANGELOG
+- Release notes
+- Updated CHANGELOG
 
-Release Notes structuur:
+Release notes structure:
 
 - Added
 - Changed
@@ -174,68 +177,68 @@ Release Notes structuur:
 
 ---
 
-## 8. CI & Validatie
+## 8. CI and Validation
 
-Automatische controles bij elke Pull Request:
+Automatic checks for every pull request:
 
 - OpenAPI linting
-- Schema validatie
-- Breaking change detectie
-- Verplichte CHANGELOG update
-- Verplichte versiecontrole
+- Schema validation
+- Breaking change detection
+- Required CHANGELOG update
+- Required version check
 
-PR’s zonder geslaagde checks kunnen niet worden gemerged.
+Pull requests without passing checks cannot be merged.
 
 ---
 
-## 9. Transparantie & Documentatie
+## 9. Transparency and Documentation
 
-De repository bevat:
+The repository contains:
 
 - `GOVERNANCE.md`
 - `CONTRIBUTING.md`
 - `VERSIONING.md`
 - `CHANGELOG.md`
-- `/rfcs` map
+- `/rfcs` directory
 
-Alle beslissingen zijn publiek traceerbaar.
-
----
-
-## 10. Besluitvorming
-
-- Consensus waar mogelijk
-- Bij geen consensus: beslissing door maintainers
-- RFC-discussies zijn publiek zichtbaar
-- Besluit wordt vastgelegd in merge van RFC
+All decisions are publicly traceable.
 
 ---
 
-## 11. Langetermijnstrategie
+## 10. Decision-Making
 
-- Major versies worden minimaal 24 maanden ondersteund
-- Roadmap wordt publiek gepubliceerd
-- Internationale stakeholders worden betrokken via RFC-proces
+- Consensus where possible
+- If consensus is not reached: decision by maintainers
+- RFC discussions are publicly visible
+- The decision is recorded through the RFC merge
 
 ---
 
-# Samenvatting Workflow
+## 11. Long-Term Strategy
+
+- Major versions are supported for at least 24 months
+- The roadmap is published publicly
+- International stakeholders participate through the RFC process
+
+---
+
+# Workflow Summary
 
 1. Issue
-2. (Indien nodig) RFC
-3. Discussieperiode
-4. RFC goedkeuring
-5. Implementatie PR
-6. CI validatie
-7. Review & merge
+2. RFC (if required)
+3. Discussion period
+4. RFC approval
+5. Implementation PR
+6. CI validation
+7. Review and merge
 8. Version bump
-9. Release + communicatie
+9. Release and communication
 
 ---
 
 TODO:
 
-- Een formele `CONTRIBUTING.md` opstellen  (Engels)
-- Een concrete GitHub folderstructuur uitschrijven  
-- Een voorbeeld RFC template genereren  
+- Create a formal `CONTRIBUTING.md`
+- Document a concrete GitHub folder structure
+- Generate an example RFC template
 

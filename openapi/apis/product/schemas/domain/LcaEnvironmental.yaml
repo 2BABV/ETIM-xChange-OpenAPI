@@ -1,5 +1,4 @@
 type: object
-additionalProperties: false
 required:
   - declaredUnitUnit
   - declaredUnitQuantity
@@ -74,7 +73,6 @@ properties:
     type: ["array", "null"]
     items:
       type: object
-      additionalProperties: false
       required:
         - language
         - functionalUnitDescription

@@ -2,7 +2,6 @@ type: object
 description: |
   Response containing all ETIM classifications for a single product.
   Returns the product identification keys and all associated ETIM classifications.
-additionalProperties: false
 required:
   - data
 properties:

@@ -36,7 +36,7 @@ When working with this repository:
 2. **OpenAPI 3.1 / JSON Schema 2020-12 Requirements**:
    - Use `type: ["string", "null"]` for nullable fields (NOT `nullable: true`)
    - Use `anyOf`, `oneOf`, `allOf` for composition (avoid deprecated patterns)
-   - Set `additionalProperties: false` for strict validation when appropriate
+  - Allow `additionalProperties` throughout the object model, including nested models, to preserve backward compatibility when optional fields are added
    - Use `examples` array (plural) in schemas, not `example` (singular, deprecated)
    - Include `format` for type hints: `uri`, `email`, `date-time`, `uuid`, etc.
    - Use `minLength`, `maxLength`, `minimum`, `maximum` for validation
@@ -143,11 +143,10 @@ price:
     - 19.99
 ```
 
-### Strict Object Validation
+### Extensible Object Models
 ```yaml
-# ✅ CORRECT - Prevent unexpected properties
+# ✅ CORRECT - Keep objects open for additive evolution
 type: object
-additionalProperties: false
 required:
   - id
   - name
@@ -156,6 +155,8 @@ properties:
     type: string
   name:
     type: string
+
+# Clients must accept and ignore unknown properties.
 ```
 
 ### Response Envelope — Named `$ref` for `data` (Code Generation)
@@ -184,7 +185,6 @@ properties:
 ```yaml
 # ProductDetailsResponse.yaml
 type: object
-additionalProperties: false
 required:
   - data
 properties:
@@ -196,7 +196,6 @@ properties:
 ```yaml
 # BulkProductDetailsResponse.yaml
 type: object
-additionalProperties: false
 required:
   - data
   - meta

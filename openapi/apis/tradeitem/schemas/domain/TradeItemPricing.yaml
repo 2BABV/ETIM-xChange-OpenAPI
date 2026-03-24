@@ -9,7 +9,6 @@ description: |
   
   **ETIM xChange**: `Pricing`
   **Path**: `Supplier[].Product[].TradeItem[].Pricing[]`
-additionalProperties: false
 required:
   - pricingRef
   - priceUnit

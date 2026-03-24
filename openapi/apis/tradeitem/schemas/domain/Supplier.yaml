@@ -1,6 +1,5 @@
 type: object
 description: Supplier identification containing the supplier's name and GLN (Global Location Number).
-additionalProperties: false
 required:
   - supplierName
   - supplierIdGln

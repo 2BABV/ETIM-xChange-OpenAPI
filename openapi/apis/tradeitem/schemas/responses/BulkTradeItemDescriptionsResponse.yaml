@@ -7,7 +7,6 @@ description: |
   
   This flattened structure is optimized for ETL/data warehouse ingestion and
   streaming data processing.
-additionalProperties: false
 required:
   - data
   - meta

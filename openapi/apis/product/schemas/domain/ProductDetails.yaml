@@ -9,7 +9,6 @@ description: |
   
   For product descriptions (text content), use the dedicated `/descriptions` subresource
   which supports language filtering.
-additionalProperties: false
 required:
   - productValidityDate
 properties:

@@ -1,5 +1,4 @@
 type: object
-additionalProperties: false
 description: Response containing the net price for a specific trade item. The price is the total price for the requested quantity in order unit. Any applicable volume discounts are included in this price.
 required:
   - netPriceInOrderUnit

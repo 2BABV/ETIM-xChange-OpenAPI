@@ -5,7 +5,6 @@ description: |
   
   For product descriptions (text content), use the dedicated `/bulk/product-descriptions` endpoint
   which supports language filtering.
-additionalProperties: false
 required:
   - manufacturerIdGln
   - manufacturerProductNumber

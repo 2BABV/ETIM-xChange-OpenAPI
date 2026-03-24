@@ -17,6 +17,8 @@ get:
     
     The product key is at the root level, with LCA environmental data nested inside.
     This structure aligns with other single-product subresource responses.
+
+    **Examples**: Example payloads show documented fields only. Clients must accept and ignore additional fields, including nested fields, when they are added in backward-compatible updates.
     
     **No pagination** - Returns exactly one product's LCA data or 404 if not found.
     Returns `null` for `lcaEnvironmental` if the product exists but has no LCA data.

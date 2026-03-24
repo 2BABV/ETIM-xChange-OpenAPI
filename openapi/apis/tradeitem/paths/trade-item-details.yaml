@@ -17,6 +17,8 @@ get:
     
     The trade item key (`supplierIdGln` + `supplierItemNumber`) is at the root level,
     with details nested inside. This structure aligns with other single-item subresource responses.
+
+    **Examples**: Example payloads show documented fields only. Clients must accept and ignore additional fields, including nested fields, when they are added in backward-compatible updates.
     
     **No pagination** - Returns exactly one trade item's details or 404 if not found.
   parameters:

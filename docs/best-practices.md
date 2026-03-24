@@ -11,7 +11,7 @@
 2. [OpenAPI 3.1 / JSON Schema 2020-12](#openapi-31--json-schema-2020-12)
    - [Nullable Fields](#nullable-fields)
    - [Examples in Schemas vs Parameters](#examples-in-schemas-vs-parameters)
-   - [Strict Object Validation](#strict-object-validation)
+  - [Extensible Object Models](#extensible-object-models)
    - [Type Validation](#type-validation)
    - [Composition Patterns](#composition-patterns)
 3. [Pagination Strategies](#pagination-strategies)
@@ -155,14 +155,15 @@ examples:
     summary: Pending status
 ```
 
-### Strict Object Validation
+### Extensible Object Models
 
-Use `additionalProperties: false` to prevent unexpected properties:
+Allow additional properties so object payloads can evolve without breaking existing clients. This applies to top-level envelopes, metadata objects, domain models, and nested models. Clients must accept and ignore unknown properties.
+
+Examples should document the currently known fields clearly, but they do not define a closed-world contract. Additional fields may appear in responses over time.
 
 ```yaml
-# ✅ CORRECT - Prevent unexpected properties
+# ✅ CORRECT - Allow additive fields for compatibility
 type: object
-additionalProperties: false
 required:
   - id
   - name
@@ -248,7 +249,6 @@ ProductResponse:
 #### Standard Response Structure
 ```yaml
 type: object
-additionalProperties: false
 required:
   - data
   - meta
@@ -336,7 +336,6 @@ example: 100
 ```yaml
 # shared/schemas/common/CursorPaginationMetadata.yaml
 type: object
-additionalProperties: false
 required:
   - hasNext
   - limit

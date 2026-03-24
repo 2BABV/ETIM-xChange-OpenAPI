@@ -9,7 +9,6 @@ description: |
   For single-item responses (where key is at root level), use `TradeItemDetails`.
   
   **Note**: Item descriptions are available via `/bulk/trade-item-descriptions` endpoint.
-additionalProperties: false
 required:
   - supplierIdGln
   - supplierItemNumber

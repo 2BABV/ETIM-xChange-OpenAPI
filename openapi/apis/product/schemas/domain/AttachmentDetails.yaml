@@ -1,5 +1,4 @@
 type: object
-additionalProperties: false
 required:
   - attachmentUri
 properties:
@@ -48,7 +47,6 @@ properties:
     type: ["array", "null"]
     items:
       type: object
-      additionalProperties: false
       required:
         - language
         - attachmentDescription

@@ -2,7 +2,6 @@ type: object
 description: |
   Defines a relationship between trade items (e.g., accessories, spare parts, related products).
   Extracted from ETIM xChange `TradeItem.ItemRelations[]` structure.
-additionalProperties: false
 required:
   - relatedSupplierItemNumber
   - relationType

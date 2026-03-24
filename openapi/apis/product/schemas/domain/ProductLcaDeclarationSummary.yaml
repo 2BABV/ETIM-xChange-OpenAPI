@@ -15,7 +15,6 @@ description: |
   **Parent context fields**: Key fields from the parent LcaEnvironmental object are included
   (`declaredUnitUnit`, `declaredUnitQuantity`, `lcaReferenceLifetime`, `thirdPartyVerification`)
   to provide necessary context for interpreting the environmental indicators.
-additionalProperties: false
 required:
   - manufacturerIdGln
   - manufacturerProductNumber

@@ -2,7 +2,6 @@ type: object
 description: |
   Logistic details including dimensions, weight, and volume of the base item.
   Extracted from ETIM xChange `TradeItem.ItemLogisticDetails[]` structure.
-additionalProperties: false
 properties:
   baseItemNetLength:
     type: ["number", "null"]

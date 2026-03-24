@@ -13,6 +13,8 @@ get:
     
     The product key is at the root level, with details nested inside.
     This structure aligns with other single-product subresource responses.
+
+    **Examples**: Example payloads show documented fields only. Clients must accept and ignore additional fields, including nested fields, when they are added in backward-compatible updates.
     
     **Product descriptions**: For multilingual product descriptions, use the dedicated
     `/descriptions` subresource which supports language filtering.

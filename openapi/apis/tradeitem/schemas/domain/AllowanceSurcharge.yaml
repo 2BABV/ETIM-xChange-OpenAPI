@@ -3,7 +3,6 @@ description: |
   Allowance or surcharge applied to trade item pricing, including fixed and percentage-based adjustments.
   **ETIM xChange**: `AllowanceSurcharge`
   **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[]`
-additionalProperties: false
 required:
   - allowanceSurchargeIndicator
   - allowanceSurchargeType

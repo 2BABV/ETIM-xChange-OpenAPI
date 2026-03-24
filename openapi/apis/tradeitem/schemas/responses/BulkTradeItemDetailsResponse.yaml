@@ -6,7 +6,6 @@ description: |
   along with all identification and details fields in a flat structure.
   
   Use the `cursor` from `meta` to retrieve the next page of results.
-additionalProperties: false
 required:
   - data
   - meta

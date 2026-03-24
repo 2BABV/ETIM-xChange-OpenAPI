@@ -15,7 +15,6 @@ description: |
   
   **ETIM xChange**: `AllowanceSurcharge`
   **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[]`
-additionalProperties: false
 required:
   - supplierIdGln
   - supplierItemNumber

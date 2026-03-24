@@ -2,7 +2,6 @@ type: object
 description: |
   Item description in a specific language.
   Extracted from ETIM xChange `TradeItem.ItemDetails.ItemDescriptions[]` structure.
-additionalProperties: false
 required:
   - descriptionLanguage
   - minimalItemDescription

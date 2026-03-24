@@ -15,7 +15,6 @@ description: |
   
   **ETIM xChange**: `ItemDetails.ItemDescriptions`  
   **Path**: `Supplier[].Product[].TradeItem[].ItemDetails.ItemDescriptions[]`
-additionalProperties: false
 required:
   - supplierIdGln
   - supplierItemNumber

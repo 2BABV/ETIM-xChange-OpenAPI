@@ -8,7 +8,6 @@ description: |
   
   Note: Product descriptions are available through the dedicated `/descriptions` subresource
   which supports language filtering.
-additionalProperties: false
 required:
   - data
 properties:

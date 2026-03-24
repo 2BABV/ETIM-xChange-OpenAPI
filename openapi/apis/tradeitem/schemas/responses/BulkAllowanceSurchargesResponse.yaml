@@ -13,7 +13,6 @@ description: |
   
   **ETIM xChange**: Response wrapper for `AllowanceSurcharge[]` data
   **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[]`
-additionalProperties: false
 required:
   - data
   - meta

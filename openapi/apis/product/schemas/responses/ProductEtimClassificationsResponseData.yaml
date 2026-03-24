@@ -1,7 +1,6 @@
 type: object
 description: |
   Single product identification keys with all associated ETIM classifications.
-additionalProperties: false
 required:
   - manufacturerIdGln
   - manufacturerProductNumber

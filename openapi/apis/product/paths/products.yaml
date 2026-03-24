@@ -21,6 +21,8 @@ get:
     
     **ETIM Classification Filtering**: Use the optional `etimReleaseVersion` query parameter
     to filter ETIM classifications to a specific release version (e.g., "9.0", "10.0").
+
+    **Examples**: Example payloads show documented fields only. Clients must accept and ignore additional fields, including nested fields, when they are added in backward-compatible updates.
     
     **No pagination** - Returns exactly one product document or 404 if not found.
     

@@ -4,7 +4,6 @@ description: |
   Extracted from ETIM xChange `TradeItem.ItemDetails` structure.
   
   **Note**: Item descriptions are available via a separate `/descriptions` endpoint.
-additionalProperties: false
 properties:
   itemStatus:
     description: |

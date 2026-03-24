@@ -22,6 +22,7 @@ get:
     - Filtered data retrieval (using `selectionId` or `supplierIdGln`)
     
     **Pagination**: Use the `cursor` from the response `meta` to retrieve subsequent pages.
+    **Examples**: Example payloads show documented fields only. Clients must accept and ignore additional fields, including nested fields, when they are added in backward-compatible updates.
   parameters:
     - $ref: '../../../../shared/parameters/query/cursor.yaml'
     - $ref: '../../../../shared/parameters/query/limit.yaml'

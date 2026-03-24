@@ -1,7 +1,6 @@
 type: object
 description: |
   Single product identification keys with multilingual product descriptions.
-additionalProperties: false
 required:
   - manufacturerIdGln
   - manufacturerProductNumber

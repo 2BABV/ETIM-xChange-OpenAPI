@@ -10,7 +10,6 @@ description: |
   
   **Language Filtering**: Use the optional `language` query parameter to filter
   descriptions to specific language(s).
-additionalProperties: false
 required:
   - data
 properties:

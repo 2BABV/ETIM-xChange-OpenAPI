@@ -1,7 +1,6 @@
 type: object
 description: |
   Single trade item identification keys with multilingual descriptions.
-additionalProperties: false
 required:
   - supplierIdGln
   - supplierItemNumber

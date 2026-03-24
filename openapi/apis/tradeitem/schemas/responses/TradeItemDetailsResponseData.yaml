@@ -4,7 +4,6 @@ description: |
   
   The trade item key (`supplierIdGln` + `supplierItemNumber`) is at the root level,
   with the `details` object containing all identification and details fields.
-additionalProperties: false
 required:
   - supplierIdGln
   - supplierItemNumber

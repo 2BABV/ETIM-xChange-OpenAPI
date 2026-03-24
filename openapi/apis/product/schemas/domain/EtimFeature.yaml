@@ -1,5 +1,4 @@
 type: object
-additionalProperties: false
 required:
   - etimFeatureCode
 properties:
@@ -97,7 +96,6 @@ properties:
     type: ["array", "null"]
     items:
       type: object
-      additionalProperties: false
       required:
         - language
         - etimValueDetails

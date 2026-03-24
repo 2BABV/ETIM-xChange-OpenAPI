@@ -9,7 +9,6 @@ description: |
   For bulk retrieval with embedded keys, use `TradeItemDetailsSummary`.
   
   **Note**: Item descriptions are available via a separate `/descriptions` endpoint.
-additionalProperties: false
 required:
   - manufacturerIdGln
   - manufacturerProductNumber

@@ -2,7 +2,6 @@ type: object
 description: |
   Attachment information for trade items (images, documents, certificates, etc.).
   Extracted from ETIM xChange `TradeItem.ItemAttachments[]` structure.
-additionalProperties: false
 required:
   - attachmentType
   - attachmentUri

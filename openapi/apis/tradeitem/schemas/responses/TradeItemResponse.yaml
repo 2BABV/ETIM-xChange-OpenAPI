@@ -2,7 +2,6 @@ type: object
 description: |
   Response containing a single trade item. No pagination metadata - returns exactly one trade item document.
   Used for composite-key lookups via GET /trade-items/{supplierIdGln}/{supplierItemNumber}.
-additionalProperties: false
 required:
   - data
 properties:
