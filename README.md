@@ -2,6 +2,23 @@
 
 This repository contains the OpenAPI 3.1 specifications for the 2BA ecosystem. It provides comprehensive API documentation for multiple domains including product information, trade items, pricing data, and ETIM classification standards.
 
+## Why API?
+
+Why an API next to the ETIM xChange JSON file?
+
+The ETIM xChange V2.0 is a monolithic catalog file format (~404 fields, 17 levels deep) designed for periodic full-catalog batch transfers. The OpenAPI spec in this repo transforms it into a REST API that solves 7 problems the file format can't:
+
+ 1. Granular access — Query one product/tradeitem/price instead of downloading the entire catalog
+ 2. Incremental sync — mutationDateTime filter enables delta-only transfers instead of full exports
+ 3. Domain decomposition — 4 focused APIs (Product, TradeItem, Supplier, Manufacturer), instead of one monolithic tree
+ 4. Proper data types — 112 string-encoded numeric fields converted to real number types with format: decimal for code generation
+ 5. SDK generation — OpenAPI enables auto-generated clients (C#, Java, etc.) with strongly-typed models
+ 6. Real-time operations — Net price calculation and stock availability have no file-format equivalent
+ 7. Governed evolution — SemVer, 24-month deprecation, CI-enforced compatibility checks
+ 8. Flexibility and extensibility —  You can extend and add properties and services without breaking the standard.
+
+**The punchline**: the API's open schema design is an industry governance accelerator — it decouples the pace of innovation from the pace of adoption. They're complementary: xChange is the canonical model for full-catalog exchange; the API is a projection optimized for programmatic consumption.
+
 ## Purpose
 
 The repository serves as the central source of truth for API specifications used across the branch, enabling:
