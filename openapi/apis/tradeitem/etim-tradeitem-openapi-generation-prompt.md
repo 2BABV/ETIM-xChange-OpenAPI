@@ -403,7 +403,7 @@ openapi/apis/tradeitem/
     │   ├── TradeItemOrderingsResponse.yaml     # Single-item orderings subresource
     │   ├── TradeItemPricingsResponse.yaml      # Single-item pricings subresource
     │   ├── TradeItemAllowanceSurchargesResponse.yaml  # Single-item allowance-surcharges subresource
-    │   ├── TradeItemAllowanceSurchargeItem.yaml       # Surcharge with pricing join keys
+    │   ├── TradeItemAllowanceSurchargeItem.yaml       # Surcharge with pricingRef correlation
     │   ├── BulkTradeItemDetailsResponse.yaml   # Bulk details
     │   ├── BulkTradeItemOrderingsResponse.yaml # Bulk orderings
     │   ├── BulkTradeItemPricingsResponse.yaml  # Bulk pricings

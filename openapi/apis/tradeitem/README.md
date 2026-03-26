@@ -78,16 +78,16 @@ The bulk API consolidates ETIM xChange sections for efficient data retrieval:
 | `/bulk/trade-item-allowance-surcharges` | n (per surcharge) | **Flat per surcharge entry** |
 
 **Pricing Flattening** (consistent with Product API's `ProductEtimClassificationFeature` pattern):
-- Each row = 1 price entry with embedded composite key (`supplierIdGln` + `supplierItemNumber`)
+- Each row = 1 price entry with embedded trade item key (`supplierIdGln` + `supplierItemNumber`) and server-generated `pricingRef`
 - Trade items with quantity tiers or validity periods generate multiple rows
 - Enables predictable payload sizes and efficient cursor pagination
 - Optimized for ETL/data warehouse ingestion
 
 **Allowance/Surcharge Separation** (star schema pattern):
 - Moved from nested array within pricing to separate `/bulk/trade-item-allowance-surcharges` endpoint
-- Each row = 1 surcharge entry with pricing join keys (`priceUnit` + `priceQuantity` + `priceValidityDate`)
+- Each row = 1 surcharge entry with embedded trade item key and `pricingRef` linking to the parent pricing entry
 - Enables clean dimensional modeling: pricing fact table + surcharges fact table
-- Join via: `supplierIdGln` + `supplierItemNumber` + `priceUnit` + `priceQuantity`
+- Join via: `supplierIdGln` + `supplierItemNumber` + `pricingRef`
 
 **Nested structures retained**:
 - Simple string arrays (`itemGtins[]`) - minimal impact on row predictability
