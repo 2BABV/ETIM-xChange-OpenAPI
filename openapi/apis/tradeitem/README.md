@@ -52,6 +52,7 @@ The bulk API consolidates ETIM xChange sections for efficient data retrieval:
 | `/bulk/trade-item-pricings` | `Pricing[]` (excl. allowances/surcharges) | `TradeItemPricingSummary` |
 | `/bulk/trade-item-allowance-surcharges` | `Pricing[].AllowanceSurcharge[]` | `AllowanceSurchargeSummary` |
 | `/bulk/trade-item-relations` | `ItemRelations[]` | `ItemRelationSummary` |
+| `/bulk/trade-item-logistics-details` | `ItemLogisticDetails[]` | `ItemLogisticsSummary` |
 
 **Note**: There is no separate `/bulk/trade-items` or `/bulk/item-identifications` endpoint. The `/bulk/trade-item-details` endpoint provides all identification fields combined with item details.
 
@@ -66,6 +67,7 @@ The bulk API consolidates ETIM xChange sections for efficient data retrieval:
 | `/{supplierIdGln}/{supplierItemNumber}/pricings` | Pricing information | `TradeItemPricingsResponse` |
 | `/{supplierIdGln}/{supplierItemNumber}/allowance-surcharges` | Allowances/surcharges | `TradeItemAllowanceSurchargesResponse` |
 | `/{supplierIdGln}/{supplierItemNumber}/relations` | Item relations | `TradeItemRelationsResponse` |
+| `/{supplierIdGln}/{supplierItemNumber}/logistics-details` | Item logistics details | `TradeItemLogisticsDetailsResponse` |
 
 ### Bulk Flattening Strategy
 
@@ -79,6 +81,7 @@ The bulk API consolidates ETIM xChange sections for efficient data retrieval:
 | `/bulk/trade-item-pricings` | n (per price tier) | **Flat per price entry** |
 | `/bulk/trade-item-allowance-surcharges` | n (per surcharge) | **Flat per surcharge entry** |
 | `/bulk/trade-item-relations` | n (per relation) | **Flat per relation entry** |
+| `/bulk/trade-item-logistics-details` | 1 (typically) | Fully flat (all fields inline) |
 
 **Pricing Flattening** (consistent with Product API's `ProductEtimClassificationFeature` pattern):
 - Each row = 1 price entry with embedded trade item key (`supplierIdGln` + `supplierItemNumber`) and server-generated `pricingRef`
@@ -100,11 +103,6 @@ The bulk API consolidates ETIM xChange sections for efficient data retrieval:
 ## TradeItem TODO
 
 ### Medium Priority
-
-**ItemLogistics** (ItemLogisticDetails)
-- Base item dimensions: length, width, height, diameter, weight
-- Dimension/weight units
-- Consider: single endpoint or include in details?
 
 **PackagingUnit** (PackagingUnit[])
 - Multi-level packaging hierarchy support

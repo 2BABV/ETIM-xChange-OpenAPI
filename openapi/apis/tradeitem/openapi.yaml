@@ -64,6 +64,9 @@ paths:
   /{supplierIdGln}/{supplierItemNumber}/relations:
     $ref: './paths/trade-item-relations.yaml'
   
+  /{supplierIdGln}/{supplierItemNumber}/logistics-details:
+    $ref: './paths/trade-item-logistics-details.yaml'
+  
   # Bulk operations
   # Note: /bulk/trade-item-details consolidates what would have been separate
   # /bulk/trade-items and /bulk/item-identifications endpoints since
@@ -80,6 +83,8 @@ paths:
     $ref: './paths/bulk/trade-item-allowance-surcharges.yaml'
   /bulk/trade-item-relations:
     $ref: './paths/bulk/trade-item-relations.yaml'
+  /bulk/trade-item-logistics-details:
+    $ref: './paths/bulk/trade-item-logistics-details.yaml'
     
 components:
   schemas:
@@ -112,6 +117,10 @@ components:
       $ref: './schemas/domain/ItemRelation.yaml'
     ItemRelationSummary:
       $ref: './schemas/domain/ItemRelationSummary.yaml'
+    ItemLogistics:
+      $ref: './schemas/domain/ItemLogistics.yaml'
+    ItemLogisticsSummary:
+      $ref: './schemas/domain/ItemLogisticsSummary.yaml'
     RelationType:
       $ref: './schemas/enums/RelationType.yaml'
     
@@ -160,6 +169,12 @@ components:
       $ref: './schemas/responses/TradeItemRelationsResponseData.yaml'
     BulkTradeItemRelationsResponse:
       $ref: './schemas/responses/BulkTradeItemRelationsResponse.yaml'
+    TradeItemLogisticsDetailsResponse:
+      $ref: './schemas/responses/TradeItemLogisticsDetailsResponse.yaml'
+    TradeItemLogisticsDetailsResponseData:
+      $ref: './schemas/responses/TradeItemLogisticsDetailsResponseData.yaml'
+    BulkTradeItemLogisticsDetailsResponse:
+      $ref: './schemas/responses/BulkTradeItemLogisticsDetailsResponse.yaml'
 
   parameters:
     SupplierIdGln:

@@ -56,6 +56,8 @@ paths:
         The trade item key (`supplierIdGln` + `supplierItemNumber`) is at the root level,
         with details nested inside. This structure aligns with other single-item subresource responses.
 
+        **Examples**: Example payloads show documented fields only. Clients must accept and ignore additional fields, including nested fields, when they are added in backward-compatible updates.
+
         **No pagination** - Returns exactly one trade item's details or 404 if not found.
       parameters:
         - $ref: '#/components/parameters/supplier-id-gln'
@@ -83,9 +85,7 @@ paths:
                           - '4012345678901'
                         buyerItemNumber: BUYER-XYZ-123
                         discountGroupId: DG-001
-                        discountGroupDescription: Standard discount group
                         bonusGroupId: BG-002
-                        bonusGroupDescription: Premium bonus tier
                         itemValidityDate: '2024-01-01'
                         itemObsolescenceDate: '2026-12-31'
                         itemStatus: ACTIVE
@@ -106,9 +106,7 @@ paths:
                         itemGtins: null
                         buyerItemNumber: null
                         discountGroupId: null
-                        discountGroupDescription: null
                         bonusGroupId: null
-                        bonusGroupDescription: null
                         itemValidityDate: '2024-01-01'
                         itemObsolescenceDate: null
                         itemStatus: ACTIVE
@@ -180,12 +178,18 @@ paths:
                         - descriptionLanguage: en-GB
                           minimalItemDescription: LED Lamp 10W E27
                           uniqueMainItemDescription: Professional LED lamp with E27 socket, 10W warm white
+                          discountGroupDescription: Lighting products discount group
+                          bonusGroupDescription: null
                         - descriptionLanguage: de-DE
                           minimalItemDescription: LED Lampe 10W E27
                           uniqueMainItemDescription: Professionelle LED-Lampe mit E27-Fassung, 10W warmweiß
+                          discountGroupDescription: Beleuchtungsprodukte Rabattgruppe
+                          bonusGroupDescription: null
                         - descriptionLanguage: nl-NL
                           minimalItemDescription: LED Lamp 10W E27
                           uniqueMainItemDescription: Professionele LED lamp met E27 fitting, 10W warm wit
+                          discountGroupDescription: Verlichtingsproducten kortingsgroep
+                          bonusGroupDescription: null
                 singleLanguage:
                   summary: Filtered to single language
                   value:
@@ -196,6 +200,8 @@ paths:
                         - descriptionLanguage: en-GB
                           minimalItemDescription: LED Lamp 10W E27
                           uniqueMainItemDescription: Professional LED lamp with E27 socket, 10W warm white
+                          discountGroupDescription: Lighting products discount group
+                          bonusGroupDescription: null
                 noDescriptions:
                   summary: Trade item without descriptions
                   value:
@@ -355,6 +361,8 @@ paths:
 
         The trade item key (`supplierIdGln` + `supplierItemNumber`) is at the root level,
         with pricings nested inside. This structure aligns with other single-item subresource responses.
+
+        **Examples**: Example payloads show documented fields only. Clients must accept and ignore additional fields, including nested fields, when they are added in backward-compatible updates.
 
         **No pagination** - Returns exactly one trade item's pricing information or 404 if not found.
 
@@ -576,6 +584,197 @@ paths:
                     instance: https://api.tradeitem.2ba.nl/v1/1234567890123/UNKNOWN-SKU/allowance-surcharges
         '500':
           $ref: '#/components/responses/500-internal-server-error'
+  /{supplierIdGln}/{supplierItemNumber}/relations:
+    get:
+      operationId: getTradeItemRelations
+      tags:
+        - TradeItems single
+      summary: Retrieve trade item relations
+      description: |
+        Retrieve item relations for a specific trade item.
+
+        This endpoint returns all relationships the trade item has with other items,
+        including accessories, spare parts, consumables, successors, and other relation types.
+
+        **Nested structure**: Unlike the bulk endpoint `/bulk/trade-item-relations` which uses
+        a flattened structure optimized for ETL, this single-item endpoint returns relations
+        in their natural nested format for easier consumption.
+
+        **No pagination** - Returns all relations for the specified trade item.
+
+        **ETIM xChange**: `ItemRelations[]`
+        **Path**: `Supplier[].Product[].TradeItem[].ItemRelations[]`
+      parameters:
+        - $ref: '#/components/parameters/supplier-id-gln'
+        - $ref: '#/components/parameters/supplier-item-number'
+      responses:
+        '200':
+          description: Successfully retrieved trade item relations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TradeItemRelationsResponse'
+              examples:
+                multipleRelations:
+                  summary: Trade item with multiple relations
+                  value:
+                    data:
+                      supplierIdGln: '1234567890123'
+                      supplierItemNumber: SKU-12345
+                      relations:
+                        - relatedSupplierItemNumber: SPART-001
+                          relatedManufacturerItemNumber: MFG-SPART-100
+                          relatedItemGtins:
+                            - '4012345678918'
+                          relationType: SPAREPART
+                          relatedItemQuantity: 2
+                        - relatedSupplierItemNumber: ACC-789
+                          relatedManufacturerItemNumber: null
+                          relatedItemGtins: null
+                          relationType: ACCESSORY
+                          relatedItemQuantity: 1
+                        - relatedSupplierItemNumber: SKU-12346
+                          relatedManufacturerItemNumber: MFG-98766
+                          relatedItemGtins:
+                            - '4012345678902'
+                          relationType: SUCCESSOR
+                          relatedItemQuantity: 1
+                singleRelation:
+                  summary: Trade item with one relation
+                  value:
+                    data:
+                      supplierIdGln: '8712423012485'
+                      supplierItemNumber: SKU-LAMP-001
+                      relations:
+                        - relatedSupplierItemNumber: '251270'
+                          relatedManufacturerItemNumber: null
+                          relatedItemGtins:
+                            - '04015081027125'
+                          relationType: UPSELLING
+                          relatedItemQuantity: 1
+                noRelations:
+                  summary: Trade item without relations
+                  value:
+                    data:
+                      supplierIdGln: '1234567890123'
+                      supplierItemNumber: SKU-12345
+                      relations: null
+        '400':
+          $ref: '#/components/responses/400-bad-request'
+        '401':
+          $ref: '#/components/responses/401-unauthorized'
+        '403':
+          $ref: '#/components/responses/403-forbidden'
+        '404':
+          description: Trade item not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              examples:
+                notFound:
+                  summary: Trade item not found
+                  value:
+                    type: https://api.tradeitem.2ba.nl/problems/not-found
+                    title: Trade Item Not Found
+                    status: 404
+                    detail: No trade item found with supplier GLN '1234567890123' and item number 'UNKNOWN-SKU'
+                    instance: https://api.tradeitem.2ba.nl/v1/1234567890123/UNKNOWN-SKU/relations
+        '500':
+          $ref: '#/components/responses/500-internal-server-error'
+  /{supplierIdGln}/{supplierItemNumber}/logistics-details:
+    get:
+      operationId: getTradeItemLogisticsDetails
+      tags:
+        - TradeItems single
+      summary: Retrieve trade item logistics details
+      description: |
+        Retrieve item logistics details for a specific trade item.
+
+        This endpoint returns base item logistic measurements including net dimensions
+        (length, width, height, diameter), weight, and volume with their respective units.
+
+        **Nested structure**: Unlike the bulk endpoint `/bulk/trade-item-logistics-details` which uses
+        a flattened structure optimized for ETL, this single-item endpoint returns logistics
+        in their natural nested format for easier consumption.
+
+        **No pagination** - Returns all logistics entries for the specified trade item.
+
+        **ETIM xChange**: `ItemLogisticDetails[]`
+        **Path**: `Supplier[].Product[].TradeItem[].ItemLogisticDetails[]`
+      parameters:
+        - $ref: '#/components/parameters/supplier-id-gln'
+        - $ref: '#/components/parameters/supplier-item-number'
+      responses:
+        '200':
+          description: Successfully retrieved trade item logistics details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TradeItemLogisticsDetailsResponse'
+              examples:
+                withLogistics:
+                  summary: Trade item with logistics details
+                  value:
+                    data:
+                      supplierIdGln: '8712423012485'
+                      supplierItemNumber: SKU-LAMP-001
+                      itemLogistics:
+                        - baseItemNetLength: 96
+                          baseItemNetWidth: 5
+                          baseItemNetHeight: 56
+                          baseItemNetDiameter: null
+                          netDimensionUnit: CMT
+                          baseItemNetWeight: 0.26
+                          netWeightUnit: KGM
+                          baseItemNetVolume: 68
+                          netVolumeUnit: MMQ
+                minimalLogistics:
+                  summary: Trade item with partial logistics (weight only)
+                  value:
+                    data:
+                      supplierIdGln: '1234567890123'
+                      supplierItemNumber: SKU-12345
+                      itemLogistics:
+                        - baseItemNetLength: null
+                          baseItemNetWidth: null
+                          baseItemNetHeight: null
+                          baseItemNetDiameter: null
+                          netDimensionUnit: null
+                          baseItemNetWeight: 500
+                          netWeightUnit: GRM
+                          baseItemNetVolume: null
+                          netVolumeUnit: null
+                noLogistics:
+                  summary: Trade item without logistics details
+                  value:
+                    data:
+                      supplierIdGln: '1234567890123'
+                      supplierItemNumber: SKU-12345
+                      itemLogistics: null
+        '400':
+          $ref: '#/components/responses/400-bad-request'
+        '401':
+          $ref: '#/components/responses/401-unauthorized'
+        '403':
+          $ref: '#/components/responses/403-forbidden'
+        '404':
+          description: Trade item not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              examples:
+                notFound:
+                  summary: Trade item not found
+                  value:
+                    type: https://api.tradeitem.2ba.nl/problems/not-found
+                    title: Trade Item Not Found
+                    status: 404
+                    detail: No trade item found with supplier GLN '1234567890123' and item number 'UNKNOWN-SKU'
+                    instance: https://api.tradeitem.2ba.nl/v1/1234567890123/UNKNOWN-SKU/logistics-details
+        '500':
+          $ref: '#/components/responses/500-internal-server-error'
   /bulk/trade-item-details:
     get:
       operationId: getBulkTradeItemDetails
@@ -601,6 +800,7 @@ paths:
         - Filtered data retrieval (using `selectionId` or `supplierIdGln`)
 
         **Pagination**: Use the `cursor` from the response `meta` to retrieve subsequent pages.
+        **Examples**: Example payloads show documented fields only. Clients must accept and ignore additional fields, including nested fields, when they are added in backward-compatible updates.
       parameters:
         - $ref: '#/components/parameters/cursor'
         - $ref: '#/components/parameters/limit'
@@ -629,9 +829,7 @@ paths:
                           - '08712423012485'
                         buyerItemNumber: null
                         discountGroupId: DG-LIGHTING
-                        discountGroupDescription: Lighting products
                         bonusGroupId: null
-                        bonusGroupDescription: null
                         itemValidityDate: '2024-01-01'
                         itemObsolescenceDate: null
                         itemStatus: ACTIVE
@@ -648,9 +846,7 @@ paths:
                           - '08712423054321'
                         buyerItemNumber: BUYER-002
                         discountGroupId: DG-TOOLS
-                        discountGroupDescription: Hand tools
                         bonusGroupId: BG-PREMIUM
-                        bonusGroupDescription: Premium tier
                         itemValidityDate: '2023-06-01'
                         itemObsolescenceDate: '2028-12-31'
                         itemStatus: ACTIVE
@@ -724,16 +920,22 @@ paths:
                         descriptionLanguage: en-GB
                         minimalItemDescription: LED Lamp 10W E27
                         uniqueMainItemDescription: Professional LED lamp with E27 socket, 10W warm white
+                        discountGroupDescription: Lighting products discount group
+                        bonusGroupDescription: null
                       - supplierIdGln: '1234567890123'
                         supplierItemNumber: SKU-12345
                         descriptionLanguage: de-DE
                         minimalItemDescription: LED Lampe 10W E27
                         uniqueMainItemDescription: Professionelle LED-Lampe mit E27-Fassung, 10W warmweiß
+                        discountGroupDescription: Beleuchtungsprodukte Rabattgruppe
+                        bonusGroupDescription: null
                       - supplierIdGln: '1234567890123'
                         supplierItemNumber: SKU-67890
                         descriptionLanguage: en-GB
                         minimalItemDescription: Hammer 500g
                         uniqueMainItemDescription: Professional claw hammer with fiberglass handle
+                        discountGroupDescription: Hand tools discount group
+                        bonusGroupDescription: Premium tier
                     meta:
                       cursor: eyJpZCI6MTIzfQ==
                       hasNext: true
@@ -991,6 +1193,164 @@ paths:
           $ref: '#/components/responses/403-forbidden'
         '500':
           $ref: '#/components/responses/500-internal-server-error'
+  /bulk/trade-item-relations:
+    get:
+      operationId: getBulkTradeItemRelations
+      tags:
+        - TradeItems bulk
+      summary: Retrieve trade item relations in bulk
+      description: |
+        Retrieve trade item relations in bulk with cursor-based pagination.
+        Returns a flattened structure where each row represents a single relation
+        with the trade item identifier (`supplierIdGln` + `supplierItemNumber`).
+
+        A trade item with 5 relations (e.g., 2 accessories, 2 spare parts, 1 successor)
+        will result in 5 rows.
+
+        This flattened structure is optimized for:
+        - Predictable payload sizes per row
+        - Efficient cursor-based pagination
+        - ETL/data warehouse ingestion
+        - Streaming data processing
+      parameters:
+        - $ref: '#/components/parameters/cursor'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/selection-id'
+        - $ref: '#/components/parameters/supplier-id-gln-filter'
+        - $ref: '#/components/parameters/mutation-date-time'
+      responses:
+        '200':
+          description: Successfully retrieved trade item relations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkTradeItemRelationsResponse'
+              examples:
+                multipleItems:
+                  summary: Multiple trade item relations
+                  value:
+                    data:
+                      - supplierIdGln: '1234567890123'
+                        supplierItemNumber: SKU-12345
+                        relatedSupplierItemNumber: SPART-001
+                        relatedManufacturerItemNumber: MFG-SPART-100
+                        relatedItemGtins:
+                          - '4012345678918'
+                        relationType: SPAREPART
+                        relatedItemQuantity: 2
+                      - supplierIdGln: '1234567890123'
+                        supplierItemNumber: SKU-12345
+                        relatedSupplierItemNumber: ACC-789
+                        relatedManufacturerItemNumber: null
+                        relatedItemGtins: null
+                        relationType: ACCESSORY
+                        relatedItemQuantity: 1
+                      - supplierIdGln: '9876543210987'
+                        supplierItemNumber: SKU-CABLE-002
+                        relatedSupplierItemNumber: SKU-CABLE-003
+                        relatedManufacturerItemNumber: MFG-CABLE-V2
+                        relatedItemGtins:
+                          - '8712345678901'
+                        relationType: SUCCESSOR
+                        relatedItemQuantity: 1
+                    meta:
+                      cursor: eyJpZCI6MTIzfQ==
+                      hasNext: true
+                      hasPrev: false
+                      limit: 100
+                      estimatedTotal: 8450
+        '400':
+          $ref: '#/components/responses/400-bad-request'
+        '401':
+          $ref: '#/components/responses/401-unauthorized'
+        '403':
+          $ref: '#/components/responses/403-forbidden'
+        '500':
+          $ref: '#/components/responses/500-internal-server-error'
+  /bulk/trade-item-logistics-details:
+    get:
+      operationId: getBulkTradeItemLogisticsDetails
+      tags:
+        - TradeItems bulk
+      summary: Retrieve trade item logistics details in bulk
+      description: |
+        Retrieve trade item logistics details in bulk with cursor-based pagination.
+        Returns a flattened structure where each row represents a single logistics entry
+        with the trade item identifier (`supplierIdGln` + `supplierItemNumber`).
+
+        A trade item typically has 0 or 1 logistics entries containing base item
+        net dimensions (length, width, height, diameter), weight, and volume.
+
+        This flattened structure is optimized for:
+        - Predictable payload sizes per row
+        - Efficient cursor-based pagination
+        - ETL/data warehouse ingestion
+        - Streaming data processing
+      parameters:
+        - $ref: '#/components/parameters/cursor'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/selection-id'
+        - $ref: '#/components/parameters/supplier-id-gln-filter'
+        - $ref: '#/components/parameters/mutation-date-time'
+      responses:
+        '200':
+          description: Successfully retrieved trade item logistics details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkTradeItemLogisticsDetailsResponse'
+              examples:
+                multipleItems:
+                  summary: Multiple trade item logistics entries
+                  value:
+                    data:
+                      - supplierIdGln: '8712423012485'
+                        supplierItemNumber: SKU-LAMP-001
+                        baseItemNetLength: 96
+                        baseItemNetWidth: 5
+                        baseItemNetHeight: 56
+                        baseItemNetDiameter: null
+                        netDimensionUnit: CMT
+                        baseItemNetWeight: 0.26
+                        netWeightUnit: KGM
+                        baseItemNetVolume: 68
+                        netVolumeUnit: MMQ
+                      - supplierIdGln: '1234567890123'
+                        supplierItemNumber: SKU-12345
+                        baseItemNetLength: 25.5
+                        baseItemNetWidth: 15
+                        baseItemNetHeight: 10
+                        baseItemNetDiameter: null
+                        netDimensionUnit: CMT
+                        baseItemNetWeight: 500
+                        netWeightUnit: GRM
+                        baseItemNetVolume: null
+                        netVolumeUnit: null
+                      - supplierIdGln: '9876543210987'
+                        supplierItemNumber: SKU-CABLE-002
+                        baseItemNetLength: 1000
+                        baseItemNetWidth: null
+                        baseItemNetHeight: null
+                        baseItemNetDiameter: 5.5
+                        netDimensionUnit: MMT
+                        baseItemNetWeight: 3.2
+                        netWeightUnit: KGM
+                        baseItemNetVolume: null
+                        netVolumeUnit: null
+                    meta:
+                      cursor: eyJpZCI6MTIzfQ==
+                      hasNext: true
+                      hasPrev: false
+                      limit: 100
+                      estimatedTotal: 12500
+        '400':
+          $ref: '#/components/responses/400-bad-request'
+        '401':
+          $ref: '#/components/responses/401-unauthorized'
+        '403':
+          $ref: '#/components/responses/403-forbidden'
+        '500':
+          $ref: '#/components/responses/500-internal-server-error'
 components:
   schemas:
     ErrorResponse:
@@ -1016,7 +1376,6 @@ components:
         For bulk retrieval with embedded keys, use `TradeItemDetailsSummary`.
 
         **Note**: Item descriptions are available via a separate `/descriptions` endpoint.
-      additionalProperties: false
       required:
         - manufacturerIdGln
         - manufacturerProductNumber
@@ -1120,21 +1479,6 @@ components:
           examples:
             - DG-001
             - null
-        discountGroupDescription:
-          type:
-            - string
-            - 'null'
-          minLength: 1
-          maxLength: 100
-          description: |
-            Human-readable description of the discount group. 
-            Flattened from multilingual array (primary language).
-
-            **ETIM xChange**: `DiscountGroupDescription[].DiscountGroupDescription`  
-            **Path**: `Supplier[].Product[].TradeItem[].ItemIdentification.DiscountGroupDescription[].DiscountGroupDescription`
-          examples:
-            - Standard tools discount group
-            - null
         bonusGroupId:
           type:
             - string
@@ -1149,21 +1493,6 @@ components:
             **Path**: `Supplier[].Product[].TradeItem[].ItemIdentification.BonusGroupId`
           examples:
             - BG-002
-            - null
-        bonusGroupDescription:
-          type:
-            - string
-            - 'null'
-          minLength: 1
-          maxLength: 100
-          description: |
-            Human-readable description of the bonus group. 
-            Flattened from multilingual array (primary language).
-
-            **ETIM xChange**: `BonusGroupDescription[].BonusGroupDescription`  
-            **Path**: `Supplier[].Product[].TradeItem[].ItemIdentification.BonusGroupDescription[].BonusGroupDescription`
-          examples:
-            - Premium bonus tier
             - null
         itemValidityDate:
           type: string
@@ -1268,9 +1597,7 @@ components:
             - '4012345678901'
           buyerItemNumber: null
           discountGroupId: DG-001
-          discountGroupDescription: Standard discount group
           bonusGroupId: null
-          bonusGroupDescription: null
           itemValidityDate: '2024-01-01'
           itemObsolescenceDate: null
           itemStatus: ACTIVE
@@ -1289,7 +1616,6 @@ components:
         For single-item responses (where key is at root level), use `TradeItemDetails`.
 
         **Note**: Item descriptions are available via `/bulk/trade-item-descriptions` endpoint.
-      additionalProperties: false
       required:
         - supplierIdGln
         - supplierItemNumber
@@ -1421,21 +1747,6 @@ components:
           examples:
             - DG-001
             - null
-        discountGroupDescription:
-          type:
-            - string
-            - 'null'
-          minLength: 1
-          maxLength: 100
-          description: |
-            Human-readable description of the discount group. 
-            Flattened from multilingual array (primary language).
-
-            **ETIM xChange**: `DiscountGroupDescription[].DiscountGroupDescription`  
-            **Path**: `Supplier[].Product[].TradeItem[].ItemIdentification.DiscountGroupDescription[].DiscountGroupDescription`
-          examples:
-            - Standard tools discount group
-            - null
         bonusGroupId:
           type:
             - string
@@ -1450,21 +1761,6 @@ components:
             **Path**: `Supplier[].Product[].TradeItem[].ItemIdentification.BonusGroupId`
           examples:
             - BG-002
-            - null
-        bonusGroupDescription:
-          type:
-            - string
-            - 'null'
-          minLength: 1
-          maxLength: 100
-          description: |
-            Human-readable description of the bonus group. 
-            Flattened from multilingual array (primary language).
-
-            **ETIM xChange**: `BonusGroupDescription[].BonusGroupDescription`  
-            **Path**: `Supplier[].Product[].TradeItem[].ItemIdentification.BonusGroupDescription[].BonusGroupDescription`
-          examples:
-            - Premium bonus tier
             - null
         itemValidityDate:
           type: string
@@ -1571,9 +1867,7 @@ components:
             - '12345678901234'
           buyerItemNumber: null
           discountGroupId: DG-LIGHTING
-          discountGroupDescription: Lighting products discount group
           bonusGroupId: null
-          bonusGroupDescription: null
           itemValidityDate: '2024-01-01'
           itemObsolescenceDate: null
           itemStatus: ACTIVE
@@ -1598,7 +1892,6 @@ components:
 
         **ETIM xChange**: `ItemDetails.ItemDescriptions`  
         **Path**: `Supplier[].Product[].TradeItem[].ItemDetails.ItemDescriptions[]`
-      additionalProperties: false
       required:
         - supplierIdGln
         - supplierItemNumber
@@ -1664,17 +1957,49 @@ components:
           examples:
             - Professional LED lamp with E27 socket, 10W warm white
             - Professional claw hammer with fiberglass handle, 500g head weight
+        discountGroupDescription:
+          type:
+            - string
+            - 'null'
+          minLength: 1
+          maxLength: 100
+          description: |
+            Human-readable description of the discount group in this language.
+
+            **ETIM xChange**: `DiscountGroupDescription[].DiscountGroupDescription`  
+            **Path**: `Supplier[].Product[].TradeItem[].ItemIdentification.DiscountGroupDescription[].DiscountGroupDescription`
+          examples:
+            - Standard tools discount group
+            - null
+        bonusGroupDescription:
+          type:
+            - string
+            - 'null'
+          minLength: 1
+          maxLength: 100
+          description: |
+            Human-readable description of the bonus group in this language.
+
+            **ETIM xChange**: `BonusGroupDescription[].BonusGroupDescription`  
+            **Path**: `Supplier[].Product[].TradeItem[].ItemIdentification.BonusGroupDescription[].BonusGroupDescription`
+          examples:
+            - Premium bonus tier
+            - null
       examples:
         - supplierIdGln: '1234567890123'
           supplierItemNumber: SKU-12345
           descriptionLanguage: en-GB
           minimalItemDescription: LED Lamp 10W E27
           uniqueMainItemDescription: Professional LED lamp with E27 socket, 10W warm white
+          discountGroupDescription: Lighting products discount group
+          bonusGroupDescription: null
         - supplierIdGln: '1234567890123'
           supplierItemNumber: SKU-12345
           descriptionLanguage: de-DE
           minimalItemDescription: LED Lampe 10W E27
           uniqueMainItemDescription: Professionelle LED-Lampe mit E27-Fassung, 10W warmweiß
+          discountGroupDescription: Beleuchtungsprodukte Rabattgruppe
+          bonusGroupDescription: null
         - supplierIdGln: '9876543210987'
           supplierItemNumber: ITEM-67890
           descriptionLanguage: en-GB
@@ -1687,7 +2012,6 @@ components:
 
         **ETIM xChange**: `Ordering`
         **Path**: `Supplier[].Product[].TradeItem[].Ordering`
-      additionalProperties: false
       required:
         - orderUnit
         - minimumOrderQuantity
@@ -1706,6 +2030,7 @@ components:
             - MTR
         minimumOrderQuantity:
           type: number
+          format: decimal
           description: |
             Minimum quantity that must be ordered (converted from ETIM xChange string to number).
 
@@ -1720,6 +2045,7 @@ components:
             - 500
         orderStepSize:
           type: number
+          format: decimal
           description: |
             Quantity increment for orders beyond minimum (converted from ETIM xChange string to number).
             For example, if minimum is 10 and step is 5, you can order 10, 15, 20, etc.
@@ -1764,6 +2090,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Conversion factor from order unit to use unit (converted from ETIM xChange string to number).
 
@@ -1780,6 +2107,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Quantity of use units in a single order unit (converted from ETIM xChange string to number).
 
@@ -1808,6 +2136,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Conversion factor from order unit to alternative use unit (converted from ETIM xChange string to number).
 
@@ -1842,7 +2171,6 @@ components:
 
         **ETIM xChange**: `Ordering`
         **Path**: `Supplier[].Product[].TradeItem[].Ordering`
-      additionalProperties: false
       required:
         - supplierIdGln
         - supplierItemNumber
@@ -1887,6 +2215,7 @@ components:
             - MTR
         minimumOrderQuantity:
           type: number
+          format: decimal
           description: |
             Minimum quantity that must be ordered (converted from ETIM xChange string to number).
 
@@ -1901,6 +2230,7 @@ components:
             - 500
         orderStepSize:
           type: number
+          format: decimal
           description: |
             Quantity increment for orders beyond minimum (converted from ETIM xChange string to number).
             For example, if minimum is 10 and step is 5, you can order 10, 15, 20, etc.
@@ -1945,6 +2275,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Conversion factor from order unit to use unit (converted from ETIM xChange string to number).
 
@@ -1961,6 +2292,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Quantity of use units in a single order unit (converted from ETIM xChange string to number).
 
@@ -1989,6 +2321,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Conversion factor from order unit to alternative use unit (converted from ETIM xChange string to number).
 
@@ -2035,7 +2368,6 @@ components:
 
         **ETIM xChange**: `Pricing`
         **Path**: `Supplier[].Product[].TradeItem[].Pricing[]`
-      additionalProperties: false
       required:
         - pricingRef
         - priceUnit
@@ -2070,6 +2402,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Factor to convert price unit to order unit (converted from ETIM xChange string to number).
 
@@ -2084,6 +2417,7 @@ components:
             - null
         priceQuantity:
           type: number
+          format: decimal
           description: |
             Quantity for which the price applies (converted from ETIM xChange string to number).
 
@@ -2120,6 +2454,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Gross list price (before discounts) (converted from ETIM xChange string to number).
 
@@ -2136,6 +2471,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Net price (after discounts, before tax) (converted from ETIM xChange string to number).
 
@@ -2152,6 +2488,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Recommended retail price (MSRP) (converted from ETIM xChange string to number).
 
@@ -2168,6 +2505,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             VAT/tax percentage (converted from ETIM xChange string to number).
 
@@ -2273,7 +2611,6 @@ components:
 
         **ETIM xChange**: `Pricing[]`
         **Path**: `Supplier[].Product[].TradeItem[].Pricing[]`
-      additionalProperties: false
       required:
         - supplierIdGln
         - supplierItemNumber
@@ -2365,7 +2702,6 @@ components:
         Allowance or surcharge applied to trade item pricing, including fixed and percentage-based adjustments.
         **ETIM xChange**: `AllowanceSurcharge`
         **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[]`
-      additionalProperties: false
       required:
         - allowanceSurchargeIndicator
         - allowanceSurchargeType
@@ -2404,6 +2740,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Fixed monetary amount of the allowance or surcharge (converted from ETIM string pattern to numeric form).
             **ETIM xChange**: `AllowanceSurchargeAmount`
@@ -2432,6 +2769,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Percentage rate of the allowance or surcharge (converted from ETIM string pattern to numeric form).
             **ETIM xChange**: `AllowanceSurchargePercentage`
@@ -2447,6 +2785,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Minimum ordered quantity required for the allowance or surcharge to apply (converted from ETIM string pattern to numeric form).
             **ETIM xChange**: `AllowanceSurchargeMinimumQuantity`
@@ -2491,7 +2830,6 @@ components:
 
         **ETIM xChange**: `AllowanceSurcharge`
         **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[]`
-      additionalProperties: false
       required:
         - supplierIdGln
         - supplierItemNumber
@@ -2582,6 +2920,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Fixed monetary amount of the allowance or surcharge.
             Mutually exclusive with `allowanceSurchargePercentage` (typically one or the other is set).
@@ -2598,6 +2937,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Percentage rate of the allowance or surcharge.
             Mutually exclusive with `allowanceSurchargeAmount` (typically one or the other is set).
@@ -2614,6 +2954,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Minimum ordered quantity required for the allowance or surcharge to apply.
 
@@ -2657,12 +2998,650 @@ components:
           allowanceSurchargeSequenceNumber: 2
           allowanceSurchargePercentage: 15
           allowanceSurchargeMinimumQuantity: 500
+    ItemRelation:
+      type: object
+      description: |
+        Defines a relationship between trade items (e.g., accessories, spare parts, related products).
+        Extracted from ETIM xChange `TradeItem.ItemRelations[]` structure.
+      required:
+        - relatedSupplierItemNumber
+        - relationType
+        - relatedItemQuantity
+      properties:
+        relatedSupplierItemNumber:
+          type: string
+          description: |
+            Supplier item number of the related trade item.
+            **ETIM xChange**: `RelatedSupplierItemNumber`
+            **Path**: `Supplier[].Product[].TradeItem[].ItemRelations[].RelatedSupplierItemNumber`
+          minLength: 1
+          maxLength: 35
+          examples:
+            - SPART-001
+            - ACC-789
+        relatedManufacturerItemNumber:
+          type:
+            - string
+            - 'null'
+          description: |
+            Manufacturer item number of the related trade item.
+            **ETIM xChange**: `RelatedManufacturerItemNumber`
+            **Path**: `Supplier[].Product[].TradeItem[].ItemRelations[].RelatedManufacturerItemNumber`
+          minLength: 1
+          maxLength: 35
+          examples:
+            - MFG-PART-456
+            - null
+        relatedItemGtins:
+          type:
+            - array
+            - 'null'
+          description: |
+            Array of GTINs for the related trade item.
+            **ETIM xChange**: `RelatedItemGtin[]`
+            **Path**: `Supplier[].Product[].TradeItem[].ItemRelations[].RelatedItemGtin[]`
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/Gtin'
+          examples:
+            - - '4012345678918'
+            - null
+        relationType:
+          description: |
+            Type of relationship between this item and the related item.
+            **ETIM xChange**: `RelationType`
+            **Path**: `Supplier[].Product[].TradeItem[].ItemRelations[].RelationType`
+          $ref: '#/components/schemas/RelationType'
+          examples:
+            - SPAREPART
+            - ACCESSORY
+            - MANDATORY
+        relatedItemQuantity:
+          type: integer
+          description: |
+            Quantity of the related item required or recommended (converted from ETIM xChange string to integer).
+            **ETIM xChange**: `RelatedItemQuantity` (string with pattern in ETIM, converted to integer)
+            **Path**: `Supplier[].Product[].TradeItem[].ItemRelations[].RelatedItemQuantity`
+          minimum: 1
+          examples:
+            - 1
+            - 4
+            - 10
+      examples:
+        - relatedSupplierItemNumber: SPART-001
+          relatedManufacturerItemNumber: MFG-SPART-100
+          relatedItemGtins:
+            - '4012345678918'
+          relationType: SPAREPART
+          relatedItemQuantity: 2
+    ItemRelationSummary:
+      type: object
+      description: |
+        Flattened item relation for bulk retrieval.
+        Each row represents a single relationship between a trade item and a related item,
+        with the trade item identifier embedded at top level.
+
+        A trade item with 5 relations (e.g., 2 accessories, 2 spare parts, 1 successor)
+        will result in 5 rows.
+
+        This flattened structure is optimized for:
+        - Predictable payload sizes per row
+        - Efficient cursor-based pagination
+        - ETL/data warehouse ingestion
+        - Streaming data processing
+
+        **ETIM xChange**: `ItemRelations[]`  
+        **Path**: `Supplier[].Product[].TradeItem[].ItemRelations[]`
+      required:
+        - supplierIdGln
+        - supplierItemNumber
+        - relatedSupplierItemNumber
+        - relationType
+        - relatedItemQuantity
+      properties:
+        supplierIdGln:
+          $ref: '#/components/schemas/Gln'
+          description: |
+            Global Location Number (GLN) identifying the supplier.
+            13-digit GS1 identifier. Part of the composite trade item identifier.
+          examples:
+            - '1234567890123'
+            - '8712423012485'
+        supplierItemNumber:
+          type: string
+          minLength: 1
+          maxLength: 35
+          description: |
+            Supplier's unique item identifier.
+            Part of the composite trade item identifier.
+
+            **ETIM xChange**: `SupplierItemNumber`  
+            **Path**: `Supplier[].Product[].TradeItem[].ItemIdentification.SupplierItemNumber`
+          examples:
+            - SKU-12345
+            - ITEM-ABC-789
+        relatedSupplierItemNumber:
+          type: string
+          description: |
+            Supplier item number of the related trade item.
+            **ETIM xChange**: `RelatedSupplierItemNumber`
+            **Path**: `Supplier[].Product[].TradeItem[].ItemRelations[].RelatedSupplierItemNumber`
+          minLength: 1
+          maxLength: 35
+          examples:
+            - SPART-001
+            - ACC-789
+        relatedManufacturerItemNumber:
+          type:
+            - string
+            - 'null'
+          description: |
+            Manufacturer item number of the related trade item.
+            **ETIM xChange**: `RelatedManufacturerItemNumber`
+            **Path**: `Supplier[].Product[].TradeItem[].ItemRelations[].RelatedManufacturerItemNumber`
+          minLength: 1
+          maxLength: 35
+          examples:
+            - MFG-PART-456
+            - null
+        relatedItemGtins:
+          type:
+            - array
+            - 'null'
+          description: |
+            Array of GTINs for the related trade item.
+            **ETIM xChange**: `RelatedItemGtin[]`
+            **Path**: `Supplier[].Product[].TradeItem[].ItemRelations[].RelatedItemGtin[]`
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/Gtin'
+          examples:
+            - - '4012345678918'
+            - null
+        relationType:
+          description: |
+            Type of relationship between this item and the related item.
+            **ETIM xChange**: `RelationType`
+            **Path**: `Supplier[].Product[].TradeItem[].ItemRelations[].RelationType`
+          $ref: '#/components/schemas/RelationType'
+          examples:
+            - SPAREPART
+            - ACCESSORY
+            - MANDATORY
+        relatedItemQuantity:
+          type: integer
+          description: |
+            Quantity of the related item required or recommended (converted from ETIM xChange string to integer).
+            **ETIM xChange**: `RelatedItemQuantity`
+            **Path**: `Supplier[].Product[].TradeItem[].ItemRelations[].RelatedItemQuantity`
+          minimum: 1
+          examples:
+            - 1
+            - 4
+            - 10
+      examples:
+        - supplierIdGln: '8712423012485'
+          supplierItemNumber: SKU-LAMP-001
+          relatedSupplierItemNumber: SPART-001
+          relatedManufacturerItemNumber: MFG-SPART-100
+          relatedItemGtins:
+            - '4012345678918'
+          relationType: SPAREPART
+          relatedItemQuantity: 2
+        - supplierIdGln: '8712423012485'
+          supplierItemNumber: SKU-LAMP-001
+          relatedSupplierItemNumber: ACC-789
+          relatedManufacturerItemNumber: null
+          relatedItemGtins: null
+          relationType: ACCESSORY
+          relatedItemQuantity: 1
+        - supplierIdGln: '9876543210987'
+          supplierItemNumber: SKU-CABLE-002
+          relatedSupplierItemNumber: SKU-CABLE-003
+          relatedManufacturerItemNumber: MFG-CABLE-V2
+          relatedItemGtins:
+            - '8712345678901'
+          relationType: SUCCESSOR
+          relatedItemQuantity: 1
+    ItemLogistics:
+      type: object
+      description: |
+        Logistic details including dimensions, weight, and volume of the base item.
+        Extracted from ETIM xChange `TradeItem.ItemLogisticDetails[]` structure.
+      properties:
+        baseItemNetLength:
+          type:
+            - number
+            - 'null'
+          format: decimal
+          description: |
+            Net length of the base item in specified unit (converted from ETIM xChange string to number).
+            **ETIM xChange**: `BaseItemNetLength` (string with pattern)
+            **Path**: `Supplier[].Product[].TradeItem[].ItemLogisticDetails[].BaseItemNetLength`
+          minimum: 0
+          multipleOf: 0.0001
+          maximum: 999999999999.9999
+          examples:
+            - 25.5
+            - 100
+            - null
+        baseItemNetWidth:
+          type:
+            - number
+            - 'null'
+          format: decimal
+          description: |
+            Net width of the base item in specified unit (converted from ETIM xChange string to number).
+            **ETIM xChange**: `BaseItemNetWidth` (string with pattern)
+            **Path**: `Supplier[].Product[].TradeItem[].ItemLogisticDetails[].BaseItemNetWidth`
+          minimum: 0
+          multipleOf: 0.0001
+          maximum: 999999999999.9999
+          examples:
+            - 15.25
+            - 50
+            - null
+        baseItemNetHeight:
+          type:
+            - number
+            - 'null'
+          format: decimal
+          description: |
+            Net height of the base item in specified unit (converted from ETIM xChange string to number).
+            **ETIM xChange**: `BaseItemNetHeight` (string with pattern)
+            **Path**: `Supplier[].Product[].TradeItem[].ItemLogisticDetails[].BaseItemNetHeight`
+          minimum: 0
+          multipleOf: 0.0001
+          maximum: 999999999999.9999
+          examples:
+            - 10.5
+            - 30
+            - null
+        baseItemNetDiameter:
+          type:
+            - number
+            - 'null'
+          format: decimal
+          description: |
+            Net diameter of the base item in specified unit (for cylindrical items) (converted from ETIM xChange string to number).
+            **ETIM xChange**: `BaseItemNetDiameter` (string with pattern)
+            **Path**: `Supplier[].Product[].TradeItem[].ItemLogisticDetails[].BaseItemNetDiameter`
+          minimum: 0
+          multipleOf: 0.0001
+          maximum: 999999999999.9999
+          examples:
+            - 8.75
+            - null
+        netDimensionUnit:
+          type:
+            - string
+            - 'null'
+          description: |
+            Unit of measurement for net dimensions (CMT=centimeter, MTR=meter, etc.).
+            **ETIM xChange**: `NetDimensionUnit`
+            **Path**: `Supplier[].Product[].TradeItem[].ItemLogisticDetails[].NetDimensionUnit`
+          enum:
+            - CMT
+            - DMT
+            - KMT
+            - MMT
+            - MTR
+            - FOT
+            - INH
+            - SMI
+            - YRD
+            - null
+          examples:
+            - CMT
+            - MTR
+            - null
+        baseItemNetWeight:
+          type:
+            - number
+            - 'null'
+          format: decimal
+          description: |
+            Net weight of the base item in specified unit (converted from ETIM xChange string to number).
+            **ETIM xChange**: `BaseItemNetWeight` (string with pattern)
+            **Path**: `Supplier[].Product[].TradeItem[].ItemLogisticDetails[].BaseItemNetWeight`
+          minimum: 0
+          multipleOf: 0.0001
+          maximum: 999999999999.9999
+          examples:
+            - 1.5
+            - 1250.75
+            - null
+        netWeightUnit:
+          type:
+            - string
+            - 'null'
+          description: |
+            Unit of measurement for net weight (GRM=gram, KGM=kilogram, etc.).
+            **ETIM xChange**: `NetWeightUnit`
+            **Path**: `Supplier[].Product[].TradeItem[].ItemLogisticDetails[].NetWeightUnit`
+          enum:
+            - GRM
+            - KGM
+            - MGM
+            - TNE
+            - LTN
+            - LBR
+            - ONZ
+            - null
+          examples:
+            - GRM
+            - KGM
+            - null
+        baseItemNetVolume:
+          type:
+            - number
+            - 'null'
+          format: decimal
+          description: |
+            Net volume of the base item in specified unit (converted from ETIM xChange string to number).
+            **ETIM xChange**: `BaseItemNetVolume` (string with pattern)
+            **Path**: `Supplier[].Product[].TradeItem[].ItemLogisticDetails[].BaseItemNetVolume`
+          minimum: 0
+          multipleOf: 0.0001
+          maximum: 999999999999.9999
+          examples:
+            - 0.5
+            - 10.25
+            - null
+        netVolumeUnit:
+          type:
+            - string
+            - 'null'
+          description: |
+            Unit of measurement for net volume (LTR=liter, MTQ=cubic meter, etc.).
+            **ETIM xChange**: `NetVolumeUnit`
+            **Path**: `Supplier[].Product[].TradeItem[].ItemLogisticDetails[].NetVolumeUnit`
+          enum:
+            - FTQ
+            - INQ
+            - MTQ
+            - MMQ
+            - OZA
+            - GLL
+            - LTR
+            - MLT
+            - PT
+            - QT
+            - null
+          examples:
+            - LTR
+            - MTQ
+            - null
+      examples:
+        - baseItemNetLength: 25.5
+          baseItemNetWidth: 15
+          baseItemNetHeight: 10
+          baseItemNetDiameter: null
+          netDimensionUnit: CMT
+          baseItemNetWeight: 500
+          netWeightUnit: GRM
+          baseItemNetVolume: null
+          netVolumeUnit: null
+    ItemLogisticsSummary:
+      type: object
+      description: |
+        Flattened item logistics for bulk retrieval.
+        Each row represents a single logistics entry for a trade item,
+        with the trade item identifier embedded at top level.
+
+        A trade item typically has 0 or 1 logistics entries. Items with logistics data
+        will result in 1 row per logistics entry.
+
+        This flattened structure is optimized for:
+        - Predictable payload sizes per row
+        - Efficient cursor-based pagination
+        - ETL/data warehouse ingestion
+        - Streaming data processing
+
+        **ETIM xChange**: `ItemLogisticDetails[]`  
+        **Path**: `Supplier[].Product[].TradeItem[].ItemLogisticDetails[]`
+      required:
+        - supplierIdGln
+        - supplierItemNumber
+      properties:
+        supplierIdGln:
+          $ref: '#/components/schemas/Gln'
+          description: |
+            Global Location Number (GLN) identifying the supplier.
+            13-digit GS1 identifier. Part of the composite trade item identifier.
+          examples:
+            - '1234567890123'
+            - '8712423012485'
+        supplierItemNumber:
+          type: string
+          minLength: 1
+          maxLength: 35
+          description: |
+            Supplier's unique item identifier.
+            Part of the composite trade item identifier.
+
+            **ETIM xChange**: `SupplierItemNumber`  
+            **Path**: `Supplier[].Product[].TradeItem[].ItemIdentification.SupplierItemNumber`
+          examples:
+            - SKU-12345
+            - ITEM-ABC-789
+        baseItemNetLength:
+          type:
+            - number
+            - 'null'
+          format: decimal
+          description: |
+            Net length of the base item in specified unit (converted from ETIM xChange string to number).
+            **ETIM xChange**: `BaseItemNetLength` (string with pattern)
+            **Path**: `Supplier[].Product[].TradeItem[].ItemLogisticDetails[].BaseItemNetLength`
+          minimum: 0
+          multipleOf: 0.0001
+          maximum: 999999999999.9999
+          examples:
+            - 25.5
+            - 100
+            - null
+        baseItemNetWidth:
+          type:
+            - number
+            - 'null'
+          format: decimal
+          description: |
+            Net width of the base item in specified unit (converted from ETIM xChange string to number).
+            **ETIM xChange**: `BaseItemNetWidth` (string with pattern)
+            **Path**: `Supplier[].Product[].TradeItem[].ItemLogisticDetails[].BaseItemNetWidth`
+          minimum: 0
+          multipleOf: 0.0001
+          maximum: 999999999999.9999
+          examples:
+            - 15.25
+            - 50
+            - null
+        baseItemNetHeight:
+          type:
+            - number
+            - 'null'
+          format: decimal
+          description: |
+            Net height of the base item in specified unit (converted from ETIM xChange string to number).
+            **ETIM xChange**: `BaseItemNetHeight` (string with pattern)
+            **Path**: `Supplier[].Product[].TradeItem[].ItemLogisticDetails[].BaseItemNetHeight`
+          minimum: 0
+          multipleOf: 0.0001
+          maximum: 999999999999.9999
+          examples:
+            - 10.5
+            - 30
+            - null
+        baseItemNetDiameter:
+          type:
+            - number
+            - 'null'
+          format: decimal
+          description: |
+            Net diameter of the base item in specified unit (for cylindrical items) (converted from ETIM xChange string to number).
+            **ETIM xChange**: `BaseItemNetDiameter` (string with pattern)
+            **Path**: `Supplier[].Product[].TradeItem[].ItemLogisticDetails[].BaseItemNetDiameter`
+          minimum: 0
+          multipleOf: 0.0001
+          maximum: 999999999999.9999
+          examples:
+            - 8.75
+            - null
+        netDimensionUnit:
+          type:
+            - string
+            - 'null'
+          description: |
+            Unit of measurement for net dimensions (CMT=centimeter, MTR=meter, etc.).
+            **ETIM xChange**: `NetDimensionUnit`
+            **Path**: `Supplier[].Product[].TradeItem[].ItemLogisticDetails[].NetDimensionUnit`
+          enum:
+            - CMT
+            - DMT
+            - KMT
+            - MMT
+            - MTR
+            - FOT
+            - INH
+            - SMI
+            - YRD
+            - null
+          examples:
+            - CMT
+            - MTR
+            - null
+        baseItemNetWeight:
+          type:
+            - number
+            - 'null'
+          format: decimal
+          description: |
+            Net weight of the base item in specified unit (converted from ETIM xChange string to number).
+            **ETIM xChange**: `BaseItemNetWeight` (string with pattern)
+            **Path**: `Supplier[].Product[].TradeItem[].ItemLogisticDetails[].BaseItemNetWeight`
+          minimum: 0
+          multipleOf: 0.0001
+          maximum: 999999999999.9999
+          examples:
+            - 1.5
+            - 1250.75
+            - null
+        netWeightUnit:
+          type:
+            - string
+            - 'null'
+          description: |
+            Unit of measurement for net weight (GRM=gram, KGM=kilogram, etc.).
+            **ETIM xChange**: `NetWeightUnit`
+            **Path**: `Supplier[].Product[].TradeItem[].ItemLogisticDetails[].NetWeightUnit`
+          enum:
+            - GRM
+            - KGM
+            - MGM
+            - TNE
+            - LTN
+            - LBR
+            - ONZ
+            - null
+          examples:
+            - GRM
+            - KGM
+            - null
+        baseItemNetVolume:
+          type:
+            - number
+            - 'null'
+          format: decimal
+          description: |
+            Net volume of the base item in specified unit (converted from ETIM xChange string to number).
+            **ETIM xChange**: `BaseItemNetVolume` (string with pattern)
+            **Path**: `Supplier[].Product[].TradeItem[].ItemLogisticDetails[].BaseItemNetVolume`
+          minimum: 0
+          multipleOf: 0.0001
+          maximum: 999999999999.9999
+          examples:
+            - 0.5
+            - 10.25
+            - null
+        netVolumeUnit:
+          type:
+            - string
+            - 'null'
+          description: |
+            Unit of measurement for net volume (LTR=liter, MTQ=cubic meter, etc.).
+            **ETIM xChange**: `NetVolumeUnit`
+            **Path**: `Supplier[].Product[].TradeItem[].ItemLogisticDetails[].NetVolumeUnit`
+          enum:
+            - FTQ
+            - INQ
+            - MTQ
+            - MMQ
+            - OZA
+            - GLL
+            - LTR
+            - MLT
+            - PT
+            - QT
+            - null
+          examples:
+            - LTR
+            - MTQ
+            - null
+      examples:
+        - supplierIdGln: '8712423012485'
+          supplierItemNumber: SKU-LAMP-001
+          baseItemNetLength: 96
+          baseItemNetWidth: 5
+          baseItemNetHeight: 56
+          baseItemNetDiameter: null
+          netDimensionUnit: CMT
+          baseItemNetWeight: 0.26
+          netWeightUnit: KGM
+          baseItemNetVolume: 68
+          netVolumeUnit: MMQ
+        - supplierIdGln: '1234567890123'
+          supplierItemNumber: SKU-12345
+          baseItemNetLength: 25.5
+          baseItemNetWidth: 15
+          baseItemNetHeight: 10
+          baseItemNetDiameter: null
+          netDimensionUnit: CMT
+          baseItemNetWeight: 500
+          netWeightUnit: GRM
+          baseItemNetVolume: null
+          netVolumeUnit: null
+    RelationType:
+      type: string
+      description: |
+        Type of relationship between trade items.
+        **ETIM xChange**: `RelationType`
+        **Path**: `Supplier[].Product[].TradeItem[].ItemRelations[].RelationType`
+      enum:
+        - ACCESSORY
+        - CONSISTS_OF
+        - CONSUMABLES
+        - CROSS-SELLING
+        - MAIN_PRODUCT
+        - MANDATORY
+        - PREDECESSOR
+        - REFURBISHED
+        - SELECT
+        - SIMILAR
+        - SPAREPART
+        - SUCCESSOR
+        - UPSELLING
+        - USED
+        - OTHER
+      examples:
+        - SPAREPART
+        - ACCESSORY
+        - MANDATORY
     CursorPaginationMetadata:
       type: object
       description: |
         Cursor-based pagination metadata exposed in the `meta` object. Includes the opaque pagination cursor,
         navigation flags, the requested page size, and an optional estimated total count for windowed scans.
-      additionalProperties: false
       properties:
         cursor:
           type:
@@ -2716,7 +3695,6 @@ components:
       description: |
         Response containing a single trade item. No pagination metadata - returns exactly one trade item document.
         Used for composite-key lookups via GET /trade-items/{supplierIdGln}/{supplierItemNumber}.
-      additionalProperties: false
       required:
         - data
       properties:
@@ -2737,9 +3715,7 @@ components:
               - '4012345678901'
             buyerItemNumber: null
             discountGroupId: DG-001
-            discountGroupDescription: Standard discount group
             bonusGroupId: null
-            bonusGroupDescription: null
             itemValidityDate: '2024-01-01'
             itemObsolescenceDate: null
             itemDetails:
@@ -2790,9 +3766,7 @@ components:
             itemGtins: null
             buyerItemNumber: null
             discountGroupId: null
-            discountGroupDescription: null
             bonusGroupId: null
-            bonusGroupDescription: null
             itemValidityDate: '2024-01-01'
             itemObsolescenceDate: null
             itemDetails:
@@ -2819,7 +3793,6 @@ components:
 
         This structure aligns with other single-item subresource responses
         (`/orderings`, `/pricings`).
-      additionalProperties: false
       required:
         - data
       properties:
@@ -2838,9 +3811,7 @@ components:
                 - '4012345678901'
               buyerItemNumber: null
               discountGroupId: DG-001
-              discountGroupDescription: Standard discount group
               bonusGroupId: null
-              bonusGroupDescription: null
               itemValidityDate: '2024-01-01'
               itemObsolescenceDate: null
               itemStatus: ACTIVE
@@ -2854,7 +3825,6 @@ components:
 
         The trade item key (`supplierIdGln` + `supplierItemNumber`) is at the root level,
         with the `details` object containing all identification and details fields.
-      additionalProperties: false
       required:
         - supplierIdGln
         - supplierItemNumber
@@ -2893,9 +3863,7 @@ components:
               - '4012345678901'
             buyerItemNumber: null
             discountGroupId: DG-001
-            discountGroupDescription: Standard discount group
             bonusGroupId: null
-            bonusGroupDescription: null
             itemValidityDate: '2024-01-01'
             itemObsolescenceDate: null
             itemStatus: ACTIVE
@@ -2915,7 +3883,6 @@ components:
 
         **Language Filtering**: Use the optional `language` query parameter to filter
         descriptions to specific language(s).
-      additionalProperties: false
       required:
         - data
       properties:
@@ -2929,9 +3896,13 @@ components:
               - descriptionLanguage: en-GB
                 minimalItemDescription: LED Lamp 10W E27
                 uniqueMainItemDescription: Professional LED lamp with E27 socket, 10W warm white
+                discountGroupDescription: Lighting products discount group
+                bonusGroupDescription: null
               - descriptionLanguage: de-DE
                 minimalItemDescription: LED Lampe 10W E27
                 uniqueMainItemDescription: Professionelle LED-Lampe mit E27-Fassung, 10W warmweiß
+                discountGroupDescription: Beleuchtungsprodukte Rabattgruppe
+                bonusGroupDescription: null
         - data:
             supplierIdGln: '1234567890123'
             supplierItemNumber: SKU-12345
@@ -2940,7 +3911,6 @@ components:
       type: object
       description: |
         Single trade item identification keys with multilingual descriptions.
-      additionalProperties: false
       required:
         - supplierIdGln
         - supplierItemNumber
@@ -2974,9 +3944,13 @@ components:
             - descriptionLanguage: en-GB
               minimalItemDescription: LED Lamp 10W E27
               uniqueMainItemDescription: Professional LED lamp with E27 socket, 10W warm white
+              discountGroupDescription: Lighting products discount group
+              bonusGroupDescription: null
             - descriptionLanguage: de-DE
               minimalItemDescription: LED Lampe 10W E27
               uniqueMainItemDescription: Professionelle LED-Lampe mit E27-Fassung, 10W warmweiß
+              discountGroupDescription: Beleuchtungsprodukte Rabattgruppe
+              bonusGroupDescription: null
         - supplierIdGln: '1234567890123'
           supplierItemNumber: SKU-12345
           descriptions: null
@@ -2989,7 +3963,6 @@ components:
         along with all identification and details fields in a flat structure.
 
         Use the `cursor` from `meta` to retrieve the next page of results.
-      additionalProperties: false
       required:
         - data
         - meta
@@ -3015,9 +3988,7 @@ components:
                 - '12345678901234'
               buyerItemNumber: null
               discountGroupId: DG-LIGHTING
-              discountGroupDescription: Lighting products discount group
               bonusGroupId: null
-              bonusGroupDescription: null
               itemValidityDate: '2024-01-01'
               itemObsolescenceDate: null
               itemStatus: ACTIVE
@@ -3034,9 +4005,7 @@ components:
                 - '08712423054321'
               buyerItemNumber: BUYER-002
               discountGroupId: DG-TOOLS
-              discountGroupDescription: Hand tools discount group
               bonusGroupId: BG-PREMIUM
-              bonusGroupDescription: Premium tier bonus
               itemValidityDate: '2023-06-01'
               itemObsolescenceDate: '2028-12-31'
               itemStatus: ACTIVE
@@ -3059,7 +4028,6 @@ components:
 
         This flattened structure is optimized for ETL/data warehouse ingestion and
         streaming data processing.
-      additionalProperties: false
       required:
         - data
         - meta
@@ -3078,16 +4046,22 @@ components:
               descriptionLanguage: en-GB
               minimalItemDescription: LED Lamp 10W E27
               uniqueMainItemDescription: Professional LED lamp with E27 socket, 10W warm white
+              discountGroupDescription: Lighting products discount group
+              bonusGroupDescription: null
             - supplierIdGln: '1234567890123'
               supplierItemNumber: SKU-12345
               descriptionLanguage: de-DE
               minimalItemDescription: LED Lampe 10W E27
               uniqueMainItemDescription: Professionelle LED-Lampe mit E27-Fassung, 10W warmweiß
+              discountGroupDescription: Beleuchtungsprodukte Rabattgruppe
+              bonusGroupDescription: null
             - supplierIdGln: '1234567890123'
               supplierItemNumber: SKU-67890
               descriptionLanguage: en-GB
               minimalItemDescription: Hammer 500g
               uniqueMainItemDescription: Professional claw hammer with fiberglass handle
+              discountGroupDescription: Hand tools discount group
+              bonusGroupDescription: Premium tier
           meta:
             cursor: eyJpZCI6MTIzfQ==
             hasNext: true
@@ -3107,7 +4081,6 @@ components:
 
         **ETIM xChange**: `Ordering`
         **Path**: `Supplier[].Product[].TradeItem[].Ordering`
-      additionalProperties: false
       required:
         - data
       properties:
@@ -3147,7 +4120,6 @@ components:
 
         **ETIM xChange**: `Ordering`
         **Path**: `Supplier[].Product[].TradeItem[].Ordering`
-      additionalProperties: false
       required:
         - supplierIdGln
         - supplierItemNumber
@@ -3211,7 +4183,6 @@ components:
 
         **ETIM xChange**: Response wrapper for flattened `Ordering` data
         **Path**: `Supplier[].Product[].TradeItem[].Ordering`
-      additionalProperties: false
       required:
         - data
         - meta
@@ -3272,7 +4243,6 @@ components:
 
         **ETIM xChange**: `Pricing[]`
         **Path**: `Supplier[].Product[].TradeItem[].Pricing[]`
-      additionalProperties: false
       required:
         - data
       properties:
@@ -3333,7 +4303,6 @@ components:
 
         **ETIM xChange**: `Pricing[]`
         **Path**: `Supplier[].Product[].TradeItem[].Pricing[]`
-      additionalProperties: false
       required:
         - supplierIdGln
         - supplierItemNumber
@@ -3422,7 +4391,6 @@ components:
 
         **ETIM xChange**: Response wrapper for `Pricing[]` data
         **Path**: `Supplier[].Product[].TradeItem[].Pricing[]`
-      additionalProperties: false
       required:
         - data
         - meta
@@ -3500,7 +4468,6 @@ components:
 
         **ETIM xChange**: Response wrapper for `AllowanceSurcharge[]` data
         **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[]`
-      additionalProperties: false
       required:
         - data
         - meta
@@ -3564,7 +4531,6 @@ components:
 
         **ETIM xChange**: `AllowanceSurcharge[]`
         **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[]`
-      additionalProperties: false
       required:
         - data
       properties:
@@ -3601,7 +4567,6 @@ components:
 
         **ETIM xChange**: `AllowanceSurcharge[]`
         **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[]`
-      additionalProperties: false
       required:
         - supplierIdGln
         - supplierItemNumber
@@ -3667,7 +4632,6 @@ components:
 
         **ETIM xChange**: `AllowanceSurcharge`
         **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[]`
-      additionalProperties: false
       required:
         - pricingRef
         - allowanceSurchargeIndicator
@@ -3714,6 +4678,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Fixed monetary amount of the allowance or surcharge.
             **ETIM xChange**: `AllowanceSurchargeAmount`
@@ -3738,6 +4703,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Percentage rate of the allowance or surcharge.
             **ETIM xChange**: `AllowanceSurchargePercentage`
@@ -3751,6 +4717,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Minimum ordered quantity required for the allowance or surcharge to apply.
             **ETIM xChange**: `AllowanceSurchargeMinimumQuantity`
@@ -3769,6 +4736,283 @@ components:
           allowanceSurchargeSequenceNumber: 1
           allowanceSurchargePercentage: 5.5
           allowanceSurchargeMinimumQuantity: 50
+    TradeItemRelationsResponse:
+      type: object
+      description: |
+        Response containing item relations for a specific trade item.
+        Returns the trade item identification keys and a nested array of `ItemRelation` objects,
+        each defining a relationship to another trade item (e.g., accessories, spare parts, successors).
+
+        Unlike the bulk endpoint `/bulk/trade-item-relations` which uses a flattened structure
+        optimized for ETL, this single-item endpoint returns relations in their natural
+        nested format for easier consumption.
+
+        **ETIM xChange**: `ItemRelations[]`
+        **Path**: `Supplier[].Product[].TradeItem[].ItemRelations[]`
+      required:
+        - data
+      properties:
+        data:
+          $ref: '#/components/schemas/TradeItemRelationsResponseData'
+      examples:
+        - data:
+            supplierIdGln: '1234567890123'
+            supplierItemNumber: SKU-12345
+            relations:
+              - relatedSupplierItemNumber: SPART-001
+                relatedManufacturerItemNumber: MFG-SPART-100
+                relatedItemGtins:
+                  - '4012345678918'
+                relationType: SPAREPART
+                relatedItemQuantity: 2
+              - relatedSupplierItemNumber: ACC-789
+                relatedManufacturerItemNumber: null
+                relatedItemGtins: null
+                relationType: ACCESSORY
+                relatedItemQuantity: 1
+        - data:
+            supplierIdGln: '1234567890123'
+            supplierItemNumber: SKU-12345
+            relations: null
+    TradeItemRelationsResponseData:
+      type: object
+      description: |
+        Single trade item identification keys with item relations.
+
+        **ETIM xChange**: `ItemRelations[]`
+        **Path**: `Supplier[].Product[].TradeItem[].ItemRelations[]`
+      required:
+        - supplierIdGln
+        - supplierItemNumber
+      properties:
+        supplierIdGln:
+          $ref: '#/components/schemas/Gln'
+          description: Global Location Number (GLN) uniquely identifying the supplier
+          examples:
+            - '1234567890123'
+        supplierItemNumber:
+          type: string
+          minLength: 1
+          maxLength: 35
+          description: Supplier's unique item number
+          examples:
+            - SKU-12345
+        relations:
+          type:
+            - array
+            - 'null'
+          description: |
+            Array of item relations. Each item defines a relationship to another trade item
+            (e.g., accessories, spare parts, successors).
+            Returns null if no relations are available.
+          items:
+            $ref: '#/components/schemas/ItemRelation'
+      examples:
+        - supplierIdGln: '1234567890123'
+          supplierItemNumber: SKU-12345
+          relations:
+            - relatedSupplierItemNumber: SPART-001
+              relatedManufacturerItemNumber: MFG-SPART-100
+              relatedItemGtins:
+                - '4012345678918'
+              relationType: SPAREPART
+              relatedItemQuantity: 2
+            - relatedSupplierItemNumber: ACC-789
+              relatedManufacturerItemNumber: null
+              relatedItemGtins: null
+              relationType: ACCESSORY
+              relatedItemQuantity: 1
+        - supplierIdGln: '1234567890123'
+          supplierItemNumber: SKU-12345
+          relations: null
+    BulkTradeItemRelationsResponse:
+      type: object
+      description: |
+        Bulk response containing item relations with cursor-based pagination.
+
+        Each item in the `data` array represents a single relation between a trade item
+        and a related item. A trade item with 5 relations will result in 5 rows.
+
+        This flattened structure is optimized for ETL/data warehouse ingestion and
+        streaming data processing.
+      required:
+        - data
+        - meta
+      properties:
+        data:
+          type: array
+          description: Array of item relations. Each row is one relation per trade item.
+          items:
+            $ref: '#/components/schemas/ItemRelationSummary'
+        meta:
+          $ref: '#/components/schemas/CursorPaginationMetadata'
+      examples:
+        - data:
+            - supplierIdGln: '1234567890123'
+              supplierItemNumber: SKU-12345
+              relatedSupplierItemNumber: SPART-001
+              relatedManufacturerItemNumber: MFG-SPART-100
+              relatedItemGtins:
+                - '4012345678918'
+              relationType: SPAREPART
+              relatedItemQuantity: 2
+            - supplierIdGln: '1234567890123'
+              supplierItemNumber: SKU-12345
+              relatedSupplierItemNumber: ACC-789
+              relatedManufacturerItemNumber: null
+              relatedItemGtins: null
+              relationType: ACCESSORY
+              relatedItemQuantity: 1
+            - supplierIdGln: '9876543210987'
+              supplierItemNumber: SKU-CABLE-002
+              relatedSupplierItemNumber: SKU-CABLE-003
+              relatedManufacturerItemNumber: MFG-CABLE-V2
+              relatedItemGtins:
+                - '8712345678901'
+              relationType: SUCCESSOR
+              relatedItemQuantity: 1
+          meta:
+            cursor: eyJpZCI6MTIzfQ==
+            hasNext: true
+            hasPrev: false
+            limit: 100
+            estimatedTotal: 8450
+    TradeItemLogisticsDetailsResponse:
+      type: object
+      description: |
+        Response containing item logistics details for a specific trade item.
+        Returns the trade item identification keys and a nested array of `ItemLogistics` objects,
+        each defining base item dimensions, weight, and volume.
+
+        Unlike the bulk endpoint `/bulk/trade-item-logistics-details` which uses a flattened structure
+        optimized for ETL, this single-item endpoint returns logistics in their natural
+        nested format for easier consumption.
+
+        **ETIM xChange**: `ItemLogisticDetails[]`
+        **Path**: `Supplier[].Product[].TradeItem[].ItemLogisticDetails[]`
+      required:
+        - data
+      properties:
+        data:
+          $ref: '#/components/schemas/TradeItemLogisticsDetailsResponseData'
+      examples:
+        - data:
+            supplierIdGln: '1234567890123'
+            supplierItemNumber: SKU-12345
+            itemLogistics:
+              - baseItemNetLength: 96
+                baseItemNetWidth: 5
+                baseItemNetHeight: 56
+                baseItemNetDiameter: null
+                netDimensionUnit: CMT
+                baseItemNetWeight: 0.26
+                netWeightUnit: KGM
+                baseItemNetVolume: 68
+                netVolumeUnit: MMQ
+        - data:
+            supplierIdGln: '1234567890123'
+            supplierItemNumber: SKU-12345
+            itemLogistics: null
+    TradeItemLogisticsDetailsResponseData:
+      type: object
+      description: |
+        Single trade item identification keys with item logistics details.
+
+        **ETIM xChange**: `ItemLogisticDetails[]`
+        **Path**: `Supplier[].Product[].TradeItem[].ItemLogisticDetails[]`
+      required:
+        - supplierIdGln
+        - supplierItemNumber
+      properties:
+        supplierIdGln:
+          $ref: '#/components/schemas/Gln'
+          description: Global Location Number (GLN) uniquely identifying the supplier
+          examples:
+            - '1234567890123'
+        supplierItemNumber:
+          type: string
+          minLength: 1
+          maxLength: 35
+          description: Supplier's unique item number
+          examples:
+            - SKU-12345
+        itemLogistics:
+          type:
+            - array
+            - 'null'
+          description: |
+            Array of item logistics entries. Each entry defines base item dimensions, weight, and volume.
+            Returns null if no logistics data is available.
+          items:
+            $ref: '#/components/schemas/ItemLogistics'
+      examples:
+        - supplierIdGln: '1234567890123'
+          supplierItemNumber: SKU-12345
+          itemLogistics:
+            - baseItemNetLength: 96
+              baseItemNetWidth: 5
+              baseItemNetHeight: 56
+              baseItemNetDiameter: null
+              netDimensionUnit: CMT
+              baseItemNetWeight: 0.26
+              netWeightUnit: KGM
+              baseItemNetVolume: 68
+              netVolumeUnit: MMQ
+        - supplierIdGln: '1234567890123'
+          supplierItemNumber: SKU-12345
+          itemLogistics: null
+    BulkTradeItemLogisticsDetailsResponse:
+      type: object
+      description: |
+        Bulk response containing item logistics details with cursor-based pagination.
+
+        Each item in the `data` array represents a single logistics entry for a trade item,
+        with the trade item identifier embedded at top level. A trade item typically has 0 or 1
+        logistics entries.
+
+        This flattened structure is optimized for ETL/data warehouse ingestion and
+        streaming data processing.
+      required:
+        - data
+        - meta
+      properties:
+        data:
+          type: array
+          description: Array of item logistics entries. Each row is one logistics entry per trade item.
+          items:
+            $ref: '#/components/schemas/ItemLogisticsSummary'
+        meta:
+          $ref: '#/components/schemas/CursorPaginationMetadata'
+      examples:
+        - data:
+            - supplierIdGln: '8712423012485'
+              supplierItemNumber: SKU-LAMP-001
+              baseItemNetLength: 96
+              baseItemNetWidth: 5
+              baseItemNetHeight: 56
+              baseItemNetDiameter: null
+              netDimensionUnit: CMT
+              baseItemNetWeight: 0.26
+              netWeightUnit: KGM
+              baseItemNetVolume: 68
+              netVolumeUnit: MMQ
+            - supplierIdGln: '1234567890123'
+              supplierItemNumber: SKU-12345
+              baseItemNetLength: 25.5
+              baseItemNetWidth: 15
+              baseItemNetHeight: 10
+              baseItemNetDiameter: null
+              netDimensionUnit: CMT
+              baseItemNetWeight: 500
+              netWeightUnit: GRM
+              baseItemNetVolume: null
+              netVolumeUnit: null
+          meta:
+            cursor: eyJpZCI6MTIzfQ==
+            hasNext: true
+            hasPrev: false
+            limit: 100
+            estimatedTotal: 12500
     Gln:
       type: string
       description: Global Location Number (GLN) - 13 digit GS1 identifier
@@ -3899,7 +5143,6 @@ components:
       description: |
         Item description in a specific language.
         Extracted from ETIM xChange `TradeItem.ItemDetails.ItemDescriptions[]` structure.
-      additionalProperties: false
       required:
         - descriptionLanguage
         - minimalItemDescription
@@ -3939,12 +5182,42 @@ components:
           examples:
             - Professional claw hammer with fiberglass handle, 500g head weight, ergonomic grip
             - null
+        discountGroupDescription:
+          type:
+            - string
+            - 'null'
+          description: |
+            Human-readable description of the discount group in this language.
+            **ETIM xChange**: `DiscountGroupDescription[].DiscountGroupDescription`
+            **Path**: `Supplier[].Product[].TradeItem[].ItemIdentification.DiscountGroupDescription[].DiscountGroupDescription`
+          minLength: 1
+          maxLength: 100
+          examples:
+            - Standard tools discount group
+            - null
+        bonusGroupDescription:
+          type:
+            - string
+            - 'null'
+          description: |
+            Human-readable description of the bonus group in this language.
+            **ETIM xChange**: `BonusGroupDescription[].BonusGroupDescription`
+            **Path**: `Supplier[].Product[].TradeItem[].ItemIdentification.BonusGroupDescription[].BonusGroupDescription`
+          minLength: 1
+          maxLength: 100
+          examples:
+            - Premium bonus tier
+            - null
       examples:
         - descriptionLanguage: en-US
           minimalItemDescription: Hammer 500g
           uniqueMainItemDescription: Professional claw hammer with fiberglass handle, 500g head weight
+          discountGroupDescription: Standard tools discount group
+          bonusGroupDescription: null
         - descriptionLanguage: de-DE
           minimalItemDescription: Hammer 500g
+          discountGroupDescription: Standardwerkzeuge Rabattgruppe
+          bonusGroupDescription: null
     UnitCodes:
       type: string
       description: |
@@ -4105,7 +5378,6 @@ components:
 
         **ETIM xChange**: `Pricing`
         **Path**: `Supplier[].Product[].TradeItem[].Pricing[]`
-      additionalProperties: false
       required:
         - supplierIdGln
         - supplierItemNumber
@@ -4166,6 +5438,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Factor to convert price unit to order unit (converted from ETIM xChange string to number).
 
@@ -4179,6 +5452,7 @@ components:
             - 100
         priceQuantity:
           type: number
+          format: decimal
           description: |
             Quantity for which the price applies (converted from ETIM xChange string to number).
             Used for quantity-based pricing tiers.
@@ -4215,6 +5489,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Gross list price (before discounts) (converted from ETIM xChange string to number).
 
@@ -4230,6 +5505,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Net price (after discounts, before tax) (converted from ETIM xChange string to number).
 
@@ -4245,6 +5521,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Recommended retail price (MSRP) (converted from ETIM xChange string to number).
 
@@ -4260,6 +5537,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             VAT/tax percentage (converted from ETIM xChange string to number).
 
@@ -4344,7 +5622,6 @@ components:
         Extracted from ETIM xChange `TradeItem.ItemDetails` structure.
 
         **Note**: Item descriptions are available via a separate `/descriptions` endpoint.
-      additionalProperties: false
       properties:
         itemStatus:
           description: |
@@ -4401,289 +5678,11 @@ components:
           itemCondition: NEW
           stockItem: true
           shelfLifePeriod: null
-    RelationType:
-      type: string
-      description: |
-        Type of relationship between trade items.
-        **ETIM xChange**: `RelationType`
-        **Path**: `Supplier[].Product[].TradeItem[].ItemRelations[].RelationType`
-      enum:
-        - ACCESSORY
-        - CONSISTS_OF
-        - CONSUMABLES
-        - CROSS-SELLING
-        - MAIN_PRODUCT
-        - MANDATORY
-        - PREDECESSOR
-        - REFURBISHED
-        - SELECT
-        - SIMILAR
-        - SPAREPART
-        - SUCCESSOR
-        - UPSELLING
-        - USED
-        - OTHER
-      examples:
-        - SPAREPART
-        - ACCESSORY
-        - MANDATORY
-    ItemRelation:
-      type: object
-      description: |
-        Defines a relationship between trade items (e.g., accessories, spare parts, related products).
-        Extracted from ETIM xChange `TradeItem.ItemRelations[]` structure.
-      additionalProperties: false
-      required:
-        - relatedSupplierItemNumber
-        - relationType
-        - relatedItemQuantity
-      properties:
-        relatedSupplierItemNumber:
-          type: string
-          description: |
-            Supplier item number of the related trade item.
-            **ETIM xChange**: `RelatedSupplierItemNumber`
-            **Path**: `Supplier[].Product[].TradeItem[].ItemRelations[].RelatedSupplierItemNumber`
-          minLength: 1
-          maxLength: 35
-          examples:
-            - SPART-001
-            - ACC-789
-        relatedManufacturerItemNumber:
-          type:
-            - string
-            - 'null'
-          description: |
-            Manufacturer item number of the related trade item.
-            **ETIM xChange**: `RelatedManufacturerItemNumber`
-            **Path**: `Supplier[].Product[].TradeItem[].ItemRelations[].RelatedManufacturerItemNumber`
-          minLength: 1
-          maxLength: 35
-          examples:
-            - MFG-PART-456
-            - null
-        relatedItemGtins:
-          type:
-            - array
-            - 'null'
-          description: |
-            Array of GTINs for the related trade item.
-            **ETIM xChange**: `RelatedItemGtin[]`
-            **Path**: `Supplier[].Product[].TradeItem[].ItemRelations[].RelatedItemGtin[]`
-          uniqueItems: true
-          items:
-            $ref: '#/components/schemas/Gtin'
-          examples:
-            - - '4012345678918'
-            - null
-        relationType:
-          description: |
-            Type of relationship between this item and the related item.
-            **ETIM xChange**: `RelationType`
-            **Path**: `Supplier[].Product[].TradeItem[].ItemRelations[].RelationType`
-          $ref: '#/components/schemas/RelationType'
-          examples:
-            - SPAREPART
-            - ACCESSORY
-            - MANDATORY
-        relatedItemQuantity:
-          type: integer
-          description: |
-            Quantity of the related item required or recommended (converted from ETIM xChange string to integer).
-            **ETIM xChange**: `RelatedItemQuantity` (string with pattern in ETIM, converted to integer)
-            **Path**: `Supplier[].Product[].TradeItem[].ItemRelations[].RelatedItemQuantity`
-          minimum: 1
-          examples:
-            - 1
-            - 4
-            - 10
-      examples:
-        - relatedSupplierItemNumber: SPART-001
-          relatedManufacturerItemNumber: MFG-SPART-100
-          relatedItemGtins:
-            - '4012345678918'
-          relationType: SPAREPART
-          relatedItemQuantity: 2
-    ItemLogistics:
-      type: object
-      description: |
-        Logistic details including dimensions, weight, and volume of the base item.
-        Extracted from ETIM xChange `TradeItem.ItemLogisticDetails[]` structure.
-      additionalProperties: false
-      properties:
-        baseItemNetLength:
-          type:
-            - number
-            - 'null'
-          description: |
-            Net length of the base item in specified unit (converted from ETIM xChange string to number).
-            **ETIM xChange**: `BaseItemNetLength` (string with pattern)
-            **Path**: `Supplier[].Product[].TradeItem[].ItemLogisticDetails[].BaseItemNetLength`
-          minimum: 0
-          multipleOf: 0.0001
-          maximum: 999999999999.9999
-          examples:
-            - 25.5
-            - 100
-            - null
-        baseItemNetWidth:
-          type:
-            - number
-            - 'null'
-          description: |
-            Net width of the base item in specified unit (converted from ETIM xChange string to number).
-            **ETIM xChange**: `BaseItemNetWidth` (string with pattern)
-            **Path**: `Supplier[].Product[].TradeItem[].ItemLogisticDetails[].BaseItemNetWidth`
-          minimum: 0
-          multipleOf: 0.0001
-          maximum: 999999999999.9999
-          examples:
-            - 15.25
-            - 50
-            - null
-        baseItemNetHeight:
-          type:
-            - number
-            - 'null'
-          description: |
-            Net height of the base item in specified unit (converted from ETIM xChange string to number).
-            **ETIM xChange**: `BaseItemNetHeight` (string with pattern)
-            **Path**: `Supplier[].Product[].TradeItem[].ItemLogisticDetails[].BaseItemNetHeight`
-          minimum: 0
-          multipleOf: 0.0001
-          maximum: 999999999999.9999
-          examples:
-            - 10.5
-            - 30
-            - null
-        baseItemNetDiameter:
-          type:
-            - number
-            - 'null'
-          description: |
-            Net diameter of the base item in specified unit (for cylindrical items) (converted from ETIM xChange string to number).
-            **ETIM xChange**: `BaseItemNetDiameter` (string with pattern)
-            **Path**: `Supplier[].Product[].TradeItem[].ItemLogisticDetails[].BaseItemNetDiameter`
-          minimum: 0
-          multipleOf: 0.0001
-          maximum: 999999999999.9999
-          examples:
-            - 8.75
-            - null
-        netDimensionUnit:
-          type:
-            - string
-            - 'null'
-          description: |
-            Unit of measurement for net dimensions (CMT=centimeter, MTR=meter, etc.).
-            **ETIM xChange**: `NetDimensionUnit`
-            **Path**: `Supplier[].Product[].TradeItem[].ItemLogisticDetails[].NetDimensionUnit`
-          enum:
-            - CMT
-            - DMT
-            - KMT
-            - MMT
-            - MTR
-            - FOT
-            - INH
-            - SMI
-            - YRD
-            - null
-          examples:
-            - CMT
-            - MTR
-            - null
-        baseItemNetWeight:
-          type:
-            - number
-            - 'null'
-          description: |
-            Net weight of the base item in specified unit (converted from ETIM xChange string to number).
-            **ETIM xChange**: `BaseItemNetWeight` (string with pattern)
-            **Path**: `Supplier[].Product[].TradeItem[].ItemLogisticDetails[].BaseItemNetWeight`
-          minimum: 0
-          multipleOf: 0.0001
-          maximum: 999999999999.9999
-          examples:
-            - 1.5
-            - 1250.75
-            - null
-        netWeightUnit:
-          type:
-            - string
-            - 'null'
-          description: |
-            Unit of measurement for net weight (GRM=gram, KGM=kilogram, etc.).
-            **ETIM xChange**: `NetWeightUnit`
-            **Path**: `Supplier[].Product[].TradeItem[].ItemLogisticDetails[].NetWeightUnit`
-          enum:
-            - GRM
-            - KGM
-            - MGM
-            - TNE
-            - LTN
-            - LBR
-            - ONZ
-            - null
-          examples:
-            - GRM
-            - KGM
-            - null
-        baseItemNetVolume:
-          type:
-            - number
-            - 'null'
-          description: |
-            Net volume of the base item in specified unit (converted from ETIM xChange string to number).
-            **ETIM xChange**: `BaseItemNetVolume` (string with pattern)
-            **Path**: `Supplier[].Product[].TradeItem[].ItemLogisticDetails[].BaseItemNetVolume`
-          minimum: 0
-          multipleOf: 0.0001
-          maximum: 999999999999.9999
-          examples:
-            - 0.5
-            - 10.25
-            - null
-        netVolumeUnit:
-          type:
-            - string
-            - 'null'
-          description: |
-            Unit of measurement for net volume (LTR=liter, MTQ=cubic meter, etc.).
-            **ETIM xChange**: `NetVolumeUnit`
-            **Path**: `Supplier[].Product[].TradeItem[].ItemLogisticDetails[].NetVolumeUnit`
-          enum:
-            - FTQ
-            - INQ
-            - MTQ
-            - MMQ
-            - OZA
-            - GLL
-            - LTR
-            - MLT
-            - PT
-            - QT
-            - null
-          examples:
-            - LTR
-            - MTQ
-            - null
-      examples:
-        - baseItemNetLength: 25.5
-          baseItemNetWidth: 15
-          baseItemNetHeight: 10
-          baseItemNetDiameter: null
-          netDimensionUnit: CMT
-          baseItemNetWeight: 500
-          netWeightUnit: GRM
-          baseItemNetVolume: null
-          netVolumeUnit: null
     ItemAttachment:
       type: object
       description: |
         Attachment information for trade items (images, documents, certificates, etc.).
         Extracted from ETIM xChange `TradeItem.ItemAttachments[]` structure.
-      additionalProperties: false
       required:
         - attachmentType
         - attachmentUri
@@ -4934,7 +5933,6 @@ components:
       description: |
         Packaging unit information describing hierarchical packaging levels (e.g., piece, box, pallet).
         Extracted from ETIM xChange `TradeItem.PackagingUnit[]` structure.
-      additionalProperties: false
       required:
         - packagingTypeCode
       properties:
@@ -5006,6 +6004,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Quantity of base items in this packaging unit (converted from ETIM xChange string to number).
             **ETIM xChange**: `PackagingQuantity` (string with pattern)
@@ -5047,6 +6046,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Gross length of the packaging in specified unit (converted from ETIM xChange string to number).
             **ETIM xChange**: `GrossLength` (string with pattern)
@@ -5062,6 +6062,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Gross width of the packaging in specified unit (converted from ETIM xChange string to number).
             **ETIM xChange**: `GrossWidth` (string with pattern)
@@ -5077,6 +6078,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Gross height of the packaging in specified unit (converted from ETIM xChange string to number).
             **ETIM xChange**: `GrossHeight` (string with pattern)
@@ -5092,6 +6094,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Gross diameter of the packaging in specified unit (for cylindrical packaging) (converted from ETIM xChange string to number).
             **ETIM xChange**: `GrossDiameter` (string with pattern)
@@ -5129,6 +6132,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Gross weight of the packaging in specified unit (converted from ETIM xChange string to number).
             **ETIM xChange**: `GrossWeight` (string with pattern)
@@ -5183,7 +6187,6 @@ components:
       description: |
         Country-specific custom fields for trade items allowing extensibility for market-specific requirements.
         Extracted from ETIM xChange `TradeItem.ItemCountrySpecificFields[]` structure.
-      additionalProperties: false
       required:
         - csItemCharacteristicCode
       properties:
@@ -5228,6 +6231,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Numeric value for the country-specific characteristic (converted from ETIM xChange string to number).
             **ETIM xChange**: `CSItemCharacteristicValueNumeric` (string with pattern)
@@ -5243,6 +6247,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Lower bound of numeric range value (converted from ETIM xChange string to number).
             **ETIM xChange**: `CSItemCharacteristicValueRangeLower` (string with pattern)
@@ -5257,6 +6262,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Upper bound of numeric range value (converted from ETIM xChange string to number).
             **ETIM xChange**: `CSItemCharacteristicValueRangeUpper` (string with pattern)
@@ -5378,7 +6384,6 @@ components:
 
         **ETIM xChange**: `TradeItem`
         **Path**: `Supplier[].Product[].TradeItem[]`
-      additionalProperties: false
       required:
         - supplierIdGln
         - supplierItemNumber
@@ -5497,19 +6502,6 @@ components:
           examples:
             - DG-001
             - null
-        discountGroupDescription:
-          type:
-            - string
-            - 'null'
-          description: |
-            Description of the discount group. Flattened from multilingual array.
-            **ETIM xChange**: `DiscountGroupDescription[].DiscountGroupDescription`
-            **Path**: `Supplier[].Product[].TradeItem[].ItemIdentification.DiscountGroupDescription[].DiscountGroupDescription`
-          minLength: 1
-          maxLength: 100
-          examples:
-            - Standard tools discount group
-            - null
         bonusGroupId:
           type:
             - string
@@ -5522,19 +6514,6 @@ components:
           maxLength: 20
           examples:
             - BG-002
-            - null
-        bonusGroupDescription:
-          type:
-            - string
-            - 'null'
-          description: |
-            Description of the bonus group. Flattened from multilingual array.
-            **ETIM xChange**: `BonusGroupDescription[].BonusGroupDescription`
-            **Path**: `Supplier[].Product[].TradeItem[].ItemIdentification.BonusGroupDescription[].BonusGroupDescription`
-          minLength: 1
-          maxLength: 100
-          examples:
-            - Premium bonus tier
             - null
         itemValidityDate:
           type: string
@@ -5655,9 +6634,7 @@ components:
             - '4012345678901'
           buyerItemNumber: null
           discountGroupId: DG-001
-          discountGroupDescription: Standard discount group
           bonusGroupId: null
-          bonusGroupDescription: null
           itemValidityDate: '2024-01-01'
           itemObsolescenceDate: null
           itemDetails:
