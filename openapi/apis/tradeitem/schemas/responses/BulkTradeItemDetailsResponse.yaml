@@ -32,9 +32,7 @@ examples:
           - "12345678901234"
         buyerItemNumber: null
         discountGroupId: "DG-LIGHTING"
-        discountGroupDescription: "Lighting products discount group"
         bonusGroupId: null
-        bonusGroupDescription: null
         itemValidityDate: "2024-01-01"
         itemObsolescenceDate: null
         itemStatus: "ACTIVE"
@@ -51,9 +49,7 @@ examples:
           - "08712423054321"
         buyerItemNumber: "BUYER-002"
         discountGroupId: "DG-TOOLS"
-        discountGroupDescription: "Hand tools discount group"
         bonusGroupId: "BG-PREMIUM"
-        bonusGroupDescription: "Premium tier bonus"
         itemValidityDate: "2023-06-01"
         itemObsolescenceDate: "2028-12-31"
         itemStatus: "ACTIVE"

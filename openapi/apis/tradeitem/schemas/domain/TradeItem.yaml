@@ -121,18 +121,6 @@ properties:
       - "DG-001"
       - null
   
-  discountGroupDescription:
-    type: ["string", "null"]
-    description: |
-      Description of the discount group. Flattened from multilingual array.
-      **ETIM xChange**: `DiscountGroupDescription[].DiscountGroupDescription`
-      **Path**: `Supplier[].Product[].TradeItem[].ItemIdentification.DiscountGroupDescription[].DiscountGroupDescription`
-    minLength: 1
-    maxLength: 100
-    examples:
-      - "Standard tools discount group"
-      - null
-  
   bonusGroupId:
     type: ["string", "null"]
     description: |
@@ -143,18 +131,6 @@ properties:
     maxLength: 20
     examples:
       - "BG-002"
-      - null
-  
-  bonusGroupDescription:
-    type: ["string", "null"]
-    description: |
-      Description of the bonus group. Flattened from multilingual array.
-      **ETIM xChange**: `BonusGroupDescription[].BonusGroupDescription`
-      **Path**: `Supplier[].Product[].TradeItem[].ItemIdentification.BonusGroupDescription[].BonusGroupDescription`
-    minLength: 1
-    maxLength: 100
-    examples:
-      - "Premium bonus tier"
       - null
   
   itemValidityDate:
@@ -274,9 +250,7 @@ examples:
     itemGtins: ["4012345678901"]
     buyerItemNumber: null
     discountGroupId: "DG-001"
-    discountGroupDescription: "Standard discount group"
     bonusGroupId: null
-    bonusGroupDescription: null
     itemValidityDate: "2024-01-01"
     itemObsolescenceDate: null
     itemDetails:

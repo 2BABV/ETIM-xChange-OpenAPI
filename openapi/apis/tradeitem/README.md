@@ -51,6 +51,7 @@ The bulk API consolidates ETIM xChange sections for efficient data retrieval:
 | `/bulk/trade-item-orderings` | `Ordering` | `TradeItemOrderingsSummary` |
 | `/bulk/trade-item-pricings` | `Pricing[]` (excl. allowances/surcharges) | `TradeItemPricingSummary` |
 | `/bulk/trade-item-allowance-surcharges` | `Pricing[].AllowanceSurcharge[]` | `AllowanceSurchargeSummary` |
+| `/bulk/trade-item-relations` | `ItemRelations[]` | `ItemRelationSummary` |
 
 **Note**: There is no separate `/bulk/trade-items` or `/bulk/item-identifications` endpoint. The `/bulk/trade-item-details` endpoint provides all identification fields combined with item details.
 
@@ -64,6 +65,7 @@ The bulk API consolidates ETIM xChange sections for efficient data retrieval:
 | `/{supplierIdGln}/{supplierItemNumber}/orderings` | Ordering conditions | `TradeItemOrderingsResponse` |
 | `/{supplierIdGln}/{supplierItemNumber}/pricings` | Pricing information | `TradeItemPricingsResponse` |
 | `/{supplierIdGln}/{supplierItemNumber}/allowance-surcharges` | Allowances/surcharges | `TradeItemAllowanceSurchargesResponse` |
+| `/{supplierIdGln}/{supplierItemNumber}/relations` | Item relations | `TradeItemRelationsResponse` |
 
 ### Bulk Flattening Strategy
 
@@ -76,6 +78,7 @@ The bulk API consolidates ETIM xChange sections for efficient data retrieval:
 | `/bulk/trade-item-descriptions` | n (per language) | Flat per language row |
 | `/bulk/trade-item-pricings` | n (per price tier) | **Flat per price entry** |
 | `/bulk/trade-item-allowance-surcharges` | n (per surcharge) | **Flat per surcharge entry** |
+| `/bulk/trade-item-relations` | n (per relation) | **Flat per relation entry** |
 
 **Pricing Flattening** (consistent with Product API's `ProductEtimClassificationFeature` pattern):
 - Each row = 1 price entry with embedded trade item key (`supplierIdGln` + `supplierItemNumber`) and server-generated `pricingRef`
@@ -107,10 +110,6 @@ The bulk API consolidates ETIM xChange sections for efficient data retrieval:
 - Multi-level packaging hierarchy support
 - Packaging GTINs, dimensions, weights
 - `QuantityInParent` relationships
-
-**ItemRelations** (ItemRelations[])
-- Related items: accessories, spareparts, consumables, successors
-- Relation types: `ACCESSORY`, `CONSISTS_OF`, `CONSUMABLES`, `MANDATORY`, `SPAREPART`, `SUCCESSOR`, `OTHER`
 
 **AllowanceSurchargeDescription**
 - Multilingual description for allowances/surcharges: `AllowanceSurchargeDescription[]`

@@ -21,9 +21,7 @@ examples:
       itemGtins: ["4012345678901"]
       buyerItemNumber: null
       discountGroupId: "DG-001"
-      discountGroupDescription: "Standard discount group"
       bonusGroupId: null
-      bonusGroupDescription: null
       itemValidityDate: "2024-01-01"
       itemObsolescenceDate: null
       itemDetails:
@@ -74,9 +72,7 @@ examples:
       itemGtins: null
       buyerItemNumber: null
       discountGroupId: null
-      discountGroupDescription: null
       bonusGroupId: null
-      bonusGroupDescription: null
       itemValidityDate: "2024-01-01"
       itemObsolescenceDate: null
       itemDetails:

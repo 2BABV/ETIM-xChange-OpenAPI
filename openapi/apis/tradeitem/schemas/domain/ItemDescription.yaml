@@ -39,9 +39,35 @@ properties:
     examples:
       - "Professional claw hammer with fiberglass handle, 500g head weight, ergonomic grip"
       - null
+  discountGroupDescription:
+    type: ["string", "null"]
+    description: |
+      Human-readable description of the discount group in this language.
+      **ETIM xChange**: `DiscountGroupDescription[].DiscountGroupDescription`
+      **Path**: `Supplier[].Product[].TradeItem[].ItemIdentification.DiscountGroupDescription[].DiscountGroupDescription`
+    minLength: 1
+    maxLength: 100
+    examples:
+      - "Standard tools discount group"
+      - null
+  bonusGroupDescription:
+    type: ["string", "null"]
+    description: |
+      Human-readable description of the bonus group in this language.
+      **ETIM xChange**: `BonusGroupDescription[].BonusGroupDescription`
+      **Path**: `Supplier[].Product[].TradeItem[].ItemIdentification.BonusGroupDescription[].BonusGroupDescription`
+    minLength: 1
+    maxLength: 100
+    examples:
+      - "Premium bonus tier"
+      - null
 examples:
   - descriptionLanguage: "en-US"
     minimalItemDescription: "Hammer 500g"
     uniqueMainItemDescription: "Professional claw hammer with fiberglass handle, 500g head weight"
+    discountGroupDescription: "Standard tools discount group"
+    bonusGroupDescription: null
   - descriptionLanguage: "de-DE"
     minimalItemDescription: "Hammer 500g"
+    discountGroupDescription: "Standardwerkzeuge Rabattgruppe"
+    bonusGroupDescription: null

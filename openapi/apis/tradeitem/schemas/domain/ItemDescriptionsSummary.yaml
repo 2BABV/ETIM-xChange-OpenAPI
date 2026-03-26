@@ -78,6 +78,30 @@ properties:
     examples:
       - "Professional LED lamp with E27 socket, 10W warm white"
       - "Professional claw hammer with fiberglass handle, 500g head weight"
+  discountGroupDescription:
+    type: ["string", "null"]
+    minLength: 1
+    maxLength: 100
+    description: |
+      Human-readable description of the discount group in this language.
+      
+      **ETIM xChange**: `DiscountGroupDescription[].DiscountGroupDescription`  
+      **Path**: `Supplier[].Product[].TradeItem[].ItemIdentification.DiscountGroupDescription[].DiscountGroupDescription`
+    examples:
+      - "Standard tools discount group"
+      - null
+  bonusGroupDescription:
+    type: ["string", "null"]
+    minLength: 1
+    maxLength: 100
+    description: |
+      Human-readable description of the bonus group in this language.
+      
+      **ETIM xChange**: `BonusGroupDescription[].BonusGroupDescription`  
+      **Path**: `Supplier[].Product[].TradeItem[].ItemIdentification.BonusGroupDescription[].BonusGroupDescription`
+    examples:
+      - "Premium bonus tier"
+      - null
 
 examples:
   # English description
@@ -86,6 +110,8 @@ examples:
     descriptionLanguage: "en-GB"
     minimalItemDescription: "LED Lamp 10W E27"
     uniqueMainItemDescription: "Professional LED lamp with E27 socket, 10W warm white"
+    discountGroupDescription: "Lighting products discount group"
+    bonusGroupDescription: null
   
   # German description for same item
   - supplierIdGln: "1234567890123"
@@ -93,6 +119,8 @@ examples:
     descriptionLanguage: "de-DE"
     minimalItemDescription: "LED Lampe 10W E27"
     uniqueMainItemDescription: "Professionelle LED-Lampe mit E27-Fassung, 10W warmweiß"
+    discountGroupDescription: "Beleuchtungsprodukte Rabattgruppe"
+    bonusGroupDescription: null
   
   # Minimal description only
   - supplierIdGln: "9876543210987"

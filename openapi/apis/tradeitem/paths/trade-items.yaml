@@ -31,9 +31,7 @@ get:
                   itemGtins: ["4012345678901"]
                   buyerItemNumber: "BUYER-XYZ-123"
                   discountGroupId: "DG-001"
-                  discountGroupDescription: "Standard discount group"
                   bonusGroupId: "BG-002"
-                  bonusGroupDescription: "Premium bonus tier"
                   itemValidityDate: "2024-01-01"
                   itemObsolescenceDate: "2026-12-31"
                   itemDetails:
@@ -104,9 +102,7 @@ get:
                   itemGtins: null
                   buyerItemNumber: null
                   discountGroupId: null
-                  discountGroupDescription: null
                   bonusGroupId: null
-                  bonusGroupDescription: null
                   itemValidityDate: null
                   itemObsolescenceDate: null
                   itemDetails:

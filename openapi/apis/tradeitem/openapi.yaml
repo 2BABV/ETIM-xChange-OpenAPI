@@ -61,6 +61,9 @@ paths:
   /{supplierIdGln}/{supplierItemNumber}/allowance-surcharges:
     $ref: './paths/trade-item-allowance-surcharges.yaml'
   
+  /{supplierIdGln}/{supplierItemNumber}/relations:
+    $ref: './paths/trade-item-relations.yaml'
+  
   # Bulk operations
   # Note: /bulk/trade-item-details consolidates what would have been separate
   # /bulk/trade-items and /bulk/item-identifications endpoints since
@@ -75,6 +78,8 @@ paths:
     $ref: './paths/bulk/trade-item-pricings.yaml'
   /bulk/trade-item-allowance-surcharges:
     $ref: './paths/bulk/trade-item-allowance-surcharges.yaml'
+  /bulk/trade-item-relations:
+    $ref: './paths/bulk/trade-item-relations.yaml'
     
 components:
   schemas:
@@ -103,6 +108,12 @@ components:
       $ref: './schemas/domain/AllowanceSurcharge.yaml'
     AllowanceSurchargeSummary:
       $ref: './schemas/domain/AllowanceSurchargeSummary.yaml'
+    ItemRelation:
+      $ref: './schemas/domain/ItemRelation.yaml'
+    ItemRelationSummary:
+      $ref: './schemas/domain/ItemRelationSummary.yaml'
+    RelationType:
+      $ref: './schemas/enums/RelationType.yaml'
     
     # Shared schemas
     CursorPaginationMetadata:
@@ -143,6 +154,12 @@ components:
       $ref: './schemas/responses/TradeItemAllowanceSurchargesResponseData.yaml'
     TradeItemAllowanceSurchargeItem:
       $ref: './schemas/responses/TradeItemAllowanceSurchargeItem.yaml'
+    TradeItemRelationsResponse:
+      $ref: './schemas/responses/TradeItemRelationsResponse.yaml'
+    TradeItemRelationsResponseData:
+      $ref: './schemas/responses/TradeItemRelationsResponseData.yaml'
+    BulkTradeItemRelationsResponse:
+      $ref: './schemas/responses/BulkTradeItemRelationsResponse.yaml'
 
   parameters:
     SupplierIdGln:

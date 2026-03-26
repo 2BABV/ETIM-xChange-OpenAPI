@@ -578,7 +578,8 @@ The bulk API consolidates ETIM xChange's separate `ItemIdentification` and `Item
 
 **Note**: There is no separate `/bulk/trade-items` or `/bulk/item-identifications` endpoint. 
 The `/bulk/trade-item-details` endpoint provides all identification fields (GTINs, manufacturer numbers, 
-discount/bonus groups, validity dates) combined with item details (status, condition, descriptions).
+discount/bonus group IDs, validity dates) combined with item details (status, condition).
+Discount/bonus group descriptions are multilingual and served from the description service.
 
 #### Bulk Flattening Strategy
 
@@ -956,9 +957,7 @@ Map ETIM xChange TradeItem fields to OpenAPI schemas with full documentation:
 | `ItemGtin` | `Supplier[].Product[].TradeItem[].ItemIdentification.ItemGtin[]` | `itemGtins` | `["array", "null"]` | ❌ |
 | `BuyerItemNumber` | `Supplier[].Product[].TradeItem[].ItemIdentification.BuyerItemNumber` | `buyerItemNumber` | `["string", "null"]` | ❌ |
 | `DiscountGroupId` | `Supplier[].Product[].TradeItem[].ItemIdentification.DiscountGroupId` | `discountGroupId` | `["string", "null"]` | ❌ |
-| `DiscountGroupDescription` | `Supplier[].Product[].TradeItem[].ItemIdentification.DiscountGroupDescription[].DiscountGroupDescription` | `discountGroupDescription` | `["string", "null"]` | ❌ |
 | `BonusGroupId` | `Supplier[].Product[].TradeItem[].ItemIdentification.BonusGroupId` | `bonusGroupId` | `["string", "null"]` | ❌ |
-| `BonusGroupDescription` | `Supplier[].Product[].TradeItem[].ItemIdentification.BonusGroupDescription[].BonusGroupDescription` | `bonusGroupDescription` | `["string", "null"]` | ❌ |
 | `ItemValidityDate` | `Supplier[].Product[].TradeItem[].ItemIdentification.ItemValidityDate` | `itemValidityDate` | `["string", "null"]` (format: date) | ❌ |
 | `ItemObsolescenceDate` | `Supplier[].Product[].TradeItem[].ItemIdentification.ItemObsolescenceDate` | `itemObsolescenceDate` | `["string", "null"]` (format: date) | ❌ |
 
@@ -970,6 +969,9 @@ Map ETIM xChange TradeItem fields to OpenAPI schemas with full documentation:
 | `StockItem` | `Supplier[].Product[].TradeItem[].ItemDetails.StockItem` | `stockItem` | `["boolean", "null"]` | ❌ |
 | `ShelfLifePeriod` | `Supplier[].Product[].TradeItem[].ItemDetails.ShelfLifePeriod` | `shelfLifePeriod` | `["integer", "null"]` (0-999) | ❌ |
 | `ItemDescriptions.MinimalItemDescription` | `Supplier[].Product[].TradeItem[].ItemDetails.ItemDescriptions[].MinimalItemDescription` | `minimalItemDescription` | `string` | ✅ |
+| `ItemDescriptions.UniqueMainItemDescription` | `Supplier[].Product[].TradeItem[].ItemDetails.ItemDescriptions[].UniqueMainItemDescription` | `uniqueMainItemDescription` | `["string", "null"]` | ❌ |
+| `DiscountGroupDescription` | `Supplier[].Product[].TradeItem[].ItemIdentification.DiscountGroupDescription[].DiscountGroupDescription` | `discountGroupDescription` | `["string", "null"]` | ❌ |
+| `BonusGroupDescription` | `Supplier[].Product[].TradeItem[].ItemIdentification.BonusGroupDescription[].BonusGroupDescription` | `bonusGroupDescription` | `["string", "null"]` | ❌ |
 
 **ItemStatus Enum Values**: `PRE-LAUNCH`, `ACTIVE`, `ON HOLD`, `PLANNED WITHDRAWAL`, `OBSOLETE`, `null`  
 **ItemCondition Enum Values**: `NEW`, `USED`, `REFURBISHED`, `null`
@@ -1350,7 +1352,7 @@ Each schema file must include:
 
 - **Keep product reference**: TradeItem is nested under Product in ETIM, but flatten for API
 - **ETIM xChange documentation**: Every field must document its ETIM source with name and path
-- **Language handling**: Support multilingual descriptions where present (e.g., `DiscountGroupDescription[]`). Language fields are **required and non-nullable** — denormalized from catalog-level `Language` (see section 2.5)
+- **Language handling**: Support multilingual descriptions where present. `DiscountGroupDescription[]` and `BonusGroupDescription[]` are multilingual and served from the description service (not the details service). Language fields are **required and non-nullable** — denormalized from catalog-level `Language` (see section 2.5)
 - **Currency handling**: `currencyCode` is **required and non-nullable** on all pricing records — denormalized from catalog-level `CurrencyCode` (see section 2.5)
 - **Attachment handling**: Reference URIs for documents/images
 - **Country-specific fields**: Design extensible pattern for custom fields
