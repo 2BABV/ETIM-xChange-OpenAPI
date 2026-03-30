@@ -13,15 +13,15 @@ info:
     url: https://www.apache.org/licenses/LICENSE-2.0.html
 
 servers:
-  - url: https://api.2ba.nl/v1
+  - url: https://rest.2ba.nl/v1/netprices
     description: Production server
-  - url: https://api-staging.2ba.nl/v1
-    description: Staging server
+  - url: https://rest.accept.2ba.nl/v1/netprices
+    description: Acceptance server
 
 paths:
-  /netprices/{supplierIdGln}/item-number/{supplierItemNumber}:
+  /{supplierIdGln}/item-number/{supplierItemNumber}:
     $ref: './paths/netprices-by-item-number.yaml'
-  /netprices/{supplierIdGln}/item-gtin/{itemGtin}:
+  /{supplierIdGln}/item-gtin/{itemGtin}:
     $ref: './paths/netprices-by-item-gtin.yaml'
 
 components:

@@ -12,10 +12,10 @@ info:
     url: https://www.apache.org/licenses/LICENSE-2.0.html
 
 servers:
-  - url: https://api.tradeitem.2ba.nl/v1
+  - url: https://rest.2ba.nl/v1/trade-items
     description: Production server
-  - url: https://api-staging.tradeitem.2ba.nl/v1
-    description: Staging server
+  - url: https://rest.accept.2ba.nl/v1/trade-items
+    description: Acceptance server
 
 paths:
   /supplier:

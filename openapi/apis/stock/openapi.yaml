@@ -13,15 +13,15 @@ info:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
 servers:
-  - url: https://api.2ba.nl/stock/v1
+  - url: https://rest.2ba.nl/v1/stock
     description: Production server
-  - url: https://api-staging.2ba.nl/stock/v1
-    description: Staging server
+  - url: https://rest.accept.2ba.nl/v1/stock
+    description: Acceptance server
 tags:
   - name: Stock
     description: Stock availability and quantity operations
 paths:
-  /stock/{supplierIdGln}/{supplierItemNumber}:
+  /{supplierIdGln}/{supplierItemNumber}:
     $ref: paths/stock.yaml
 security:
   - oauth2:
