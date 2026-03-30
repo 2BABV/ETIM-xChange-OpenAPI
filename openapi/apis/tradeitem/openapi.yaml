@@ -89,7 +89,7 @@ paths:
 components:
   schemas:
     # Shared components from other domains
-    ErrorResponse:
+    ProblemDetails:
       $ref: ../../shared/schemas/common/ProblemDetails.yaml
     TechnicalId:
       $ref: ../../shared/schemas/identifiers/TechnicalId.yaml

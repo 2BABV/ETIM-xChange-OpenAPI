@@ -27,7 +27,7 @@ paths:
 components:
   schemas:
     # Shared components from other domains
-    ErrorResponse:
+    ProblemDetails:
       $ref: ../../shared/schemas/common/ProblemDetails.yaml
     
   responses:
