@@ -207,12 +207,16 @@ components:
   securitySchemes:
     oauth2:
       type: oauth2
-      flows: 
-        clientCredentials: 
-          tokenUrl: https://authorize.2ba.nl/connect/token
+      description: |
+        OAuth 2.0 Client Credentials grant (RFC 6749 §4.4).
+        Supports both client_secret and client_assertion (RFC 7523) authentication.
+      flows:
+        clientCredentials:
+          tokenUrl: https://identity.2ba.nl/connect/token
           scopes:
             read:tradeitems: Grants read access to trade items
             write:tradeitems: Grants write access to trade items
 
 security:
-  - oauth2: []
+  - oauth2:
+      - read:tradeitems

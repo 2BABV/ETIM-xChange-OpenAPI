@@ -214,10 +214,17 @@ components:
       $ref: ../../shared/responses/500-internal-server-error.yaml
 
   securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
+    oauth2:
+      type: oauth2
+      description: |
+        OAuth 2.0 Client Credentials grant (RFC 6749 §4.4).
+        Supports both client_secret and client_assertion (RFC 7523) authentication.
+      flows:
+        clientCredentials:
+          tokenUrl: https://identity.2ba.nl/connect/token
+          scopes:
+            read:products: Grants read access to products
 
 security:
-  - bearerAuth: []
+  - oauth2:
+      - read:products

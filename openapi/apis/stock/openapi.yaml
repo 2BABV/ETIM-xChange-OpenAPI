@@ -25,18 +25,16 @@ paths:
     $ref: paths/stock.yaml
 security:
   - oauth2:
-      - 'read:stock'
-  - apiKeyAuth: []
+      - read:stock
 components:
   securitySchemes:
     oauth2:
       type: oauth2
+      description: |
+        OAuth 2.0 Client Credentials grant (RFC 6749 §4.4).
+        Supports both client_secret and client_assertion (RFC 7523) authentication.
       flows:
         clientCredentials:
-          tokenUrl: https://auth.2ba.nl/oauth/token
+          tokenUrl: https://identity.2ba.nl/connect/token
           scopes:
-            'read:stock': Read stock information
-    apiKeyAuth:
-      type: apiKey
-      in: header
-      name: X-API-Key
+            read:stock: Grants read access to stock information

@@ -13,8 +13,7 @@ get:
     - $ref: '../../../shared/parameters/path/supplier-item-number.yaml'
   security:
     - oauth2:
-        - 'read:stock'
-    - apiKeyAuth: []
+        - read:stock
   responses:
     '200':
       description: Stock information found and returned successfully

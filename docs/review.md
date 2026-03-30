@@ -22,11 +22,9 @@ The shared infrastructure (pagination, error handling, envelope patterns, parame
 
 Renamed `ErrorResponse` → `ProblemDetails` in TradeItem (`openapi.yaml:92`) and NetPrice (`openapi.yaml:30`) APIs. All APIs now use the same `ProblemDetails` component name for the shared RFC 7807 schema.
 
-### 3. Security scheme mismatch
+### ~~3. Security scheme mismatch~~ ✅ Resolved
 
-- **Product API**: `bearerAuth` (HTTP Bearer JWT) — `openapi/apis/product/openapi.yaml:216-220`
-- **TradeItem API**: `oauth2` (Client Credentials flow, `https://authorize.2ba.nl/connect/token`) — `openapi/apis/tradeitem/openapi.yaml:207-215`
-- **Impact**: Clients integrating both APIs need two different auth flows. This may be intentional (different maturity/security posture), but if both APIs share the same identity provider, this creates unnecessary integration friction.
+All APIs now use OAuth 2.0 Client Credentials (`identity.2ba.nl/connect/token`) with consistent scope naming. Removed `bearerAuth` (Product) and `apiKeyAuth` (NetPrice, Stock). Generated bundles regenerated.
 
 ---
 
@@ -94,4 +92,4 @@ All APIs now use the consolidated `rest.2ba.nl/v1/{resource}` + `rest.accept.2ba
 3. **Create `TradeItemResponseData.yaml`** wrapper to match the `*ResponseData` pattern used by ProductResponse
 4. **Register `Language`** parameter in TradeItem's `components/parameters` section
 5. **Remove unused `Products` tag** from Product API or add an equivalent base tag to TradeItem
-6. **Align security schemes** if both APIs share the same IdP (or document why they differ)
+6. ~~**Align security schemes**~~ ✅ Done

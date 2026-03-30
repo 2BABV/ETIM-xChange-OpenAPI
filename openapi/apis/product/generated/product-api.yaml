@@ -26,7 +26,8 @@ servers:
   - url: https://rest.accept.2ba.nl/v1/products
     description: Acceptance server
 security:
-  - bearerAuth: []
+  - oauth2:
+      - read:products
 tags:
   - name: Products
     description: Product operations
@@ -62,6 +63,8 @@ paths:
 
         **ETIM Classification Filtering**: Use the optional `etimReleaseVersion` query parameter
         to filter ETIM classifications to a specific release version (e.g., "9.0", "10.0").
+
+        **Examples**: Example payloads show documented fields only. Clients must accept and ignore additional fields, including nested fields, when they are added in backward-compatible updates.
 
         **No pagination** - Returns exactly one product document or 404 if not found.
 
@@ -163,6 +166,8 @@ paths:
 
         The product key is at the root level, with details nested inside.
         This structure aligns with other single-product subresource responses.
+
+        **Examples**: Example payloads show documented fields only. Clients must accept and ignore additional fields, including nested fields, when they are added in backward-compatible updates.
 
         **Product descriptions**: For multilingual product descriptions, use the dedicated
         `/descriptions` subresource which supports language filtering.
@@ -430,6 +435,8 @@ paths:
 
         The product key is at the root level, with LCA environmental data nested inside.
         This structure aligns with other single-product subresource responses.
+
+        **Examples**: Example payloads show documented fields only. Clients must accept and ignore additional fields, including nested fields, when they are added in backward-compatible updates.
 
         **No pagination** - Returns exactly one product's LCA data or 404 if not found.
         Returns `null` for `lcaEnvironmental` if the product exists but has no LCA data.
@@ -833,7 +840,6 @@ components:
 
         For product descriptions (text content), use the dedicated `/descriptions` subresource
         which supports language filtering.
-      additionalProperties: false
       required:
         - productValidityDate
       properties:
@@ -920,10 +926,15 @@ components:
           multipleOf: 0.0001
           maximum: 99999999999.9999
           description: |
-            Factor for customs commodity code calculation.
+            Factor for customs commodity code calculations. Supports up to 4 decimal places.
+            Converted from ETIM xChange string pattern to number type.
 
-            **ETIM xChange**: `FactorCustomsCommodityCode`  
+            **ETIM xChange**: `FactorCustomsCommodityCode` (string with pattern)  
             **Path**: `Supplier[].Product[].ProductIdentification.FactorCustomsCommodityCode`
+          examples:
+            - 1
+            - 0.75
+            - null
         countryOfOrigin:
           type:
             - array
@@ -1022,7 +1033,6 @@ components:
 
         For product descriptions (text content), use the dedicated `/bulk/product-descriptions` endpoint
         which supports language filtering.
-      additionalProperties: false
       required:
         - manufacturerIdGln
         - manufacturerProductNumber
@@ -1112,7 +1122,15 @@ components:
           multipleOf: 0.0001
           maximum: 99999999999.9999
           description: |
-            Factor for customs commodity code calculation.
+            Factor for customs commodity code calculations. Supports up to 4 decimal places.
+            Converted from ETIM xChange string pattern to number type.
+
+            **ETIM xChange**: `FactorCustomsCommodityCode` (string with pattern)  
+            **Path**: `Supplier[].Product[].ProductIdentification.FactorCustomsCommodityCode`
+          examples:
+            - 1
+            - 0.75
+            - null
         countryOfOrigin:
           type:
             - array
@@ -1217,7 +1235,6 @@ components:
 
         **ETIM xChange**: `ProductDetails.ProductDescriptions`  
         **Path**: `Supplier[].Product[].ProductDetails.ProductDescriptions[]`
-      additionalProperties: false
       required:
         - manufacturerIdGln
         - manufacturerProductNumber
@@ -1403,7 +1420,6 @@ components:
           minimalProductDescription: LED Downlight 10W 4000K
     ProductDescription:
       type: object
-      additionalProperties: false
       required:
         - descriptionLanguage
         - minimalProductDescription
@@ -1556,7 +1572,6 @@ components:
           productPageUrl: https://www.philips.com/products/hue-white-color-e27
     EtimClassification:
       type: object
-      additionalProperties: false
       required:
         - etimClassCode
         - etimReleaseVersion
@@ -1652,7 +1667,6 @@ components:
           etimReleaseVersion: '10.0'
     EtimFeature:
       type: object
-      additionalProperties: false
       required:
         - etimFeatureCode
       properties:
@@ -1756,7 +1770,6 @@ components:
             - 'null'
           items:
             type: object
-            additionalProperties: false
             required:
               - language
               - etimValueDetails
@@ -1834,7 +1847,6 @@ components:
 
         **Classification-only rows**: Products with classification but no features are represented
         with `etimFeatureCode` omitted (or null if explicitly set).
-      additionalProperties: false
       required:
         - manufacturerIdGln
         - manufacturerProductNumber
@@ -2010,7 +2022,6 @@ components:
             - 'null'
           items:
             type: object
-            additionalProperties: false
             required:
               - language
               - etimValueDetails
@@ -2105,7 +2116,6 @@ components:
           reasonNoValue: NA
     LcaEnvironmental:
       type: object
-      additionalProperties: false
       required:
         - declaredUnitUnit
         - declaredUnitQuantity
@@ -2180,7 +2190,6 @@ components:
             - 'null'
           items:
             type: object
-            additionalProperties: false
             required:
               - language
               - functionalUnitDescription
@@ -2439,7 +2448,6 @@ components:
               declaredUnitGwpTotal: 2.5
     LcaDeclaration:
       type: object
-      additionalProperties: false
       required:
         - lifeCycleStage
         - lcaDeclarationIndicator
@@ -2528,6 +2536,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Total Global Warming Potential (GWP) in kg CO2 equivalent per declared unit.
 
@@ -2541,6 +2550,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Fossil Global Warming Potential in kg CO2 equivalent per declared unit.
 
@@ -2553,6 +2563,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Biogenic Global Warming Potential in kg CO2 equivalent per declared unit.
 
@@ -2565,6 +2576,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Acidification Potential (AP) in kg SO2 equivalent per declared unit.
 
@@ -2577,6 +2589,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Eutrophication Potential for freshwater in kg PO4 equivalent per declared unit.
 
@@ -2589,6 +2602,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Ozone Depletion Potential (ODP) in kg CFC-11 equivalent per declared unit.
 
@@ -2601,6 +2615,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Global Warming Potential from Land Use and Land Use Change (GWP-LULUC) 
             in kg CO2 equivalent per declared unit.
@@ -2614,6 +2629,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Eutrophication Potential for marine water (EP-marine) in kg N equivalent per declared unit.
 
@@ -2626,6 +2642,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Eutrophication Potential for terrestrial ecosystems (EP-terrestrial) 
             in mol N equivalent per declared unit.
@@ -2639,6 +2656,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Photochemical Ozone Creation Potential (POCP) in kg NMVOC equivalent per declared unit.
             Also known as summer smog potential.
@@ -2652,6 +2670,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Abiotic Depletion Potential for non-fossil resources (ADP-elements) 
             in kg Sb equivalent per declared unit.
@@ -2665,6 +2684,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Abiotic Depletion Potential for fossil resources (ADP-fossil) in MJ per declared unit.
 
@@ -2677,6 +2697,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Water Deprivation Potential (WDP) in m³ world equivalent per declared unit.
 
@@ -2689,6 +2710,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Use of renewable primary energy resources (PERT) in MJ per declared unit.
             Total renewable primary energy.
@@ -2702,6 +2724,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Use of non-renewable primary energy resources (PENRT) in MJ per declared unit.
             Total non-renewable primary energy.
@@ -2715,6 +2738,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Particulate Matter emissions (PM) expressed as disease incidence per declared unit.
 
@@ -2727,6 +2751,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Ionising Radiation Potential (IRP) in kBq U235 equivalent per declared unit.
 
@@ -2739,6 +2764,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Ecotoxicity Potential for freshwater (ETP-fw) in CTUe (Comparative Toxic Unit for ecosystems) 
             per declared unit.
@@ -2752,6 +2778,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Human Toxicity Potential - cancer effects (HTP-c) in CTUh (Comparative Toxic Unit for humans) 
             per declared unit.
@@ -2765,6 +2792,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Human Toxicity Potential - non-cancer effects (HTP-nc) in CTUh (Comparative Toxic Unit for humans) 
             per declared unit.
@@ -2778,6 +2806,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Soil Quality Potential (SQP) - dimensionless indicator per declared unit.
             Measures the impact on soil quality.
@@ -2829,7 +2858,6 @@ components:
         **Parent context fields**: Key fields from the parent LcaEnvironmental object are included
         (`declaredUnitUnit`, `declaredUnitQuantity`, `lcaReferenceLifetime`, `thirdPartyVerification`)
         to provide necessary context for interpreting the environmental indicators.
-      additionalProperties: false
       required:
         - manufacturerIdGln
         - manufacturerProductNumber
@@ -3037,6 +3065,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Total Global Warming Potential (GWP) in kg CO2 equivalent per declared unit.
 
@@ -3049,6 +3078,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Fossil Global Warming Potential in kg CO2 equivalent per declared unit.
 
@@ -3060,6 +3090,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Biogenic Global Warming Potential in kg CO2 equivalent per declared unit.
 
@@ -3071,6 +3102,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Global Warming Potential from Land Use and Land Use Change (GWP-LULUC) 
             in kg CO2 equivalent per declared unit.
@@ -3083,6 +3115,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Acidification Potential (AP) in kg SO2 equivalent per declared unit.
 
@@ -3094,6 +3127,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Eutrophication Potential for freshwater in kg PO4 equivalent per declared unit.
 
@@ -3105,6 +3139,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Eutrophication Potential for marine water (EP-marine) in kg N equivalent per declared unit.
 
@@ -3116,6 +3151,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Eutrophication Potential for terrestrial ecosystems (EP-terrestrial) 
             in mol N equivalent per declared unit.
@@ -3128,6 +3164,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Photochemical Ozone Creation Potential (POCP) in kg NMVOC equivalent per declared unit.
             Also known as summer smog potential.
@@ -3140,6 +3177,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Ozone Depletion Potential (ODP) in kg CFC-11 equivalent per declared unit.
 
@@ -3151,6 +3189,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Abiotic Depletion Potential for non-fossil resources (ADP-elements) 
             in kg Sb equivalent per declared unit.
@@ -3163,6 +3202,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Abiotic Depletion Potential for fossil resources (ADP-fossil) in MJ per declared unit.
 
@@ -3174,6 +3214,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Water Deprivation Potential (WDP) in m³ world equivalent per declared unit.
 
@@ -3185,6 +3226,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Use of renewable primary energy resources (PERT) in MJ per declared unit.
             Total renewable primary energy.
@@ -3197,6 +3239,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Use of non-renewable primary energy resources (PENRT) in MJ per declared unit.
             Total non-renewable primary energy.
@@ -3209,6 +3252,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Particulate Matter emissions (PM) expressed as disease incidence per declared unit.
 
@@ -3220,6 +3264,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Ionising Radiation Potential (IRP) in kBq U235 equivalent per declared unit.
 
@@ -3231,6 +3276,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Ecotoxicity Potential for freshwater (ETP-fw) in CTUe (Comparative Toxic Unit for ecosystems) 
             per declared unit.
@@ -3243,6 +3289,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Human Toxicity Potential - cancer effects (HTP-c) in CTUh (Comparative Toxic Unit for humans) 
             per declared unit.
@@ -3255,6 +3302,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Human Toxicity Potential - non-cancer effects (HTP-nc) in CTUh (Comparative Toxic Unit for humans) 
             per declared unit.
@@ -3267,6 +3315,7 @@ components:
           type:
             - number
             - 'null'
+          format: decimal
           description: |
             Soil Quality Potential (SQP) - dimensionless indicator per declared unit.
             Measures the impact on soil quality.
@@ -3422,7 +3471,6 @@ components:
 
         This structure aligns with the subresource endpoints (`/details`, 
         `/descriptions`, `/etim-classifications`, `/lca-environmental`) which all include the key at the root level.
-      additionalProperties: false
       required:
         - data
       properties:
@@ -3495,7 +3543,6 @@ components:
 
         This structure aligns with the subresource endpoints (`/details`, 
         `/descriptions`, `/etim-classifications`, `/lca-environmental`) which all include the key at the root level.
-      additionalProperties: false
       required:
         - manufacturerIdGln
         - manufacturerProductNumber
@@ -3610,7 +3657,6 @@ components:
 
         Note: Product descriptions are available through the dedicated `/descriptions` subresource
         which supports language filtering.
-      additionalProperties: false
       required:
         - data
       properties:
@@ -3641,7 +3687,6 @@ components:
       description: |
         Single product identification keys with core product details.
         The product key is at the root level, with details nested inside.
-      additionalProperties: false
       required:
         - manufacturerIdGln
         - manufacturerProductNumber
@@ -3695,7 +3740,6 @@ components:
 
         **Language Filtering**: Use the optional `language` query parameter to filter
         descriptions to specific language(s).
-      additionalProperties: false
       required:
         - data
       properties:
@@ -3727,7 +3771,6 @@ components:
       type: object
       description: |
         Single product identification keys with multilingual product descriptions.
-      additionalProperties: false
       required:
         - manufacturerIdGln
         - manufacturerProductNumber
@@ -3779,7 +3822,6 @@ components:
       description: |
         Response containing all ETIM classifications for a single product.
         Returns the product identification keys and all associated ETIM classifications.
-      additionalProperties: false
       required:
         - data
       properties:
@@ -3808,7 +3850,6 @@ components:
       type: object
       description: |
         Single product identification keys with all associated ETIM classifications.
-      additionalProperties: false
       required:
         - manufacturerIdGln
         - manufacturerProductNumber
@@ -3855,7 +3896,6 @@ components:
                   etimValueLogical: true
     BulkProductDetailsResponse:
       type: object
-      additionalProperties: false
       required:
         - data
         - meta
@@ -3895,7 +3935,6 @@ components:
             estimatedTotal: 1523
     BulkProductDescriptionsResponse:
       type: object
-      additionalProperties: false
       required:
         - data
         - meta
@@ -3961,7 +4000,6 @@ components:
 
         **Classification-Only Rows**: Products with classifications but no features are represented
         with `etimFeatureCode` omitted to ensure all classifications are included.
-      additionalProperties: false
       required:
         - data
         - meta
@@ -4032,7 +4070,6 @@ components:
         Contains Environmental Product Declaration (EPD) information, declared units,
         reference lifetime, third-party verification status, and life cycle assessment
         declarations for different stages.
-      additionalProperties: false
       required:
         - data
       properties:
@@ -4069,7 +4106,6 @@ components:
       type: object
       description: |
         Single product identification keys with LCA environmental data.
-      additionalProperties: false
       required:
         - manufacturerIdGln
         - manufacturerProductNumber
@@ -4143,7 +4179,6 @@ components:
         1. Group rows by `manufacturerIdGln` + `manufacturerProductNumber` for products
         2. All rows for a product share the same parent context (declared unit, lifetime, verification)
         3. Each row represents a different life cycle stage (A1-A3, B1-B7, C1-C4, D)
-      additionalProperties: false
       required:
         - data
         - meta
@@ -4270,7 +4305,6 @@ components:
       description: |
         Cursor-based pagination metadata exposed in the `meta` object. Includes the opaque pagination cursor,
         navigation flags, the requested page size, and an optional estimated total count for windowed scans.
-      additionalProperties: false
       properties:
         cursor:
           type:
@@ -4689,10 +4723,16 @@ components:
                 detail: The requested resource does not exist
                 instance: https://api.example.com/v1/resource/example
   securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
+    oauth2:
+      type: oauth2
+      description: |
+        OAuth 2.0 Client Credentials grant (RFC 6749 §4.4).
+        Supports both client_secret and client_assertion (RFC 7523) authentication.
+      flows:
+        clientCredentials:
+          tokenUrl: https://identity.2ba.nl/connect/token
+          scopes:
+            read:products: Grants read access to products
 x-tagGroups:
   - name: Products
     tags:
