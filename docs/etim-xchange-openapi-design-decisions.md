@@ -15,6 +15,8 @@
 6. [Documentation Requirements](#documentation-requirements)
 7. [Shared Component Reuse](#shared-component-reuse)
 8. [Validation & Error Handling](#validation--error-handling)
+9. [Security & Authentication](#security--authentication)
+10. [Server URL Pattern](#server-url-pattern)
 
 ---
 
@@ -1235,6 +1237,44 @@ allOf:
               - "Cannot be empty"
               - "Maximum length is 35 characters"
 ```
+
+---
+
+## Security & Authentication
+
+### OAuth 2.0 Client Credentials
+
+All APIs use the **OAuth 2.0 Client Credentials** flow (`clientCredentials` grant type). This was standardized during the API consistency review — previously, different APIs used different mechanisms (HTTP Bearer, API keys, OAuth2 with varying token URLs).
+
+**Design decisions:**
+
+- **Why Client Credentials?** These are machine-to-machine (M2M) APIs — no end-user context. Client Credentials is the OAuth 2.0 grant designed for this use case.
+- **Why not HTTP Bearer (`bearerAuth`)?** Bearer tokens describe the _transport_ (a JWT in an `Authorization: Bearer` header) but don't specify _how_ to obtain the token. OAuth 2.0 `clientCredentials` specifies both — the token endpoint and the grant flow — giving API consumers a complete integration path.
+- **Why not API keys (`apiKeyAuth`)?** API keys are static secrets with no expiry, rotation, or scope limitations. OAuth 2.0 tokens expire, can be scoped, and support audit trails.
+- **RFC 7523 Client Assertion**: All APIs document support for `client_assertion` + `client_assertion_type` as an alternative to `client_secret`, enabling certificate-based authentication for higher-security environments.
+
+**Token URL standardization:**
+- Production: `https://identity.2ba.nl/connect/token`
+- Previously inconsistent: `authorize.2ba.nl/connect/token` (TradeItem), `auth.2ba.nl/oauth/token` (Stock)
+
+**Scope naming convention:** `read:{resource}` (e.g., `read:products`, `read:tradeitems`, `read:netprices`, `read:stock`)
+
+---
+
+## Server URL Pattern
+
+All APIs use a consistent server URL structure:
+
+| Environment | Pattern | Example |
+|-------------|---------|---------|
+| Production | `https://rest.2ba.nl/v1/{resource}` | `https://rest.2ba.nl/v1/products` |
+| Acceptance | `https://rest.accept.2ba.nl/v1/{resource}` | `https://rest.accept.2ba.nl/v1/tradeitems` |
+
+**Design decisions:**
+
+- **Resource in server URL, not path**: The resource name (e.g., `products`, `tradeitems`) is part of the server URL, not the OpenAPI path. This keeps path definitions focused on entity identifiers and sub-resources.
+- **Why `rest.2ba.nl`?** Separates the REST API surface from the identity provider (`identity.2ba.nl`) and any web UI (`www.2ba.nl`).
+- **`ProblemDetails` example URLs** use the service-specific domain (e.g., `api.product.2ba.nl`, `api.tradeitem.2ba.nl`), NOT the server URL. These are opaque type identifiers per RFC 7807, not clickable endpoints.
 
 ---
 

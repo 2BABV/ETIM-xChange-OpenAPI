@@ -52,6 +52,33 @@ When working with this repository:
 9. **Support flexible identifiers** - Use `anyOf`/`oneOf` patterns for GLN/DUNS/alternative IDs
 10. **Maintain consistent error responses** - Use RFC 7807 Problem Details format
 
+11. **Security scheme convention**:
+   - All APIs use **OAuth 2.0 Client Credentials** (`clientCredentials` flow)
+   - Token URL: `https://identity.2ba.nl/connect/token` (production)
+   - Scope naming: `read:{resource}` (e.g., `read:products`, `read:tradeitems`, `read:netprices`, `read:stock`)
+   - Support **RFC 7523 client assertion** (`client_assertion` + `client_assertion_type`) as an alternative to `client_secret`
+   - Do NOT use `bearerAuth` (HTTP Bearer) or `apiKeyAuth` — all auth goes through OAuth2
+
+12. **Tag and grouping conventions**:
+   - Each API defines exactly 2 tags: `{Resource} single` and `{Resource} bulk`
+   - Use `x-tagGroups` with a single group named after the resource (e.g., `Products`, `Trade Items`)
+   - Every endpoint must have exactly one tag assigned
+
+13. **Component registration**:
+   - ALL shared parameters, schemas, and responses used by an API MUST be registered in that API's `components/` section
+   - This includes shared parameters like `Language`, `Cursor`, `Limit` — not just `ResponseData` schemas
+   - Component names use **PascalCase** regardless of the file's kebab-case name
+
+14. **YAML `$ref` style**:
+   - Use **unquoted** file-path `$ref` values: `$ref: ../../shared/schemas/common/ProblemDetails.yaml`
+   - Single quotes are only needed for internal refs starting with `#`: `$ref: '#/components/schemas/Pet'`
+   - Per OpenAPI 3.1.0 spec examples and YAML 1.2.2 plain scalar convention
+
+15. **Generated bundles**:
+   - Each API has a `generated/` folder with a bundled `{api}-api.yaml` file (git-tracked)
+   - Regenerate after ANY source spec change: `npx @redocly/cli bundle --config openapi/redocly.yaml {api}@v1 -o openapi/apis/{api}/generated/{api}-api.yaml`
+   - Always commit regenerated bundles alongside the source changes that triggered them
+
 ## Naming Convention Details
 
 ### Schema Components (PascalCase)
