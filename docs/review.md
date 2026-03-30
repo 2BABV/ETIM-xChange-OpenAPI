@@ -18,11 +18,9 @@ The shared infrastructure (pagination, error handling, envelope patterns, parame
 - **Impact**: API consumers expecting parallel structure across APIs won't find a single-call "get everything" endpoint for TradeItems. This is the most visible structural inconsistency.
 - **Files**: `openapi/apis/product/openapi.yaml:48-49` vs `openapi/apis/tradeitem/openapi.yaml:46-47`
 
-### 2. `ProblemDetails` schema registered under different names
+### ~~2. `ProblemDetails` schema registered under different names~~ ✅ Resolved
 
-- **Product API**: `ProblemDetails: $ref: ../../shared/schemas/common/ProblemDetails.yaml` (line 177)
-- **TradeItem API**: `ErrorResponse: $ref: ../../shared/schemas/common/ProblemDetails.yaml` (line 92)
-- **Impact**: Code generators (NSwag) will produce `ProblemDetails` class from Product API and `ErrorResponse` class from TradeItem API for the **exact same schema**. Clients consuming both APIs get two incompatible types for the same thing.
+Renamed `ErrorResponse` → `ProblemDetails` in TradeItem (`openapi.yaml:92`) and NetPrice (`openapi.yaml:30`) APIs. All APIs now use the same `ProblemDetails` component name for the shared RFC 7807 schema.
 
 ### 3. Security scheme mismatch
 
@@ -91,7 +89,7 @@ All APIs now use the consolidated `rest.2ba.nl/v1/{resource}` + `rest.accept.2ba
 
 ## Recommended Actions (priority order)
 
-1. **Rename `ErrorResponse` → `ProblemDetails`** in TradeItem's `openapi.yaml:92` to match Product API and the shared schema's actual name
+1. ~~**Rename `ErrorResponse` → `ProblemDetails`**~~ ✅ Done
 2. **Decide on root endpoint**: Either activate `GET /{supplierIdGln}/{supplierItemNumber}` in TradeItem or remove `GET /{manufacturerIdGln}/{manufacturerProductNumber}` from Product for consistency
 3. **Create `TradeItemResponseData.yaml`** wrapper to match the `*ResponseData` pattern used by ProductResponse
 4. **Register `Language`** parameter in TradeItem's `components/parameters` section
