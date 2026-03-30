@@ -34,11 +34,9 @@ All APIs now use OAuth 2.0 Client Credentials (`identity.2ba.nl/connect/token`) 
 
 Created `TradeItemResponseData.yaml` wrapper with composite keys + domain sub-schema refs. `TradeItemResponse.yaml` now references `./TradeItemResponseData.yaml` instead of `../domain/TradeItem.yaml`, matching the pattern used by all other responses.
 
-### 5. `Language` parameter not registered in TradeItem API components
+### ~~5. `Language` parameter not registered in TradeItem API components~~ ✅ Resolved
 
-- **Product API**: Registers `Language: $ref: ../../shared/parameters/query/language.yaml` in `components/parameters` (line 199-200)
-- **TradeItem API**: Uses `language.yaml` via direct `$ref` in path files but **never registers** it in `components/parameters`
-- **Impact**: Inconsistent component exposure. Both APIs use the parameter identically in paths (direct `$ref` to shared file), so functionally equivalent. But the Product API has it available for reuse at the component level while TradeItem doesn't.
+Registered `Language: $ref: ../../shared/parameters/query/language.yaml` in TradeItem API `components/parameters`, matching the Product API pattern.
 
 ### 6. Unused `Products` tag in Product API
 
@@ -87,6 +85,6 @@ All APIs now use the consolidated `rest.2ba.nl/v1/{resource}` + `rest.accept.2ba
 1. ~~**Rename `ErrorResponse` → `ProblemDetails`**~~ ✅ Done
 2. **Decide on root endpoint**: Either activate `GET /{supplierIdGln}/{supplierItemNumber}` in TradeItem or remove `GET /{manufacturerIdGln}/{manufacturerProductNumber}` from Product for consistency
 3. ~~**Create `TradeItemResponseData.yaml`**~~ ✅ Done
-4. **Register `Language`** parameter in TradeItem's `components/parameters` section
+4. ~~**Register `Language`**~~ ✅ Done
 5. **Remove unused `Products` tag** from Product API or add an equivalent base tag to TradeItem
 6. ~~**Align security schemes**~~ ✅ Done
