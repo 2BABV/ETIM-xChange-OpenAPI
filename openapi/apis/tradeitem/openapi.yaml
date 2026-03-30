@@ -44,47 +44,47 @@ x-tagGroups:
 paths:
   # Single trade item endpoints
   # /{supplierIdGln}/{supplierItemNumber}:
-  #   $ref: './paths/trade-items.yaml'
+  #   $ref: ./paths/trade-items.yaml
   
   /{supplierIdGln}/{supplierItemNumber}/details:
-    $ref: './paths/trade-item-details.yaml'
+    $ref: ./paths/trade-item-details.yaml
   
   /{supplierIdGln}/{supplierItemNumber}/descriptions:
-    $ref: './paths/trade-item-descriptions.yaml'
+    $ref: ./paths/trade-item-descriptions.yaml
   
   /{supplierIdGln}/{supplierItemNumber}/orderings:
-    $ref: './paths/trade-item-orderings.yaml'
+    $ref: ./paths/trade-item-orderings.yaml
   
   /{supplierIdGln}/{supplierItemNumber}/pricings:
-    $ref: './paths/trade-item-pricings.yaml'
+    $ref: ./paths/trade-item-pricings.yaml
   
   /{supplierIdGln}/{supplierItemNumber}/allowance-surcharges:
-    $ref: './paths/trade-item-allowance-surcharges.yaml'
+    $ref: ./paths/trade-item-allowance-surcharges.yaml
   
   /{supplierIdGln}/{supplierItemNumber}/relations:
-    $ref: './paths/trade-item-relations.yaml'
+    $ref: ./paths/trade-item-relations.yaml
   
   /{supplierIdGln}/{supplierItemNumber}/logistics-details:
-    $ref: './paths/trade-item-logistics-details.yaml'
+    $ref: ./paths/trade-item-logistics-details.yaml
   
   # Bulk operations
   # Note: /bulk/trade-item-details consolidates what would have been separate
   # /bulk/trade-items and /bulk/item-identifications endpoints since
   # TradeItemDetailsSummary combines ItemIdentification + ItemDetails from ETIM xChange
   /bulk/trade-item-details:
-    $ref: './paths/bulk/trade-item-details.yaml'
+    $ref: ./paths/bulk/trade-item-details.yaml
   /bulk/trade-item-descriptions:
-    $ref: './paths/bulk/trade-item-descriptions.yaml'
+    $ref: ./paths/bulk/trade-item-descriptions.yaml
   /bulk/trade-item-orderings:
-    $ref: './paths/bulk/trade-item-orderings.yaml'
+    $ref: ./paths/bulk/trade-item-orderings.yaml
   /bulk/trade-item-pricings:
-    $ref: './paths/bulk/trade-item-pricings.yaml'
+    $ref: ./paths/bulk/trade-item-pricings.yaml
   /bulk/trade-item-allowance-surcharges:
-    $ref: './paths/bulk/trade-item-allowance-surcharges.yaml'
+    $ref: ./paths/bulk/trade-item-allowance-surcharges.yaml
   /bulk/trade-item-relations:
-    $ref: './paths/bulk/trade-item-relations.yaml'
+    $ref: ./paths/bulk/trade-item-relations.yaml
   /bulk/trade-item-logistics-details:
-    $ref: './paths/bulk/trade-item-logistics-details.yaml'
+    $ref: ./paths/bulk/trade-item-logistics-details.yaml
     
 components:
   schemas:
@@ -96,33 +96,33 @@ components:
     
     # Domain schemas
     TradeItemDetails:
-      $ref: './schemas/domain/TradeItemDetails.yaml'
+      $ref: ./schemas/domain/TradeItemDetails.yaml
     TradeItemDetailsSummary:
-      $ref: './schemas/domain/TradeItemDetailsSummary.yaml'
+      $ref: ./schemas/domain/TradeItemDetailsSummary.yaml
     ItemDescriptionsSummary:
-      $ref: './schemas/domain/ItemDescriptionsSummary.yaml'
+      $ref: ./schemas/domain/ItemDescriptionsSummary.yaml
     TradeItemOrdering:
-      $ref: './schemas/domain/TradeItemOrdering.yaml'
+      $ref: ./schemas/domain/TradeItemOrdering.yaml
     TradeItemOrderingsSummary:
-      $ref: './schemas/domain/TradeItemOrderingsSummary.yaml'
+      $ref: ./schemas/domain/TradeItemOrderingsSummary.yaml
     TradeItemPricing:
-      $ref: './schemas/domain/TradeItemPricing.yaml'
+      $ref: ./schemas/domain/TradeItemPricing.yaml
     TradeItemPricingsSummary:
-      $ref: './schemas/domain/TradeItemPricingsSummary.yaml'
+      $ref: ./schemas/domain/TradeItemPricingsSummary.yaml
     AllowanceSurcharge:
-      $ref: './schemas/domain/AllowanceSurcharge.yaml'
+      $ref: ./schemas/domain/AllowanceSurcharge.yaml
     AllowanceSurchargeSummary:
-      $ref: './schemas/domain/AllowanceSurchargeSummary.yaml'
+      $ref: ./schemas/domain/AllowanceSurchargeSummary.yaml
     ItemRelation:
-      $ref: './schemas/domain/ItemRelation.yaml'
+      $ref: ./schemas/domain/ItemRelation.yaml
     ItemRelationSummary:
-      $ref: './schemas/domain/ItemRelationSummary.yaml'
+      $ref: ./schemas/domain/ItemRelationSummary.yaml
     ItemLogistics:
-      $ref: './schemas/domain/ItemLogistics.yaml'
+      $ref: ./schemas/domain/ItemLogistics.yaml
     ItemLogisticsSummary:
-      $ref: './schemas/domain/ItemLogisticsSummary.yaml'
+      $ref: ./schemas/domain/ItemLogisticsSummary.yaml
     RelationType:
-      $ref: './schemas/enums/RelationType.yaml'
+      $ref: ./schemas/enums/RelationType.yaml
     
     # Shared schemas
     CursorPaginationMetadata:
@@ -130,53 +130,53 @@ components:
     
     # Response schemas
     TradeItemResponse:
-      $ref: './schemas/responses/TradeItemResponse.yaml'
+      $ref: ./schemas/responses/TradeItemResponse.yaml
     TradeItemResponseData:
-      $ref: './schemas/responses/TradeItemResponseData.yaml'
+      $ref: ./schemas/responses/TradeItemResponseData.yaml
     TradeItemDetailsResponse:
-      $ref: './schemas/responses/TradeItemDetailsResponse.yaml'
+      $ref: ./schemas/responses/TradeItemDetailsResponse.yaml
     TradeItemDetailsResponseData:
-      $ref: './schemas/responses/TradeItemDetailsResponseData.yaml'
+      $ref: ./schemas/responses/TradeItemDetailsResponseData.yaml
     TradeItemDescriptionsResponse:
-      $ref: './schemas/responses/TradeItemDescriptionsResponse.yaml'
+      $ref: ./schemas/responses/TradeItemDescriptionsResponse.yaml
     TradeItemDescriptionsResponseData:
-      $ref: './schemas/responses/TradeItemDescriptionsResponseData.yaml'
+      $ref: ./schemas/responses/TradeItemDescriptionsResponseData.yaml
     BulkTradeItemDetailsResponse:
-      $ref: './schemas/responses/BulkTradeItemDetailsResponse.yaml'
+      $ref: ./schemas/responses/BulkTradeItemDetailsResponse.yaml
     BulkTradeItemDescriptionsResponse:
-      $ref: './schemas/responses/BulkTradeItemDescriptionsResponse.yaml'
+      $ref: ./schemas/responses/BulkTradeItemDescriptionsResponse.yaml
     TradeItemOrderingsResponse:
-      $ref: './schemas/responses/TradeItemOrderingsResponse.yaml'
+      $ref: ./schemas/responses/TradeItemOrderingsResponse.yaml
     TradeItemOrderingsResponseData:
-      $ref: './schemas/responses/TradeItemOrderingsResponseData.yaml'
+      $ref: ./schemas/responses/TradeItemOrderingsResponseData.yaml
     BulkTradeItemOrderingsResponse:
-      $ref: './schemas/responses/BulkTradeItemOrderingsResponse.yaml'
+      $ref: ./schemas/responses/BulkTradeItemOrderingsResponse.yaml
     TradeItemPricingsResponse:
-      $ref: './schemas/responses/TradeItemPricingsResponse.yaml'
+      $ref: ./schemas/responses/TradeItemPricingsResponse.yaml
     TradeItemPricingsResponseData:
-      $ref: './schemas/responses/TradeItemPricingsResponseData.yaml'
+      $ref: ./schemas/responses/TradeItemPricingsResponseData.yaml
     BulkTradeItemPricingsResponse:
-      $ref: './schemas/responses/BulkTradeItemPricingsResponse.yaml'
+      $ref: ./schemas/responses/BulkTradeItemPricingsResponse.yaml
     BulkAllowanceSurchargesResponse:
-      $ref: './schemas/responses/BulkAllowanceSurchargesResponse.yaml'
+      $ref: ./schemas/responses/BulkAllowanceSurchargesResponse.yaml
     TradeItemAllowanceSurchargesResponse:
-      $ref: './schemas/responses/TradeItemAllowanceSurchargesResponse.yaml'
+      $ref: ./schemas/responses/TradeItemAllowanceSurchargesResponse.yaml
     TradeItemAllowanceSurchargesResponseData:
-      $ref: './schemas/responses/TradeItemAllowanceSurchargesResponseData.yaml'
+      $ref: ./schemas/responses/TradeItemAllowanceSurchargesResponseData.yaml
     TradeItemAllowanceSurchargeItem:
-      $ref: './schemas/responses/TradeItemAllowanceSurchargeItem.yaml'
+      $ref: ./schemas/responses/TradeItemAllowanceSurchargeItem.yaml
     TradeItemRelationsResponse:
-      $ref: './schemas/responses/TradeItemRelationsResponse.yaml'
+      $ref: ./schemas/responses/TradeItemRelationsResponse.yaml
     TradeItemRelationsResponseData:
-      $ref: './schemas/responses/TradeItemRelationsResponseData.yaml'
+      $ref: ./schemas/responses/TradeItemRelationsResponseData.yaml
     BulkTradeItemRelationsResponse:
-      $ref: './schemas/responses/BulkTradeItemRelationsResponse.yaml'
+      $ref: ./schemas/responses/BulkTradeItemRelationsResponse.yaml
     TradeItemLogisticsDetailsResponse:
-      $ref: './schemas/responses/TradeItemLogisticsDetailsResponse.yaml'
+      $ref: ./schemas/responses/TradeItemLogisticsDetailsResponse.yaml
     TradeItemLogisticsDetailsResponseData:
-      $ref: './schemas/responses/TradeItemLogisticsDetailsResponseData.yaml'
+      $ref: ./schemas/responses/TradeItemLogisticsDetailsResponseData.yaml
     BulkTradeItemLogisticsDetailsResponse:
-      $ref: './schemas/responses/BulkTradeItemLogisticsDetailsResponse.yaml'
+      $ref: ./schemas/responses/BulkTradeItemLogisticsDetailsResponse.yaml
 
   parameters:
     SupplierIdGln:
@@ -198,15 +198,15 @@ components:
 
   responses:
     BadRequest:
-      $ref: '../../shared/responses/400-bad-request.yaml'
+      $ref: ../../shared/responses/400-bad-request.yaml
     Unauthorized:
-      $ref: '../../shared/responses/401-unauthorized.yaml'
+      $ref: ../../shared/responses/401-unauthorized.yaml
     Forbidden:
-      $ref: '../../shared/responses/403-forbidden.yaml'
+      $ref: ../../shared/responses/403-forbidden.yaml
     NotFound:
-      $ref: '../../shared/responses/404-not-found.yaml'
+      $ref: ../../shared/responses/404-not-found.yaml
     InternalServerError:
-      $ref: '../../shared/responses/500-internal-server-error.yaml'
+      $ref: ../../shared/responses/500-internal-server-error.yaml
 
   securitySchemes:
     oauth2:

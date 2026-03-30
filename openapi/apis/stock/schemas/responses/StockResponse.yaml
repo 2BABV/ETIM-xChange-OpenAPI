@@ -4,7 +4,7 @@ required:
   - data
 properties:
   data:
-    $ref: '../domain/Stock.yaml'
+    $ref: ../domain/Stock.yaml
 examples:
   - data:
       quantity: 150.50

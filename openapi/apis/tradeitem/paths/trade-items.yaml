@@ -9,15 +9,15 @@ get:
   tags:
     - TradeItems single
   parameters:
-    - $ref: '../../../shared/parameters/path/supplier-id-gln.yaml'
-    - $ref: '../../../shared/parameters/path/supplier-item-number.yaml'
+    - $ref: ../../../shared/parameters/path/supplier-id-gln.yaml
+    - $ref: ../../../shared/parameters/path/supplier-item-number.yaml
   responses:
     '200':
       description: Trade item found and returned successfully
       content:
         application/json:
           schema:
-            $ref: '../schemas/responses/TradeItemResponse.yaml'
+            $ref: ../schemas/responses/TradeItemResponse.yaml
           examples:
             fullTradeItem:
               summary: Complete trade item with all optional fields
@@ -124,7 +124,7 @@ get:
       content:
         application/json:
           schema:
-            $ref: '../../../shared/schemas/common/ProblemDetails.yaml'
+            $ref: ../../../shared/schemas/common/ProblemDetails.yaml
           examples:
             notFound:
               summary: Trade item not found
@@ -135,10 +135,10 @@ get:
                 detail: "No trade item found for supplier GLN '1234567890123' and item number 'UNKNOWN-SKU'"
                 instance: "https://api.tradeitem.2ba.nl/v1/trade-items/1234567890123/UNKNOWN-SKU"
     '400':
-      $ref: '../../../shared/responses/400-bad-request.yaml'
+      $ref: ../../../shared/responses/400-bad-request.yaml
     '401':
-      $ref: '../../../shared/responses/401-unauthorized.yaml'
+      $ref: ../../../shared/responses/401-unauthorized.yaml
     '403':
-      $ref: '../../../shared/responses/403-forbidden.yaml'
+      $ref: ../../../shared/responses/403-forbidden.yaml
     '500':
-      $ref: '../../../shared/responses/500-internal-server-error.yaml'
+      $ref: ../../../shared/responses/500-internal-server-error.yaml

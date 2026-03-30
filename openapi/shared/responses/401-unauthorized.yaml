@@ -2,7 +2,7 @@ description: Unauthorized - Authentication required or failed
 content:
   application/problem+json:
     schema:
-      $ref: '../schemas/common/ProblemDetails.yaml'
+      $ref: ../schemas/common/ProblemDetails.yaml
     examples:
       unauthorized:
         summary: Unauthorized access example

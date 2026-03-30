@@ -20,15 +20,15 @@ get:
     **ETIM xChange**: `Ordering`
     **Path**: `Supplier[].Product[].TradeItem[].Ordering`
   parameters:
-    - $ref: '../../../shared/parameters/path/supplier-id-gln.yaml'
-    - $ref: '../../../shared/parameters/path/supplier-item-number.yaml'
+    - $ref: ../../../shared/parameters/path/supplier-id-gln.yaml
+    - $ref: ../../../shared/parameters/path/supplier-item-number.yaml
   responses:
     '200':
       description: Successfully retrieved trade item ordering information
       content:
         application/json:
           schema:
-            $ref: '../schemas/responses/TradeItemOrderingsResponse.yaml'
+            $ref: ../schemas/responses/TradeItemOrderingsResponse.yaml
           examples:
             basicOrdering:
               summary: Basic ordering configuration
@@ -79,17 +79,17 @@ get:
                     alternativeUseUnit: null
                     alternativeUseUnitConversionFactor: null
     '400':
-      $ref: '../../../shared/responses/400-bad-request.yaml'
+      $ref: ../../../shared/responses/400-bad-request.yaml
     '401':
-      $ref: '../../../shared/responses/401-unauthorized.yaml'
+      $ref: ../../../shared/responses/401-unauthorized.yaml
     '403':
-      $ref: '../../../shared/responses/403-forbidden.yaml'
+      $ref: ../../../shared/responses/403-forbidden.yaml
     '404':
       description: Trade item not found
       content:
         application/json:
           schema:
-            $ref: '../../../shared/schemas/common/ProblemDetails.yaml'
+            $ref: ../../../shared/schemas/common/ProblemDetails.yaml
           examples:
             notFound:
               summary: Trade item not found
@@ -100,4 +100,4 @@ get:
                 detail: "No trade item found with supplier GLN '1234567890123' and item number 'UNKNOWN-SKU'"
                 instance: "https://api.tradeitem.2ba.nl/v1/1234567890123/UNKNOWN-SKU/orderings"
     '500':
-      $ref: '../../../shared/responses/500-internal-server-error.yaml'
+      $ref: ../../../shared/responses/500-internal-server-error.yaml

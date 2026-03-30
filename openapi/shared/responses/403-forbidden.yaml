@@ -2,7 +2,7 @@ description: Forbidden - Insufficient permissions
 content:
   application/problem+json:
     schema:
-      $ref: '../schemas/common/ProblemDetails.yaml'
+      $ref: ../schemas/common/ProblemDetails.yaml
     examples:
       forbidden:
         summary: Forbidden access example

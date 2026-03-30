@@ -50,11 +50,9 @@ Removed the unused `Products` tag definition (lines 31-33). Only `Products singl
 
 All APIs now use the consolidated `rest.2ba.nl/v1/{resource}` + `rest.accept.2ba.nl/v1/{resource}` ("Acceptance server") pattern. NetPrice and Stock path keys were restructured to move the resource name into the server URL (matching the Product pattern).
 
-### 8. YAML quote style inconsistency
+### ~~8. YAML quote style inconsistency~~ ✅ Resolved
 
-- Product API: unquoted `$ref` paths (`$ref: paths/products.yaml`)
-- TradeItem API: single-quoted `$ref` paths (`$ref: './paths/trade-items.yaml'`)
-- Functionally identical, but inconsistent style across the repo.
+Standardized all 166 `$ref` values to unquoted style across 24 source files (shared, tradeitem, netprice, stock). Matches OpenAPI 3.1.0 spec examples, YAML 1.2.2 plain scalar convention, and the Product API's existing style.
 
 ### 9. `x-tagGroups` naming inconsistency
 

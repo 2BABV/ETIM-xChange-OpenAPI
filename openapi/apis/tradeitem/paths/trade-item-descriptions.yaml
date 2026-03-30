@@ -18,16 +18,16 @@ get:
     
     **No pagination** - Returns all descriptions for the specified trade item.
   parameters:
-    - $ref: '../../../shared/parameters/path/supplier-id-gln.yaml'
-    - $ref: '../../../shared/parameters/path/supplier-item-number.yaml'
-    - $ref: '../../../shared/parameters/query/language.yaml'
+    - $ref: ../../../shared/parameters/path/supplier-id-gln.yaml
+    - $ref: ../../../shared/parameters/path/supplier-item-number.yaml
+    - $ref: ../../../shared/parameters/query/language.yaml
   responses:
     '200':
       description: Successfully retrieved trade item descriptions
       content:
         application/json:
           schema:
-            $ref: '../schemas/responses/TradeItemDescriptionsResponse.yaml'
+            $ref: ../schemas/responses/TradeItemDescriptionsResponse.yaml
           examples:
             multipleLanguages:
               summary: Trade item with multiple language descriptions
@@ -71,17 +71,17 @@ get:
                   supplierItemNumber: "SKU-12345"
                   descriptions: null
     '400':
-      $ref: '../../../shared/responses/400-bad-request.yaml'
+      $ref: ../../../shared/responses/400-bad-request.yaml
     '401':
-      $ref: '../../../shared/responses/401-unauthorized.yaml'
+      $ref: ../../../shared/responses/401-unauthorized.yaml
     '403':
-      $ref: '../../../shared/responses/403-forbidden.yaml'
+      $ref: ../../../shared/responses/403-forbidden.yaml
     '404':
       description: Trade item not found
       content:
         application/json:
           schema:
-            $ref: '../../../shared/schemas/common/ProblemDetails.yaml'
+            $ref: ../../../shared/schemas/common/ProblemDetails.yaml
           examples:
             notFound:
               summary: Trade item not found
@@ -92,4 +92,4 @@ get:
                 detail: "No trade item found with supplier GLN '1234567890123' and item number 'UNKNOWN-SKU'"
                 instance: "https://api.tradeitem.2ba.nl/v1/1234567890123/UNKNOWN-SKU/descriptions"
     '500':
-      $ref: '../../../shared/responses/500-internal-server-error.yaml'
+      $ref: ../../../shared/responses/500-internal-server-error.yaml

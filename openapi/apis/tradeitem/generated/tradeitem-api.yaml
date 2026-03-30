@@ -6713,6 +6713,8 @@ components:
       $ref: '#/components/parameters/selection-id'
     MutationDateTime:
       $ref: '#/components/parameters/mutation-date-time'
+    Language:
+      $ref: '#/components/parameters/language'
     supplier-id-gln:
       name: supplierIdGln
       in: path

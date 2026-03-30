@@ -2,7 +2,7 @@ description: Internal Server Error - An unexpected error occurred
 content:
   application/problem+json:
     schema:
-      $ref: '../schemas/common/ProblemDetails.yaml'
+      $ref: ../schemas/common/ProblemDetails.yaml
     examples:
       internal-server-error:
         summary: Internal Server Error example
