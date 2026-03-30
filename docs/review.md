@@ -30,12 +30,9 @@ All APIs now use OAuth 2.0 Client Credentials (`identity.2ba.nl/connect/token`) 
 
 ## 🟡 Medium Impact
 
-### 4. `TradeItemResponse.yaml` breaks the ResponseData wrapper pattern
+### ~~4. `TradeItemResponse.yaml` breaks the ResponseData wrapper pattern~~ ✅ Resolved
 
-- **Product API**: `ProductResponse.yaml` → `data: { $ref: ./ProductResponseData.yaml }` ✅ uses named `*ResponseData` wrapper
-- **TradeItem API**: `TradeItemResponse.yaml` → `data: { $ref: ../domain/TradeItem.yaml }` ⚠️ directly references domain schema
-- **Impact**: The Product API correctly follows the envelope convention (from `.github/copilot-instructions.md`) requiring a `*ResponseData` schema for `data`. The TradeItem API bypasses this — NSwag will generate a `TradeItemResponseData` type vs a `TradeItem` type depending on which pattern is used, affecting client code consistency.
-- **Files**: `openapi/apis/tradeitem/schemas/responses/TradeItemResponse.yaml:13` vs `openapi/apis/product/schemas/responses/ProductResponse.yaml:18`
+Created `TradeItemResponseData.yaml` wrapper with composite keys + domain sub-schema refs. `TradeItemResponse.yaml` now references `./TradeItemResponseData.yaml` instead of `../domain/TradeItem.yaml`, matching the pattern used by all other responses.
 
 ### 5. `Language` parameter not registered in TradeItem API components
 
@@ -89,7 +86,7 @@ All APIs now use the consolidated `rest.2ba.nl/v1/{resource}` + `rest.accept.2ba
 
 1. ~~**Rename `ErrorResponse` → `ProblemDetails`**~~ ✅ Done
 2. **Decide on root endpoint**: Either activate `GET /{supplierIdGln}/{supplierItemNumber}` in TradeItem or remove `GET /{manufacturerIdGln}/{manufacturerProductNumber}` from Product for consistency
-3. **Create `TradeItemResponseData.yaml`** wrapper to match the `*ResponseData` pattern used by ProductResponse
+3. ~~**Create `TradeItemResponseData.yaml`**~~ ✅ Done
 4. **Register `Language`** parameter in TradeItem's `components/parameters` section
 5. **Remove unused `Products` tag** from Product API or add an equivalent base tag to TradeItem
 6. ~~**Align security schemes**~~ ✅ Done

@@ -131,6 +131,8 @@ components:
     # Response schemas
     TradeItemResponse:
       $ref: './schemas/responses/TradeItemResponse.yaml'
+    TradeItemResponseData:
+      $ref: './schemas/responses/TradeItemResponseData.yaml'
     TradeItemDetailsResponse:
       $ref: './schemas/responses/TradeItemDetailsResponse.yaml'
     TradeItemDetailsResponseData:

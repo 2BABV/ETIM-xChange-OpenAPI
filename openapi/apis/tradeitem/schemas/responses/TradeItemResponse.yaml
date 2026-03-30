@@ -6,11 +6,7 @@ required:
   - data
 properties:
   data:
-    description: |
-      Complete trade item information for the requested supplier item combination.
-      **ETIM xChange**: `TradeItem`
-      **Path**: `Supplier[].Product[].TradeItem[]`
-    $ref: ../domain/TradeItem.yaml
+    $ref: ./TradeItemResponseData.yaml
 examples:
   - data:
       supplierIdGln: "1234567890123"
