@@ -28,9 +28,6 @@ servers:
     description: Acceptance server
 
 tags:
-  - name: Products
-    description: Product operations
-    x-displayName: Products
   - name: Products single
     description: Product management operations
     x-displayName: Single Product

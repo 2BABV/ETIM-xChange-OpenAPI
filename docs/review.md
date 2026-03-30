@@ -38,11 +38,9 @@ Created `TradeItemResponseData.yaml` wrapper with composite keys + domain sub-sc
 
 Registered `Language: $ref: ../../shared/parameters/query/language.yaml` in TradeItem API `components/parameters`, matching the Product API pattern.
 
-### 6. Unused `Products` tag in Product API
+### ~~6. Unused `Products` tag in Product API~~ ✅ Resolved
 
-- **Product API** defines 3 tags: `Products`, `Products single`, `Products bulk` — but `Products` (line 31-33) is never used by any endpoint.
-- **TradeItem API** defines 2 tags: `TradeItems single`, `TradeItems bulk` — clean, no unused tags.
-- **File**: `openapi/apis/product/openapi.yaml:31-33`
+Removed the unused `Products` tag definition (lines 31-33). Only `Products single` and `Products bulk` remain, matching the TradeItem API pattern.
 
 ---
 
@@ -86,5 +84,5 @@ All APIs now use the consolidated `rest.2ba.nl/v1/{resource}` + `rest.accept.2ba
 2. **Decide on root endpoint**: Either activate `GET /{supplierIdGln}/{supplierItemNumber}` in TradeItem or remove `GET /{manufacturerIdGln}/{manufacturerProductNumber}` from Product for consistency
 3. ~~**Create `TradeItemResponseData.yaml`**~~ ✅ Done
 4. ~~**Register `Language`**~~ ✅ Done
-5. **Remove unused `Products` tag** from Product API or add an equivalent base tag to TradeItem
+5. ~~**Remove unused `Products` tag**~~ ✅ Done
 6. ~~**Align security schemes**~~ ✅ Done
