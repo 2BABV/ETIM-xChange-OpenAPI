@@ -133,18 +133,6 @@ properties:
       - "externally"
       - "none"
   
-  epdRegistrationNumber:
-    type: ["string", "null"]
-    minLength: 1
-    maxLength: 100
-    description: |
-      Environmental Product Declaration (EPD) registration number.
-      
-      **Note**: This is an API extension field, not part of ETIM xChange schema.
-    examples:
-      - "EPD-PHI-20240001"
-      - null
-  
   epdValidityStartDate:
     type: string
     format: date
@@ -276,17 +264,6 @@ properties:
       - "https://www.environdec.com/psr-library/psr-led-lighting"
       - null
   
-  epdUri:
-    type: ["string", "null"]
-    format: uri
-    description: |
-      URI/URL to access the full Environmental Product Declaration document.
-      
-      **Note**: This is an API extension field, not part of ETIM xChange schema.
-    examples:
-      - "https://epd.manufacturer.com/products/LED-12345-EPD.pdf"
-      - null
-  
   lcaDeclaration:
     type: array
     minItems: 1
@@ -303,7 +280,6 @@ examples:
     declaredUnitQuantity: 1
     lcaReferenceLifetime: 25
     thirdPartyVerification: "externally"
-    epdRegistrationNumber: "EPD-PHI-20240001"
     epdValidityStartDate: "2024-01-01"
     epdValidityExpiryDate: "2029-12-31"
     epdOperatorName: "The International EPD System"

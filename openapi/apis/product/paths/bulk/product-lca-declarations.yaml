@@ -19,12 +19,15 @@ get:
     to minimize payload size. Clients should treat missing properties as null/not applicable.
     
     **Parent Context**: Each row includes key parent fields from LcaEnvironmental
-    (`declaredUnitUnit`, `declaredUnitQuantity`, `lcaReferenceLifetime`, `thirdPartyVerification`)
+    (`declaredUnitUnit`, `declaredUnitQuantity`, `lcaReferenceLifetime`, `thirdPartyVerification`,
+    `epdValidityStartDate`, `epdValidityExpiryDate`, `epdOperatorName`, `epdOperatorUri`,
+    `operatorEpdId`, `manufacturerEpdId`, `productCategoryRulesDescription`, `productCategoryRulesUri`,
+    `productSpecificRulesDescription`, `productSpecificRulesUri`)
     to provide necessary context for interpreting the environmental indicators.
     
     **Data Reconstruction**: To reconstruct the hierarchical structure:
     1. Group rows by `manufacturerIdGln` + `manufacturerProductNumber` for products
-    2. All rows for a product share the same parent context (declared unit, lifetime, verification)
+    2. All rows for a product share the same parent context (declared unit, lifetime, verification, EPD metadata)
     3. Each row represents a different life cycle stage (A1-A3, B1-B7, C1-C4, D)
     
     **Life Cycle Stage Filtering**: Use the optional `lifeCycleStage` query parameter
@@ -58,6 +61,10 @@ get:
                     declaredUnitQuantity: 1
                     lcaReferenceLifetime: 25
                     thirdPartyVerification: "externally"
+                    epdValidityStartDate: "2024-01-01"
+                    epdValidityExpiryDate: "2029-12-31"
+                    epdOperatorName: "The International EPD System"
+                    operatorEpdId: "S-P-12345"
                     lifeCycleStage: "A1-A3"
                     lcaDeclarationIndicator: "MDE"
                     declaredUnitGwpTotal: 15.75
@@ -72,6 +79,13 @@ get:
                     declaredUnitQuantity: 1
                     lcaReferenceLifetime: 25
                     thirdPartyVerification: "externally"
+                    epdValidityStartDate: "2024-01-01"
+                    epdValidityExpiryDate: "2029-12-31"
+                    epdOperatorName: "The International EPD System"
+                    epdOperatorUri: "https://www.environdec.com"
+                    operatorEpdId: "S-P-12345"
+                    manufacturerEpdId: "MFR-EPD-LED-2024-001"
+                    productCategoryRulesDescription: "PCR 2019:14 Lighting equipment"
                     lifeCycleStage: "C1-C4"
                     lcaDeclarationIndicator: "AGG"
                     declaredUnitGwpTotal: 2.5
@@ -83,6 +97,13 @@ get:
                     declaredUnitQuantity: 1
                     lcaReferenceLifetime: 25
                     thirdPartyVerification: "externally"
+                    epdValidityStartDate: "2024-01-01"
+                    epdValidityExpiryDate: "2029-12-31"
+                    epdOperatorName: "The International EPD System"
+                    epdOperatorUri: "https://www.environdec.com"
+                    operatorEpdId: "S-P-12345"
+                    manufacturerEpdId: "MFR-EPD-LED-2024-001"
+                    productCategoryRulesDescription: "PCR 2019:14 Lighting equipment"
                     lifeCycleStage: "D"
                     lcaDeclarationIndicator: "MDE"
                     declaredUnitGwpTotal: -5.2
@@ -94,6 +115,7 @@ get:
                     declaredUnitQuantity: 1
                     lcaReferenceLifetime: 50
                     thirdPartyVerification: "internally"
+                    epdValidityStartDate: "2023-06-15"
                     lifeCycleStage: "A1-A3"
                     lcaDeclarationIndicator: "MND"
                     declaredUnitGwpTotal: 8.5
@@ -115,6 +137,10 @@ get:
                     declaredUnitQuantity: 1
                     lcaReferenceLifetime: 25
                     thirdPartyVerification: "externally"
+                    epdValidityStartDate: "2024-01-01"
+                    epdValidityExpiryDate: "2029-12-31"
+                    epdOperatorName: "The International EPD System"
+                    operatorEpdId: "S-P-12345"
                     lifeCycleStage: "A1-A3"
                     lcaDeclarationIndicator: "MDE"
                     declaredUnitGwpTotal: 15.75

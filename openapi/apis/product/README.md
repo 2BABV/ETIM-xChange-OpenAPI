@@ -74,6 +74,11 @@ An ETIM product classification is uniquely identified by the composite key:
 
 ### Medium Priority
 
+**functionalUnitDescription in bulk LCA**
+- `ProductLcaDeclarationSummary` excludes `functionalUnitDescription` (multilingual array) because it breaks the flat/tabular pattern optimized for ETL/data warehouse ingestion
+- Consumers needing functional unit descriptions should use the single-product `/{manufacturerIdGln}/{manufacturerProductNumber}/lca-environmental` endpoint
+- Consider: dedicated bulk endpoint for functional unit descriptions if demand arises
+
 **ETIM Modelling Classes** (EtimClassification)
 - `EtimModellingClassCode` (pattern: `^MC[0-9]{6}$`)
 - `EtimModellingClassVersion`

@@ -13,7 +13,10 @@ description: |
   to minimize payload size. Clients should treat missing properties as null/not applicable.
   
   **Parent context fields**: Key fields from the parent LcaEnvironmental object are included
-  (`declaredUnitUnit`, `declaredUnitQuantity`, `lcaReferenceLifetime`, `thirdPartyVerification`)
+  (`declaredUnitUnit`, `declaredUnitQuantity`, `lcaReferenceLifetime`, `thirdPartyVerification`,
+  `epdValidityStartDate`, `epdValidityExpiryDate`, `epdOperatorName`, `epdOperatorUri`,
+  `operatorEpdId`, `manufacturerEpdId`, `productCategoryRulesDescription`, `productCategoryRulesUri`,
+  `productSpecificRulesDescription`, `productSpecificRulesUri`)
   to provide necessary context for interpreting the environmental indicators.
 required:
   - manufacturerIdGln
@@ -24,6 +27,7 @@ required:
   - declaredUnitQuantity
   - lcaReferenceLifetime
   - thirdPartyVerification
+  - epdValidityStartDate
 properties:
   # Product key fields
   manufacturerIdGln:
@@ -145,6 +149,138 @@ properties:
     examples:
       - "externally"
       - "none"
+  
+  # EPD metadata fields (parent LcaEnvironmental context)
+  epdValidityStartDate:
+    type: string
+    format: date
+    description: |
+      Start date of EPD validity period. ISO 8601 date format (YYYY-MM-DD).
+      Defaults to CatalogueValidityStart if not overridden at the product level.
+      
+      **ETIM xChange**: `EpdValidityStartDate`
+      **Path**: `Supplier[].Product[].LcaEnvironmental.EpdValidityStartDate`
+      **Default from**: `CatalogueValidityStart`
+    examples:
+      - "2024-01-01"
+  
+  epdValidityExpiryDate:
+    type: ["string", "null"]
+    format: date
+    description: |
+      Expiry date of EPD validity period. ISO 8601 date format (YYYY-MM-DD).
+      
+      **ETIM xChange**: `EpdValidityExpiryDate`
+      **Path**: `Supplier[].Product[].LcaEnvironmental.EpdValidityExpiryDate`
+    examples:
+      - "2029-12-31"
+      - null
+  
+  epdOperatorName:
+    type: ["string", "null"]
+    minLength: 1
+    maxLength: 100
+    description: |
+      Name of the EPD program operator that published the Environmental Product Declaration.
+      
+      **ETIM xChange**: `EpdOperatorName`
+      **Path**: `Supplier[].Product[].LcaEnvironmental.EpdOperatorName`
+    examples:
+      - "IBU - Institut Bauen und Umwelt e.V."
+      - "The International EPD System"
+      - null
+  
+  epdOperatorUri:
+    type: ["string", "null"]
+    format: uri
+    description: |
+      URI/URL to the EPD program operator's website.
+      
+      **ETIM xChange**: `EpdOperatorUri`
+      **Path**: `Supplier[].Product[].LcaEnvironmental.EpdOperatorUri`
+    examples:
+      - "https://ibu-epd.com"
+      - "https://www.environdec.com"
+      - null
+  
+  operatorEpdId:
+    type: ["string", "null"]
+    minLength: 1
+    maxLength: 35
+    description: |
+      EPD identifier assigned by the program operator.
+      
+      **ETIM xChange**: `OperatorEpdId`
+      **Path**: `Supplier[].Product[].LcaEnvironmental.OperatorEpdId`
+    examples:
+      - "EPD-IBU-2024-001234"
+      - null
+  
+  manufacturerEpdId:
+    type: ["string", "null"]
+    minLength: 1
+    maxLength: 35
+    description: |
+      EPD identifier assigned by the manufacturer for internal reference.
+      
+      **ETIM xChange**: `ManufacturerEpdId`
+      **Path**: `Supplier[].Product[].LcaEnvironmental.ManufacturerEpdId`
+    examples:
+      - "MFR-EPD-LED-2024-001"
+      - null
+  
+  productCategoryRulesDescription:
+    type: ["string", "null"]
+    minLength: 1
+    maxLength: 100
+    description: |
+      Description of the Product Category Rules (PCR) used for the LCA/EPD.
+      PCR defines the rules for the environmental assessment of a specific product category.
+      
+      **ETIM xChange**: `ProductCategoryRulesDescription`
+      **Path**: `Supplier[].Product[].LcaEnvironmental.ProductCategoryRulesDescription`
+    examples:
+      - "PCR 2019:14 Lighting equipment"
+      - "EN 15804+A2 Construction products"
+      - null
+  
+  productCategoryRulesUri:
+    type: ["string", "null"]
+    format: uri
+    description: |
+      URI/URL to the Product Category Rules (PCR) document.
+      
+      **ETIM xChange**: `ProductCategoryRulesUri`
+      **Path**: `Supplier[].Product[].LcaEnvironmental.ProductCategoryRulesUri`
+    examples:
+      - "https://www.environdec.com/pcr-library/pcr-2019-14"
+      - null
+  
+  productSpecificRulesDescription:
+    type: ["string", "null"]
+    minLength: 1
+    maxLength: 100
+    description: |
+      Description of Product Specific Rules (PSR) applied in addition to PCR.
+      PSR provides additional rules for sub-categories within a PCR.
+      
+      **ETIM xChange**: `ProductSpecificRulesDescription`
+      **Path**: `Supplier[].Product[].LcaEnvironmental.ProductSpecificRulesDescription`
+    examples:
+      - "PSR for LED lamps and luminaires"
+      - null
+  
+  productSpecificRulesUri:
+    type: ["string", "null"]
+    format: uri
+    description: |
+      URI/URL to the Product Specific Rules (PSR) document.
+      
+      **ETIM xChange**: `ProductSpecificRulesUri`
+      **Path**: `Supplier[].Product[].LcaEnvironmental.ProductSpecificRulesUri`
+    examples:
+      - "https://www.environdec.com/psr-library/psr-led-lighting"
+      - null
   
   # LcaDeclaration fields (flattened)
   lifeCycleStage:
@@ -480,6 +616,14 @@ examples:
     declaredUnitQuantity: 1
     lcaReferenceLifetime: 25
     thirdPartyVerification: "externally"
+    epdValidityStartDate: "2024-01-01"
+    epdValidityExpiryDate: "2029-12-31"
+    epdOperatorName: "The International EPD System"
+    epdOperatorUri: "https://www.environdec.com"
+    operatorEpdId: "S-P-12345"
+    manufacturerEpdId: "MFR-EPD-LED-2024-001"
+    productCategoryRulesDescription: "PCR 2019:14 Lighting equipment"
+    productCategoryRulesUri: "https://www.environdec.com/pcr-library/pcr-2019-14"
     lifeCycleStage: "A1-A3"
     lcaDeclarationIndicator: "MDE"
     declaredUnitGwpTotal: 15.75
@@ -494,38 +638,55 @@ examples:
     declaredUnitPert: 45.2
     declaredUnitPenrt: 195.8
   
-  # End-of-life stage declaration
+  # End-of-life stage declaration (same product, EPD metadata repeated)
   - manufacturerIdGln: "1234567890123"
     manufacturerProductNumber: "929002376910"
     declaredUnitUnit: "PCE"
     declaredUnitQuantity: 1
     lcaReferenceLifetime: 25
     thirdPartyVerification: "externally"
+    epdValidityStartDate: "2024-01-01"
+    epdValidityExpiryDate: "2029-12-31"
+    epdOperatorName: "The International EPD System"
+    epdOperatorUri: "https://www.environdec.com"
+    operatorEpdId: "S-P-12345"
+    manufacturerEpdId: "MFR-EPD-LED-2024-001"
+    productCategoryRulesDescription: "PCR 2019:14 Lighting equipment"
+    productCategoryRulesUri: "https://www.environdec.com/pcr-library/pcr-2019-14"
     lifeCycleStage: "C1-C4"
     lcaDeclarationIndicator: "AGG"
     declaredUnitGwpTotal: 2.5
     declaredUnitGwpFossil: 2.3
     declaredUnitAdpf: 35.0
   
-  # Benefits beyond system boundary (Module D)
+  # Benefits beyond system boundary (Module D, same product)
   - manufacturerIdGln: "1234567890123"
     manufacturerProductNumber: "929002376910"
     declaredUnitUnit: "PCE"
     declaredUnitQuantity: 1
     lcaReferenceLifetime: 25
     thirdPartyVerification: "externally"
+    epdValidityStartDate: "2024-01-01"
+    epdValidityExpiryDate: "2029-12-31"
+    epdOperatorName: "The International EPD System"
+    epdOperatorUri: "https://www.environdec.com"
+    operatorEpdId: "S-P-12345"
+    manufacturerEpdId: "MFR-EPD-LED-2024-001"
+    productCategoryRulesDescription: "PCR 2019:14 Lighting equipment"
+    productCategoryRulesUri: "https://www.environdec.com/pcr-library/pcr-2019-14"
     lifeCycleStage: "D"
     lcaDeclarationIndicator: "MDE"
     declaredUnitGwpTotal: -5.2
     declaredUnitAdpf: -45.0
   
-  # Different product with kg-based declared unit
+  # Different product with kg-based declared unit (internally verified, no EPD operator)
   - manufacturerIdGln: "9876543210987"
     manufacturerProductNumber: "CABLE-CU-100M"
     declaredUnitUnit: "KGM"
     declaredUnitQuantity: 1
     lcaReferenceLifetime: 50
     thirdPartyVerification: "internally"
+    epdValidityStartDate: "2023-06-15"
     lifeCycleStage: "A1-A3"
     lcaDeclarationIndicator: "MND"
     declaredUnitGwpTotal: 8.5
