@@ -7,7 +7,7 @@ description: |
   `ProductEtimClassificationFeature` - 1 row per data point.
   
   **Join Keys**: Use `supplierIdGln` + `supplierItemNumber` + `pricingRef` to join
-  with `/bulk/trade-item-pricings` data.
+  with `/trade-items/bulk/pricings` data.
   
   Use the `cursor` from `meta` to retrieve the next page of results.
   

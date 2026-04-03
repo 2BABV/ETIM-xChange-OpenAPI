@@ -13,7 +13,7 @@ description: |
   A trade item may have multiple pricing entries (e.g., quantity tiers, validity periods),
   resulting in multiple rows with the same composite key but different pricing data.
   
-  **Allowances & Surcharges**: Available via separate `/bulk/trade-item-allowance-surcharges` endpoint.
+  **Allowances & Surcharges**: Available via separate `/trade-items/bulk/allowance-surcharges` endpoint.
   Join using `pricingRef` to correlate pricing entries with their allowances/surcharges.
   
   **Payload Optimization**: Optional properties with null values may be omitted from the response
@@ -67,7 +67,7 @@ properties:
       
       This is a technical identifier not present in the ETIM xChange domain model.
       Use `pricingRef` to correlate pricing entries with their allowances/surcharges
-      from the `/bulk/trade-item-allowance-surcharges` endpoint.
+      from the `/trade-items/bulk/allowance-surcharges` endpoint.
     $ref: ../../../../shared/schemas/identifiers/TechnicalId.yaml
     examples:
       - "price-c62-1-20250101"

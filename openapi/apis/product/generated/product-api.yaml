@@ -21,10 +21,15 @@ info:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
 servers:
-  - url: https://rest.2ba.nl/v1/products
-    description: Production server
-  - url: https://rest.accept.2ba.nl/v1/products
-    description: Acceptance server
+  - url: https://{host}{basePath}/v1
+    description: ETIM xChange Product API v1
+    variables:
+      host:
+        default: api.example.com
+        description: 'Implementer-specific API hostname. Examples: rest.2ba.nl, selectprerelease.artikelbeheer.nl, acceptation-service-api-dsgo.etimix.com'
+      basePath:
+        default: ''
+        description: Optional path prefix (e.g. /api). Leave empty if the API is served directly under the domain root.
 security:
   - oauth2:
       - read:products
@@ -36,7 +41,7 @@ tags:
     description: Bulk data retrieval operations for products with cursor-based pagination
     x-displayName: Bulk Products
 paths:
-  /{manufacturerIdGln}/{manufacturerProductNumber}:
+  /products/{manufacturerIdGln}/{manufacturerProductNumber}:
     get:
       operationId: getProduct
       tags:
@@ -140,14 +145,13 @@ paths:
                 notFound:
                   summary: Product not found
                   value:
-                    type: https://api.product.2ba.nl/problems/not-found
-                    title: Product Not Found
+                    type: about:blank
+                    title: Not Found
                     status: 404
                     detail: No product found with manufacturer GLN '1234567890123' and product number '929002376910'
-                    instance: https://api.product.2ba.nl/v1/products/1234567890123/929002376910
         '500':
           $ref: '#/components/responses/500-internal-server-error'
-  /{manufacturerIdGln}/{manufacturerProductNumber}/details:
+  /products/{manufacturerIdGln}/{manufacturerProductNumber}/details:
     get:
       operationId: getProductDetails
       tags:
@@ -229,14 +233,13 @@ paths:
                 notFound:
                   summary: Product not found
                   value:
-                    type: https://api.product.2ba.nl/problems/not-found
-                    title: Product Not Found
+                    type: about:blank
+                    title: Not Found
                     status: 404
                     detail: No product found with manufacturer GLN '1234567890123' and product number '929002376910'
-                    instance: https://api.product.2ba.nl/v1/products/1234567890123/929002376910/details
         '500':
           $ref: '#/components/responses/500-internal-server-error'
-  /{manufacturerIdGln}/{manufacturerProductNumber}/descriptions:
+  /products/{manufacturerIdGln}/{manufacturerProductNumber}/descriptions:
     get:
       operationId: getProductDescriptions
       tags:
@@ -252,7 +255,7 @@ paths:
         **Language filtering**: Use the optional `language` query parameter to filter
         descriptions to specific language(s). If not specified, all available languages are returned.
 
-        **Nested structure**: Unlike the bulk endpoint `/bulk/product-descriptions` which uses
+        **Nested structure**: Unlike the bulk endpoint `/products/bulk/descriptions` which uses
         a flattened structure optimized for ETL, this single-product endpoint returns descriptions
         in their natural nested format for easier consumption.
 
@@ -321,14 +324,13 @@ paths:
                 notFound:
                   summary: Product not found
                   value:
-                    type: https://api.product.2ba.nl/problems/not-found
-                    title: Product Not Found
+                    type: about:blank
+                    title: Not Found
                     status: 404
                     detail: No product found with manufacturer GLN '1234567890123' and product number '929002376910'
-                    instance: https://api.product.2ba.nl/v1/products/1234567890123/929002376910/descriptions
         '500':
           $ref: '#/components/responses/500-internal-server-error'
-  /{manufacturerIdGln}/{manufacturerProductNumber}/etim-classifications:
+  /products/{manufacturerIdGln}/{manufacturerProductNumber}/etim-classifications:
     get:
       operationId: getProductEtimClassifications
       tags:
@@ -405,14 +407,13 @@ paths:
                 notFound:
                   summary: Product not found
                   value:
-                    type: https://api.product.2ba.nl/problems/not-found
-                    title: Product Not Found
+                    type: about:blank
+                    title: Not Found
                     status: 404
                     detail: No product found with manufacturer GLN '1234567890123' and product number '929002376910'
-                    instance: https://api.product.2ba.nl/v1/products/1234567890123/929002376910/etim-classifications
         '500':
           $ref: '#/components/responses/500-internal-server-error'
-  /{manufacturerIdGln}/{manufacturerProductNumber}/lca-environmental:
+  /products/{manufacturerIdGln}/{manufacturerProductNumber}/lca-environmental:
     get:
       operationId: getProductLcaEnvironmental
       tags:
@@ -507,14 +508,13 @@ paths:
                 notFound:
                   summary: Product not found
                   value:
-                    type: https://api.product.2ba.nl/problems/not-found
-                    title: Product Not Found
+                    type: about:blank
+                    title: Not Found
                     status: 404
                     detail: No product found with manufacturer GLN '1234567890123' and product number '929002376910'
-                    instance: https://api.product.2ba.nl/v1/products/1234567890123/929002376910/lca-environmental
         '500':
           $ref: '#/components/responses/500-internal-server-error'
-  /bulk/product-details:
+  /products/bulk/details:
     get:
       operationId: getBulkProductDetails
       tags:
@@ -546,7 +546,7 @@ paths:
           $ref: '#/components/responses/403-forbidden'
         '500':
           $ref: '#/components/responses/500-internal-server-error'
-  /bulk/product-descriptions:
+  /products/bulk/descriptions:
     get:
       operationId: getBulkProductDescriptions
       tags:
@@ -579,7 +579,7 @@ paths:
           $ref: '#/components/responses/403-forbidden'
         '500':
           $ref: '#/components/responses/500-internal-server-error'
-  /bulk/product-etim-classification-features:
+  /products/bulk/etim-classifications:
     get:
       operationId: getBulkProductEtimClassificationFeatures
       tags:
@@ -680,7 +680,7 @@ paths:
           $ref: '#/components/responses/403-forbidden'
         '500':
           $ref: '#/components/responses/500-internal-server-error'
-  /bulk/product-lca-declarations:
+  /products/bulk/lca-environmental:
     get:
       operationId: getBulkProductLcaDeclarations
       tags:
@@ -1054,7 +1054,7 @@ components:
         Core product information for bulk retrieval combining identification and details.
         Contains all key fields plus manufacturer info, identifiers, lifecycle dates, and operational details.
 
-        For product descriptions (text content), use the dedicated `/bulk/product-descriptions` endpoint
+        For product descriptions (text content), use the dedicated `/products/bulk/descriptions` endpoint
         which supports language filtering.
       required:
         - manufacturerIdGln
@@ -3899,7 +3899,7 @@ components:
         Returns the product identification keys and a nested array of `ProductDescription` objects,
         each containing descriptions in a specific language.
 
-        Unlike the bulk endpoint `/bulk/product-descriptions` which uses a flattened structure
+        Unlike the bulk endpoint `/products/bulk/descriptions` which uses a flattened structure
         optimized for ETL, this single-product endpoint returns descriptions in their natural
         nested format for easier consumption.
 
@@ -4478,16 +4478,14 @@ components:
           description: A URI reference that identifies the specific occurrence of the problem.
       additionalProperties: true
       examples:
-        - type: https://example.com/probs/out-of-credit
-          title: You do not have enough credit.
+        - type: about:blank
+          title: Forbidden
           status: 403
           detail: Your current balance is 30, but that costs 50.
-          instance: /account/12345/msgs/abc
-        - type: https://example.com/probs/not-found
-          title: Resource not found
+        - type: about:blank
+          title: Not Found
           status: 404
           detail: The requested resource could not be found.
-          instance: /api/resources/12345
     CursorPaginationMetadata:
       type: object
       description: |
@@ -4839,11 +4837,10 @@ components:
             invalid-request:
               summary: Invalid request example
               value:
-                type: https://example.com/probs/validation-error
+                type: about:blank
                 title: Bad Request
                 status: 400
                 detail: One or more validation errors occurred
-                instance: https://api.example.com/v1/resource/example
                 errors:
                   field1:
                     - Field1 is required.
@@ -4860,11 +4857,10 @@ components:
             unauthorized:
               summary: Unauthorized access example
               value:
-                type: https://example.com/probs/unauthorized
+                type: about:blank
                 title: Unauthorized
                 status: 401
                 detail: Authentication is required and has failed or has not yet been provided
-                instance: https://api.example.com/v1/resource/example
     403-forbidden:
       description: Forbidden - Insufficient permissions
       content:
@@ -4875,11 +4871,10 @@ components:
             forbidden:
               summary: Forbidden access example
               value:
-                type: https://example.com/probs/forbidden
+                type: about:blank
                 title: Forbidden
                 status: 403
                 detail: You do not have permission to access this resource.
-                instance: https://api.example.com/v1/resource/example
     500-internal-server-error:
       description: Internal Server Error - An unexpected error occurred
       content:
@@ -4890,11 +4885,10 @@ components:
             internal-server-error:
               summary: Internal Server Error example
               value:
-                type: https://example.com/probs/internal-server-error
+                type: about:blank
                 title: Internal Server Error
                 status: 500
                 detail: An unexpected error occurred. Please try again later
-                instance: https://api.example.com/v1/resource/example
     404-not-found:
       description: Not Found - The requested resource does not exist
       content:
@@ -4905,20 +4899,23 @@ components:
             notFound:
               summary: Resource not found
               value:
-                type: https://example.com/probs/not-found
+                type: about:blank
                 title: Not Found
                 status: 404
                 detail: The requested resource does not exist
-                instance: https://api.example.com/v1/resource/example
   securitySchemes:
     oauth2:
       type: oauth2
       description: |
         OAuth 2.0 Client Credentials grant (RFC 6749 §4.4).
         Supports both client_secret and client_assertion (RFC 7523) authentication.
+
+        The token URL is implementer-specific. Each implementer provides their own
+        OAuth 2.0 authorization server. The placeholder below must be replaced with
+        the actual token endpoint for your environment.
       flows:
         clientCredentials:
-          tokenUrl: https://identity.2ba.nl/connect/token
+          tokenUrl: https://auth.example.com/connect/token
           scopes:
             read:products: Grants read access to products
 x-tagGroups:

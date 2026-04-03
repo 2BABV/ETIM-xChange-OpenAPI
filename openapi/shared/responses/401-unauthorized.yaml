@@ -7,8 +7,7 @@ content:
       unauthorized:
         summary: Unauthorized access example
         value:
-          type: https://example.com/probs/unauthorized
+          type: about:blank
           title: Unauthorized
           status: 401
           detail: Authentication is required and has failed or has not yet been provided
-          instance: https://api.example.com/v1/resource/example

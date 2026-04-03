@@ -22,10 +22,20 @@ info:
     url: https://www.apache.org/licenses/LICENSE-2.0.html
 
 servers:
-  - url: https://rest.2ba.nl/v1/products
-    description: Production server
-  - url: https://rest.accept.2ba.nl/v1/products
-    description: Acceptance server
+  - url: https://{host}{basePath}/v1
+    description: ETIM xChange Product API v1
+    variables:
+      host:
+        default: api.example.com
+        description: >-
+          Implementer-specific API hostname.
+          Examples: rest.2ba.nl, selectprerelease.artikelbeheer.nl,
+          acceptation-service-api-dsgo.etimix.com
+      basePath:
+        default: ''
+        description: >-
+          Optional path prefix (e.g. /api). Leave empty if the API
+          is served directly under the domain root.
 
 tags:
   - name: Products single
@@ -42,38 +52,32 @@ x-tagGroups:
       - Products bulk
 
 paths:
-  /{manufacturerIdGln}/{manufacturerProductNumber}:
+  /products/{manufacturerIdGln}/{manufacturerProductNumber}:
     $ref: paths/products.yaml
   
-  /{manufacturerIdGln}/{manufacturerProductNumber}/details:
+  /products/{manufacturerIdGln}/{manufacturerProductNumber}/details:
     $ref: paths/product-details.yaml
   
-  /{manufacturerIdGln}/{manufacturerProductNumber}/descriptions:
+  /products/{manufacturerIdGln}/{manufacturerProductNumber}/descriptions:
     $ref: paths/product-descriptions.yaml
   
-  /{manufacturerIdGln}/{manufacturerProductNumber}/etim-classifications:
+  /products/{manufacturerIdGln}/{manufacturerProductNumber}/etim-classifications:
     $ref: paths/product-etim-classifications.yaml
   
-  /{manufacturerIdGln}/{manufacturerProductNumber}/lca-environmental:
+  /products/{manufacturerIdGln}/{manufacturerProductNumber}/lca-environmental:
     $ref: paths/product-lca-environmental.yaml
   
-  # /bulk/products:
-  #   $ref: paths/bulk/products.yaml
+  /products/bulk/details:
+    $ref: paths/bulk/details.yaml
   
-  /bulk/product-details:
-    $ref: paths/bulk/product-details.yaml
+  /products/bulk/descriptions:
+    $ref: paths/bulk/descriptions.yaml
   
-  /bulk/product-descriptions:
-    $ref: paths/bulk/product-descriptions.yaml
+  /products/bulk/etim-classifications:
+    $ref: paths/bulk/etim-classifications.yaml
   
-  # /bulk/product-etim-classifications:
-  #   $ref: paths/bulk/product-etim-classifications.yaml
-  
-  /bulk/product-etim-classification-features:
-    $ref: paths/bulk/product-etim-classification-features.yaml
-  
-  /bulk/product-lca-declarations:
-    $ref: paths/bulk/product-lca-declarations.yaml
+  /products/bulk/lca-environmental:
+    $ref: paths/bulk/lca-environmental.yaml
 
 components:
   schemas:
@@ -216,9 +220,13 @@ components:
       description: |
         OAuth 2.0 Client Credentials grant (RFC 6749 §4.4).
         Supports both client_secret and client_assertion (RFC 7523) authentication.
+
+        The token URL is implementer-specific. Each implementer provides their own
+        OAuth 2.0 authorization server. The placeholder below must be replaced with
+        the actual token endpoint for your environment.
       flows:
         clientCredentials:
-          tokenUrl: https://identity.2ba.nl/connect/token
+          tokenUrl: https://auth.example.com/connect/token
           scopes:
             read:products: Grants read access to products
 

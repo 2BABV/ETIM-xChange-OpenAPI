@@ -279,10 +279,10 @@ operationId: getTradeItemNetPrice
 
 ```yaml
 # ✅ CORRECT
-/bulk/products
-/bulk/product-identifications
-/bulk/trade-items
-/bulk/item-orderings
+/products/bulk/details
+/products/bulk/etim-classifications
+/trade-items/bulk/descriptions
+/trade-items/bulk/orderings
 /netprices
 /trade-items
 
@@ -346,20 +346,20 @@ GET /trade-items/{supplierIdGln}/{supplierItemNumber}
 
 #### Bulk Endpoints
 
-Pattern: `/bulk/{entity-collection}`
+Pattern: `/{resource}/bulk/{aspect}`
 
 ```yaml
 # Product Bulk Endpoints
-GET /bulk/products
-GET /bulk/product-identifications
-GET /bulk/product-details
-GET /bulk/product-classifications
+GET /products/bulk/details
+GET /products/bulk/descriptions
+GET /products/bulk/etim-classifications
+GET /products/bulk/lca-environmental
 
 # TradeItem Bulk Endpoints
-GET /bulk/trade-items
-GET /bulk/item-identifications
-GET /bulk/item-orderings
-GET /bulk/item-pricings
+GET /trade-items/bulk/details
+GET /trade-items/bulk/descriptions
+GET /trade-items/bulk/orderings
+GET /trade-items/bulk/pricings
 ```
 
 **Characteristics**:
@@ -1253,9 +1253,9 @@ All APIs use the **OAuth 2.0 Client Credentials** flow (`clientCredentials` gran
 - **Why not API keys (`apiKeyAuth`)?** API keys are static secrets with no expiry, rotation, or scope limitations. OAuth 2.0 tokens expire, can be scoped, and support audit trails.
 - **RFC 7523 Client Assertion**: All APIs document support for `client_assertion` + `client_assertion_type` as an alternative to `client_secret`, enabling certificate-based authentication for higher-security environments.
 
-**Token URL standardization:**
-- Production: `https://identity.2ba.nl/connect/token`
-- Previously inconsistent: `authorize.2ba.nl/connect/token` (TradeItem), `auth.2ba.nl/oauth/token` (Stock)
+**Token URL:**
+- The token URL is implementer-specific. The OpenAPI specs use a placeholder (`https://auth.example.com/connect/token`) since the `tokenUrl` field does not support server variables.
+- 2BA production example: `https://identity.2ba.nl/connect/token`
 
 **Scope naming convention:** `read:{resource}` (e.g., `read:products`, `read:tradeitems`, `read:netprices`, `read:stock`)
 
@@ -1263,18 +1263,36 @@ All APIs use the **OAuth 2.0 Client Credentials** flow (`clientCredentials` gran
 
 ## Server URL Pattern
 
-All APIs use a consistent server URL structure:
+The API uses parameterized server URLs to support multiple implementers:
 
-| Environment | Pattern | Example |
-|-------------|---------|---------|
-| Production | `https://rest.2ba.nl/v1/{resource}` | `https://rest.2ba.nl/v1/products` |
-| Acceptance | `https://rest.accept.2ba.nl/v1/{resource}` | `https://rest.accept.2ba.nl/v1/tradeitems` |
+```yaml
+servers:
+  - url: https://{host}{basePath}/v1
+    variables:
+      host:
+        default: api.example.com
+      basePath:
+        default: ''
+```
+
+The URL contract for implementers:
+
+```
+https://{implementer-domain}[/optional-prefix]/v1/{resource}/{path-params}
+```
+
+| URL Part | Fixed or Variable? | Rationale |
+|---|---|---|
+| Domain / host | **Variable** | Each implementer has their own domain |
+| `/api/` prefix | **Variable (optional)** | Depends on implementer infrastructure |
+| `/v1/` version | **Fixed** | All v1 implementers MUST use `/v1/` |
+| Resource path | **Fixed** | `/products/...`, `/trade-items/...` must be identical |
+| Path parameters | **Fixed** | Per spec definition |
 
 **Design decisions:**
 
-- **Resource in server URL, not path**: The resource name (e.g., `products`, `tradeitems`) is part of the server URL, not the OpenAPI path. This keeps path definitions focused on entity identifiers and sub-resources.
-- **Why `rest.2ba.nl`?** Separates the REST API surface from the identity provider (`identity.2ba.nl`) and any web UI (`www.2ba.nl`).
-- **`ProblemDetails` example URLs** use the service-specific domain (e.g., `api.product.2ba.nl`, `api.tradeitem.2ba.nl`), NOT the server URL. These are opaque type identifiers per RFC 7807, not clickable endpoints.
+- **Resource in path, not server URL**: The resource name (e.g., `/products`, `/trade-items`) is part of the OpenAPI path, not the server URL. This makes the full URL contract visible in the spec and allows multiple implementers with different server URLs.
+- **`ProblemDetails` uses `about:blank`**: Per RFC 7807, when the error has no extra semantics beyond the HTTP status code, `type` is set to `about:blank` and `title` matches the HTTP status phrase. The `instance` field is omitted from examples.
 
 ---
 

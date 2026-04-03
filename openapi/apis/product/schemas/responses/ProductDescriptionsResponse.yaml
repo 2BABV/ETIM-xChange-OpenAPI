@@ -4,7 +4,7 @@ description: |
   Returns the product identification keys and a nested array of `ProductDescription` objects,
   each containing descriptions in a specific language.
   
-  Unlike the bulk endpoint `/bulk/product-descriptions` which uses a flattened structure
+  Unlike the bulk endpoint `/products/bulk/descriptions` which uses a flattened structure
   optimized for ETL, this single-product endpoint returns descriptions in their natural
   nested format for easier consumption.
   

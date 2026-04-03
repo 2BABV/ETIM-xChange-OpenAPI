@@ -14,7 +14,7 @@ get:
     - Validity and obsolescence dates
     - Item status and condition
     
-    **Note**: Item descriptions are available via `/bulk/trade-item-descriptions` endpoint.
+    **Note**: Item descriptions are available via `/trade-items/bulk/descriptions` endpoint.
     
     Use this endpoint for:
     - Initial data synchronization

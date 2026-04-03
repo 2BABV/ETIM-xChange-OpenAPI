@@ -7,11 +7,11 @@ get:
     VAT, price validity periods, and the catalog-level currency code.
     
     **Allowances & Surcharges**: The `allowanceSurcharges` property is always `null` in this response.
-    Use the separate `/bulk/trade-item-allowance-surcharges` endpoint for flat retrieval.
+    Use the separate `/trade-items/bulk/allowance-surcharges` endpoint for flat retrieval.
     
     **Flattened Structure**: Each row represents a single price entry with embedded composite key
     (`supplierIdGln` + `supplierItemNumber`). This follows the same pattern as 
-    `/bulk/product-etim-classifications` - 1 row per data point.
+    `/products/bulk/etim-classifications` - 1 row per data point.
     
     A trade item with multiple price tiers (e.g., quantity breaks, validity periods) will have
     multiple rows with the same composite key but different pricing data.

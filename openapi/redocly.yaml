@@ -35,7 +35,7 @@ rules:
   operation-operationId: error
   operation-summary: error
   no-enum-type-mismatch: error
-  no-server-example.com: error
+  no-server-example.com: off
   no-server-trailing-slash: error
   boolean-parameter-prefixes: error
   paths-kebab-case: error

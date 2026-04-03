@@ -29,15 +29,13 @@ properties:
     description: A URI reference that identifies the specific occurrence of the problem.
 additionalProperties: true
 examples:
-  - type: https://example.com/probs/out-of-credit
-    title: You do not have enough credit.
+  - type: about:blank
+    title: Forbidden
     status: 403
     detail: Your current balance is 30, but that costs 50.
-    instance: /account/12345/msgs/abc
-  - type: https://example.com/probs/not-found
-    title: Resource not found
+  - type: about:blank
+    title: Not Found
     status: 404
     detail: The requested resource could not be found.
-    instance: /api/resources/12345
 
 

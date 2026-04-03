@@ -8,7 +8,7 @@ info:
     ## Features
 
     - Individual trade item operations via `/trade-items`
-    - Bulk data retrieval via `/bulk/*` endpoints with cursor-based pagination
+    - Bulk data retrieval via `/trade-items/bulk/*` endpoints with cursor-based pagination
 
     ## Data Model
 
@@ -21,10 +21,15 @@ info:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
 servers:
-  - url: https://rest.2ba.nl/v1/trade-items
-    description: Production server
-  - url: https://rest.accept.2ba.nl/v1/trade-items
-    description: Acceptance server
+  - url: https://{host}{basePath}/v1
+    description: ETIM xChange Trade Item API v1
+    variables:
+      host:
+        default: api.example.com
+        description: 'Implementer-specific API hostname. Examples: rest.2ba.nl, selectprerelease.artikelbeheer.nl, acceptation-service-api-dsgo.etimix.com'
+      basePath:
+        default: ''
+        description: Optional path prefix (e.g. /api). Leave empty if the API is served directly under the domain root.
 security:
   - oauth2:
       - read:tradeitems
@@ -36,7 +41,7 @@ tags:
     description: Bulk data retrieval operations with cursor-based pagination for high-volume data exchange
     x-displayName: Bulk Trade Items
 paths:
-  /{supplierIdGln}/{supplierItemNumber}/details:
+  /trade-items/{supplierIdGln}/{supplierItemNumber}/details:
     get:
       operationId: getTradeItemDetails
       tags:
@@ -130,14 +135,13 @@ paths:
                 notFound:
                   summary: Trade item not found
                   value:
-                    type: https://api.tradeitem.2ba.nl/problems/not-found
-                    title: Trade Item Not Found
+                    type: about:blank
+                    title: Not Found
                     status: 404
                     detail: No trade item found with supplier GLN '1234567890123' and item number 'UNKNOWN-SKU'
-                    instance: https://api.tradeitem.2ba.nl/v1/1234567890123/UNKNOWN-SKU/details
         '500':
           $ref: '#/components/responses/500-internal-server-error'
-  /{supplierIdGln}/{supplierItemNumber}/descriptions:
+  /trade-items/{supplierIdGln}/{supplierItemNumber}/descriptions:
     get:
       operationId: getTradeItemDescriptions
       tags:
@@ -152,7 +156,7 @@ paths:
         **Language filtering**: Use the optional `language` query parameter to filter
         descriptions to specific language(s). If not specified, all available languages are returned.
 
-        **Nested structure**: Unlike the bulk endpoint `/bulk/trade-item-descriptions` which uses
+        **Nested structure**: Unlike the bulk endpoint `/trade-items/bulk/descriptions` which uses
         a flattened structure optimized for ETL, this single-item endpoint returns descriptions
         in their natural nested format for easier consumption.
 
@@ -226,14 +230,13 @@ paths:
                 notFound:
                   summary: Trade item not found
                   value:
-                    type: https://api.tradeitem.2ba.nl/problems/not-found
-                    title: Trade Item Not Found
+                    type: about:blank
+                    title: Not Found
                     status: 404
                     detail: No trade item found with supplier GLN '1234567890123' and item number 'UNKNOWN-SKU'
-                    instance: https://api.tradeitem.2ba.nl/v1/1234567890123/UNKNOWN-SKU/descriptions
         '500':
           $ref: '#/components/responses/500-internal-server-error'
-  /{supplierIdGln}/{supplierItemNumber}/orderings:
+  /trade-items/{supplierIdGln}/{supplierItemNumber}/orderings:
     get:
       operationId: getTradeItemOrderings
       tags:
@@ -330,14 +333,13 @@ paths:
                 notFound:
                   summary: Trade item not found
                   value:
-                    type: https://api.tradeitem.2ba.nl/problems/not-found
-                    title: Trade Item Not Found
+                    type: about:blank
+                    title: Not Found
                     status: 404
                     detail: No trade item found with supplier GLN '1234567890123' and item number 'UNKNOWN-SKU'
-                    instance: https://api.tradeitem.2ba.nl/v1/1234567890123/UNKNOWN-SKU/orderings
         '500':
           $ref: '#/components/responses/500-internal-server-error'
-  /{supplierIdGln}/{supplierItemNumber}/pricings:
+  /trade-items/{supplierIdGln}/{supplierItemNumber}/pricings:
     get:
       operationId: getTradeItemPricings
       tags:
@@ -469,14 +471,13 @@ paths:
                 notFound:
                   summary: Trade item not found
                   value:
-                    type: https://api.tradeitem.2ba.nl/problems/not-found
-                    title: Trade Item Not Found
+                    type: about:blank
+                    title: Not Found
                     status: 404
                     detail: No trade item found with supplier GLN '1234567890123' and item number 'UNKNOWN-SKU'
-                    instance: https://api.tradeitem.2ba.nl/v1/1234567890123/UNKNOWN-SKU/pricings
         '500':
           $ref: '#/components/responses/500-internal-server-error'
-  /{supplierIdGln}/{supplierItemNumber}/allowance-surcharges:
+  /trade-items/{supplierIdGln}/{supplierItemNumber}/allowance-surcharges:
     get:
       operationId: getTradeItemAllowanceSurcharges
       tags:
@@ -578,14 +579,13 @@ paths:
                 notFound:
                   summary: Trade item not found
                   value:
-                    type: https://api.tradeitem.2ba.nl/problems/not-found
-                    title: Trade Item Not Found
+                    type: about:blank
+                    title: Not Found
                     status: 404
                     detail: No trade item found with supplier GLN '1234567890123' and item number 'UNKNOWN-SKU'
-                    instance: https://api.tradeitem.2ba.nl/v1/1234567890123/UNKNOWN-SKU/allowance-surcharges
         '500':
           $ref: '#/components/responses/500-internal-server-error'
-  /{supplierIdGln}/{supplierItemNumber}/relations:
+  /trade-items/{supplierIdGln}/{supplierItemNumber}/relations:
     get:
       operationId: getTradeItemRelations
       tags:
@@ -597,7 +597,7 @@ paths:
         This endpoint returns all relationships the trade item has with other items,
         including accessories, spare parts, consumables, successors, and other relation types.
 
-        **Nested structure**: Unlike the bulk endpoint `/bulk/trade-item-relations` which uses
+        **Nested structure**: Unlike the bulk endpoint `/trade-items/bulk/relations` which uses
         a flattened structure optimized for ETL, this single-item endpoint returns relations
         in their natural nested format for easier consumption.
 
@@ -676,14 +676,13 @@ paths:
                 notFound:
                   summary: Trade item not found
                   value:
-                    type: https://api.tradeitem.2ba.nl/problems/not-found
-                    title: Trade Item Not Found
+                    type: about:blank
+                    title: Not Found
                     status: 404
                     detail: No trade item found with supplier GLN '1234567890123' and item number 'UNKNOWN-SKU'
-                    instance: https://api.tradeitem.2ba.nl/v1/1234567890123/UNKNOWN-SKU/relations
         '500':
           $ref: '#/components/responses/500-internal-server-error'
-  /{supplierIdGln}/{supplierItemNumber}/logistics-details:
+  /trade-items/{supplierIdGln}/{supplierItemNumber}/logistics-details:
     get:
       operationId: getTradeItemLogisticsDetails
       tags:
@@ -695,7 +694,7 @@ paths:
         This endpoint returns base item logistic measurements including net dimensions
         (length, width, height, diameter), weight, and volume with their respective units.
 
-        **Nested structure**: Unlike the bulk endpoint `/bulk/trade-item-logistics-details` which uses
+        **Nested structure**: Unlike the bulk endpoint `/trade-items/bulk/logistics-details` which uses
         a flattened structure optimized for ETL, this single-item endpoint returns logistics
         in their natural nested format for easier consumption.
 
@@ -769,14 +768,13 @@ paths:
                 notFound:
                   summary: Trade item not found
                   value:
-                    type: https://api.tradeitem.2ba.nl/problems/not-found
-                    title: Trade Item Not Found
+                    type: about:blank
+                    title: Not Found
                     status: 404
                     detail: No trade item found with supplier GLN '1234567890123' and item number 'UNKNOWN-SKU'
-                    instance: https://api.tradeitem.2ba.nl/v1/1234567890123/UNKNOWN-SKU/logistics-details
         '500':
           $ref: '#/components/responses/500-internal-server-error'
-  /bulk/trade-item-details:
+  /trade-items/bulk/details:
     get:
       operationId: getBulkTradeItemDetails
       tags:
@@ -793,7 +791,7 @@ paths:
         - Validity and obsolescence dates
         - Item status and condition
 
-        **Note**: Item descriptions are available via `/bulk/trade-item-descriptions` endpoint.
+        **Note**: Item descriptions are available via `/trade-items/bulk/descriptions` endpoint.
 
         Use this endpoint for:
         - Initial data synchronization
@@ -878,7 +876,7 @@ paths:
           $ref: '#/components/responses/403-forbidden'
         '500':
           $ref: '#/components/responses/500-internal-server-error'
-  /bulk/trade-item-descriptions:
+  /trade-items/bulk/descriptions:
     get:
       operationId: getBulkTradeItemDescriptions
       tags:
@@ -951,7 +949,7 @@ paths:
           $ref: '#/components/responses/403-forbidden'
         '500':
           $ref: '#/components/responses/500-internal-server-error'
-  /bulk/trade-item-orderings:
+  /trade-items/bulk/orderings:
     get:
       operationId: getBulkTradeItemOrderings
       summary: Retrieve trade item ordering information in bulk
@@ -1024,7 +1022,7 @@ paths:
           $ref: '#/components/responses/403-forbidden'
         '500':
           $ref: '#/components/responses/500-internal-server-error'
-  /bulk/trade-item-pricings:
+  /trade-items/bulk/pricings:
     get:
       operationId: getBulkTradeItemPricings
       summary: Retrieve trade item pricing information in bulk
@@ -1034,11 +1032,11 @@ paths:
         VAT, price validity periods, and the catalog-level currency code.
 
         **Allowances & Surcharges**: The `allowanceSurcharges` property is always `null` in this response.
-        Use the separate `/bulk/trade-item-allowance-surcharges` endpoint for flat retrieval.
+        Use the separate `/trade-items/bulk/allowance-surcharges` endpoint for flat retrieval.
 
         **Flattened Structure**: Each row represents a single price entry with embedded composite key
         (`supplierIdGln` + `supplierItemNumber`). This follows the same pattern as 
-        `/bulk/product-etim-classifications` - 1 row per data point.
+        `/products/bulk/etim-classifications` - 1 row per data point.
 
         A trade item with multiple price tiers (e.g., quantity breaks, validity periods) will have
         multiple rows with the same composite key but different pricing data.
@@ -1114,7 +1112,7 @@ paths:
           $ref: '#/components/responses/403-forbidden'
         '500':
           $ref: '#/components/responses/500-internal-server-error'
-  /bulk/trade-item-allowance-surcharges:
+  /trade-items/bulk/allowance-surcharges:
     get:
       operationId: getBulkAllowanceSurcharges
       summary: Retrieve trade item allowances and surcharges in bulk
@@ -1126,7 +1124,7 @@ paths:
         composite key (`supplierIdGln` + `supplierItemNumber`) and a `pricingRef` to correlate
         with the parent pricing entry.
 
-        **Join Pattern**: Use this endpoint in combination with `/bulk/trade-item-pricings` to build
+        **Join Pattern**: Use this endpoint in combination with `/trade-items/bulk/pricings` to build
         a complete pricing picture:
         ```sql
         SELECT p.*, a.*
@@ -1194,7 +1192,7 @@ paths:
           $ref: '#/components/responses/403-forbidden'
         '500':
           $ref: '#/components/responses/500-internal-server-error'
-  /bulk/trade-item-relations:
+  /trade-items/bulk/relations:
     get:
       operationId: getBulkTradeItemRelations
       tags:
@@ -1268,7 +1266,7 @@ paths:
           $ref: '#/components/responses/403-forbidden'
         '500':
           $ref: '#/components/responses/500-internal-server-error'
-  /bulk/trade-item-logistics-details:
+  /trade-items/bulk/logistics-details:
     get:
       operationId: getBulkTradeItemLogisticsDetails
       tags:
@@ -1381,16 +1379,14 @@ components:
           description: A URI reference that identifies the specific occurrence of the problem.
       additionalProperties: true
       examples:
-        - type: https://example.com/probs/out-of-credit
-          title: You do not have enough credit.
+        - type: about:blank
+          title: Forbidden
           status: 403
           detail: Your current balance is 30, but that costs 50.
-          instance: /account/12345/msgs/abc
-        - type: https://example.com/probs/not-found
-          title: Resource not found
+        - type: about:blank
+          title: Not Found
           status: 404
           detail: The requested resource could not be found.
-          instance: /api/resources/12345
     TechnicalId:
       type: string
       description: Generic technical identifier that can hold an integer, string, or GUID/UUID value. Used for opaque system-generated identifiers such as selection IDs, internal references, and other technical keys where the format is not prescribed.
@@ -1651,7 +1647,7 @@ components:
 
         For single-item responses (where key is at root level), use `TradeItemDetails`.
 
-        **Note**: Item descriptions are available via `/bulk/trade-item-descriptions` endpoint.
+        **Note**: Item descriptions are available via `/trade-items/bulk/descriptions` endpoint.
       required:
         - supplierIdGln
         - supplierItemNumber
@@ -2399,8 +2395,8 @@ components:
         Extracted from ETIM xChange `TradeItem.Pricing[]` structure.
 
         **Allowances & Surcharges**: Included as nested array in the complete `TradeItemResponse`.
-        Always `null` in subresource (`/pricings`) and bulk (`/bulk/trade-item-pricings`) responses —
-        use the separate `/allowance-surcharges` or `/bulk/trade-item-allowance-surcharges` endpoints for flat retrieval.
+        Always `null` in subresource (`/pricings`) and bulk (`/trade-items/bulk/pricings`) responses —
+        use the separate `/allowance-surcharges` or `/trade-items/bulk/allowance-surcharges` endpoints for flat retrieval.
 
         **ETIM xChange**: `Pricing`
         **Path**: `Supplier[].Product[].TradeItem[].Pricing[]`
@@ -2587,8 +2583,8 @@ components:
             Allowances and surcharges applied to this pricing entry.
 
             **Populated** in the complete `TradeItemResponse` (nested inside each pricing entry).
-            **Always `null`** in subresource (`/pricings`) and bulk (`/bulk/trade-item-pricings`) responses.
-            For flat retrieval, use the dedicated `/allowance-surcharges` or `/bulk/trade-item-allowance-surcharges` endpoints.
+            **Always `null`** in subresource (`/pricings`) and bulk (`/trade-items/bulk/pricings`) responses.
+            For flat retrieval, use the dedicated `/allowance-surcharges` or `/trade-items/bulk/allowance-surcharges` endpoints.
 
             **ETIM xChange**: `AllowanceSurcharge[]`
             **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[]`
@@ -2862,7 +2858,7 @@ components:
         - Streaming data processing
 
         **Join Keys**: Use `supplierIdGln` + `supplierItemNumber` + `pricingRef` to join
-        with `/bulk/trade-item-pricings` data.
+        with `/trade-items/bulk/pricings` data.
 
         **ETIM xChange**: `AllowanceSurcharge`
         **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[]`
@@ -2900,7 +2896,7 @@ components:
           description: |
             Server-generated opaque reference key that identifies the parent pricing entry.
             Use this to correlate with the corresponding pricing record from the
-            `/bulk/trade-item-pricings` endpoint.
+            `/trade-items/bulk/pricings` endpoint.
 
             This is a technical identifier not present in the ETIM xChange domain model.
           $ref: '#/components/schemas/TechnicalId'
@@ -4236,7 +4232,7 @@ components:
         Returns the trade item identification keys and a nested array of `ItemDescription` objects,
         each containing descriptions in a specific language.
 
-        Unlike the bulk endpoint `/bulk/trade-item-descriptions` which uses a flattened structure
+        Unlike the bulk endpoint `/trade-items/bulk/descriptions` which uses a flattened structure
         optimized for ETL, this single-item endpoint returns descriptions in their natural
         nested format for easier consumption.
 
@@ -4821,7 +4817,7 @@ components:
         `ProductEtimClassificationFeature` - 1 row per data point.
 
         **Join Keys**: Use `supplierIdGln` + `supplierItemNumber` + `pricingRef` to join
-        with `/bulk/trade-item-pricings` data.
+        with `/trade-items/bulk/pricings` data.
 
         Use the `cursor` from `meta` to retrieve the next page of results.
 
@@ -5102,7 +5098,7 @@ components:
         Returns the trade item identification keys and a nested array of `ItemRelation` objects,
         each defining a relationship to another trade item (e.g., accessories, spare parts, successors).
 
-        Unlike the bulk endpoint `/bulk/trade-item-relations` which uses a flattened structure
+        Unlike the bulk endpoint `/trade-items/bulk/relations` which uses a flattened structure
         optimized for ETL, this single-item endpoint returns relations in their natural
         nested format for easier consumption.
 
@@ -5243,7 +5239,7 @@ components:
         Returns the trade item identification keys and a nested array of `ItemLogistics` objects,
         each defining base item dimensions, weight, and volume.
 
-        Unlike the bulk endpoint `/bulk/trade-item-logistics-details` which uses a flattened structure
+        Unlike the bulk endpoint `/trade-items/bulk/logistics-details` which uses a flattened structure
         optimized for ETL, this single-item endpoint returns logistics in their natural
         nested format for easier consumption.
 
@@ -5692,7 +5688,7 @@ components:
         A trade item may have multiple pricing entries (e.g., quantity tiers, validity periods),
         resulting in multiple rows with the same composite key but different pricing data.
 
-        **Allowances & Surcharges**: Available via separate `/bulk/trade-item-allowance-surcharges` endpoint.
+        **Allowances & Surcharges**: Available via separate `/trade-items/bulk/allowance-surcharges` endpoint.
         Join using `pricingRef` to correlate pricing entries with their allowances/surcharges.
 
         **Payload Optimization**: Optional properties with null values may be omitted from the response
@@ -5740,7 +5736,7 @@ components:
 
             This is a technical identifier not present in the ETIM xChange domain model.
             Use `pricingRef` to correlate pricing entries with their allowances/surcharges
-            from the `/bulk/trade-item-allowance-surcharges` endpoint.
+            from the `/trade-items/bulk/allowance-surcharges` endpoint.
           $ref: '#/components/schemas/TechnicalId'
           examples:
             - price-c62-1-20250101
@@ -6843,11 +6839,10 @@ components:
             invalid-request:
               summary: Invalid request example
               value:
-                type: https://example.com/probs/validation-error
+                type: about:blank
                 title: Bad Request
                 status: 400
                 detail: One or more validation errors occurred
-                instance: https://api.example.com/v1/resource/example
                 errors:
                   field1:
                     - Field1 is required.
@@ -6864,11 +6859,10 @@ components:
             unauthorized:
               summary: Unauthorized access example
               value:
-                type: https://example.com/probs/unauthorized
+                type: about:blank
                 title: Unauthorized
                 status: 401
                 detail: Authentication is required and has failed or has not yet been provided
-                instance: https://api.example.com/v1/resource/example
     403-forbidden:
       description: Forbidden - Insufficient permissions
       content:
@@ -6879,11 +6873,10 @@ components:
             forbidden:
               summary: Forbidden access example
               value:
-                type: https://example.com/probs/forbidden
+                type: about:blank
                 title: Forbidden
                 status: 403
                 detail: You do not have permission to access this resource.
-                instance: https://api.example.com/v1/resource/example
     500-internal-server-error:
       description: Internal Server Error - An unexpected error occurred
       content:
@@ -6894,11 +6887,10 @@ components:
             internal-server-error:
               summary: Internal Server Error example
               value:
-                type: https://example.com/probs/internal-server-error
+                type: about:blank
                 title: Internal Server Error
                 status: 500
                 detail: An unexpected error occurred. Please try again later
-                instance: https://api.example.com/v1/resource/example
     404-not-found:
       description: Not Found - The requested resource does not exist
       content:
@@ -6909,20 +6901,23 @@ components:
             notFound:
               summary: Resource not found
               value:
-                type: https://example.com/probs/not-found
+                type: about:blank
                 title: Not Found
                 status: 404
                 detail: The requested resource does not exist
-                instance: https://api.example.com/v1/resource/example
   securitySchemes:
     oauth2:
       type: oauth2
       description: |
         OAuth 2.0 Client Credentials grant (RFC 6749 §4.4).
         Supports both client_secret and client_assertion (RFC 7523) authentication.
+
+        The token URL is implementer-specific. Each implementer provides their own
+        OAuth 2.0 authorization server. The placeholder below must be replaced with
+        the actual token endpoint for your environment.
       flows:
         clientCredentials:
-          tokenUrl: https://identity.2ba.nl/connect/token
+          tokenUrl: https://auth.example.com/connect/token
           scopes:
             read:tradeitems: Grants read access to trade items
             write:tradeitems: Grants write access to trade items

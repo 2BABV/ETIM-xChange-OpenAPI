@@ -120,12 +120,15 @@ Breaking changes:
 - Endpoint removed
 - Semantics changed
 
-New major versions use a new URL path:
+New major versions use a new URL path segment:
 
 ```
-/api/v1/
-/api/v2/
+/v1/
+/v2/
 ```
+
+Implementers MAY add an optional prefix (e.g. `/api`) before the version segment.
+The version segment itself (`/v1/`, `/v2/`) is fixed by the standard.
 
 ---
 

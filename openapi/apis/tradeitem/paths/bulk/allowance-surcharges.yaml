@@ -9,7 +9,7 @@ get:
     composite key (`supplierIdGln` + `supplierItemNumber`) and a `pricingRef` to correlate
     with the parent pricing entry.
     
-    **Join Pattern**: Use this endpoint in combination with `/bulk/trade-item-pricings` to build
+    **Join Pattern**: Use this endpoint in combination with `/trade-items/bulk/pricings` to build
     a complete pricing picture:
     ```sql
     SELECT p.*, a.*

@@ -4,7 +4,7 @@ description: |
   Returns the trade item identification keys and a nested array of `ItemRelation` objects,
   each defining a relationship to another trade item (e.g., accessories, spare parts, successors).
   
-  Unlike the bulk endpoint `/bulk/trade-item-relations` which uses a flattened structure
+  Unlike the bulk endpoint `/trade-items/bulk/relations` which uses a flattened structure
   optimized for ETL, this single-item endpoint returns relations in their natural
   nested format for easier consumption.
   

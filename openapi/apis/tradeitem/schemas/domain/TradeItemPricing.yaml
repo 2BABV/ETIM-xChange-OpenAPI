@@ -4,8 +4,8 @@ description: |
   Extracted from ETIM xChange `TradeItem.Pricing[]` structure.
   
   **Allowances & Surcharges**: Included as nested array in the complete `TradeItemResponse`.
-  Always `null` in subresource (`/pricings`) and bulk (`/bulk/trade-item-pricings`) responses —
-  use the separate `/allowance-surcharges` or `/bulk/trade-item-allowance-surcharges` endpoints for flat retrieval.
+  Always `null` in subresource (`/pricings`) and bulk (`/trade-items/bulk/pricings`) responses —
+  use the separate `/allowance-surcharges` or `/trade-items/bulk/allowance-surcharges` endpoints for flat retrieval.
   
   **ETIM xChange**: `Pricing`
   **Path**: `Supplier[].Product[].TradeItem[].Pricing[]`
@@ -176,8 +176,8 @@ properties:
       Allowances and surcharges applied to this pricing entry.
       
       **Populated** in the complete `TradeItemResponse` (nested inside each pricing entry).
-      **Always `null`** in subresource (`/pricings`) and bulk (`/bulk/trade-item-pricings`) responses.
-      For flat retrieval, use the dedicated `/allowance-surcharges` or `/bulk/trade-item-allowance-surcharges` endpoints.
+      **Always `null`** in subresource (`/pricings`) and bulk (`/trade-items/bulk/pricings`) responses.
+      For flat retrieval, use the dedicated `/allowance-surcharges` or `/trade-items/bulk/allowance-surcharges` endpoints.
       
       **ETIM xChange**: `AllowanceSurcharge[]`
       **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[]`

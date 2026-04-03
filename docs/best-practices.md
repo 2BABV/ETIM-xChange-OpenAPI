@@ -57,7 +57,7 @@
 
 ### Path and Operation IDs
 - **camelCase** for operationId: `getUserById`, `createNewOrder`
-- **kebab-case** for paths: `/api/v1/user-profiles`
+- **kebab-case** for paths: `/v1/user-profiles`
 
 ### Examples
 ````yaml

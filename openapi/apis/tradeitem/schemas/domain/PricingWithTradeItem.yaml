@@ -38,7 +38,7 @@ properties:
       
       This is a technical identifier not present in the ETIM xChange domain model.
       Use `pricingRef` to correlate pricing entries with their allowances/surcharges
-      from the `/allowance-surcharges` or `/bulk/trade-item-allowance-surcharges` endpoint.
+      from the `/allowance-surcharges` or `/trade-items/bulk/allowance-surcharges` endpoint.
     $ref: ../../../../shared/schemas/identifiers/TechnicalId.yaml
     examples:
       - "price-c62-1-20250101"

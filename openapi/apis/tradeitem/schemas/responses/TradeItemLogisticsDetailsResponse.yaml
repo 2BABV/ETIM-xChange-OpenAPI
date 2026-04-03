@@ -4,7 +4,7 @@ description: |
   Returns the trade item identification keys and a nested array of `ItemLogistics` objects,
   each defining base item dimensions, weight, and volume.
   
-  Unlike the bulk endpoint `/bulk/trade-item-logistics-details` which uses a flattened structure
+  Unlike the bulk endpoint `/trade-items/bulk/logistics-details` which uses a flattened structure
   optimized for ETL, this single-item endpoint returns logistics in their natural
   nested format for easier consumption.
   

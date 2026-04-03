@@ -3,7 +3,7 @@ description: |
   Core product information for bulk retrieval combining identification and details.
   Contains all key fields plus manufacturer info, identifiers, lifecycle dates, and operational details.
   
-  For product descriptions (text content), use the dedicated `/bulk/product-descriptions` endpoint
+  For product descriptions (text content), use the dedicated `/products/bulk/descriptions` endpoint
   which supports language filtering.
 required:
   - manufacturerIdGln

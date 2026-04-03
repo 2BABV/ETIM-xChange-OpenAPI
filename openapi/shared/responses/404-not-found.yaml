@@ -7,8 +7,7 @@ content:
       notFound:
         summary: Resource not found
         value:
-          type: https://example.com/probs/not-found
+          type: about:blank
           title: Not Found
           status: 404
           detail: The requested resource does not exist
-          instance: https://api.example.com/v1/resource/example

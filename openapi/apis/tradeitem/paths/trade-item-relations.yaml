@@ -9,7 +9,7 @@ get:
     This endpoint returns all relationships the trade item has with other items,
     including accessories, spare parts, consumables, successors, and other relation types.
     
-    **Nested structure**: Unlike the bulk endpoint `/bulk/trade-item-relations` which uses
+    **Nested structure**: Unlike the bulk endpoint `/trade-items/bulk/relations` which uses
     a flattened structure optimized for ETL, this single-item endpoint returns relations
     in their natural nested format for easier consumption.
     
@@ -85,10 +85,9 @@ get:
             notFound:
               summary: Trade item not found
               value:
-                type: "https://api.tradeitem.2ba.nl/problems/not-found"
-                title: "Trade Item Not Found"
+                type: about:blank
+                title: Not Found
                 status: 404
                 detail: "No trade item found with supplier GLN '1234567890123' and item number 'UNKNOWN-SKU'"
-                instance: "https://api.tradeitem.2ba.nl/v1/1234567890123/UNKNOWN-SKU/relations"
     '500':
       $ref: ../../../shared/responses/500-internal-server-error.yaml

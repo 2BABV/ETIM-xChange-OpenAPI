@@ -11,7 +11,7 @@ description: |
   - Streaming data processing
   
   **Join Keys**: Use `supplierIdGln` + `supplierItemNumber` + `pricingRef` to join
-  with `/bulk/trade-item-pricings` data.
+  with `/trade-items/bulk/pricings` data.
   
   **ETIM xChange**: `AllowanceSurcharge`
   **Path**: `Supplier[].Product[].TradeItem[].Pricing[].AllowanceSurcharge[]`
@@ -55,7 +55,7 @@ properties:
     description: |
       Server-generated opaque reference key that identifies the parent pricing entry.
       Use this to correlate with the corresponding pricing record from the
-      `/bulk/trade-item-pricings` endpoint.
+      `/trade-items/bulk/pricings` endpoint.
       
       This is a technical identifier not present in the ETIM xChange domain model.
     $ref: ../../../../shared/schemas/identifiers/TechnicalId.yaml
