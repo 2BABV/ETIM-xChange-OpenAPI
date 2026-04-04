@@ -180,8 +180,6 @@ detail: "No product found with manufacturer GLN '1234567890123' and product numb
 - **GOVERNANCE.md**: Fixed `/api/v1/` → `/v1/` versioning example
 - **best-practices.md**: Fixed `/api/v1/user-profiles` → `/v1/user-profiles`
 - **implementer-guide.md**: New file — URL contract, OAuth setup, scope naming, pagination, error responses
-- **plan-url-path.md**: Recorded refactoring decision
-- **review.md**: New file — cross-API consistency review findings and resolutions
 
 ---
 
