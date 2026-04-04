@@ -54,18 +54,6 @@ All four APIs now use OAuth 2.0 Client Credentials with a consistent configurati
 
 All descriptions now document both `client_secret` and `client_assertion` (RFC 7523).
 
-### Server URL Consolidation
-
-All APIs aligned to the Product API's server URL pattern before the implementer-agnostic refactor:
-
-| API | Before | After |
-|-----|--------|-------|
-| Trade Item | `api.tradeitem.2ba.nl/v1` | `rest.2ba.nl/v1/trade-items` |
-| Net Price | `api.2ba.nl/v1` | `rest.2ba.nl/v1/netprices` |
-| Stock | `api.2ba.nl/stock/v1` (double `/stock`) | `rest.2ba.nl/v1/stock` |
-
-All non-production environments renamed from "Staging server" to "Acceptance server".
-
 ### Component Naming & Registration
 
 - **ErrorResponse → ProblemDetails**: Trade Item and Net Price APIs registered the shared `ProblemDetails.yaml` as `ErrorResponse`. Renamed to `ProblemDetails` to match Product API and prevent NSwag from generating two incompatible types.
