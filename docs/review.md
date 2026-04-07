@@ -8,6 +8,8 @@
 
 ## 1 — Product API
 
+### TODO: ProductIdentification --> Unbranded product ? Marc?
+
 ### 🔴 Critical: `ProductCountrySpecificField.yaml` uses invented schema
 
 The OpenAPI schema (`openapi/apis/product/schemas/domain/ProductCountrySpecificField.yaml`) uses fields (`countryCode`, `fieldName`, `fieldValue`) that **do not exist** in the ETIM xChange specification. The ETIM schema defines a rich, typed structure identical to the trade item variant:
@@ -141,6 +143,12 @@ The `EtimClassification.yaml` has a TODO comment for `EtimModellingClassCode` an
 ---
 
 ## 2 — Trade Item API
+
+### TODO: LogisticDetails --> baseItem* --> eigenlijk Product eigenschappen in 2BA? 
+### TODO: LogisticDetails --> hoe kan dit een lijst zijn?
+### TODO: ItemAttachments --> Key: AttachmentType, AttachmentUri (Ook bij Product)
+### TODO: ItemAttachmentsDescriptions --> Lijst op bovenstaande key?
+### TODO: PackagingLogisticDetails --> Nieuw? Wat is hiervan de key? Is er al een partij die dit heeft? kan leveren?
 
 ### 🔴 Critical: `TradeItemEnclosed` is entirely missing
 
