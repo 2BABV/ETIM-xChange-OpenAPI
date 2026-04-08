@@ -48,3 +48,6 @@ Thumbs.db
 *.mov
 *.wmv
 
+# Generated OpenAPI bundles and docs (built in CI)
+openapi/apis/*/generated/
+
