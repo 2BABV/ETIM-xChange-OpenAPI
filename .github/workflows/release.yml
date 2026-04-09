@@ -15,6 +15,9 @@ concurrency:
   group: pages-deploy
   cancel-in-progress: false
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -81,15 +84,22 @@ jobs:
           awk "/^## \[$VERSION\]/{flag=1; next} /^## \[/{flag=0} flag" "$CHANGELOG" > release-notes.md
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2.2.0
-        with:
-          tag_name: ${{ steps.extract.outputs.tag }}
-          name: "${{ steps.display.outputs.name }} API v${{ steps.extract.outputs.version }}"
-          body_path: release-notes.md
-          prerelease: ${{ contains(steps.extract.outputs.version, '-') }}
-          files: |
-            openapi/apis/${{ steps.extract.outputs.api_name }}/generated/${{ steps.extract.outputs.api_name }}-api.yaml
-            openapi/apis/${{ steps.extract.outputs.api_name }}/generated/${{ steps.extract.outputs.api_name }}.html
+        run: |
+          API="${{ steps.extract.outputs.api_name }}"
+          VER="${{ steps.extract.outputs.version }}"
+          TAG="${{ steps.extract.outputs.tag }}"
+          PRERELEASE_FLAG=""
+          if echo "$VER" | grep -q '-'; then PRERELEASE_FLAG="--prerelease"; fi
+          # Delete existing release if present (handles re-runs on same tag)
+          gh release delete "$TAG" --yes 2>/dev/null || true
+          gh release create "$TAG" \
+            --title "${{ steps.display.outputs.name }} API v$VER" \
+            --notes-file release-notes.md \
+            $PRERELEASE_FLAG \
+            "openapi/apis/$API/generated/$API-api.yaml" \
+            "openapi/apis/$API/generated/$API.html"
+        env:
+          GH_TOKEN: ${{ github.token }}
 
       # --- Versioned GitHub Pages deployment ---
 
