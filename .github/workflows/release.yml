@@ -7,13 +7,8 @@ on:
       - 'tradeitem/v*'
 
 permissions:
-  contents: write  # create GitHub Releases and push to gh-pages
-  pages: write
-  id-token: write
-
-concurrency:
-  group: pages-deploy
-  cancel-in-progress: false
+  contents: write  # create GitHub Releases and push to gh-pages branch
+  actions: write   # trigger deploy-docs workflow via workflow_dispatch
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
@@ -45,7 +40,6 @@ jobs:
 
       - name: Validate version matches spec
         run: |
-          # yq is pre-installed on GitHub-hosted ubuntu runners
           SPEC_VERSION=$(yq eval '.info.version' "openapi/apis/${{ steps.extract.outputs.api_name }}/openapi.yaml")
           TAG_VERSION="${{ steps.extract.outputs.version }}"
           if [ "$SPEC_VERSION" != "$TAG_VERSION" ]; then
@@ -70,17 +64,14 @@ jobs:
         run: npm run "build:${{ steps.extract.outputs.api_name }}"
 
       - name: Extract release notes from CHANGELOG
-        id: notes
         run: |
           VERSION="${{ steps.extract.outputs.version }}"
           API_NAME="${{ steps.extract.outputs.api_name }}"
           CHANGELOG="openapi/apis/$API_NAME/CHANGELOG.md"
-          # Fail if version not in CHANGELOG — prevents silent empty releases
           if ! grep -q "^## \[$VERSION\]" "$CHANGELOG"; then
             echo "::error::Version $VERSION not found in $CHANGELOG. Add a CHANGELOG entry before tagging."
             exit 1
           fi
-          # awk correctly handles the last section (no trailing ## heading needed)
           awk "/^## \[$VERSION\]/{flag=1; next} /^## \[/{flag=0} flag" "$CHANGELOG" > release-notes.md
 
       - name: Create GitHub Release
@@ -90,7 +81,6 @@ jobs:
           TAG="${{ steps.extract.outputs.tag }}"
           PRERELEASE_FLAG=""
           if echo "$VER" | grep -q '-'; then PRERELEASE_FLAG="--prerelease"; fi
-          # Delete existing release if present (handles re-runs on same tag)
           gh release delete "$TAG" --yes 2>/dev/null || true
           gh release create "$TAG" \
             --title "${{ steps.display.outputs.name }} API v$VER" \
@@ -101,40 +91,34 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
 
-      # --- Versioned GitHub Pages deployment ---
-
-      - name: Checkout gh-pages branch (accumulate existing versions)
-        id: ghpages-checkout
-        uses: actions/checkout@v4
-        with:
-          ref: gh-pages
-          path: gh-pages-content
-        continue-on-error: true  # branch may not exist on first release
-
-      - name: Assemble versioned site
+      - name: Push versioned docs to gh-pages branch
         run: |
           API="${{ steps.extract.outputs.api_name }}"
           VER="v${{ steps.extract.outputs.version }}"
 
-          mkdir -p _site
-          # Preserve existing content from gh-pages (all prior versions).
-          # On first run the checkout above will have failed (continue-on-error),
-          # so gh-pages-content/ won't exist — that's fine, _site starts empty.
-          if [ -d gh-pages-content ]; then
-            cp -r gh-pages-content/. _site/ 2>/dev/null || true
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # Generated files are gitignored — they survive git branch switches
+          YAML_SRC="openapi/apis/$API/generated/$API-api.yaml"
+          HTML_SRC="openapi/apis/$API/generated/$API.html"
+
+          git fetch origin gh-pages 2>/dev/null || true
+          if git ls-remote --exit-code origin gh-pages 2>/dev/null; then
+            git checkout -b gh-pages origin/gh-pages
+          else
+            git checkout --orphan gh-pages
+            git rm -rf --cached . 2>/dev/null || true
+            git clean -fd
           fi
 
-          # Add new versioned snapshot
-          mkdir -p "_site/$API/$VER" "_site/$API/latest"
-          cp "openapi/apis/$API/generated/$API-api.yaml" "_site/$API/$VER/"
-          cp "openapi/apis/$API/generated/$API.html"     "_site/$API/$VER/"
-          cp "openapi/apis/$API/generated/$API-api.yaml" "_site/$API/latest/"
-          cp "openapi/apis/$API/generated/$API.html"     "_site/$API/latest/"
+          mkdir -p "$API/$VER"
+          cp "$YAML_SRC" "$API/$VER/"
+          cp "$HTML_SRC" "$API/$VER/"
 
-          # Update versions.json
           node -e '
             const fs = require("fs");
-            const p = "_site/versions.json";
+            const p = "versions.json";
             const api = process.env.API_NAME;
             const ver = process.env.VERSION;
             const date = new Date().toISOString().slice(0, 10);
@@ -147,22 +131,19 @@ jobs:
             fs.writeFileSync(p, JSON.stringify(data, null, 2));
             console.log("Updated versions.json for " + api + ": latest=" + data[api].latest);
           '
+          git add .
+          git diff --cached --quiet || git commit -m "release: $API $VER versioned docs"
+          git push origin gh-pages
+          git checkout -
         env:
           API_NAME: ${{ steps.extract.outputs.api_name }}
           VERSION:  ${{ steps.extract.outputs.version }}
 
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: _site
-
-  deploy-pages:
-    needs: release
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Trigger Pages deployment
+        run: |
+          curl -s -X POST \
+            -H "Authorization: Bearer ${{ github.token }}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/workflows/deploy-docs.yml/dispatches" \
+            -d '{"ref":"main"}'

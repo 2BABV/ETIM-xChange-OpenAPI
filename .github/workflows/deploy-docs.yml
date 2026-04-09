@@ -23,6 +23,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Checkout gh-pages branch for versioned content
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: gh-pages-content
+        continue-on-error: true  # branch doesn't exist until first release
+
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
@@ -38,13 +45,21 @@ jobs:
 
       - name: Assemble site
         run: |
-          mkdir -p _site/product/latest _site/tradeitem/latest
+          mkdir -p _site
 
+          # Start with versioned snapshots from gh-pages branch (prior releases)
+          if [ -d gh-pages-content ]; then
+            cp -r gh-pages-content/. _site/ 2>/dev/null || true
+          fi
+
+          # Add/update latest docs (overwrites stale latest from gh-pages)
+          mkdir -p _site/product/latest _site/tradeitem/latest
           cp openapi/apis/product/generated/product.html       _site/product/latest/
           cp openapi/apis/product/generated/product-api.yaml   _site/product/latest/
           cp openapi/apis/tradeitem/generated/tradeitem.html      _site/tradeitem/latest/
           cp openapi/apis/tradeitem/generated/tradeitem-api.yaml  _site/tradeitem/latest/
 
+          # Landing page and Pages config from repo root
           cp index.html   _site/
           cp .nojekyll    _site/
 
