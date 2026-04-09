@@ -95,27 +95,30 @@ jobs:
         run: |
           API="${{ steps.extract.outputs.api_name }}"
           VER="v${{ steps.extract.outputs.version }}"
+          WORK="/tmp/gh-pages-work"
+          REPO_URL="https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git"
 
+          # Work in a dedicated temp directory — no .gitignore confusion
+          if git ls-remote --exit-code origin gh-pages 2>/dev/null; then
+            git clone --branch gh-pages --depth 1 "$REPO_URL" "$WORK"
+          else
+            mkdir "$WORK"
+            cd "$WORK"
+            git init -b gh-pages
+            git remote add origin "$REPO_URL"
+            cd "$GITHUB_WORKSPACE"
+          fi
+
+          cd "$WORK"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          # Generated files are gitignored — they survive git branch switches
-          YAML_SRC="openapi/apis/$API/generated/$API-api.yaml"
-          HTML_SRC="openapi/apis/$API/generated/$API.html"
-
-          git fetch origin gh-pages 2>/dev/null || true
-          if git ls-remote --exit-code origin gh-pages 2>/dev/null; then
-            git checkout -b gh-pages origin/gh-pages
-          else
-            git checkout --orphan gh-pages
-            git rm -rf --cached . 2>/dev/null || true
-            git clean -fd
-          fi
-
+          # Copy only the versioned docs
           mkdir -p "$API/$VER"
-          cp "$YAML_SRC" "$API/$VER/"
-          cp "$HTML_SRC" "$API/$VER/"
+          cp "$GITHUB_WORKSPACE/openapi/apis/$API/generated/$API-api.yaml" "$API/$VER/"
+          cp "$GITHUB_WORKSPACE/openapi/apis/$API/generated/$API.html"     "$API/$VER/"
 
+          # Update versions.json
           node -e '
             const fs = require("fs");
             const p = "versions.json";
@@ -134,7 +137,6 @@ jobs:
           git add .
           git diff --cached --quiet || git commit -m "release: $API $VER versioned docs"
           git push origin gh-pages
-          git checkout -
         env:
           API_NAME: ${{ steps.extract.outputs.api_name }}
           VERSION:  ${{ steps.extract.outputs.version }}
