@@ -11,7 +11,7 @@ tradeitem/v1.2.3
 ```
 
 Tags are **prefixed per API** so each API is versioned independently.
-Versions follow [Semantic Versioning](https://semver.org/): `MAJOR.MINOR.PATCH` (e.g. `1.2.0`) or a pre-release label (e.g. `1.0.0-Preview`).
+Versions follow [Semantic Versioning](https://semver.org/): `MAJOR.MINOR.PATCH` (e.g. `1.2.0`) or a pre-release label (e.g. `1.0.0-Preview1`, `2.0.0-beta.1`).
 
 ## Release steps
 
@@ -89,7 +89,7 @@ Once the tag is pushed, the `release.yml` workflow:
 
 ## Pre-release versions
 
-Versions containing a hyphen (e.g. `1.0.0-Preview`, `2.0.0-beta.1`) are automatically
+Versions containing a hyphen (e.g. `1.0.0-Preview1`, `2.0.0-beta.1`) are automatically
 marked as pre-releases on GitHub and are not promoted to "latest" in the version selector
 until a stable release exists.
 

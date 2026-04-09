@@ -1,6 +1,6 @@
 # Plan: Versioning & Release Workflow
 
-Status: **Implementation complete — branch `anvil/release-workflow` ready to merge**
+Status: **Implementation complete — workflow verified end-to-end with `product/v1.0.0-Preview1`**
 Scope: Product API, Trade Item API (netprice, stock, tradeitem-domain are explicitly out of scope)
 
 ## Rubber-Duck Review Findings (applied to this plan)
