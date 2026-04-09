@@ -122,27 +122,21 @@ jobs:
           cp "openapi/apis/$API/generated/$API.html"     "_site/$API/latest/"
 
           # Update versions.json
-          node - <<'EOF'
-          const fs = require('fs');
-          const path = '_site/versions.json';
-          const api  = process.env.API_NAME;
-          const ver  = process.env.VERSION;
-          const date = new Date().toISOString().slice(0, 10);
-          const pre  = ver.includes('-');
-
-          let data = { product: { latest: '', versions: [] }, tradeitem: { latest: '', versions: [] } };
-          try { data = JSON.parse(fs.readFileSync(path, 'utf8')); } catch {}
-
-          if (!data[api]) data[api] = { latest: '', versions: [] };
-          // Prepend new version (newest first), deduplicating
-          data[api].versions = [{ version: ver, date, prerelease: pre }, ...data[api].versions.filter(v => v.version !== ver)];
-          // Latest = first stable release, or newest pre-release if none stable yet
-          const stable = data[api].versions.find(v => !v.prerelease);
-          data[api].latest = stable ? stable.version : data[api].versions[0].version;
-
-          fs.writeFileSync(path, JSON.stringify(data, null, 2));
-          console.log(`Updated versions.json for ${api}: latest=${data[api].latest}`);
-EOF
+          node -e '
+            const fs = require("fs");
+            const p = "_site/versions.json";
+            const api = process.env.API_NAME;
+            const ver = process.env.VERSION;
+            const date = new Date().toISOString().slice(0, 10);
+            const pre = ver.includes("-");
+            let data = { product: { latest: "", versions: [] }, tradeitem: { latest: "", versions: [] } };
+            try { data = JSON.parse(fs.readFileSync(p, "utf8")); } catch(e) {}
+            if (!data[api]) data[api] = { latest: "", versions: [] };
+            data[api].versions = [{ version: ver, date: date, prerelease: pre }, ...data[api].versions.filter(v => v.version !== ver)];
+            data[api].latest = (data[api].versions.find(v => !v.prerelease) || data[api].versions[0]).version;
+            fs.writeFileSync(p, JSON.stringify(data, null, 2));
+            console.log("Updated versions.json for " + api + ": latest=" + data[api].latest);
+          '
         env:
           API_NAME: ${{ steps.extract.outputs.api_name }}
           VERSION:  ${{ steps.extract.outputs.version }}
