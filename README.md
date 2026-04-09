@@ -88,5 +88,28 @@ The repository is organized into domain-specific API specifications with shared 
 - [Trade Item API](openapi/apis/tradeitem/README.md) - Trade item specifications and relationships
 - [Net Price API](openapi/apis/netprice/README.md) - Pricing and commercial data management
 
+### Published Documentation (GitHub Pages)
+
+Interactive HTML documentation and downloadable OpenAPI bundles are published automatically:
+
+| Resource | URL |
+|----------|-----|
+| Landing page | `https://2BABV.github.io/ETIM-xChange-OpenAPI/` |
+| Product API (latest) | `https://2BABV.github.io/ETIM-xChange-OpenAPI/product/latest/product.html` |
+| Trade Item API (latest) | `https://2BABV.github.io/ETIM-xChange-OpenAPI/tradeitem/latest/tradeitem.html` |
+
+The landing page includes a version selector for accessing historical release snapshots and downloadable YAML bundles.
+
+### Releases
+
+APIs are versioned independently using prefixed Git tags (`product/vX.Y.Z`, `tradeitem/vX.Y.Z`). Each release creates:
+
+- A **GitHub Release** with YAML bundle + HTML doc as downloadable artifacts
+- A **versioned snapshot** on GitHub Pages at `/{api}/v{version}/`
+- Updated `versions.json` for the version selector
+
+See [GOVERNANCE.md](GOVERNANCE.md) §7 for the full release process and [CHANGELOG](openapi/apis/product/CHANGELOG.md) for release history.
+
 ### Development Guidelines
 - [Copilot Instructions](.github/copilot-instructions.md) - GitHub Copilot configuration for this repository
+- [Release Process](docs/releasing.md) - Step-by-step release and tagging procedure
