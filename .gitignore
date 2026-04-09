@@ -51,3 +51,6 @@ Thumbs.db
 # Generated OpenAPI bundles and docs (built in CI)
 openapi/apis/*/generated/
 
+# CI build output
+_site/
+

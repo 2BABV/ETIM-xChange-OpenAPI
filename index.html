@@ -11,6 +11,7 @@
       --color-card: #ffffff;
       --color-text: #212529;
       --color-muted: #6c757d;
+      --color-border: #dee2e6;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -21,65 +22,140 @@
       padding: 2rem 1rem;
     }
     .container { max-width: 720px; margin: 0 auto; }
-    h1 {
-      font-size: 1.75rem;
-      margin-bottom: 0.25rem;
-    }
-    .subtitle {
-      color: var(--color-muted);
-      margin-bottom: 2rem;
-    }
-    .version {
+    h1 { font-size: 1.75rem; margin-bottom: 0.25rem; }
+    .subtitle { color: var(--color-muted); margin-bottom: 2rem; }
+    .badge {
       display: inline-block;
-      background: var(--color-primary);
-      color: #fff;
-      font-size: 0.75rem;
-      padding: 0.15rem 0.5rem;
+      font-size: 0.7rem;
+      padding: 0.1rem 0.45rem;
       border-radius: 4px;
       vertical-align: middle;
-      margin-left: 0.5rem;
+      margin-left: 0.4rem;
+      font-weight: 600;
     }
+    .badge-version { background: var(--color-primary); color: #fff; }
+    .badge-preview { background: #f59e0b; color: #fff; }
     .card {
       background: var(--color-card);
-      border: 1px solid #dee2e6;
+      border: 1px solid var(--color-border);
       border-radius: 8px;
       padding: 1.25rem 1.5rem;
       margin-bottom: 1rem;
+    }
+    .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem; }
+    .card h2 { font-size: 1.1rem; color: var(--color-primary); }
+    .card p { color: var(--color-muted); font-size: 0.9rem; margin-bottom: 0.75rem; }
+    .card-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+    .btn {
+      display: inline-block;
+      padding: 0.35rem 0.85rem;
+      border-radius: 5px;
+      font-size: 0.85rem;
       text-decoration: none;
-      color: inherit;
-      display: block;
-      transition: box-shadow 0.15s ease;
+      font-weight: 500;
+      transition: opacity 0.15s;
     }
-    .card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-    .card h2 { font-size: 1.15rem; margin-bottom: 0.25rem; color: var(--color-primary); }
-    .card p { color: var(--color-muted); font-size: 0.9rem; }
-    footer {
-      margin-top: 2.5rem;
-      color: var(--color-muted);
-      font-size: 0.8rem;
-      text-align: center;
+    .btn:hover { opacity: 0.85; }
+    .btn-primary { background: var(--color-primary); color: #fff; }
+    .btn-outline { border: 1px solid var(--color-border); color: var(--color-text); background: #fff; }
+    .version-select {
+      font-size: 0.85rem;
+      padding: 0.3rem 0.5rem;
+      border: 1px solid var(--color-border);
+      border-radius: 5px;
+      background: #fff;
+      cursor: pointer;
     }
+    footer { margin-top: 2.5rem; color: var(--color-muted); font-size: 0.8rem; text-align: center; }
     footer a { color: var(--color-primary); text-decoration: none; }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>ETIM xChange OpenAPI<span class="version">1.0.0-Preview</span></h1>
+    <h1>ETIM xChange OpenAPI</h1>
     <p class="subtitle">Interactive API documentation for the 2BA ecosystem</p>
 
-    <a class="card" href="openapi/apis/product/generated/product.html">
-      <h2>Product API</h2>
+    <div class="card" id="card-product">
+      <div class="card-header">
+        <h2>Product API</h2>
+        <span id="badge-product"></span>
+      </div>
       <p>Product information, specifications, and categories based on ETIM xChange V2.0.</p>
-    </a>
+      <div class="card-actions">
+        <a class="btn btn-primary" id="link-product-docs" href="product/latest/product.html">View Docs</a>
+        <a class="btn btn-outline" id="link-product-yaml" href="product/latest/product-api.yaml">↓ YAML</a>
+        <select class="version-select" id="select-product" aria-label="Product API version">
+          <option value="latest">latest</option>
+        </select>
+      </div>
+    </div>
 
-    <a class="card" href="openapi/apis/tradeitem/generated/tradeitem.html">
-      <h2>Trade Item API</h2>
+    <div class="card" id="card-tradeitem">
+      <div class="card-header">
+        <h2>Trade Item API</h2>
+        <span id="badge-tradeitem"></span>
+      </div>
       <p>Trade item information, specifications, and relationships based on ETIM xChange V2.0.</p>
-    </a>
+      <div class="card-actions">
+        <a class="btn btn-primary" id="link-tradeitem-docs" href="tradeitem/latest/tradeitem.html">View Docs</a>
+        <a class="btn btn-outline" id="link-tradeitem-yaml" href="tradeitem/latest/tradeitem-api.yaml">↓ YAML</a>
+        <select class="version-select" id="select-tradeitem" aria-label="Trade Item API version">
+          <option value="latest">latest</option>
+        </select>
+      </div>
+    </div>
 
     <footer>
       Source on <a href="https://github.com/2BABV/ETIM-xChange-OpenAPI">GitHub</a>
     </footer>
   </div>
+
+  <script>
+    const APIS = ['product', 'tradeitem'];
+
+    function isPreview(version) {
+      return version.includes('-');
+    }
+
+    function badge(version) {
+      if (!version) return '';
+      const label = isPreview(version) ? 'Preview' : version;
+      const cls   = isPreview(version) ? 'badge badge-preview' : 'badge badge-version';
+      return `<span class="${cls}">${label}</span>`;
+    }
+
+    function updateLinks(api, version) {
+      // version from versions.json is bare (e.g. "1.0.0-Preview");
+      // directory on Pages is "v{version}" (e.g. "v1.0.0-Preview")
+      const path = version === 'latest' ? `${api}/latest` : `${api}/v${version}`;
+      document.getElementById(`link-${api}-docs`).href = `${path}/${api}.html`;
+      document.getElementById(`link-${api}-yaml`).href = `${path}/${api}-api.yaml`;
+    }
+
+    function populateSelector(api, versions) {
+      const sel = document.getElementById(`select-${api}`);
+      sel.innerHTML = '<option value="latest">latest</option>';
+      versions.forEach(v => {
+        const opt = document.createElement('option');
+        opt.value = v.version;
+        opt.textContent = `v${v.version}${v.prerelease ? ' (preview)' : ''}`;
+        sel.appendChild(opt);
+      });
+      sel.addEventListener('change', () => updateLinks(api, sel.value));
+    }
+
+    fetch('versions.json')
+      .then(r => r.ok ? r.json() : null)
+      .catch(() => null)
+      .then(data => {
+        APIS.forEach(api => {
+          const info = data && data[api];
+          const latestVer = info ? info.latest : null;
+          document.getElementById(`badge-${api}`).innerHTML = badge(latestVer);
+          if (info && info.versions) populateSelector(api, info.versions);
+          updateLinks(api, 'latest');
+        });
+      });
+  </script>
 </body>
 </html>

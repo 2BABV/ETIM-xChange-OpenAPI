@@ -164,19 +164,45 @@ Optional fields added anywhere in the object model, including nested models, rem
 
 Each release contains:
 
-- Git tag (`vX.Y.Z`)
-- GitHub Release
-- OpenAPI YAML & JSON
-- Release notes
-- Updated CHANGELOG
+- Git tag (format: `{api-name}/v{semver}`, e.g., `product/v1.2.0`, `tradeitem/v1.1.0`)
+- GitHub Release with attached artifacts (bundled YAML spec + HTML docs)
+- Per-API `CHANGELOG.md` entry (Keep a Changelog format)
+- Updated `info.version` in the API's `openapi.yaml`
 
-Release notes structure:
+**Tag format (mono-repo, per-API versioning):**
+- Product API: `product/v{semver}` — e.g., `product/v1.2.0`
+- Trade Item API: `tradeitem/v{semver}` — e.g., `tradeitem/v1.1.0`
+
+> **Important**: The tag version must match the `info.version` field in the corresponding `openapi.yaml`. The release workflow validates this and fails if they differ.
+
+Release steps for maintainers:
+1. Update `info.version` in `openapi/apis/{api}/openapi.yaml`
+2. Add a `## [{version}] - {date}` section to `openapi/apis/{api}/CHANGELOG.md`
+3. Commit: `git commit -m "release: {API} v{version}"`
+4. Tag: `git tag {api}/v{version}` (must match `info.version` exactly)
+5. Push: `git push origin main --tags`
+
+The release workflow then automatically:
+- Validates tag matches spec version
+- Builds and bundles the spec
+- Creates a GitHub Release with YAML + HTML artifacts
+- Publishes versioned documentation to GitHub Pages
+
+**Release artifacts per API:**
+
+| File | Purpose |
+|------|---------|
+| `{api}-api.yaml` | Bundled single-file OpenAPI spec (for SDK generation, tooling import) |
+| `{api}.html` | Standalone interactive API documentation |
+
+**Release notes structure (in CHANGELOG.md):**
 
 - Added
 - Changed
 - Deprecated
 - Removed
-- Breaking
+- Fixed
+- Breaking (if any)
 
 ---
 

@@ -1,0 +1,164 @@
+name: Release API
+
+on:
+  push:
+    tags:
+      - 'product/v*'
+      - 'tradeitem/v*'
+
+permissions:
+  contents: write  # create GitHub Releases and push to gh-pages
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages-deploy
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extract API name and version from tag
+        id: extract
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          API_NAME="${TAG%/v*}"
+          VERSION="${TAG#*/v}"
+          echo "api_name=$API_NAME" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION"   >> "$GITHUB_OUTPUT"
+          echo "tag=$TAG"           >> "$GITHUB_OUTPUT"
+
+      - name: Set API display name
+        id: display
+        run: |
+          if [ "${{ steps.extract.outputs.api_name }}" == "product" ]; then
+            echo "name=Product" >> "$GITHUB_OUTPUT"
+          else
+            echo "name=Trade Item" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Validate version matches spec
+        run: |
+          # yq is pre-installed on GitHub-hosted ubuntu runners
+          SPEC_VERSION=$(yq eval '.info.version' "openapi/apis/${{ steps.extract.outputs.api_name }}/openapi.yaml")
+          TAG_VERSION="${{ steps.extract.outputs.version }}"
+          if [ "$SPEC_VERSION" != "$TAG_VERSION" ]; then
+            echo "::error::Tag version ($TAG_VERSION) does not match spec version ($SPEC_VERSION). Update info.version in openapi.yaml before tagging."
+            exit 1
+          fi
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Bundle API spec
+        run: npm run "bundle:${{ steps.extract.outputs.api_name }}"
+
+      - name: Build HTML docs
+        run: npm run "build:${{ steps.extract.outputs.api_name }}"
+
+      - name: Extract release notes from CHANGELOG
+        id: notes
+        run: |
+          VERSION="${{ steps.extract.outputs.version }}"
+          API_NAME="${{ steps.extract.outputs.api_name }}"
+          CHANGELOG="openapi/apis/$API_NAME/CHANGELOG.md"
+          # Fail if version not in CHANGELOG — prevents silent empty releases
+          if ! grep -q "^## \[$VERSION\]" "$CHANGELOG"; then
+            echo "::error::Version $VERSION not found in $CHANGELOG. Add a CHANGELOG entry before tagging."
+            exit 1
+          fi
+          # awk correctly handles the last section (no trailing ## heading needed)
+          awk "/^## \[$VERSION\]/{flag=1; next} /^## \[/{flag=0} flag" "$CHANGELOG" > release-notes.md
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2.2.0
+        with:
+          tag_name: ${{ steps.extract.outputs.tag }}
+          name: "${{ steps.display.outputs.name }} API v${{ steps.extract.outputs.version }}"
+          body_path: release-notes.md
+          prerelease: ${{ contains(steps.extract.outputs.version, '-') }}
+          files: |
+            openapi/apis/${{ steps.extract.outputs.api_name }}/generated/${{ steps.extract.outputs.api_name }}-api.yaml
+            openapi/apis/${{ steps.extract.outputs.api_name }}/generated/${{ steps.extract.outputs.api_name }}.html
+
+      # --- Versioned GitHub Pages deployment ---
+
+      - name: Checkout gh-pages branch (accumulate existing versions)
+        id: ghpages-checkout
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: gh-pages-content
+        continue-on-error: true  # branch may not exist on first release
+
+      - name: Assemble versioned site
+        run: |
+          API="${{ steps.extract.outputs.api_name }}"
+          VER="v${{ steps.extract.outputs.version }}"
+
+          mkdir -p _site
+          # Preserve existing content from gh-pages (all prior versions).
+          # On first run the checkout above will have failed (continue-on-error),
+          # so gh-pages-content/ won't exist — that's fine, _site starts empty.
+          if [ -d gh-pages-content ]; then
+            cp -r gh-pages-content/. _site/ 2>/dev/null || true
+          fi
+
+          # Add new versioned snapshot
+          mkdir -p "_site/$API/$VER" "_site/$API/latest"
+          cp "openapi/apis/$API/generated/$API-api.yaml" "_site/$API/$VER/"
+          cp "openapi/apis/$API/generated/$API.html"     "_site/$API/$VER/"
+          cp "openapi/apis/$API/generated/$API-api.yaml" "_site/$API/latest/"
+          cp "openapi/apis/$API/generated/$API.html"     "_site/$API/latest/"
+
+          # Update versions.json
+          node - <<'EOF'
+          const fs = require('fs');
+          const path = '_site/versions.json';
+          const api  = process.env.API_NAME;
+          const ver  = process.env.VERSION;
+          const date = new Date().toISOString().slice(0, 10);
+          const pre  = ver.includes('-');
+
+          let data = { product: { latest: '', versions: [] }, tradeitem: { latest: '', versions: [] } };
+          try { data = JSON.parse(fs.readFileSync(path, 'utf8')); } catch {}
+
+          if (!data[api]) data[api] = { latest: '', versions: [] };
+          // Prepend new version (newest first), deduplicating
+          data[api].versions = [{ version: ver, date, prerelease: pre }, ...data[api].versions.filter(v => v.version !== ver)];
+          // Latest = first stable release, or newest pre-release if none stable yet
+          const stable = data[api].versions.find(v => !v.prerelease);
+          data[api].latest = stable ? stable.version : data[api].versions[0].version;
+
+          fs.writeFileSync(path, JSON.stringify(data, null, 2));
+          console.log(`Updated versions.json for ${api}: latest=${data[api].latest}`);
+EOF
+        env:
+          API_NAME: ${{ steps.extract.outputs.api_name }}
+          VERSION:  ${{ steps.extract.outputs.version }}
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy-pages:
+    needs: release
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
