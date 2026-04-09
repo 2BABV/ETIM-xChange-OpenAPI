@@ -1,7 +1,7 @@
 # How to Release an API Version
 
 This guide covers the steps to release a new version of the **Product API** or **Trade Item API**.
-For the full technical background, see [plan-releasing.md](plan-releasing.md).
+
 
 ## Tag format
 
