@@ -10,7 +10,13 @@
     ]
   },
   "tradeitem": {
-    "latest": "",
-    "versions": []
+    "latest": "1.0.0-Preview1",
+    "versions": [
+      {
+        "version": "1.0.0-Preview1",
+        "date": "2026-04-09",
+        "prerelease": true
+      }
+    ]
   }
 }
