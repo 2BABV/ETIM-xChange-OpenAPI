@@ -1,6 +1,6 @@
 # Plan: Versioning & Release Workflow
 
-Status: **Draft — reviewed by rubber-duck, corrections applied**
+Status: **Implementation complete — branch `anvil/release-workflow` ready to merge**
 Scope: Product API, Trade Item API (netprice, stock, tradeitem-domain are explicitly out of scope)
 
 ## Rubber-Duck Review Findings (applied to this plan)
@@ -50,11 +50,11 @@ Implement independent semantic versioning for each API, tag-triggered release au
 
 ### 1.1 Per-API CHANGELOG.md files
 
-- [ ] Create `openapi/apis/product/CHANGELOG.md` with initial `1.0.0-Preview` entry
-- [ ] Create `openapi/apis/tradeitem/CHANGELOG.md` with initial `1.0.0-Preview` entry
-- [ ] Follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) format
-- [ ] Use sections: Added, Changed, Deprecated, Removed, Fixed
-- [ ] Reference: aligns with GOVERNANCE.md §7 release notes structure
+- [x] Create `openapi/apis/product/CHANGELOG.md` with initial `1.0.0-Preview1` entry
+- [x] Create `openapi/apis/tradeitem/CHANGELOG.md` with initial `1.0.0-Preview1` entry
+- [x] Follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) format
+- [x] Use sections: Added, Changed, Deprecated, Removed, Fixed
+- [x] Reference: aligns with GOVERNANCE.md §7 release notes structure
 
 Template:
 ```markdown
@@ -94,19 +94,19 @@ No additional scripts needed — the release workflow will call these directly.
 
 ### 2.1 Create `.github/workflows/release.yml`
 
-- [ ] Trigger on tag push matching `product/v*` or `tradeitem/v*`
-- [ ] Extract API name and version from the tag (e.g., `product/v1.2.0` → `api_name=product`, `version=1.2.0`)
-- [ ] Validate that the tag version matches `info.version` in the corresponding `openapi.yaml` — fail the workflow if they differ
-- [ ] Run `npm ci`
-- [ ] Run `npm run lint` (full lint of all APIs as a safety net)
-- [ ] Run `npm run bundle:{api_name}` to generate bundled YAML
-- [ ] Run `npm run build:{api_name}` to generate HTML docs
-- [ ] Create a GitHub Release:
+- [x] Trigger on tag push matching `product/v*` or `tradeitem/v*`
+- [x] Extract API name and version from the tag (e.g., `product/v1.2.0` → `api_name=product`, `version=1.2.0`)
+- [x] Validate that the tag version matches `info.version` in the corresponding `openapi.yaml` — fail the workflow if they differ
+- [x] Run `npm ci`
+- [x] Run `npm run lint` (full lint of all APIs as a safety net)
+- [x] Run `npm run bundle:{api_name}` to generate bundled YAML
+- [x] Run `npm run build:{api_name}` to generate HTML docs
+- [x] Create a GitHub Release:
   - Tag: the pushed tag (e.g., `product/v1.2.0`)
   - Title: `{API Title} v{version}` (e.g., `Product API v1.2.0`)
   - Body: extracted from `CHANGELOG.md` (the section for this version)
   - Assets: attach `{api}-api.yaml` and `{api}.html`
-  - Mark as pre-release if version contains `-` (e.g., `1.0.0-Preview`)
+  - Mark as pre-release if version contains `-` (e.g., `1.0.0-Preview1`)
 
 Workflow structure:
 ```yaml
@@ -200,10 +200,10 @@ jobs:
 
 ### 2.2 Verify workflow locally (dry run)
 
-- [ ] Run `npm run lint` — must pass
-- [ ] Run `npm run bundle:product && npm run build:product` — must produce both files
-- [ ] Run `npm run bundle:tradeitem && npm run build:tradeitem` — must produce both files
-- [ ] Verify the version extraction logic works: `echo "product/v1.0.0-Preview" | sed 's|.*/v||'` → `1.0.0-Preview`
+- [x] Run `npm run lint` — must pass
+- [x] Run `npm run bundle:product && npm run build:product` — must produce both files
+- [x] Run `npm run bundle:tradeitem && npm run build:tradeitem` — must produce both files
+- [x] Verify the version extraction logic works: `echo "product/v1.0.0-Preview1" | sed 's|.*/v||'` → `1.0.0-Preview1`
 
 ---
 
@@ -213,11 +213,11 @@ jobs:
 
 The current workflow deploys the repo root on every push to `main`. It needs to be enhanced to also handle versioned documentation.
 
-- [ ] Keep the push-to-main trigger for `latest` docs
-- [ ] Restructure the build step to create a `_site/` directory with the right layout
-- [ ] Copy `index.html`, `.nojekyll`, and static assets into `_site/`
-- [ ] Build docs into `_site/product/latest/` and `_site/tradeitem/latest/`
-- [ ] Upload only `_site/` (not the entire repo root) — fixes the artifact scope concern
+- [x] Keep the push-to-main trigger for `latest` docs
+- [x] Restructure the build step to create a `_site/` directory with the right layout
+- [x] Copy `index.html`, `.nojekyll`, and static assets into `_site/`
+- [x] Build docs into `_site/product/latest/` and `_site/tradeitem/latest/`
+- [x] Upload only `_site/` (not the entire repo root) — fixes the artifact scope concern
 
 Target Pages structure:
 ```
@@ -273,8 +273,8 @@ concurrency:
 
 When a release is tagged, the release workflow should also publish versioned docs to Pages.
 
-- [ ] In `release.yml`, after creating the GitHub Release, trigger the Pages deploy workflow with the version info
-- [ ] Alternatively, use a separate `deploy-versioned-docs.yml` that runs on release creation
+- [x] In `release.yml`, after creating the GitHub Release, trigger the Pages deploy workflow with the version info
+- [x] Alternatively, use a separate `deploy-versioned-docs.yml` that runs on release creation
 
 Approach — add a Pages deploy step to `release.yml`:
 ```yaml
@@ -313,15 +313,15 @@ Approach — add a Pages deploy step to `release.yml`:
 
 ### 3.3 Update `index.html` for version awareness
 
-- [ ] Add per-API version display (read from a `versions.json` or hardcoded initially)
-- [ ] Link to both `latest` and specific versions
-- [ ] Add download links for YAML spec files
-- [ ] Show "Preview" badge for pre-release versions
+- [x] Add per-API version display (read from a `versions.json` or hardcoded initially)
+- [x] Link to both `latest` and specific versions
+- [x] Add download links for YAML spec files
+- [x] Show "Preview" badge for pre-release versions
 
 ### 3.4 Create `versions.json` (generated by release workflow)
 
-- [ ] Generate `versions.json` during release, pushed to the Pages branch
-- [ ] `index.html` fetches this at runtime to populate version selectors
+- [x] Generate `versions.json` during release, pushed to the Pages branch
+- [x] `index.html` fetches this at runtime to populate version selectors
 
 ```json
 {
@@ -346,21 +346,21 @@ Approach — add a Pages deploy step to `release.yml`:
 
 ### 4.1 Update GOVERNANCE.md §7
 
-- [ ] Update the release process section to reflect the tag-based automation
-- [ ] Document tag format: `{api-name}/v{semver}` (e.g., `product/v1.2.0`)
-- [ ] Add the version validation rule (tag must match spec `info.version`)
-- [ ] Update git tag format from `vX.Y.Z` to prefixed format
-- [ ] Document per-API CHANGELOG requirement
+- [x] Update the release process section to reflect the tag-based automation
+- [x] Document tag format: `{api-name}/v{semver}` (e.g., `product/v1.2.0`)
+- [x] Add the version validation rule (tag must match spec `info.version`)
+- [x] Update git tag format from `vX.Y.Z` to prefixed format
+- [x] Document per-API CHANGELOG requirement
 
 ### 4.2 Update README.md
 
-- [ ] Add link to the GitHub Pages documentation site
-- [ ] Add section explaining the release process
+- [x] Add link to the GitHub Pages documentation site
+- [x] Add section explaining the release process
 - [ ] Add badges (optional): latest version per API, build status
 
 ### 4.3 Document tagging procedure
 
-- [ ] Add a "How to release" section to `docs/initial-setup.md` or create `docs/releasing.md`
+- [x] Add a "How to release" section to `docs/initial-setup.md` or create `docs/releasing.md`
 
 Release steps for maintainers:
 ```bash
@@ -393,10 +393,10 @@ git push origin main --tags
 
 ### 5.1 Create `.github/workflows/ci.yml`
 
-- [ ] Trigger on pull requests to `main`
-- [ ] Run `npm run lint`
-- [ ] Run `npm run bundle` (verify specs bundle cleanly)
-- [ ] Run `npm run build:docs` (verify HTML generation works)
+- [x] Trigger on pull requests to `main`
+- [x] Run `npm run lint`
+- [x] Run `npm run bundle` (verify specs bundle cleanly)
+- [x] Run `npm run build:docs` (verify HTML generation works)
 - [ ] Optional: breaking change detection (Redocly `--check-compatibility`)
 
 ```yaml
@@ -429,9 +429,9 @@ This aligns with GOVERNANCE.md §8 (CI and Validation): "Pull requests without p
 
 These cannot be automated from the repository:
 
-- [ ] **Settings → Pages → Source**: Set to **"GitHub Actions"**
+- [ ] **Settings → Pages → Source**: Set to **"GitHub Actions"** ⚠️ *Manual — requires repo admin*
 - [ ] **Settings → Environments**: Verify `github-pages` environment exists (created automatically on first Pages deploy)
-- [ ] **Settings → Actions → General → Workflow permissions**: Ensure "Read and write permissions" is enabled (needed for `softprops/action-gh-release` to create releases)
+- [ ] **Settings → Actions → General → Workflow permissions**: Ensure "Read and write permissions" is enabled (needed for `softprops/action-gh-release` to create releases) ⚠️ *Manual — requires repo admin*
 
 ---
 
@@ -461,26 +461,19 @@ These cannot be automated from the repository:
 When all phases are complete, execute the first release:
 
 **Pre-flight (one-time setup):**
-- [ ] Bootstrap `gh-pages` branch (see Section 3.2 first-run prerequisite)
-- [ ] Create initial `versions.json` on the `gh-pages` branch before `index.html` goes live (otherwise the fetch will 404):
-  ```bash
-  git checkout gh-pages
-  echo '{"product":{"latest":"","versions":[]},"tradeitem":{"latest":"","versions":[]}}' > versions.json
-  git add versions.json && git commit -m "chore: bootstrap versions.json"
-  git push origin gh-pages
-  git checkout main
-  ```
-- [ ] Confirm GitHub Settings → Actions → Workflow permissions → "Read and write permissions" is enabled
+- [x] Bootstrap `gh-pages` branch — **handled automatically**: release workflow uses `continue-on-error` on the gh-pages checkout step; first run starts fresh without needing manual branch creation
+- [x] Create initial `versions.json` — **handled automatically**: release workflow generates it from scratch on first run if the file doesn't exist
+- [ ] Confirm GitHub Settings → Actions → Workflow permissions → "Read and write permissions" is enabled ⚠️ *Manual*
 
-**Release steps:**
-- [ ] Verify `info.version: 1.0.0-Preview` in `openapi/apis/product/openapi.yaml`
-- [ ] Verify `info.version: 1.0.0-Preview` in `openapi/apis/tradeitem/openapi.yaml`
-- [ ] Verify CHANGELOGs have `[1.0.0-Preview]` sections with content
-- [ ] Commit everything to `main`
+**Release steps (pending — to execute after merging `anvil/release-workflow` to `main`):**
+- [x] Verify `info.version: 1.0.0-Preview1` in `openapi/apis/product/openapi.yaml`
+- [x] Verify `info.version: 1.0.0-Preview1` in `openapi/apis/tradeitem/openapi.yaml`
+- [x] Verify CHANGELOGs have `[1.0.0-Preview1]` sections with content
+- [ ] Merge `anvil/release-workflow` branch to `main`
 - [ ] Push to `origin main` — verify `deploy-docs.yml` succeeds (latest docs)
-- [ ] Tag: `git tag product/v1.0.0-Preview && git tag tradeitem/v1.0.0-Preview`
+- [ ] Tag: `git tag product/v1.0.0-Preview1 && git tag tradeitem/v1.0.0-Preview1`
 - [ ] Push tags: `git push origin --tags` — triggers two release workflow runs
 - [ ] Verify GitHub Releases appear with correct YAML + HTML assets attached
-- [ ] Verify GitHub Pages shows versioned docs at `/product/v1.0.0-Preview/`
+- [ ] Verify GitHub Pages shows versioned docs at `/product/v1.0.0-Preview1/`
 - [ ] Verify `index.html` landing page version selector works
 - [ ] Verify `versions.json` was updated by the release workflow
