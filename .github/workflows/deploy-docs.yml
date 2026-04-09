@@ -54,8 +54,10 @@ jobs:
           mkdir -p _site/product/latest _site/tradeitem/latest
           cp openapi/apis/product/generated/product.html       _site/product/latest/
           cp openapi/apis/product/generated/product-api.yaml   _site/product/latest/
+          cp openapi/apis/product/CHANGELOG.md                 _site/product/latest/
           cp openapi/apis/tradeitem/generated/tradeitem.html      _site/tradeitem/latest/
           cp openapi/apis/tradeitem/generated/tradeitem-api.yaml  _site/tradeitem/latest/
+          cp openapi/apis/tradeitem/CHANGELOG.md                  _site/tradeitem/latest/
 
           # Landing page and Pages config from repo root
           cp index.html   _site/
