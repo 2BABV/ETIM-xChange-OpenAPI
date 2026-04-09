@@ -7,7 +7,7 @@ This API adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-## [1.0.0-Preview] - 2026-04-09
+## [1.0.0-Preview1] - 2026-04-09
 
 ### Added
 - Initial preview release of the Product API
