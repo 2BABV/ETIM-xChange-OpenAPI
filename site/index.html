@@ -327,7 +327,7 @@
     <ul class="nav-links">
       <li><a href="#about">About</a></li>
       <li><a href="#apis">APIs</a></li>
-      <li><a href="#getting-started">Getting Started</a></li>
+      <li><a href="#architecture">Architecture</a></li>
       <li><a href="#releases">Releases</a></li>
       <li><a href="#resources">Resources</a></li>
     </ul>
@@ -435,40 +435,27 @@
 </section>
 
 <!-- Getting Started -->
-<section id="getting-started">
+<section id="architecture">
   <div class="container">
-    <p class="section-label">Authentication</p>
-    <h2 class="section-title">Getting Started</h2>
-    <p class="section-desc">All APIs are secured with OAuth 2.0 Client Credentials. Obtain a token, then call any endpoint.</p>
+    <p class="section-label">Architecture</p>
+    <h2 class="section-title">Architectural Overview</h2>
+    <p class="section-desc">Any client can talk to any server — the OpenAPI specification is the shared contract, OAuth 2.0 and DSGO provide the trust layer.</p>
+
+    <img src="assets/architecture-overview.svg"
+         alt="Architecture diagram: client applications on the left (ERP, webshop, mobile app) send GET requests to server implementations on the right (2BA, DSGO node, other implementers), governed by the OpenAPI Specification above and secured by OAuth 2.0 / DSGO below."
+         style="max-width: 100%; height: auto; display: block; margin: 0 auto 1.5rem;">
 
     <div class="auth-box">
-      <div class="auth-header">🔑 OAuth 2.0 — Client Credentials Flow (server-to-server)</div>
+      <div class="auth-header">🔑 Authentication — OAuth 2.0 Client Credentials</div>
       <div class="auth-body">
-        <p><strong>Note:</strong> Client Credentials is a machine-to-machine flow. Never expose your <code>client_secret</code> in frontend code or public repositories. The example below uses the <strong>2BA production</strong> identity server — other implementers may use their own identity provider.</p>
-        <ol>
-          <li>Register your application with the API provider to receive a <strong>client_id</strong> and <strong>client_secret</strong>.</li>
-          <li>Request an access token from the token endpoint.</li>
-          <li>Include the token as a <code>Bearer</code> header in API requests.</li>
-        </ol>
-
+        <p>All APIs are secured with OAuth 2.0 Client Credentials (server-to-server). Each implementer provides their own token endpoint.</p>
         <table class="scope-table">
-          <thead><tr><th>API</th><th>Scope</th><th>Token URL (2BA production)</th></tr></thead>
+          <thead><tr><th>API</th><th>Scope</th><th>Example Token URL (2BA)</th></tr></thead>
           <tbody>
             <tr><td>Product API</td><td><code>read:products</code></td><td rowspan="2"><code>https://identity.2ba.nl/connect/token</code></td></tr>
             <tr><td>Trade Item API</td><td><code>read:tradeitems</code></td></tr>
           </tbody>
         </table>
-
-<pre class="code-block"><span class="comment"># 1. Get an access token</span>
-curl <span class="flag">-X POST</span> <span class="string">https://identity.2ba.nl/connect/token</span> \
-  <span class="flag">-d</span> <span class="string">"grant_type=client_credentials"</span> \
-  <span class="flag">-d</span> <span class="string">"client_id=YOUR_CLIENT_ID"</span> \
-  <span class="flag">-d</span> <span class="string">"client_secret=YOUR_CLIENT_SECRET"</span> \
-  <span class="flag">-d</span> <span class="string">"scope=read:products"</span>
-
-<span class="comment"># 2. Call an API endpoint</span>
-curl <span class="flag">-H</span> <span class="string">"Authorization: Bearer ACCESS_TOKEN"</span> \
-  <span class="string">https://rest.2ba.nl/products/v1/products/{gln}/{productNumber}/details</span></pre>
       </div>
     </div>
   </div>

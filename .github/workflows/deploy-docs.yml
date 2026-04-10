@@ -63,6 +63,10 @@ jobs:
           cp site/index.html   _site/
           cp site/.nojekyll    _site/
 
+          # Static assets (diagrams, images)
+          mkdir -p _site/assets
+          cp -r site/assets/. _site/assets/
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v4
         with:
