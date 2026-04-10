@@ -275,7 +275,6 @@ The `redocly.yaml` file defines:
 
 For more information, see:
 - [Best Practices](./best-practices.md) - Naming conventions and patterns
-- [Multiple Domains](./multiple_domains.md) - Multi-API repository structure
 - [Redocly Documentation](https://redocly.com/docs/cli/) - Official Redocly CLI guide
 
 ---
@@ -297,7 +296,6 @@ When adding new schemas or endpoints:
 
 For questions or issues with the OpenAPI specification:
 - Review the [best-practices.md](./best-practices.md) guide
-- Check the [multiple_domains.md](./multiple_domains.md) documentation
 - Contact the API architecture team
 
 ---
