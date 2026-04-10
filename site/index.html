@@ -445,19 +445,6 @@
          alt="Architecture diagram: client applications on the left (ERP, webshop, mobile app) send GET requests to server implementations on the right (2BA, DSGO node, other implementers), governed by the OpenAPI Specification above and secured by OAuth 2.0 / DSGO below."
          style="max-width: 100%; height: auto; display: block; margin: 0 auto 1.5rem;">
 
-    <div class="auth-box">
-      <div class="auth-header">🔑 Authentication — OAuth 2.0 Client Credentials</div>
-      <div class="auth-body">
-        <p>All APIs are secured with OAuth 2.0 Client Credentials (server-to-server). Each implementer provides their own token endpoint.</p>
-        <table class="scope-table">
-          <thead><tr><th>API</th><th>Scope</th><th>Example Token URL (2BA)</th></tr></thead>
-          <tbody>
-            <tr><td>Product API</td><td><code>read:products</code></td><td rowspan="2"><code>https://identity.2ba.nl/connect/token</code></td></tr>
-            <tr><td>Trade Item API</td><td><code>read:tradeitems</code></td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
   </div>
 </section>
 
