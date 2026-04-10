@@ -6,6 +6,8 @@ Generate a comprehensive OpenAPI 3.1 specification for the **TradeItem** part of
 ## Context Files
 - **Source Schema**: `resources/etim-xchange/ETIM xChange_Schema_V2-0_beta_2025-10-13.json` (TradeItem section starting at line 1690)
 - **Project Standards**: `.github/copilot-instructions.md`
+- **Best Practices**: `docs/best-practices.md`
+- **Envelope Pattern**: `docs/envelope-pattern.md`
 
 ## Requirements
 
@@ -365,8 +367,9 @@ descriptionLanguage:
 - **camelCase** for operationIds: `getBulkTradeItemDetails`, `getTradeItemDetails`
 
 #### API Paths
-- **kebab-case** for path segments: `/bulk/trade-item-details`, `/bulk/trade-item-orderings`
-- Prefix all bulk endpoints with `/bulk/``
+- **kebab-case** for path segments: `/trade-items/bulk/details`, `/trade-items/bulk/orderings`
+- Bulk endpoints follow the `/{resource}/bulk/{aspect}` pattern (e.g., `/trade-items/bulk/pricings`)
+- No resource-name prefix in aspect (just `details`, not `trade-item-details`)
 
 ### 3. Architecture & Structure
 
@@ -374,40 +377,71 @@ descriptionLanguage:
 ```
 openapi/apis/tradeitem/
 ├── openapi.yaml                          # Main API spec (includes single + bulk)
+├── openapi-domain.yaml                   # Domain model documentation API (tradeitem-domain@v1)
 ├── README.md
 ├── paths/
-│   ├── bulk/                             # Bulk endpoints
-│   │   ├── trade-item-details.yaml       # GET /bulk/trade-item-details (consolidates identification + details)
-│   │   ├── trade-item-orderings.yaml     # GET /bulk/trade-item-orderings
-│   │   └── trade-item-pricings.yaml      # GET /bulk/trade-item-pricings
-│   ├── trade-items.yaml                  # GET /{supplierIdGln}/{supplierItemNumber}
-│   ├── trade-item-details.yaml           # GET /{key}/details
-│   ├── trade-item-orderings.yaml         # GET /{key}/orderings
-│   └── trade-item-pricings.yaml          # GET /{key}/pricings
+│   ├── bulk/                             # Bulk endpoints (under /trade-items/bulk/{aspect})
+│   │   ├── details.yaml                  # GET /trade-items/bulk/details
+│   │   ├── descriptions.yaml             # GET /trade-items/bulk/descriptions
+│   │   ├── orderings.yaml                # GET /trade-items/bulk/orderings
+│   │   ├── pricings.yaml                 # GET /trade-items/bulk/pricings
+│   │   ├── allowance-surcharges.yaml     # GET /trade-items/bulk/allowance-surcharges
+│   │   ├── relations.yaml                # GET /trade-items/bulk/relations
+│   │   └── logistics-details.yaml        # GET /trade-items/bulk/logistics-details
+│   ├── trade-items.yaml                  # GET /trade-items/{supplierIdGln}/{supplierItemNumber}
+│   ├── trade-item-details.yaml           # GET /trade-items/{key}/details
+│   ├── trade-item-descriptions.yaml      # GET /trade-items/{key}/descriptions
+│   ├── trade-item-orderings.yaml         # GET /trade-items/{key}/orderings
+│   ├── trade-item-pricings.yaml          # GET /trade-items/{key}/pricings
+│   ├── trade-item-allowance-surcharges.yaml # GET /trade-items/{key}/allowance-surcharges
+│   ├── trade-item-relations.yaml         # GET /trade-items/{key}/relations
+│   └── trade-item-logistics-details.yaml # GET /trade-items/{key}/logistics-details
 └── schemas/
     ├── domain/                           # Domain models
     │   ├── TradeItemDetails.yaml         # Without key (for nested single-item)
     │   ├── TradeItemDetailsSummary.yaml  # WITH key (for bulk retrieval)
+    │   ├── ItemDescription.yaml          # Single description record
+    │   ├── ItemDescriptionsSummary.yaml  # WITH key (for bulk descriptions)
     │   ├── TradeItemOrdering.yaml        # Without key (for nested single-item)
     │   ├── TradeItemOrderingsSummary.yaml # WITH key (for bulk retrieval)
-    │   ├── ItemPricing.yaml
-    │   ├── TradeItemPricingSummary.yaml  # WITH key (for bulk retrieval, 1 row per price)
-    │   ├── ItemLogistics.yaml
-    │   ├── ItemRelation.yaml
+    │   ├── TradeItemPricing.yaml         # Without key (for nested single-item, includes pricingRef)
+    │   ├── TradeItemPricingsSummary.yaml  # WITH key (for bulk retrieval, 1 row per price)
+    │   ├── AllowanceSurcharge.yaml       # Without key (single-item)
+    │   ├── AllowanceSurchargeSummary.yaml # WITH key (for bulk, join via pricingRef)
+    │   ├── ItemRelation.yaml             # Without key (single-item)
+    │   ├── ItemRelationSummary.yaml      # WITH key (for bulk retrieval)
+    │   ├── ItemLogistics.yaml            # Without key (single-item)
+    │   ├── ItemLogisticsSummary.yaml     # WITH key (for bulk retrieval)
     │   ├── PackagingUnit.yaml
-    │   ├── ItemDescription.yaml
-    │   └── ItemCountrySpecificField.yaml
+    │   ├── ItemCountrySpecificField.yaml
+    │   ├── ItemDetails.yaml              # Detailed item details (sub-component)
+    │   ├── ItemIdentification.yaml       # Item identification fields
+    │   └── ItemAttachment.yaml           # Item attachment references
     ├── responses/
-    │   ├── TradeItemResponse.yaml              # Single-item nested response
-    │   ├── TradeItemDetailsResponse.yaml       # Single-item details subresource
-    │   ├── TradeItemOrderingsResponse.yaml     # Single-item orderings subresource
-    │   ├── TradeItemPricingsResponse.yaml      # Single-item pricings subresource
-    │   ├── TradeItemAllowanceSurchargesResponse.yaml  # Single-item allowance-surcharges subresource
+    │   ├── TradeItemResponse.yaml                     # Single-item full response envelope
+    │   ├── TradeItemResponseData.yaml                 # Named $ref for data (composite key + nested components)
+    │   ├── TradeItemDetailsResponse.yaml              # Single-item details response envelope
+    │   ├── TradeItemDetailsResponseData.yaml          # Named $ref for data (key + details)
+    │   ├── TradeItemDescriptionsResponse.yaml         # Single-item descriptions response envelope
+    │   ├── TradeItemDescriptionsResponseData.yaml     # Named $ref for data (key + descriptions)
+    │   ├── TradeItemOrderingsResponse.yaml            # Single-item orderings response envelope
+    │   ├── TradeItemOrderingsResponseData.yaml        # Named $ref for data (key + orderings)
+    │   ├── TradeItemPricingsResponse.yaml             # Single-item pricings response envelope
+    │   ├── TradeItemPricingsResponseData.yaml         # Named $ref for data (key + pricings)
+    │   ├── TradeItemAllowanceSurchargesResponse.yaml  # Single-item allowance-surcharges envelope
+    │   ├── TradeItemAllowanceSurchargesResponseData.yaml # Named $ref for data
     │   ├── TradeItemAllowanceSurchargeItem.yaml       # Surcharge with pricingRef correlation
-    │   ├── BulkTradeItemDetailsResponse.yaml   # Bulk details
-    │   ├── BulkTradeItemOrderingsResponse.yaml # Bulk orderings
-    │   ├── BulkTradeItemPricingsResponse.yaml  # Bulk pricings
-    │   └── BulkAllowanceSurchargesResponse.yaml # Bulk allowance-surcharges
+    │   ├── TradeItemRelationsResponse.yaml            # Single-item relations response envelope
+    │   ├── TradeItemRelationsResponseData.yaml        # Named $ref for data (key + relations)
+    │   ├── TradeItemLogisticsDetailsResponse.yaml     # Single-item logistics response envelope
+    │   ├── TradeItemLogisticsDetailsResponseData.yaml # Named $ref for data (key + logistics)
+    │   ├── BulkTradeItemDetailsResponse.yaml          # Bulk details
+    │   ├── BulkTradeItemDescriptionsResponse.yaml     # Bulk descriptions
+    │   ├── BulkTradeItemOrderingsResponse.yaml        # Bulk orderings
+    │   ├── BulkTradeItemPricingsResponse.yaml         # Bulk pricings
+    │   ├── BulkAllowanceSurchargesResponse.yaml       # Bulk allowance-surcharges
+    │   ├── BulkTradeItemRelationsResponse.yaml        # Bulk relations
+    │   └── BulkTradeItemLogisticsDetailsResponse.yaml # Bulk logistics details
     └── enums/
         ├── ItemStatus.yaml
         ├── ItemCondition.yaml
@@ -417,6 +451,8 @@ openapi/apis/tradeitem/
 **Schema Naming Convention** (following Product API pattern):
 - `*Details.yaml` / `*Ordering.yaml` → WITHOUT key fields (for nested single-item responses)
 - `*Summary.yaml` → WITH key fields embedded (for bulk flat retrieval)
+- `*Response.yaml` → Response envelope with `data: $ref: ./*ResponseData.yaml`
+- `*ResponseData.yaml` → Named schema for the `data` property (composite key + domain data)
 
 #### Shared Parameters (use existing)
 ```
@@ -437,14 +473,26 @@ The **primary composite key** for TradeItem:
 
 ### 4.1. Server URLs
 
-Following the Product API pattern:
+Following the Product API pattern, use parameterized server URLs that support multiple implementers:
 ```yaml
 servers:
-  - url: https://rest.2ba.nl/v1/tradeitems
-    description: Production server
-  - url: https://rest.accept.2ba.nl/v1/tradeitems
-    description: Acceptance server
+  - url: https://{host}{basePath}/v1
+    description: Product Data OpenAPI - Trade Item API v1
+    variables:
+      host:
+        default: api.example.com
+        description: >-
+          Implementer-specific API hostname.
+          Examples: rest.2ba.nl, selectprerelease.artikelbeheer.nl,
+          acceptation-service-api-dsgo.etimix.com
+      basePath:
+        default: ''
+        description: >-
+          Optional path prefix (e.g. /api). Leave empty if the API
+          is served directly under the domain root.
 ```
+
+**Important**: Do NOT hardcode 2BA-specific URLs. The specification supports multiple implementers, each with their own hostname.
 
 ### 4.2. Pricing Reference Key (`pricingRef`)
 
@@ -460,8 +508,8 @@ In ETIM xChange, `AllowanceSurcharge[]` is nested inside `Pricing[]`. When the A
 - Used as the join key between `/pricings` and `/allowance-surcharges` endpoints (both single-item and bulk)
 
 **Join pattern**:
-- **Single-item**: Use `pricingRef` to correlate entries from `/{key}/pricings` with `/{key}/allowance-surcharges`
-- **Bulk**: Use `supplierIdGln` + `supplierItemNumber` + `pricingRef` to join `/bulk/trade-item-pricings` with `/bulk/trade-item-allowance-surcharges`
+- **Single-item**: Use `pricingRef` to correlate entries from `/trade-items/{key}/pricings` with `/trade-items/{key}/allowance-surcharges`
+- **Bulk**: Use `supplierIdGln` + `supplierItemNumber` + `pricingRef` to join `/trade-items/bulk/pricings` with `/trade-items/bulk/allowance-surcharges`
 
 **Format examples** (opaque — clients must not parse):
 ```yaml
@@ -536,33 +584,55 @@ parameters:
 
 #### Regular TradeItem Endpoints
 
-**GET /{supplierIdGln}/{supplierItemNumber}**
-- **Description**: Retrieve the complete trade item information for a single supplier item combination
+**GET /trade-items/{supplierIdGln}/{supplierItemNumber}**
+- **Summary**: Get trade item
+- **Description**: Retrieve the full trade item payload for a single supplier item combination
 - **Path Parameters**:
   - `supplierIdGln` (required): Supplier GLN. Must match `^[0-9]{13}$`
   - `supplierItemNumber` (required): Supplier item number (1-35 characters)
-- **Response**: `TradeItemResponse` with nested structure (key at root, components nested)
+- **Response**: `TradeItemResponse` with `data: $ref: TradeItemResponseData.yaml` (nested structure: key at root, components nested)
 - **Behavior**: Returns exactly one trade item document. No pagination, no cursor metadata. Respond with `404 Not Found` when the composite key is unknown.
 
 **Subresource Endpoints** (following product API pattern):
 
-**GET /{supplierIdGln}/{supplierItemNumber}/details**
+**GET /trade-items/{supplierIdGln}/{supplierItemNumber}/details**
+- **Summary**: Get trade item details
 - **Description**: Retrieve item identification and details for a specific trade item
-- **Response**: `TradeItemDetailsResponse` with key at root + nested `details` object
+- **Response**: `TradeItemDetailsResponse` with `data: $ref: TradeItemDetailsResponseData.yaml`
 
-**GET /{supplierIdGln}/{supplierItemNumber}/orderings**
+**GET /trade-items/{supplierIdGln}/{supplierItemNumber}/descriptions**
+- **Summary**: Get trade item descriptions
+- **Description**: Retrieve multilingual descriptions for a specific trade item
+- **Query Parameters**:
+  - `language` (optional): Filter descriptions to specific language(s)
+- **Response**: `TradeItemDescriptionsResponse` with `data: $ref: TradeItemDescriptionsResponseData.yaml`
+
+**GET /trade-items/{supplierIdGln}/{supplierItemNumber}/orderings**
+- **Summary**: Get trade item orderings
 - **Description**: Retrieve ordering information for a specific trade item
-- **Response**: `TradeItemOrderingsResponse` with key at root + nested `orderings` object
+- **Response**: `TradeItemOrderingsResponse` with `data: $ref: TradeItemOrderingsResponseData.yaml`
 
-**GET /{supplierIdGln}/{supplierItemNumber}/pricings**
+**GET /trade-items/{supplierIdGln}/{supplierItemNumber}/pricings**
+- **Summary**: Get trade item pricings
 - **Description**: Retrieve pricing information for a specific trade item
-- **Response**: `TradeItemPricingsResponse` with key at root + nested `pricings` array
-- **Allowances/Surcharges**: Available via separate `/{supplierIdGln}/{supplierItemNumber}/allowance-surcharges` endpoint
+- **Response**: `TradeItemPricingsResponse` with `data: $ref: TradeItemPricingsResponseData.yaml`
+- **Allowances/Surcharges**: Available via separate `/allowance-surcharges` endpoint
 
-**GET /{supplierIdGln}/{supplierItemNumber}/allowance-surcharges**
+**GET /trade-items/{supplierIdGln}/{supplierItemNumber}/allowance-surcharges**
+- **Summary**: Get trade item allowance surcharges
 - **Description**: Retrieve allowances and surcharges for a specific trade item
-- **Response**: `TradeItemAllowanceSurchargesResponse` with key at root + nested `allowanceSurcharges` array
+- **Response**: `TradeItemAllowanceSurchargesResponse` with `data: $ref: TradeItemAllowanceSurchargesResponseData.yaml`
 - **Correlation**: Each entry includes `pricingRef` to correlate with the corresponding pricing entry from the `/pricings` endpoint
+
+**GET /trade-items/{supplierIdGln}/{supplierItemNumber}/relations**
+- **Summary**: Get trade item relations
+- **Description**: Retrieve item relations for a specific trade item (accessories, spare parts, consumables, successors)
+- **Response**: `TradeItemRelationsResponse` with `data: $ref: TradeItemRelationsResponseData.yaml`
+
+**GET /trade-items/{supplierIdGln}/{supplierItemNumber}/logistics-details**
+- **Summary**: Get trade item logistics details
+- **Description**: Retrieve base item logistic measurements (net dimensions, weight, volume) for a specific trade item
+- **Response**: `TradeItemLogisticsDetailsResponse` with `data: $ref: TradeItemLogisticsDetailsResponseData.yaml`
 
 ### 6. Bulk Service Design
 
@@ -572,12 +642,16 @@ The bulk API consolidates ETIM xChange's separate `ItemIdentification` and `Item
 
 | Endpoint | Consolidates | Schema |
 |----------|--------------|--------|
-| `/bulk/trade-item-details` | `ItemIdentification` + `ItemDetails` | `TradeItemDetailsSummary` |
-| `/bulk/trade-item-orderings` | `Ordering` | `TradeItemOrderingsSummary` |
-| `/bulk/trade-item-pricings` | `Pricing[]` | `TradeItemPricingSummary` (1 row per price) |
+| `/trade-items/bulk/details` | `ItemIdentification` + `ItemDetails` | `TradeItemDetailsSummary` |
+| `/trade-items/bulk/descriptions` | `ItemDescriptions[]` | `ItemDescriptionsSummary` |
+| `/trade-items/bulk/orderings` | `Ordering` | `TradeItemOrderingsSummary` |
+| `/trade-items/bulk/pricings` | `Pricing[]` | `TradeItemPricingsSummary` (1 row per price) |
+| `/trade-items/bulk/allowance-surcharges` | `AllowanceSurcharge[]` | `AllowanceSurchargeSummary` |
+| `/trade-items/bulk/relations` | `ItemRelations[]` | `ItemRelationSummary` |
+| `/trade-items/bulk/logistics-details` | `ItemLogisticDetails[]` | `ItemLogisticsSummary` |
 
-**Note**: There is no separate `/bulk/trade-items` or `/bulk/item-identifications` endpoint. 
-The `/bulk/trade-item-details` endpoint provides all identification fields (GTINs, manufacturer numbers, 
+**Note**: There is no separate `/trade-items/bulk/trade-items` or `/trade-items/bulk/item-identifications` endpoint. 
+The `/trade-items/bulk/details` endpoint provides all identification fields (GTINs, manufacturer numbers, 
 discount/bonus group IDs, validity dates) combined with item details (status, condition).
 Discount/bonus group descriptions are multilingual and served from the description service.
 
@@ -587,11 +661,13 @@ Discount/bonus group descriptions are multilingual and served from the descripti
 
 | Endpoint | Rows per Item | Flattening Pattern |
 |----------|---------------|-------------------|
-| `/bulk/trade-item-details` | 1 | Fully flat (all fields inline) |
-| `/bulk/trade-item-orderings` | 1 | Fully flat (all fields inline) |
-| `/bulk/trade-item-descriptions` | n (per language) | Flat per language row |
-| `/bulk/trade-item-pricings` | n (per price tier) | **Flat per price entry** |
-| `/bulk/trade-item-allowance-surcharges` | n (per surcharge) | **Flat per surcharge entry** |
+| `/trade-items/bulk/details` | 1 | Fully flat (all fields inline) |
+| `/trade-items/bulk/descriptions` | n (per language) | Flat per language row |
+| `/trade-items/bulk/orderings` | 1 | Fully flat (all fields inline) |
+| `/trade-items/bulk/pricings` | n (per price tier) | **Flat per price entry** |
+| `/trade-items/bulk/allowance-surcharges` | n (per surcharge) | **Flat per surcharge entry** |
+| `/trade-items/bulk/relations` | n (per relation) | Flat per relation row |
+| `/trade-items/bulk/logistics-details` | n (per logistic detail) | Flat per logistic row |
 
 **Pricing Flattening** (consistent with `ProductEtimClassificationFeature` pattern):
 - Each row = 1 price entry with embedded composite key
@@ -599,7 +675,7 @@ Discount/bonus group descriptions are multilingual and served from the descripti
 - Allows predictable payload sizes and efficient cursor pagination
 
 **Allowance/Surcharge Separation** (star schema pattern):
-- Moved from nested array within pricing to separate `/bulk/trade-item-allowance-surcharges` endpoint
+- Moved from nested array within pricing to separate `/trade-items/bulk/allowance-surcharges` endpoint
 - Each row = 1 surcharge entry with `pricingRef` linking to the parent pricing entry
 - Enables clean dimensional modeling: pricing fact table + surcharges fact table
 - Join via: `supplierIdGln` + `supplierItemNumber` + `pricingRef`
@@ -609,8 +685,9 @@ Discount/bonus group descriptions are multilingual and served from the descripti
 
 #### Bulk Endpoints to Create
 
-**GET /bulk/trade-item-details**
-- **Description**: Retrieve trade item identification AND details (status, descriptions) in bulk with cursor-based pagination. This endpoint consolidates what would have been separate trade-items and item-identifications endpoints.
+**GET /trade-items/bulk/details**
+- **Summary**: List trade item details
+- **Description**: Retrieve trade item identification AND details in bulk with cursor-based pagination. This endpoint consolidates what would have been separate trade-items and item-identifications endpoints.
 - **Query Parameters**:
   - `cursor` (optional): Pagination cursor
   - `limit` (optional): Number of items per page (default: 100, max: 1000)
@@ -619,7 +696,19 @@ Discount/bonus group descriptions are multilingual and served from the descripti
   - `mutationDateTime` (optional): Filter by mutation timestamp (RFC 3339 / ISO 8601 UTC format with 'Z' suffix)
 - **Response**: `BulkTradeItemDetailsResponse` using `TradeItemDetailsSummary` schema
 
-**GET /bulk/trade-item-orderings**
+**GET /trade-items/bulk/descriptions**
+- **Summary**: List trade item descriptions
+- **Description**: Retrieve multilingual trade item descriptions in bulk with cursor-based pagination. Flat per language row.
+- **Query Parameters**:
+  - `cursor` (optional): Pagination cursor
+  - `limit` (optional): Number of items per page (default: 100, max: 1000)
+  - `selectionId` (optional): Filter by selection identifier
+  - `supplierIdGln` (optional): Filter by supplier GLN
+  - `mutationDateTime` (optional): Filter by mutation timestamp (RFC 3339 / ISO 8601 UTC format with 'Z' suffix)
+- **Response**: `BulkTradeItemDescriptionsResponse` using `ItemDescriptionsSummary` schema
+
+**GET /trade-items/bulk/orderings**
+- **Summary**: List trade item orderings
 - **Description**: Retrieve trade item ordering information (units, quantities, step sizes) in bulk with cursor-based pagination
 - **Query Parameters**:
   - `cursor` (optional): Pagination cursor
@@ -629,19 +718,21 @@ Discount/bonus group descriptions are multilingual and served from the descripti
   - `mutationDateTime` (optional): Filter by mutation timestamp (RFC 3339 / ISO 8601 UTC format with 'Z' suffix)
 - **Response**: `BulkTradeItemOrderingsResponse` using `TradeItemOrderingsSummary` schema
 
-**GET /bulk/trade-item-pricings**
-- **Description**: Retrieve trade item pricing information (prices, currencies, allowances) in bulk with cursor-based pagination. **Flattened structure**: 1 row per price entry (not grouped by item)
+**GET /trade-items/bulk/pricings**
+- **Summary**: List trade item pricings
+- **Description**: Retrieve trade item pricing information in bulk with cursor-based pagination. **Flattened structure**: 1 row per price entry (not grouped by item)
 - **Query Parameters**:
   - `cursor` (optional): Pagination cursor
   - `limit` (optional): Number of items per page (default: 100, max: 1000)
   - `selectionId` (optional): Filter by selection identifier
   - `supplierIdGln` (optional): Filter by supplier GLN
   - `mutationDateTime` (optional): Filter by mutation timestamp (RFC 3339 / ISO 8601 UTC format with 'Z' suffix)
-- **Response**: `BulkTradeItemPricingsResponse` using `TradeItemPricingSummary` schema
-- **Note**: A trade item with multiple price tiers will generate multiple rows with the same key but different pricing data. This follows the same pattern as `/bulk/product-etim-classifications`
-- **Allowances/Surcharges**: Available via separate `/bulk/trade-item-allowance-surcharges` endpoint (not embedded)
+- **Response**: `BulkTradeItemPricingsResponse` using `TradeItemPricingsSummary` schema
+- **Note**: A trade item with multiple price tiers will generate multiple rows with the same key but different pricing data.
+- **Allowances/Surcharges**: Available via separate `/trade-items/bulk/allowance-surcharges` endpoint (not embedded)
 
-**GET /bulk/trade-item-allowance-surcharges**
+**GET /trade-items/bulk/allowance-surcharges**
+- **Summary**: List trade item allowance surcharges
 - **Description**: Retrieve trade item allowances and surcharges in bulk with cursor-based pagination. **Flattened structure**: 1 row per surcharge entry
 - **Query Parameters**:
   - `cursor` (optional): Pagination cursor
@@ -651,6 +742,28 @@ Discount/bonus group descriptions are multilingual and served from the descripti
   - `mutationDateTime` (optional): Filter by mutation timestamp (RFC 3339 / ISO 8601 UTC format with 'Z' suffix)
 - **Response**: `BulkAllowanceSurchargesResponse` using `AllowanceSurchargeSummary` schema
 - **Correlation**: Each entry includes `pricingRef` to correlate with the corresponding pricing entry. Join via: `supplierIdGln` + `supplierItemNumber` + `pricingRef`
+
+**GET /trade-items/bulk/relations**
+- **Summary**: List trade item relations
+- **Description**: Retrieve trade item relations in bulk with cursor-based pagination. Flat per relation row.
+- **Query Parameters**:
+  - `cursor` (optional): Pagination cursor
+  - `limit` (optional): Number of items per page (default: 100, max: 1000)
+  - `selectionId` (optional): Filter by selection identifier
+  - `supplierIdGln` (optional): Filter by supplier GLN
+  - `mutationDateTime` (optional): Filter by mutation timestamp (RFC 3339 / ISO 8601 UTC format with 'Z' suffix)
+- **Response**: `BulkTradeItemRelationsResponse` using `ItemRelationSummary` schema
+
+**GET /trade-items/bulk/logistics-details**
+- **Summary**: List trade item logistics details
+- **Description**: Retrieve trade item logistics details in bulk with cursor-based pagination. Flat per logistic row.
+- **Query Parameters**:
+  - `cursor` (optional): Pagination cursor
+  - `limit` (optional): Number of items per page (default: 100, max: 1000)
+  - `selectionId` (optional): Filter by selection identifier
+  - `supplierIdGln` (optional): Filter by supplier GLN
+  - `mutationDateTime` (optional): Filter by mutation timestamp (RFC 3339 / ISO 8601 UTC format with 'Z' suffix)
+- **Response**: `BulkTradeItemLogisticsDetailsResponse` using `ItemLogisticsSummary` schema
 
 #### Response Structure (Cursor-Based Pagination)
 
@@ -686,68 +799,44 @@ examples:
 
 ### 7. Response Structures
 
+#### Response Envelope Pattern (Named `$ref` for `data`)
+
+**CRITICAL**: All response envelopes MUST use a named `$ref` for the `data` property — NEVER an inline anonymous `type: object`. This is required for NSwag/.NET code generation to produce well-named types.
+
+```yaml
+# ❌ INCORRECT — inline object → NSwag generates "Data", "Data2", "Data3"
+type: object
+properties:
+  data:
+    type: object
+    properties:
+      supplierIdGln: ...
+      supplierItemNumber: ...
+      details: ...
+
+# ✅ CORRECT — named $ref → NSwag generates "TradeItemResponseData"
+type: object
+properties:
+  data:
+    $ref: ./TradeItemResponseData.yaml
+```
+
 #### Single Trade Item Response (Nested Structure)
 
-Following the Product API pattern, single-item responses use a **nested structure** with key at root:
+Following the Product API pattern, single-item responses use:
+1. A `*Response.yaml` envelope with `data: $ref: ./*ResponseData.yaml`
+2. A `*ResponseData.yaml` with key fields at root + nested domain objects
 
-Use `TradeItemResponse.yaml` for the main `GET /{supplierIdGln}/{supplierItemNumber}` endpoint:
-
+**`TradeItemResponse.yaml`** (envelope for `GET /trade-items/{supplierIdGln}/{supplierItemNumber}`):
 ```yaml
 type: object
 description: |
   Response containing a single trade item with all its components.
-  
-  The trade item key (`supplierIdGln` + `supplierItemNumber`) is at the root level,
-  with nested objects for each component:
-  - `details`: Item identification, status, conditions, descriptions
-  - `orderings`: Ordering units, quantities, step sizes
-  - `pricings`: Array of pricing information
-  - `logistics`: Array of logistic details
-  - `packagingUnits`: Array of packaging unit information
-  - `itemRelations`: Array of related items
 required:
   - data
 properties:
   data:
-    type: object
-    required:
-      - supplierIdGln
-      - supplierItemNumber
-      - details
-    properties:
-      supplierIdGln:
-        type: string
-        pattern: "^[0-9]{13}$"
-        description: Global Location Number (GLN) uniquely identifying the supplier
-      supplierItemNumber:
-        type: string
-        minLength: 1
-        maxLength: 35
-        description: Supplier's unique item number/code
-      details:
-        $ref: ../domain/TradeItemDetails.yaml
-        description: Item identification, status, and details
-      orderings:
-        $ref: ../domain/TradeItemOrdering.yaml
-        description: Ordering information (units, quantities)
-      pricings:
-        type: ["array", "null"]
-        items:
-          $ref: ../domain/ItemPricing.yaml
-        description: Array of pricing information
-      logistics:
-        type: ["array", "null"]
-        items:
-          $ref: ../domain/ItemLogistics.yaml
-        description: Array of logistic details
-      packagingUnits:
-        type: ["array", "null"]
-        items:
-          $ref: ../domain/PackagingUnit.yaml
-      itemRelations:
-        type: ["array", "null"]
-        items:
-          $ref: ../domain/ItemRelation.yaml
+    $ref: ./TradeItemResponseData.yaml
 examples:
   - data:
       supplierIdGln: "1234567890123"
@@ -755,18 +844,96 @@ examples:
       details:
         itemStatus: "ACTIVE"
         itemCondition: "NEW"
-        minimalItemDescription: "LED Lamp 10W E27"
       orderings:
         orderUnit: "PCE"
         minimumOrderQuantity: 1
-        orderStepSize: 1
       pricings:
         - pricingRef: "price-c62-1-20250101"
           priceUnit: "PCE"
-          priceQuantity: 1
           netPrice: 9.99
           currencyCode: "EUR"
-          priceValidityDate: "2025-01-01"
+```
+
+**`TradeItemResponseData.yaml`** (named schema for `data`):
+```yaml
+type: object
+description: |
+  Single trade item with all its components.
+  
+  The trade item key (`supplierIdGln` + `supplierItemNumber`) is at the root level,
+  with nested objects for each component:
+  - `details`: Item identification, status, conditions
+  - `orderings`: Ordering units, quantities, step sizes
+  - `pricings`: Array of pricing information
+  - `logistics`: Array of logistic details
+  - `packagingUnits`: Array of packaging unit information
+  - `itemRelations`: Array of related items
+required:
+  - supplierIdGln
+  - supplierItemNumber
+  - details
+properties:
+  supplierIdGln:
+    $ref: ../../../../shared/schemas/identifiers/Gln.yaml
+    description: Global Location Number (GLN) uniquely identifying the supplier
+  supplierItemNumber:
+    type: string
+    minLength: 1
+    maxLength: 35
+    description: Supplier's unique item number/code
+  details:
+    $ref: ../domain/TradeItemDetails.yaml
+    description: Item identification, status, and details
+  orderings:
+    $ref: ../domain/TradeItemOrdering.yaml
+    description: Ordering information (units, quantities)
+  pricings:
+    type: ["array", "null"]
+    items:
+      $ref: ../domain/TradeItemPricing.yaml
+    description: Array of pricing information
+  logistics:
+    type: ["array", "null"]
+    items:
+      $ref: ../domain/ItemLogistics.yaml
+    description: Array of logistic details
+  packagingUnits:
+    type: ["array", "null"]
+    items:
+      $ref: ../domain/PackagingUnit.yaml
+  itemRelations:
+    type: ["array", "null"]
+    items:
+      $ref: ../domain/ItemRelation.yaml
+```
+
+**Subresource Response Pattern** (e.g., `TradeItemDetailsResponse.yaml`):
+```yaml
+# TradeItemDetailsResponse.yaml (envelope)
+type: object
+required:
+  - data
+properties:
+  data:
+    $ref: ./TradeItemDetailsResponseData.yaml
+```
+
+```yaml
+# TradeItemDetailsResponseData.yaml (named data schema)
+type: object
+required:
+  - supplierIdGln
+  - supplierItemNumber
+  - details
+properties:
+  supplierIdGln:
+    $ref: ../../../../shared/schemas/identifiers/Gln.yaml
+  supplierItemNumber:
+    type: string
+    minLength: 1
+    maxLength: 35
+  details:
+    $ref: ../domain/TradeItemDetails.yaml
 ```
 
 #### *Summary Schema Pattern for Bulk Retrieval
@@ -910,6 +1077,7 @@ properties:
   
   minimumOrderQuantity: 
     type: number
+    format: decimal
     minimum: 0
     multipleOf: 0.0001
     description: |
@@ -919,6 +1087,7 @@ properties:
   
   orderStepSize: 
     type: number
+    format: decimal
     minimum: 0
     multipleOf: 0.0001
     description: |
@@ -1058,6 +1227,66 @@ Reuse existing shared schemas:
 - `CursorPaginationMetadata.yaml`
 - `ProblemDetails.yaml` (error responses)
 
+#### Component Registration in `openapi.yaml`
+
+**CRITICAL**: ALL shared parameters, schemas, and responses used by the API MUST be registered in the `components/` section of `openapi.yaml`. Component names use **PascalCase** regardless of the source file's kebab-case name.
+
+```yaml
+components:
+  schemas:
+    # Shared schemas
+    ProblemDetails:
+      $ref: ../../shared/schemas/common/ProblemDetails.yaml
+    TechnicalId:
+      $ref: ../../shared/schemas/identifiers/TechnicalId.yaml
+    CursorPaginationMetadata:
+      $ref: ../../shared/schemas/common/CursorPaginationMetadata.yaml
+    
+    # Domain schemas (register ALL domain + summary schemas)
+    TradeItemDetails:
+      $ref: ./schemas/domain/TradeItemDetails.yaml
+    TradeItemDetailsSummary:
+      $ref: ./schemas/domain/TradeItemDetailsSummary.yaml
+    # ... etc for all domain schemas
+    
+    # Response schemas (register ALL response + responseData schemas)
+    TradeItemResponse:
+      $ref: ./schemas/responses/TradeItemResponse.yaml
+    TradeItemResponseData:
+      $ref: ./schemas/responses/TradeItemResponseData.yaml
+    # ... etc for all response schemas
+
+  parameters:
+    SupplierIdGln:
+      $ref: ../../shared/parameters/query/supplier-id-gln-filter.yaml
+    SupplierIdGlnPath:
+      $ref: ../../shared/parameters/path/supplier-id-gln.yaml
+    SupplierItemNumberPath:
+      $ref: ../../shared/parameters/path/supplier-item-number.yaml
+    Cursor:
+      $ref: ../../shared/parameters/query/cursor.yaml
+    Limit:
+      $ref: ../../shared/parameters/query/limit.yaml
+    SelectionId:
+      $ref: ../../shared/parameters/query/selection-id.yaml
+    MutationDateTime:
+      $ref: ../../shared/parameters/query/mutation-date-time.yaml
+    Language:
+      $ref: ../../shared/parameters/query/language.yaml
+
+  responses:
+    BadRequest:
+      $ref: ../../shared/responses/400-bad-request.yaml
+    Unauthorized:
+      $ref: ../../shared/responses/401-unauthorized.yaml
+    Forbidden:
+      $ref: ../../shared/responses/403-forbidden.yaml
+    NotFound:
+      $ref: ../../shared/responses/404-not-found.yaml
+    InternalServerError:
+      $ref: ../../shared/responses/500-internal-server-error.yaml
+```
+
 ### 11. Query Parameters
 
 Reuse existing shared query parameters (DO NOT create new files):
@@ -1149,27 +1378,37 @@ Use descriptive, camelCase operation IDs:
 **Single-item endpoints**:
 - `getTradeItem` - Main trade item
 - `getTradeItemDetails` - Details subresource
+- `getTradeItemDescriptions` - Descriptions subresource
 - `getTradeItemOrderings` - Orderings subresource
 - `getTradeItemPricings` - Pricings subresource
+- `getTradeItemAllowanceSurcharges` - Allowance surcharges subresource
+- `getTradeItemRelations` - Relations subresource
+- `getTradeItemLogisticsDetails` - Logistics details subresource
 
 **Bulk endpoints**:
 - `getBulkTradeItemDetails`
+- `getBulkTradeItemDescriptions`
 - `getBulkTradeItemOrderings`
 - `getBulkTradeItemPricings`
+- `getBulkTradeItemAllowanceSurcharges`
+- `getBulkTradeItemRelations`
+- `getBulkTradeItemLogisticsDetails`
+
+**Operation summary convention**: Use short Get/List pattern:
+- Single endpoints: "Get trade item {aspect}" (e.g., "Get trade item details")
+- Bulk endpoints: "List trade item {aspect}" (e.g., "List trade item details")
+- No filler words like "Retrieve", "a single", "in bulk"
 
 ### 14. Tags
 
-Following the Product API pattern, use readable tag names with spaces:
+Following the Product API pattern, use exactly **2 tags** (not 3):
 ```yaml
 tags:
-  - name: TradeItems
-    description: Trade item operations
-    x-displayName: Trade Items
   - name: TradeItems single
     description: Single trade item operations
     x-displayName: Single Trade Item
   - name: TradeItems bulk
-    description: Bulk data retrieval operations for trade items with cursor-based pagination
+    description: Bulk data retrieval operations with cursor-based pagination for high-volume data exchange
     x-displayName: Bulk Trade Items
 
 x-tagGroups:
@@ -1178,6 +1417,8 @@ x-tagGroups:
       - TradeItems single
       - TradeItems bulk
 ```
+
+**Do NOT add a parent `TradeItems` tag** — each API defines exactly 2 tags: `{Resource} single` and `{Resource} bulk`.
 
 ### 15. ETIM xChange Field Documentation
 
@@ -1323,28 +1564,47 @@ Each schema file must include:
 2. **Create domain schemas** (following *Summary naming pattern):
    - `TradeItemDetails.yaml` (without key, for nested single-item)
    - `TradeItemDetailsSummary.yaml` (WITH key, for bulk)
+   - `ItemDescription.yaml`, `ItemDescriptionsSummary.yaml`
    - `TradeItemOrdering.yaml`, `TradeItemOrderingsSummary.yaml`
-   - `ItemPricing.yaml`, `TradeItemPricingSummary.yaml` (1 row per price for bulk)
-   - `ItemLogistics.yaml`, `ItemRelation.yaml`, `PackagingUnit.yaml`, `ItemDescription.yaml`
+   - `TradeItemPricing.yaml`, `TradeItemPricingsSummary.yaml` (1 row per price for bulk)
+   - `AllowanceSurcharge.yaml`, `AllowanceSurchargeSummary.yaml`
+   - `ItemRelation.yaml`, `ItemRelationSummary.yaml`
+   - `ItemLogistics.yaml`, `ItemLogisticsSummary.yaml`
+   - `PackagingUnit.yaml`, `ItemCountrySpecificField.yaml`
    - Include ETIM xChange field names and paths in all descriptions
-3. **Create single-item response schemas** (nested structure with key at root):
-   - `TradeItemResponse.yaml` - Full trade item with all components
-   - `TradeItemDetailsResponse.yaml` - Details subresource
-   - `TradeItemOrderingsResponse.yaml` - Orderings subresource
-   - `TradeItemPricingsResponse.yaml` - Pricings subresource
+3. **Create response envelope schemas** (named `$ref` for `data`):
+   - Each single-item endpoint gets both `*Response.yaml` (envelope) and `*ResponseData.yaml` (named data schema)
+   - `TradeItemResponse.yaml` + `TradeItemResponseData.yaml`
+   - `TradeItemDetailsResponse.yaml` + `TradeItemDetailsResponseData.yaml`
+   - `TradeItemDescriptionsResponse.yaml` + `TradeItemDescriptionsResponseData.yaml`
+   - `TradeItemOrderingsResponse.yaml` + `TradeItemOrderingsResponseData.yaml`
+   - `TradeItemPricingsResponse.yaml` + `TradeItemPricingsResponseData.yaml`
+   - `TradeItemAllowanceSurchargesResponse.yaml` + `TradeItemAllowanceSurchargesResponseData.yaml`
+   - `TradeItemRelationsResponse.yaml` + `TradeItemRelationsResponseData.yaml`
+   - `TradeItemLogisticsDetailsResponse.yaml` + `TradeItemLogisticsDetailsResponseData.yaml`
 4. **Create bulk response schemas** (using *Summary schemas):
    - `BulkTradeItemDetailsResponse.yaml`
+   - `BulkTradeItemDescriptionsResponse.yaml`
    - `BulkTradeItemOrderingsResponse.yaml`
    - `BulkTradeItemPricingsResponse.yaml`
+   - `BulkAllowanceSurchargesResponse.yaml`
+   - `BulkTradeItemRelationsResponse.yaml`
+   - `BulkTradeItemLogisticsDetailsResponse.yaml`
 5. **Author single-item path definitions**:
-   - `trade-items.yaml` - GET /{supplierIdGln}/{supplierItemNumber}
-   - `trade-item-details.yaml` - GET /{key}/details
-   - `trade-item-orderings.yaml` - GET /{key}/orderings
-   - `trade-item-pricings.yaml` - GET /{key}/pricings
-6. **Author bulk path definitions**:
-   - `bulk/trade-item-details.yaml`
-   - `bulk/trade-item-orderings.yaml`, `bulk/trade-item-pricings.yaml`
+   - `trade-items.yaml` - GET /trade-items/{supplierIdGln}/{supplierItemNumber}
+   - `trade-item-details.yaml` - GET /trade-items/{key}/details
+   - `trade-item-descriptions.yaml` - GET /trade-items/{key}/descriptions
+   - `trade-item-orderings.yaml` - GET /trade-items/{key}/orderings
+   - `trade-item-pricings.yaml` - GET /trade-items/{key}/pricings
+   - `trade-item-allowance-surcharges.yaml` - GET /trade-items/{key}/allowance-surcharges
+   - `trade-item-relations.yaml` - GET /trade-items/{key}/relations
+   - `trade-item-logistics-details.yaml` - GET /trade-items/{key}/logistics-details
+6. **Author bulk path definitions** (under `paths/bulk/`, following `/{resource}/bulk/{aspect}` convention):
+   - `bulk/details.yaml`, `bulk/descriptions.yaml`, `bulk/orderings.yaml`
+   - `bulk/pricings.yaml`, `bulk/allowance-surcharges.yaml`
+   - `bulk/relations.yaml`, `bulk/logistics-details.yaml`
 7. **Author main OpenAPI spec**: Populate `openapi.yaml` with all paths, servers, tags, and shared components
+   - Register ALL schemas, parameters, and responses in `components/`
 8. **Validate**: Ensure all schemas pass OpenAPI 3.1 validation
 9. **Review**: Verify all ETIM xChange references are accurate and complete
 
@@ -1352,13 +1612,16 @@ Each schema file must include:
 
 - **Keep product reference**: TradeItem is nested under Product in ETIM, but flatten for API
 - **ETIM xChange documentation**: Every field must document its ETIM source with name and path
-- **Language handling**: Support multilingual descriptions where present. `DiscountGroupDescription[]` and `BonusGroupDescription[]` are multilingual and served from the description service (not the details service). Language fields are **required and non-nullable** — denormalized from catalog-level `Language` (see section 2.5)
+- **Language handling**: Support multilingual descriptions where present. `DiscountGroupDescription[]` and `BonusGroupDescription[]` are multilingual and served from the description service (not the details service). Language fields are **required and non-nullable** — denormalized from catalog-level `Language` (see section 2.5). Use the `language` query parameter for filtering.
 - **Currency handling**: `currencyCode` is **required and non-nullable** on all pricing records — denormalized from catalog-level `CurrencyCode` (see section 2.5)
 - **Attachment handling**: Reference URIs for documents/images
 - **Country-specific fields**: Design extensible pattern for custom fields
 - **Pricing complexity**: Handle multiple pricing scenarios, allowances, surcharges
 - **Packaging hierarchy**: Support nested packaging units
 - **Path notation**: Use `[]` to indicate arrays in ETIM paths (e.g., `Supplier[].Product[].TradeItem[]`)
+- **Server URLs**: Use parameterized `{host}{basePath}` pattern — do NOT hardcode implementer-specific URLs
+- **Response envelopes**: Always use named `$ref` for `data` property (`*ResponseData.yaml`) — never inline objects
+- **Domain model documentation**: A separate `openapi-domain.yaml` provides schema-only documentation for the TradeItem domain (registered as `tradeitem-domain@v1` in Redocly)
 
 ### 21. Success Criteria
 
@@ -1366,31 +1629,36 @@ Each schema file must include:
 ✅ Naming conventions strictly followed (PascalCase components, camelCase properties)  
 ✅ **Every field includes ETIM xChange field name and full JSON path in description**  
 ✅ **All ETIM xChange string-based numeric fields converted to proper `number` type**  
-✅ Numeric fields use `multipleOf: 0.0001` for 4 decimal place precision  
+✅ Numeric fields use `format: decimal` and `multipleOf: 0.0001` for 4 decimal place precision  
 ✅ **Nullable fields use `type: ["type", "null"]` pattern (not in required array)**  
 ✅ **Enum schemas include `null` in enum array when nullable**  
 ✅ **String boolean enums preserved as-is (e.g., `rohsIndicator`, `reachIndicator`)**  
 ✅ **Date fields include format and ISO 8601 description with examples**  
 ✅ Bulk endpoints use cursor-based pagination  
 ✅ Minimal nesting (max 2-3 levels deep)  
-✅ Filtering by `selectionId` and `mutationDateTime` implemented  
-✅ All bulk paths prefixed with `/bulk/`  
+✅ Filtering by `selectionId`, `mutationDateTime`, and `supplierIdGln` implemented  
+✅ All bulk paths follow `/{resource}/bulk/{aspect}` convention (e.g., `/trade-items/bulk/details`)  
 ✅ Composite key (`supplierIdGln` + `supplierItemNumber`) consistently used  
-✅ Single trade item endpoint (`GET /{supplierIdGln}/{supplierItemNumber}`) returns nested structure with key at root  
-✅ Subresource endpoints (`/details`, `/orderings`, `/pricings`) follow Product API pattern  
+✅ **Response envelopes use named `$ref` for `data` (`*ResponseData.yaml`) — no inline anonymous objects**  
+✅ Single trade item endpoint returns nested structure with key at root  
+✅ All 7 subresource endpoints follow Product API pattern (details, descriptions, orderings, pricings, allowance-surcharges, relations, logistics-details)  
 ✅ `*Summary` schemas used for bulk retrieval (WITH embedded keys)  
 ✅ Domain schemas used for nested single-item (WITHOUT keys)  
 ✅ Comprehensive examples provided with numeric values (not strings)  
 ✅ Examples include `null` values for nullable fields  
 ✅ Reuse existing shared components (parameters, responses)  
+✅ **ALL shared components registered in `openapi.yaml` `components/` section (PascalCase names)**  
 ✅ Error responses follow RFC 7807 Problem Details  
 ✅ ETIM xChange traceability complete for all mapped fields  
 ✅ `TechnicalId` schema used for `selectionId` parameter and `pricingRef` property  
-✅ `pricingRef` used as join key between pricings and allowance/surcharges (replaces composite natural key)  
+✅ `pricingRef` used as join key between pricings and allowance/surcharges  
 ✅ `pricingRef` documented as server-generated, not present in ETIM xChange domain model  
 ✅ **Catalog-level `CurrencyCode` denormalized into each pricing record as required, non-nullable `$ref`**  
 ✅ **Catalog-level `Language` denormalized into each description/multilingual record as required, non-nullable `$ref`**  
 ✅ **Language fields use locale format `^[a-z]{2}[-][A-Z]{2}$` (e.g., `"en-GB"`, `"nl-NL"`)**  
+✅ **Server URLs use parameterized `{host}{basePath}` pattern (not hardcoded 2BA URLs)**  
+✅ **Tags: exactly 2 tags (`TradeItems single`, `TradeItems bulk`)**  
+✅ **Operation summaries use short Get/List pattern**  
 
 ## Output Files Expected
 
@@ -1398,61 +1666,93 @@ Generate the following files:
 
 ### New Files
 1. `openapi/apis/tradeitem/openapi.yaml`
-2. `openapi/apis/tradeitem/README.md`
+2. `openapi/apis/tradeitem/openapi-domain.yaml` (domain model documentation)
+3. `openapi/apis/tradeitem/README.md`
 
 **Single-item path definitions**:
-3. `openapi/apis/tradeitem/paths/trade-items.yaml`
-4. `openapi/apis/tradeitem/paths/trade-item-details.yaml`
-5. `openapi/apis/tradeitem/paths/trade-item-orderings.yaml`
-6. `openapi/apis/tradeitem/paths/trade-item-pricings.yaml`
-7. `openapi/apis/tradeitem/paths/trade-item-allowance-surcharges.yaml`
+4. `openapi/apis/tradeitem/paths/trade-items.yaml`
+5. `openapi/apis/tradeitem/paths/trade-item-details.yaml`
+6. `openapi/apis/tradeitem/paths/trade-item-descriptions.yaml`
+7. `openapi/apis/tradeitem/paths/trade-item-orderings.yaml`
+8. `openapi/apis/tradeitem/paths/trade-item-pricings.yaml`
+9. `openapi/apis/tradeitem/paths/trade-item-allowance-surcharges.yaml`
+10. `openapi/apis/tradeitem/paths/trade-item-relations.yaml`
+11. `openapi/apis/tradeitem/paths/trade-item-logistics-details.yaml`
 
-**Bulk path definitions**:
-8. `openapi/apis/tradeitem/paths/bulk/trade-item-details.yaml`
-9. `openapi/apis/tradeitem/paths/bulk/trade-item-orderings.yaml`
-10. `openapi/apis/tradeitem/paths/bulk/trade-item-pricings.yaml`
-11. `openapi/apis/tradeitem/paths/bulk/trade-item-allowance-surcharges.yaml`
+**Bulk path definitions** (file names follow `/{resource}/bulk/{aspect}` → `bulk/{aspect}.yaml`):
+12. `openapi/apis/tradeitem/paths/bulk/details.yaml`
+13. `openapi/apis/tradeitem/paths/bulk/descriptions.yaml`
+14. `openapi/apis/tradeitem/paths/bulk/orderings.yaml`
+15. `openapi/apis/tradeitem/paths/bulk/pricings.yaml`
+16. `openapi/apis/tradeitem/paths/bulk/allowance-surcharges.yaml`
+17. `openapi/apis/tradeitem/paths/bulk/relations.yaml`
+18. `openapi/apis/tradeitem/paths/bulk/logistics-details.yaml`
 
 **Domain schemas (without keys - for nested single-item)**:
-12. `openapi/apis/tradeitem/schemas/domain/TradeItemDetails.yaml`
-13. `openapi/apis/tradeitem/schemas/domain/TradeItemOrdering.yaml`
-14. `openapi/apis/tradeitem/schemas/domain/TradeItemPricing.yaml` (includes `pricingRef`, excludes nested allowance/surcharges)
-15. `openapi/apis/tradeitem/schemas/domain/ItemLogistics.yaml`
-16. `openapi/apis/tradeitem/schemas/domain/ItemRelation.yaml`
-17. `openapi/apis/tradeitem/schemas/domain/PackagingUnit.yaml`
-18. `openapi/apis/tradeitem/schemas/domain/ItemDescription.yaml`
-19. `openapi/apis/tradeitem/schemas/domain/ItemCountrySpecificField.yaml`
+19. `openapi/apis/tradeitem/schemas/domain/TradeItemDetails.yaml`
+20. `openapi/apis/tradeitem/schemas/domain/ItemDescription.yaml`
+21. `openapi/apis/tradeitem/schemas/domain/TradeItemOrdering.yaml`
+22. `openapi/apis/tradeitem/schemas/domain/TradeItemPricing.yaml` (includes `pricingRef`, excludes nested allowance/surcharges)
+23. `openapi/apis/tradeitem/schemas/domain/AllowanceSurcharge.yaml`
+24. `openapi/apis/tradeitem/schemas/domain/ItemLogistics.yaml`
+25. `openapi/apis/tradeitem/schemas/domain/ItemRelation.yaml`
+26. `openapi/apis/tradeitem/schemas/domain/PackagingUnit.yaml`
+27. `openapi/apis/tradeitem/schemas/domain/ItemCountrySpecificField.yaml`
+28. `openapi/apis/tradeitem/schemas/domain/ItemDetails.yaml`
+29. `openapi/apis/tradeitem/schemas/domain/ItemIdentification.yaml`
+30. `openapi/apis/tradeitem/schemas/domain/ItemAttachment.yaml`
 
 **Domain schemas (WITH keys - for bulk retrieval)**:
-20. `openapi/apis/tradeitem/schemas/domain/TradeItemDetailsSummary.yaml`
-21. `openapi/apis/tradeitem/schemas/domain/TradeItemOrderingsSummary.yaml`
-22. `openapi/apis/tradeitem/schemas/domain/TradeItemPricingSummary.yaml` (flattened - 1 row per price, includes `pricingRef`)
-23. `openapi/apis/tradeitem/schemas/domain/AllowanceSurchargeSummary.yaml` (flattened - 1 row per surcharge, join via `pricingRef`)
+31. `openapi/apis/tradeitem/schemas/domain/TradeItemDetailsSummary.yaml`
+32. `openapi/apis/tradeitem/schemas/domain/ItemDescriptionsSummary.yaml`
+33. `openapi/apis/tradeitem/schemas/domain/TradeItemOrderingsSummary.yaml`
+34. `openapi/apis/tradeitem/schemas/domain/TradeItemPricingsSummary.yaml` (flattened - 1 row per price, includes `pricingRef`)
+35. `openapi/apis/tradeitem/schemas/domain/AllowanceSurchargeSummary.yaml` (flattened - 1 row per surcharge, join via `pricingRef`)
+36. `openapi/apis/tradeitem/schemas/domain/ItemRelationSummary.yaml`
+37. `openapi/apis/tradeitem/schemas/domain/ItemLogisticsSummary.yaml`
 
-**Single-item response schemas**:
-24. `openapi/apis/tradeitem/schemas/responses/TradeItemResponse.yaml`
-25. `openapi/apis/tradeitem/schemas/responses/TradeItemDetailsResponse.yaml`
-26. `openapi/apis/tradeitem/schemas/responses/TradeItemOrderingsResponse.yaml`
-27. `openapi/apis/tradeitem/schemas/responses/TradeItemPricingsResponse.yaml`
-28. `openapi/apis/tradeitem/schemas/responses/TradeItemAllowanceSurchargesResponse.yaml`
-29. `openapi/apis/tradeitem/schemas/responses/TradeItemAllowanceSurchargeItem.yaml` (includes `pricingRef` for correlation)
+**Single-item response envelope schemas** (each pair: `*Response.yaml` + `*ResponseData.yaml`):
+38. `openapi/apis/tradeitem/schemas/responses/TradeItemResponse.yaml`
+39. `openapi/apis/tradeitem/schemas/responses/TradeItemResponseData.yaml`
+40. `openapi/apis/tradeitem/schemas/responses/TradeItemDetailsResponse.yaml`
+41. `openapi/apis/tradeitem/schemas/responses/TradeItemDetailsResponseData.yaml`
+42. `openapi/apis/tradeitem/schemas/responses/TradeItemDescriptionsResponse.yaml`
+43. `openapi/apis/tradeitem/schemas/responses/TradeItemDescriptionsResponseData.yaml`
+44. `openapi/apis/tradeitem/schemas/responses/TradeItemOrderingsResponse.yaml`
+45. `openapi/apis/tradeitem/schemas/responses/TradeItemOrderingsResponseData.yaml`
+46. `openapi/apis/tradeitem/schemas/responses/TradeItemPricingsResponse.yaml`
+47. `openapi/apis/tradeitem/schemas/responses/TradeItemPricingsResponseData.yaml`
+48. `openapi/apis/tradeitem/schemas/responses/TradeItemAllowanceSurchargesResponse.yaml`
+49. `openapi/apis/tradeitem/schemas/responses/TradeItemAllowanceSurchargesResponseData.yaml`
+50. `openapi/apis/tradeitem/schemas/responses/TradeItemAllowanceSurchargeItem.yaml` (includes `pricingRef` for correlation)
+51. `openapi/apis/tradeitem/schemas/responses/TradeItemRelationsResponse.yaml`
+52. `openapi/apis/tradeitem/schemas/responses/TradeItemRelationsResponseData.yaml`
+53. `openapi/apis/tradeitem/schemas/responses/TradeItemLogisticsDetailsResponse.yaml`
+54. `openapi/apis/tradeitem/schemas/responses/TradeItemLogisticsDetailsResponseData.yaml`
 
 **Bulk response schemas**:
-30. `openapi/apis/tradeitem/schemas/responses/BulkTradeItemDetailsResponse.yaml`
-31. `openapi/apis/tradeitem/schemas/responses/BulkTradeItemOrderingsResponse.yaml`
-32. `openapi/apis/tradeitem/schemas/responses/BulkTradeItemPricingsResponse.yaml`
-33. `openapi/apis/tradeitem/schemas/responses/BulkAllowanceSurchargesResponse.yaml`
+55. `openapi/apis/tradeitem/schemas/responses/BulkTradeItemDetailsResponse.yaml`
+56. `openapi/apis/tradeitem/schemas/responses/BulkTradeItemDescriptionsResponse.yaml`
+57. `openapi/apis/tradeitem/schemas/responses/BulkTradeItemOrderingsResponse.yaml`
+58. `openapi/apis/tradeitem/schemas/responses/BulkTradeItemPricingsResponse.yaml`
+59. `openapi/apis/tradeitem/schemas/responses/BulkAllowanceSurchargesResponse.yaml`
+60. `openapi/apis/tradeitem/schemas/responses/BulkTradeItemRelationsResponse.yaml`
+61. `openapi/apis/tradeitem/schemas/responses/BulkTradeItemLogisticsDetailsResponse.yaml`
 
 **Enum schemas**:
-34. `openapi/apis/tradeitem/schemas/enums/ItemStatus.yaml`
-35. `openapi/apis/tradeitem/schemas/enums/ItemCondition.yaml`
-36. `openapi/apis/tradeitem/schemas/enums/RelationType.yaml`
+62. `openapi/apis/tradeitem/schemas/enums/ItemStatus.yaml`
+63. `openapi/apis/tradeitem/schemas/enums/ItemCondition.yaml`
+64. `openapi/apis/tradeitem/schemas/enums/RelationType.yaml`
 
 ### Existing Files to Reuse (DO NOT CREATE)
 - `openapi/shared/parameters/query/selection-id.yaml`
 - `openapi/shared/parameters/query/mutation-date-time.yaml`
 - `openapi/shared/parameters/query/cursor.yaml`
 - `openapi/shared/parameters/query/limit.yaml`
+- `openapi/shared/parameters/query/language.yaml`
+- `openapi/shared/parameters/query/supplier-id-gln-filter.yaml`
+- `openapi/shared/parameters/path/supplier-id-gln.yaml`
+- `openapi/shared/parameters/path/supplier-item-number.yaml`
 - `openapi/shared/responses/400-bad-request.yaml`
 - `openapi/shared/responses/401-unauthorized.yaml`
 - `openapi/shared/responses/403-forbidden.yaml`
@@ -1461,6 +1761,10 @@ Generate the following files:
 - `openapi/shared/schemas/common/CursorPaginationMetadata.yaml`
 - `openapi/shared/schemas/common/ProblemDetails.yaml`
 - `openapi/shared/schemas/identifiers/TechnicalId.yaml`
+- `openapi/shared/schemas/identifiers/Gln.yaml`
+- `openapi/shared/schemas/identifiers/Gtin.yaml`
+- `openapi/shared/schemas/common/CurrencyCode.yaml`
+- `openapi/shared/schemas/common/LanguageCode.yaml`
 
 ## Notes
 - Follow the ETIM xChange V2.0 schema structure but adapt for REST API best practices
