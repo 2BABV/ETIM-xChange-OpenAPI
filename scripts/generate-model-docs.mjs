@@ -415,22 +415,17 @@ function mermaidPageHtml(apiName, apiKey, mermaidCode) {
 </script>
 <style>
 :root {
-  --blue-900: #0a1628; --blue-800: #0f2440; --blue-700: #143a64; --blue-600: #1a5590;
-  --blue-500: #2176cc; --blue-400: #4a9aea; --blue-300: #8ec4f6;
-  --cyan-500: #00b4d8; --cyan-400: #48cae4; --cyan-100: #e0f7fa;
-  --gray-50: #f8fafc; --gray-100: #f1f5f9; --gray-200: #e2e8f0; --gray-300: #cbd5e1;
-  --gray-400: #94a3b8; --gray-500: #64748b; --gray-600: #475569; --gray-700: #334155;
+  --blue-700: #143a64; --blue-500: #2176cc; --blue-400: #4a9aea;
+  --gray-50: #f8fafc; --gray-200: #e2e8f0; --gray-300: #cbd5e1;
+  --gray-400: #94a3b8; --gray-500: #64748b; --gray-600: #475569;
   --gray-800: #1e293b; --gray-900: #0f172a;
   --white: #ffffff; --radius: 10px;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
 body {
   font-family: 'DM Sans', system-ui, sans-serif; color: var(--gray-800);
   line-height: 1.65; background: var(--gray-50); -webkit-font-smoothing: antialiased;
 }
-
-/* ── Nav (matches index.html) ── */
 .nav {
   position: sticky; top: 0; z-index: 100;
   background: rgba(255,255,255,0.85);
@@ -447,37 +442,22 @@ body {
   color: var(--blue-700); text-decoration: none;
 }
 .nav-links { display: flex; gap: 1.5rem; list-style: none; align-items: center; }
-.nav-links a {
-  font-size: 0.82rem; font-weight: 500; color: var(--gray-600);
-  text-decoration: none; transition: color 0.15s;
-}
+.nav-links a { font-size: 0.82rem; font-weight: 500; color: var(--gray-600); text-decoration: none; transition: color 0.15s; }
 .nav-links a:hover { color: var(--blue-500); }
 .nav-links a.active { color: var(--blue-700); font-weight: 600; }
 .nav-sep { color: var(--gray-300); font-weight: 300; font-size: 0.82rem; }
-
-/* ── Content ── */
-.container {
-  max-width: 100%; overflow-x: auto; padding: 1.5rem;
-  display: flex; flex-direction: column; align-items: center;
-}
-h2 {
-  font-family: 'Sora', sans-serif; font-size: 1.3rem; font-weight: 700;
-  color: var(--gray-900); margin-bottom: 0.25rem;
-}
-.subtitle { font-size: 0.85rem; color: var(--gray-500); margin-bottom: 1.5rem; }
-.mermaid {
+.container { padding: 1.5rem; }
+.header { max-width: 1060px; margin: 0 auto 1rem; }
+.header h2 { font-family: 'Sora', sans-serif; font-size: 1.3rem; font-weight: 700; color: var(--gray-900); margin-bottom: 0.25rem; }
+.subtitle { font-size: 0.85rem; color: var(--gray-500); }
+.diagram-scroll { overflow: auto; }
+.diagram-scroll .mermaid {
   background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--radius);
-  padding: 1.5rem; overflow-x: auto; max-width: 100%;
+  padding: 1.5rem; display: inline-block;
 }
-
-/* ── Footer ── */
-.footer {
-  border-top: 1px solid var(--gray-200); padding: 1.5rem;
-  text-align: center; font-size: 0.78rem; color: var(--gray-400);
-}
+.footer { border-top: 1px solid var(--gray-200); padding: 1.5rem; text-align: center; font-size: 0.78rem; color: var(--gray-400); }
 .footer a { color: var(--blue-500); text-decoration: none; }
 .footer a:hover { text-decoration: underline; }
-
 @media (max-width: 700px) { .nav-links { display: none; } }
 </style>
 </head>
@@ -494,11 +474,15 @@ h2 {
   </div>
 </nav>
 <div class="container">
-  <h2>${apiName} Domain Model</h2>
-  <p class="subtitle">Class diagram showing schema relationships — generated from the OpenAPI specification.</p>
-  <pre class="mermaid">
+  <div class="header">
+    <h2>${apiName} Domain Model</h2>
+    <p class="subtitle">Class diagram showing schema relationships — generated from the OpenAPI specification.</p>
+  </div>
+  <div class="diagram-scroll">
+    <pre class="mermaid">
 ${mermaidCode}
-  </pre>
+    </pre>
+  </div>
 </div>
 <footer class="footer">
   <p>Product Data OpenAPI · <a href="https://github.com/2BABV/ETIM-xChange-OpenAPI">GitHub</a> · Maintained by <a href="https://www.2ba.nl">2BA</a></p>
