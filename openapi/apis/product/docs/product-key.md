@@ -14,11 +14,10 @@
 
 ## Overview
 
-This document describes the transformation of the ETIM Classification structure from the ETIM xChange V2.0 file format to the ETIM xChange API format. The API model has been optimized for REST services and includes several key improvements to address data redundancy and support better filtering capabilities.
+This document describes the transformation of the ETIM Classification structure from the ETIM xChange V2.0 file format to the Product Data OpenAPI format. The API model has been optimized for REST services and includes several key improvements to address data redundancy and support better filtering capabilities.
 
 ---
 
 ## Structural Changes from File Format to API
-
 
 

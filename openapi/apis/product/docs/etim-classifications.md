@@ -19,7 +19,7 @@
 
 ## Overview
 
-This document describes the transformation of the ETIM Classification structure from the ETIM xChange V2.0 file format to the ETIM xChange API format. The API model follows the ETIM xChange schema structure closely while being optimized for REST service delivery.
+This document describes the transformation of the ETIM Classification structure from the ETIM xChange V2.0 file format to the Product Data OpenAPI format. The API model follows the ETIM xChange schema structure closely while being optimized for REST service delivery.
 
 ---
 
@@ -32,7 +32,7 @@ This document describes the transformation of the ETIM Classification structure 
   - `EtimClassification[]` - Array for ETIM standard classifications
   - `OtherClassifications[]` - Array for non-ETIM classification systems
 
-**ETIM xChange API Format**:
+**Product Data OpenAPI Format**:
 - Contains only `etimClassifications[]` - Array for ETIM standard classifications
 - `OtherClassifications` structure has been removed
 
@@ -43,7 +43,7 @@ REST services inherently support extensibility through versioning and optional f
 
 ### 2. Single Classification Structure
 
-**ETIM xChange API Product Model**:
+**Product Data OpenAPI Product Model**:
 ```yaml
 Product:
   properties:
@@ -230,7 +230,7 @@ These fields will be added to the API when modelling class support is implemente
 
 ## Summary of Key Changes
 
-| Aspect | ETIM xChange File Format | ETIM xChange API Format |
+| Aspect | ETIM xChange File Format | Product Data OpenAPI Format |
 |--------|-------------------------|------------------------|
 | **Classification Structures** | `EtimClassification[]` + `OtherClassifications[]` | `etimClassifications[]` only |
 | **Release Version** | Single required string (`EtimReleaseVersion`) | Single required string (`etimReleaseVersion`) |
@@ -240,4 +240,3 @@ These fields will be added to the API when modelling class support is implemente
 | **Bulk Endpoint** | Not applicable | `/bulk/product-etim-classifications` |
 
 The API format maintains alignment with ETIM xChange V2.0 schema structure while providing enhanced filtering capabilities and REST-optimized endpoints for efficient data retrieval.
-

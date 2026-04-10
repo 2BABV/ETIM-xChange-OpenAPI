@@ -1,4 +1,4 @@
-# ETIM xChange OpenAPI 3.1 Design Decisions
+# Product Data OpenAPI 3.1 Design Decisions
 
 **Version**: 1.0  
 **Date**: November 6, 2025  

@@ -1,4 +1,4 @@
-# 2BA ETIM xChange OpenAPI
+# 2BA Product Data OpenAPI
 
 This repository contains the OpenAPI 3.1 specifications for the 2BA ecosystem. It provides comprehensive API documentation for multiple domains including product information, trade items, pricing data, and ETIM classification standards.
 
@@ -81,7 +81,7 @@ The repository is organized into domain-specific API specifications with shared 
 ### Getting Started
 - [Initial Setup](docs/initial-setup.md) - How to set up and work with the OpenAPI specifications
 - [Best Practices](docs/best-practices.md) - Guidelines for maintaining and extending the specifications
-- [Design decisions](docs/etim-xchange-openapi-design-decisions.md) - General design decisions API vs ETIM xChange, including shared identifier patterns such as `TechnicalId`, `selectionId`, and `pricingRef`
+- [Design decisions](docs/product-data-openapi-design-decisions.md) - General design decisions API vs ETIM xChange, including shared identifier patterns such as `TechnicalId`, `selectionId`, and `pricingRef`
 
 ### API Documentation
 - [Product API](openapi/apis/product/README.md) - Core product information and catalog management

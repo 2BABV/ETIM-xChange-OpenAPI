@@ -218,7 +218,7 @@ createdAt:
 - `email` - Email address
 - `uri` - URI reference
 - `uuid` - UUID string
-- `decimal` - Code-generator hint for exact decimal types (non-standard; see [design decisions](etim-xchange-openapi-design-decisions.md#format-decimal--code-generator-hint))
+- `decimal` - Code-generator hint for exact decimal types (non-standard; see [design decisions](product-data-openapi-design-decisions.md#format-decimal--code-generator-hint))
 
 ### Composition Patterns
 

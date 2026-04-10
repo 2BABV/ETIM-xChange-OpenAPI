@@ -14,7 +14,7 @@ info:
 
 servers:
   - url: https://{host}{basePath}/v1
-    description: ETIM xChange Net Price API v1
+    description: Product Data OpenAPI - Net Price API v1
     variables:
       host:
         default: api.example.com

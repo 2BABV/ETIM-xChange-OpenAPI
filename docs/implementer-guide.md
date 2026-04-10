@@ -1,6 +1,6 @@
 # Implementer Guide
 
-This guide explains how to implement the ETIM xChange APIs. The OpenAPI specifications define a **standard URL contract** that all implementers must follow, while allowing flexibility for hosting infrastructure.
+This guide explains how to implement the Product Data APIs. The OpenAPI specifications define a **standard URL contract** that all implementers must follow, while allowing flexibility for hosting infrastructure.
 
 ## URL Contract
 
