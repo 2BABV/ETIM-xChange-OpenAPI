@@ -228,106 +228,158 @@ function treePageHtml(apiName, apiKey, schemasHtml, rootNames) {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${apiName} — Domain Model Tree</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--blue-700:#143a64;--blue-500:#2176cc;--blue-400:#4a9aea;--cyan-500:#00b4d8;
---gray-50:#f8fafc;--gray-100:#f1f5f9;--gray-200:#e2e8f0;--gray-300:#cbd5e1;
---gray-400:#94a3b8;--gray-500:#64748b;--gray-600:#475569;--gray-700:#334155;
---gray-800:#1e293b;--gray-900:#0f172a;--white:#fff;--green-700:#15803d;
---amber-600:#d97706;--red-600:#dc2626;--radius:8px}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'DM Sans',system-ui,sans-serif;color:var(--gray-800);
-background:var(--gray-50);-webkit-font-smoothing:antialiased;line-height:1.55}
-.topbar{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.92);
-backdrop-filter:blur(12px);border-bottom:1px solid var(--gray-200);
-display:flex;align-items:center;justify-content:space-between;padding:.6rem 1.5rem}
-.topbar-left{display:flex;align-items:center;gap:.75rem}
-.topbar-brand{font-family:'Sora',sans-serif;font-weight:700;font-size:.95rem;
-color:var(--blue-700);text-decoration:none}
-.topbar-sep{color:var(--gray-300);font-weight:300}
-.topbar-title{font-family:'Sora',sans-serif;font-weight:600;font-size:.85rem;color:var(--gray-600)}
-.topbar-actions{display:flex;gap:.75rem}
-.topbar-actions button{font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:500;
-padding:.3rem .7rem;border:1px solid var(--gray-300);border-radius:6px;
-background:var(--white);color:var(--gray-600);cursor:pointer;transition:all .15s}
-.topbar-actions button:hover{border-color:var(--blue-400);color:var(--blue-500)}
-.topbar-links{display:flex;gap:.75rem;align-items:center}
-.topbar-links a{font-size:.78rem;font-weight:500;color:var(--gray-500);text-decoration:none;transition:color .15s}
-.topbar-links a:hover{color:var(--blue-500)}
-.topbar-links a.active{color:var(--blue-700);font-weight:600}
-.container{max-width:960px;margin:0 auto;padding:1.5rem}
-h2.api-title{font-family:'Sora',sans-serif;font-size:1.3rem;font-weight:700;
-color:var(--gray-900);margin-bottom:.25rem}
-.api-subtitle{font-size:.85rem;color:var(--gray-500);margin-bottom:1.5rem}
-.legend{display:flex;gap:1rem;flex-wrap:wrap;font-size:.72rem;margin-bottom:1.25rem;
-color:var(--gray-500)}
-.legend span{display:inline-flex;align-items:center;gap:.3rem}
+:root {
+  --blue-900: #0a1628; --blue-800: #0f2440; --blue-700: #143a64; --blue-600: #1a5590;
+  --blue-500: #2176cc; --blue-400: #4a9aea; --blue-300: #8ec4f6;
+  --cyan-500: #00b4d8; --cyan-400: #48cae4; --cyan-100: #e0f7fa;
+  --amber-500: #f59e0b; --amber-100: #fef3c7; --amber-600: #d97706;
+  --green-500: #10b981; --green-100: #d1fae5; --green-700: #15803d;
+  --red-500: #ef4444; --red-600: #dc2626;
+  --gray-50: #f8fafc; --gray-100: #f1f5f9; --gray-200: #e2e8f0; --gray-300: #cbd5e1;
+  --gray-400: #94a3b8; --gray-500: #64748b; --gray-600: #475569; --gray-700: #334155;
+  --gray-800: #1e293b; --gray-900: #0f172a;
+  --white: #ffffff; --radius: 10px;
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'DM Sans', system-ui, sans-serif; color: var(--gray-800);
+  line-height: 1.65; background: var(--gray-50); -webkit-font-smoothing: antialiased;
+}
+
+/* ── Nav (matches index.html) ── */
+.nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--gray-200);
+}
+.nav-inner {
+  max-width: 1060px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.65rem 1.5rem;
+}
+.nav-brand {
+  font-family: 'Sora', sans-serif; font-weight: 700; font-size: 0.95rem;
+  color: var(--blue-700); text-decoration: none;
+}
+.nav-links { display: flex; gap: 1.5rem; list-style: none; align-items: center; }
+.nav-links a {
+  font-size: 0.82rem; font-weight: 500; color: var(--gray-600);
+  text-decoration: none; transition: color 0.15s;
+}
+.nav-links a:hover { color: var(--blue-500); }
+.nav-links a.active { color: var(--blue-700); font-weight: 600; }
+.nav-sep { color: var(--gray-300); font-weight: 300; font-size: 0.82rem; }
+
+/* ── Content ── */
+.container { max-width: 1060px; margin: 0 auto; padding: 1.5rem; }
+h2.api-title {
+  font-family: 'Sora', sans-serif; font-size: 1.3rem; font-weight: 700;
+  color: var(--gray-900); margin-bottom: 0.25rem;
+}
+.api-subtitle { font-size: 0.85rem; color: var(--gray-500); margin-bottom: 1rem; }
+.toolbar {
+  display: flex; gap: 0.5rem; margin-bottom: 1.25rem; flex-wrap: wrap; align-items: center;
+}
+.toolbar button {
+  font-family: 'DM Sans', sans-serif; font-size: 0.78rem; font-weight: 500;
+  padding: 0.3rem 0.7rem; border: 1px solid var(--gray-300); border-radius: 7px;
+  background: var(--white); color: var(--gray-600); cursor: pointer; transition: all 0.15s;
+}
+.toolbar button:hover { border-color: var(--blue-400); color: var(--blue-500); }
+.legend {
+  display: flex; gap: 1rem; flex-wrap: wrap; font-size: 0.72rem;
+  margin-bottom: 1.25rem; color: var(--gray-500);
+}
+.legend span { display: inline-flex; align-items: center; gap: 0.3rem; }
 
 /* ── Root sections ── */
-.root-section{margin-bottom:1.5rem}
-.root-section>details{border:1px solid var(--gray-200);border-radius:var(--radius);
-background:var(--white);overflow:hidden}
-.root-section>details>summary{font-family:'Sora',sans-serif;font-size:.95rem;font-weight:700;
-color:var(--gray-900);padding:.85rem 1rem;cursor:pointer;list-style:none;
-display:flex;align-items:center;gap:.5rem;background:var(--gray-50);
-border-bottom:1px solid var(--gray-200);user-select:none}
-.root-section>details>summary::before{content:'▶';font-size:.65rem;color:var(--gray-400);
-transition:transform .15s;display:inline-block;width:1em}
-.root-section>details[open]>summary::before{transform:rotate(90deg)}
-.root-section>details>summary:hover{background:var(--gray-100)}
-.root-section>details>.schema-block{padding:.5rem .75rem .75rem}
+.root-section { margin-bottom: 1.5rem; }
+.root-section > details {
+  border: 1px solid var(--gray-200); border-radius: var(--radius);
+  background: var(--white); overflow: hidden;
+}
+.root-section > details > summary {
+  font-family: 'Sora', sans-serif; font-size: 0.95rem; font-weight: 700;
+  color: var(--gray-900); padding: 0.85rem 1rem; cursor: pointer; list-style: none;
+  display: flex; align-items: center; gap: 0.5rem; background: var(--gray-50);
+  border-bottom: 1px solid var(--gray-200); user-select: none;
+}
+.root-section > details > summary::before {
+  content: '▶'; font-size: 0.65rem; color: var(--gray-400);
+  transition: transform 0.15s; display: inline-block; width: 1em;
+}
+.root-section > details[open] > summary::before { transform: rotate(90deg); }
+.root-section > details > summary:hover { background: var(--gray-100); }
+.root-section > details > .schema-block { padding: 0.5rem 0.75rem 0.75rem; }
 
 /* ── Schema blocks ── */
-.schema-block{padding-left:.5rem}
-.schema-desc{font-size:.78rem;color:var(--gray-500);margin-bottom:.5rem;
-padding:.4rem .6rem;background:var(--gray-50);border-radius:6px;border:1px solid var(--gray-100)}
+.schema-block { padding-left: 0.5rem; }
+.schema-desc {
+  font-size: 0.78rem; color: var(--gray-500); margin-bottom: 0.5rem;
+  padding: 0.4rem 0.6rem; background: var(--gray-50); border-radius: 6px;
+  border: 1px solid var(--gray-100);
+}
 
 /* ── Properties ── */
-.prop{border-left:2px solid var(--gray-200);margin-left:.25rem;padding-left:.75rem;margin-top:2px}
-.prop.leaf{padding:.3rem 0 .3rem .75rem;font-size:.82rem;display:flex;
-flex-wrap:wrap;align-items:baseline;gap:.35rem}
-details.prop>summary{font-size:.82rem;padding:.35rem 0;cursor:pointer;
-list-style:none;display:flex;flex-wrap:wrap;align-items:baseline;gap:.35rem;user-select:none}
-details.prop>summary::before{content:'▸';color:var(--gray-400);font-size:.7rem;
-margin-right:.15rem;display:inline-block;width:.7em}
-details.prop[open]>summary::before{content:'▾'}
-details.prop>.schema-block{margin-top:.15rem;margin-bottom:.35rem}
+.prop { border-left: 2px solid var(--gray-200); margin-left: 0.25rem; padding-left: 0.75rem; margin-top: 2px; }
+.prop.leaf {
+  padding: 0.3rem 0 0.3rem 0.75rem; font-size: 0.82rem;
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.35rem;
+}
+details.prop > summary {
+  font-size: 0.82rem; padding: 0.35rem 0; cursor: pointer; list-style: none;
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.35rem; user-select: none;
+}
+details.prop > summary::before { content: '▸'; color: var(--gray-400); font-size: 0.7rem; margin-right: 0.15rem; display: inline-block; width: 0.7em; }
+details.prop[open] > summary::before { content: '▾'; }
+details.prop > .schema-block { margin-top: 0.15rem; margin-bottom: 0.35rem; }
 
-.pname{font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:500;color:var(--gray-900)}
-.ptype{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--blue-500);
-background:var(--gray-100);padding:.1rem .4rem;border-radius:4px}
-.ptype.ref-type{color:var(--cyan-500);background:#e0f7fa}
-.req{font-size:.65rem;font-weight:600;color:var(--red-600);text-transform:uppercase;letter-spacing:.04em}
-.fmt{font-size:.68rem;color:var(--amber-600);font-style:italic}
-.constraint{font-size:.68rem;color:var(--gray-400)}
-.enum-vals{font-size:.7rem;color:var(--green-700);font-family:'JetBrains Mono',monospace}
-.desc{font-size:.75rem;color:var(--gray-500);flex-basis:100%;padding-left:1rem;margin-top:.1rem}
-.circular{font-size:.78rem;color:var(--gray-400);font-style:italic;padding:.25rem 0 .25rem .75rem}
+.pname { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; font-weight: 500; color: var(--gray-900); }
+.ptype { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--blue-500); background: var(--gray-100); padding: 0.1rem 0.4rem; border-radius: 4px; }
+.ptype.ref-type { color: var(--cyan-500); background: var(--cyan-100); }
+.req { font-size: 0.65rem; font-weight: 600; color: var(--red-600); text-transform: uppercase; letter-spacing: 0.04em; }
+.fmt { font-size: 0.68rem; color: var(--amber-600); font-style: italic; }
+.constraint { font-size: 0.68rem; color: var(--gray-400); }
+.enum-vals { font-size: 0.7rem; color: var(--green-700); font-family: 'JetBrains Mono', monospace; }
+.desc { font-size: 0.75rem; color: var(--gray-500); flex-basis: 100%; padding-left: 1rem; margin-top: 0.1rem; }
+.circular { font-size: 0.78rem; color: var(--gray-400); font-style: italic; padding: 0.25rem 0 0.25rem 0.75rem; }
 
-@media(max-width:700px){.container{padding:1rem}.topbar-actions{display:none}}
+/* ── Footer ── */
+.footer {
+  border-top: 1px solid var(--gray-200); padding: 1.5rem;
+  text-align: center; font-size: 0.78rem; color: var(--gray-400);
+}
+.footer a { color: var(--blue-500); text-decoration: none; }
+.footer a:hover { text-decoration: underline; }
+
+@media (max-width: 700px) { .nav-links { display: none; } .container { padding: 1rem; } }
 </style>
 </head>
 <body>
-<div class="topbar">
-  <div class="topbar-left">
-    <span class="topbar-brand">Product Data OpenAPI</span>
-    <span class="topbar-sep">|</span>
-    <span class="topbar-title">${apiName} — Domain Model</span>
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="../" class="nav-brand">Product Data OpenAPI</a>
+    <ul class="nav-links">
+      <li><a href="${apiKey}-tree.html" class="active">Treeview</a></li>
+      <li><a href="${apiKey}-diagram.html">Diagram</a></li>
+      <li><span class="nav-sep">|</span></li>
+      <li><a href="../">Home</a></li>
+    </ul>
   </div>
-  <div class="topbar-links">
-    <a href="${apiKey}-tree.html" class="active">Treeview</a>
-    <a href="${apiKey}-diagram.html">Diagram</a>
-    <span class="topbar-sep">|</span>
-    <a href="../">Home</a>
-  </div>
-  <div class="topbar-actions">
+</nav>
+<div class="container">
+  <h2 class="api-title">${apiName} Domain Model</h2>
+  <p class="api-subtitle">Interactive treeview — generated from the OpenAPI specification.</p>
+  <div class="toolbar">
     <button onclick="document.querySelectorAll('details').forEach(d=>d.open=true)">Expand All</button>
     <button onclick="document.querySelectorAll('details').forEach(d=>d.open=false)">Collapse All</button>
   </div>
-</div>
-<div class="container">
-  <h2 class="api-title">${apiName} Domain Model</h2>
-  <p class="api-subtitle">Interactive treeview of all domain schemas — generated from the OpenAPI specification.</p>
   <div class="legend">
     <span><span class="ptype" style="font-size:.68rem">type</span> data type</span>
     <span><span class="ptype ref-type" style="font-size:.68rem">Schema</span> nested schema (click to expand)</span>
@@ -337,6 +389,9 @@ background:var(--gray-100);padding:.1rem .4rem;border-radius:4px}
   </div>
   ${schemasHtml}
 </div>
+<footer class="footer">
+  <p>Product Data OpenAPI · <a href="https://github.com/2BABV/ETIM-xChange-OpenAPI">GitHub</a> · Maintained by <a href="https://www.2ba.nl">2BA</a></p>
+</footer>
 </body>
 </html>`;
 }
@@ -349,7 +404,8 @@ function mermaidPageHtml(apiName, apiKey, mermaidCode) {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${apiName} — Domain Model Diagram</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
 <script type="module">
   import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
   mermaid.initialize({ startOnLoad: true, theme: 'default',
@@ -358,42 +414,85 @@ function mermaidPageHtml(apiName, apiKey, mermaidCode) {
   });
 </script>
 <style>
-:root{--blue-700:#143a64;--gray-50:#f8fafc;--gray-200:#e2e8f0;--gray-500:#64748b;
---gray-600:#475569;--gray-900:#0f172a;--white:#fff}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'DM Sans',system-ui,sans-serif;background:var(--gray-50);color:var(--gray-900)}
-.topbar{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.92);
-backdrop-filter:blur(12px);border-bottom:1px solid var(--gray-200);
-display:flex;align-items:center;justify-content:space-between;padding:.6rem 1.5rem}
-.topbar-left{display:flex;align-items:center;gap:.75rem}
-.topbar-brand{font-family:'Sora',sans-serif;font-weight:700;font-size:.95rem;color:var(--blue-700)}
-.topbar-sep{color:var(--gray-200)}
-.topbar-title{font-family:'Sora',sans-serif;font-weight:600;font-size:.85rem;color:var(--gray-600)}
-.topbar-links{display:flex;gap:.75rem;align-items:center}
-.topbar-links a{font-size:.78rem;font-weight:500;color:var(--gray-500);text-decoration:none;transition:color .15s}
-.topbar-links a:hover{color:var(--blue-500)}
-.topbar-links a.active{color:var(--blue-700);font-weight:600}
-.container{max-width:100%;overflow-x:auto;padding:1.5rem;display:flex;flex-direction:column;align-items:center}
-h2{font-family:'Sora',sans-serif;font-size:1.3rem;margin-bottom:.25rem}
-.subtitle{font-size:.85rem;color:var(--gray-500);margin-bottom:1.5rem}
-.mermaid{background:var(--white);border:1px solid var(--gray-200);border-radius:8px;
-padding:1.5rem;overflow-x:auto;max-width:100%}
+:root {
+  --blue-900: #0a1628; --blue-800: #0f2440; --blue-700: #143a64; --blue-600: #1a5590;
+  --blue-500: #2176cc; --blue-400: #4a9aea; --blue-300: #8ec4f6;
+  --cyan-500: #00b4d8; --cyan-400: #48cae4; --cyan-100: #e0f7fa;
+  --gray-50: #f8fafc; --gray-100: #f1f5f9; --gray-200: #e2e8f0; --gray-300: #cbd5e1;
+  --gray-400: #94a3b8; --gray-500: #64748b; --gray-600: #475569; --gray-700: #334155;
+  --gray-800: #1e293b; --gray-900: #0f172a;
+  --white: #ffffff; --radius: 10px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'DM Sans', system-ui, sans-serif; color: var(--gray-800);
+  line-height: 1.65; background: var(--gray-50); -webkit-font-smoothing: antialiased;
+}
+
+/* ── Nav (matches index.html) ── */
+.nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--gray-200);
+}
+.nav-inner {
+  max-width: 1060px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.65rem 1.5rem;
+}
+.nav-brand {
+  font-family: 'Sora', sans-serif; font-weight: 700; font-size: 0.95rem;
+  color: var(--blue-700); text-decoration: none;
+}
+.nav-links { display: flex; gap: 1.5rem; list-style: none; align-items: center; }
+.nav-links a {
+  font-size: 0.82rem; font-weight: 500; color: var(--gray-600);
+  text-decoration: none; transition: color 0.15s;
+}
+.nav-links a:hover { color: var(--blue-500); }
+.nav-links a.active { color: var(--blue-700); font-weight: 600; }
+.nav-sep { color: var(--gray-300); font-weight: 300; font-size: 0.82rem; }
+
+/* ── Content ── */
+.container {
+  max-width: 100%; overflow-x: auto; padding: 1.5rem;
+  display: flex; flex-direction: column; align-items: center;
+}
+h2 {
+  font-family: 'Sora', sans-serif; font-size: 1.3rem; font-weight: 700;
+  color: var(--gray-900); margin-bottom: 0.25rem;
+}
+.subtitle { font-size: 0.85rem; color: var(--gray-500); margin-bottom: 1.5rem; }
+.mermaid {
+  background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--radius);
+  padding: 1.5rem; overflow-x: auto; max-width: 100%;
+}
+
+/* ── Footer ── */
+.footer {
+  border-top: 1px solid var(--gray-200); padding: 1.5rem;
+  text-align: center; font-size: 0.78rem; color: var(--gray-400);
+}
+.footer a { color: var(--blue-500); text-decoration: none; }
+.footer a:hover { text-decoration: underline; }
+
+@media (max-width: 700px) { .nav-links { display: none; } }
 </style>
 </head>
 <body>
-<div class="topbar">
-  <div class="topbar-left">
-    <span class="topbar-brand">Product Data OpenAPI</span>
-    <span class="topbar-sep">|</span>
-    <span class="topbar-title">${apiName} — Domain Model Diagram</span>
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="../" class="nav-brand">Product Data OpenAPI</a>
+    <ul class="nav-links">
+      <li><a href="${apiKey}-tree.html">Treeview</a></li>
+      <li><a href="${apiKey}-diagram.html" class="active">Diagram</a></li>
+      <li><span class="nav-sep">|</span></li>
+      <li><a href="../">Home</a></li>
+    </ul>
   </div>
-  <div class="topbar-links">
-    <a href="${apiKey}-tree.html">Treeview</a>
-    <a href="${apiKey}-diagram.html" class="active">Diagram</a>
-    <span class="topbar-sep">|</span>
-    <a href="../">Home</a>
-  </div>
-</div>
+</nav>
 <div class="container">
   <h2>${apiName} Domain Model</h2>
   <p class="subtitle">Class diagram showing schema relationships — generated from the OpenAPI specification.</p>
@@ -401,6 +500,9 @@ padding:1.5rem;overflow-x:auto;max-width:100%}
 ${mermaidCode}
   </pre>
 </div>
+<footer class="footer">
+  <p>Product Data OpenAPI · <a href="https://github.com/2BABV/ETIM-xChange-OpenAPI">GitHub</a> · Maintained by <a href="https://www.2ba.nl">2BA</a></p>
+</footer>
 </body>
 </html>`;
 }
@@ -411,6 +513,7 @@ function indexPageHtml(apis) {
   const cards = apis.map(a => `
     <div class="card">
       <h3>${a.name}</h3>
+      <p class="card-desc">Explore the ${a.name} domain model as an interactive tree or class diagram.</p>
       <div class="links">
         <a href="${a.name.toLowerCase()}-tree.html">Treeview</a>
         <a href="${a.name.toLowerCase()}-diagram.html">Diagram</a>
@@ -420,29 +523,110 @@ function indexPageHtml(apis) {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Domain Models — Product Data OpenAPI</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'DM Sans',sans-serif;background:#f8fafc;color:#1e293b;
-display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:2rem}
-h1{font-family:'Sora',sans-serif;font-size:1.5rem;margin-bottom:.5rem}
-p{color:#64748b;margin-bottom:2rem;font-size:.9rem}
-.grid{display:flex;gap:1.5rem;flex-wrap:wrap;justify-content:center}
-.card{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:1.5rem 2rem;
-text-align:center;min-width:220px}
-.card h3{font-family:'Sora',sans-serif;font-size:1.1rem;margin-bottom:1rem}
-.links{display:flex;gap:.75rem;justify-content:center}
-.links a{font-size:.85rem;font-weight:500;color:#2176cc;text-decoration:none;
-padding:.35rem .75rem;border:1px solid #e2e8f0;border-radius:6px;transition:all .15s}
-.links a:hover{border-color:#4a9aea;background:#f0f7ff}
+:root {
+  --blue-700: #143a64; --blue-500: #2176cc; --blue-400: #4a9aea;
+  --gray-50: #f8fafc; --gray-100: #f1f5f9; --gray-200: #e2e8f0; --gray-300: #cbd5e1;
+  --gray-400: #94a3b8; --gray-500: #64748b; --gray-600: #475569;
+  --gray-800: #1e293b; --gray-900: #0f172a;
+  --white: #ffffff; --radius: 10px;
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'DM Sans', system-ui, sans-serif; color: var(--gray-800);
+  line-height: 1.65; background: var(--gray-50); -webkit-font-smoothing: antialiased;
+}
+
+/* ── Nav (matches index.html) ── */
+.nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--gray-200);
+}
+.nav-inner {
+  max-width: 1060px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.65rem 1.5rem;
+}
+.nav-brand {
+  font-family: 'Sora', sans-serif; font-weight: 700; font-size: 0.95rem;
+  color: var(--blue-700); text-decoration: none;
+}
+.nav-links { display: flex; gap: 1.5rem; list-style: none; align-items: center; }
+.nav-links a {
+  font-size: 0.82rem; font-weight: 500; color: var(--gray-600);
+  text-decoration: none; transition: color 0.15s;
+}
+.nav-links a:hover { color: var(--blue-500); }
+.nav-sep { color: var(--gray-300); font-weight: 300; font-size: 0.82rem; }
+
+/* ── Content ── */
+.container { max-width: 1060px; margin: 0 auto; padding: 2.5rem 1.5rem; }
+.section-title {
+  font-family: 'Sora', sans-serif; font-size: 1.35rem; font-weight: 700;
+  color: var(--gray-900); margin-bottom: 0.5rem;
+}
+.section-desc { color: var(--gray-500); font-size: 0.92rem; margin-bottom: 1.5rem; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; }
+.card {
+  background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--radius);
+  padding: 1.5rem; box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+.card:hover { box-shadow: var(--shadow-md); border-color: var(--blue-400); }
+.card h3 {
+  font-family: 'Sora', sans-serif; font-size: 1.1rem; font-weight: 700;
+  color: var(--gray-900); margin-bottom: 0.35rem;
+}
+.card-desc { color: var(--gray-500); font-size: 0.85rem; margin-bottom: 1rem; }
+.links { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.links a {
+  display: inline-flex; align-items: center; gap: 0.3rem;
+  padding: 0.4rem 0.9rem; border-radius: 7px;
+  font-size: 0.82rem; font-weight: 500; text-decoration: none;
+  transition: all 0.15s; cursor: pointer;
+  border: 1px solid var(--gray-300); color: var(--gray-600); background: var(--white);
+}
+.links a:hover { border-color: var(--blue-400); color: var(--blue-500); }
+
+/* ── Footer ── */
+.footer {
+  border-top: 1px solid var(--gray-200); padding: 1.5rem;
+  text-align: center; font-size: 0.78rem; color: var(--gray-400);
+}
+.footer a { color: var(--blue-500); text-decoration: none; }
+.footer a:hover { text-decoration: underline; }
+
+@media (max-width: 700px) { .nav-links { display: none; } .grid { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
-<h1>Domain Models</h1>
-<p>Choose an API and visualization style.</p>
-<div class="grid">${cards}</div>
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="../" class="nav-brand">Product Data OpenAPI</a>
+    <ul class="nav-links">
+      <li><a href="../">Home</a></li>
+    </ul>
+  </div>
+</nav>
+<div class="container">
+  <h1 class="section-title">Domain Models</h1>
+  <p class="section-desc">Choose an API and visualization style.</p>
+  <div class="grid">${cards}</div>
+</div>
+<footer class="footer">
+  <p>Product Data OpenAPI · <a href="https://github.com/2BABV/ETIM-xChange-OpenAPI">GitHub</a> · Maintained by <a href="https://www.2ba.nl">2BA</a></p>
+</footer>
 </body>
 </html>`;
 }
