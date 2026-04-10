@@ -406,26 +406,24 @@ function mermaidPageHtml(apiName, apiKey, mermaidCode) {
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
-<script type="module">
-  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
-  mermaid.initialize({ startOnLoad: true, theme: 'default',
-    themeVariables: { fontSize: '13px' },
-    classDiagram: { useMaxWidth: false }
-  });
-</script>
 <style>
 :root {
-  --blue-700: #143a64; --blue-500: #2176cc; --blue-400: #4a9aea;
-  --gray-50: #f8fafc; --gray-200: #e2e8f0; --gray-300: #cbd5e1;
-  --gray-400: #94a3b8; --gray-500: #64748b; --gray-600: #475569;
+  --blue-900: #0a1628; --blue-800: #0f2440; --blue-700: #143a64; --blue-600: #1a5590;
+  --blue-500: #2176cc; --blue-400: #4a9aea; --blue-300: #8ec4f6;
+  --cyan-500: #00b4d8; --cyan-400: #48cae4; --cyan-100: #e0f7fa;
+  --gray-50: #f8fafc; --gray-100: #f1f5f9; --gray-200: #e2e8f0; --gray-300: #cbd5e1;
+  --gray-400: #94a3b8; --gray-500: #64748b; --gray-600: #475569; --gray-700: #334155;
   --gray-800: #1e293b; --gray-900: #0f172a;
   --white: #ffffff; --radius: 10px;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
 body {
   font-family: 'DM Sans', system-ui, sans-serif; color: var(--gray-800);
   line-height: 1.65; background: var(--gray-50); -webkit-font-smoothing: antialiased;
 }
+
+/* ── Nav (matches index.html) ── */
 .nav {
   position: sticky; top: 0; z-index: 100;
   background: rgba(255,255,255,0.85);
@@ -442,22 +440,52 @@ body {
   color: var(--blue-700); text-decoration: none;
 }
 .nav-links { display: flex; gap: 1.5rem; list-style: none; align-items: center; }
-.nav-links a { font-size: 0.82rem; font-weight: 500; color: var(--gray-600); text-decoration: none; transition: color 0.15s; }
+.nav-links a {
+  font-size: 0.82rem; font-weight: 500; color: var(--gray-600);
+  text-decoration: none; transition: color 0.15s;
+}
 .nav-links a:hover { color: var(--blue-500); }
 .nav-links a.active { color: var(--blue-700); font-weight: 600; }
 .nav-sep { color: var(--gray-300); font-weight: 300; font-size: 0.82rem; }
-.container { padding: 1.5rem; }
-.header { max-width: 1060px; margin: 0 auto 1rem; }
-.header h2 { font-family: 'Sora', sans-serif; font-size: 1.3rem; font-weight: 700; color: var(--gray-900); margin-bottom: 0.25rem; }
-.subtitle { font-size: 0.85rem; color: var(--gray-500); }
-.diagram-scroll { overflow: auto; }
-.diagram-scroll .mermaid {
-  background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--radius);
-  padding: 1.5rem; display: inline-block;
+
+/* ── Content ── */
+.diagram-header {
+  max-width: 1060px; margin: 0 auto; padding: 1.5rem 1.5rem 0;
 }
-.footer { border-top: 1px solid var(--gray-200); padding: 1.5rem; text-align: center; font-size: 0.78rem; color: var(--gray-400); }
+.diagram-header h2 {
+  font-family: 'Sora', sans-serif; font-size: 1.3rem; font-weight: 700;
+  color: var(--gray-900); margin-bottom: 0.25rem;
+}
+.subtitle { font-size: 0.85rem; color: var(--gray-500); margin-bottom: 0.75rem; }
+.zoom-toolbar {
+  display: flex; gap: 0.4rem; align-items: center; margin-bottom: 0.75rem;
+}
+.zoom-toolbar button {
+  font-family: 'DM Sans', sans-serif; font-size: 0.78rem; font-weight: 500;
+  padding: 0.3rem 0.6rem; border: 1px solid var(--gray-300); border-radius: 7px;
+  background: var(--white); color: var(--gray-600); cursor: pointer; transition: all 0.15s;
+}
+.zoom-toolbar button:hover { border-color: var(--blue-400); color: var(--blue-500); }
+.zoom-label { font-size: 0.75rem; color: var(--gray-400); margin-left: 0.25rem; }
+.zoom-hint { font-size: 0.72rem; color: var(--gray-400); margin-left: 0.75rem; }
+
+#viewport {
+  position: relative; overflow: hidden; cursor: grab;
+  background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--radius);
+  width: 100%; height: calc(100vh - 200px); min-height: 400px;
+}
+#diagram-wrapper {
+  transform-origin: 0 0; position: absolute; top: 0; left: 0;
+}
+
+/* ── Footer ── */
+.footer {
+  border-top: 1px solid var(--gray-200); padding: 1.5rem;
+  text-align: center; font-size: 0.78rem; color: var(--gray-400);
+}
 .footer a { color: var(--blue-500); text-decoration: none; }
 .footer a:hover { text-decoration: underline; }
+
 @media (max-width: 700px) { .nav-links { display: none; } }
 </style>
 </head>
@@ -473,12 +501,19 @@ body {
     </ul>
   </div>
 </nav>
-<div class="container">
-  <div class="header">
-    <h2>${apiName} Domain Model</h2>
-    <p class="subtitle">Class diagram showing schema relationships — generated from the OpenAPI specification.</p>
+<div class="diagram-header">
+  <h2>${apiName} Domain Model</h2>
+  <p class="subtitle">Class diagram showing schema relationships — generated from the OpenAPI specification.</p>
+  <div class="zoom-toolbar">
+    <button id="btn-in">Zoom In</button>
+    <button id="btn-out">Zoom Out</button>
+    <button id="btn-reset">Reset</button>
+    <span class="zoom-label" id="zoom-level">100%</span>
+    <span class="zoom-hint">Scroll to zoom · Drag to pan</span>
   </div>
-  <div class="diagram-scroll">
+</div>
+<div id="viewport">
+  <div id="diagram-wrapper">
     <pre class="mermaid">
 ${mermaidCode}
     </pre>
@@ -487,6 +522,61 @@ ${mermaidCode}
 <footer class="footer">
   <p>Product Data OpenAPI · <a href="https://github.com/2BABV/ETIM-xChange-OpenAPI">GitHub</a> · Maintained by <a href="https://www.2ba.nl">2BA</a></p>
 </footer>
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ startOnLoad: false, theme: 'default',
+    themeVariables: { fontSize: '13px' },
+    classDiagram: { useMaxWidth: false }
+  });
+  await mermaid.run();
+
+  const vp = document.getElementById('viewport');
+  const wrapper = document.getElementById('diagram-wrapper');
+  const label = document.getElementById('zoom-level');
+  let scale = 1, panX = 0, panY = 0, dragging = false, startX, startY;
+
+  function clamp(v, lo, hi) { return Math.min(hi, Math.max(lo, v)); }
+  function apply() {
+    wrapper.style.transform = 'translate(' + panX + 'px,' + panY + 'px) scale(' + scale + ')';
+    label.textContent = Math.round(scale * 100) + '%';
+  }
+
+  vp.addEventListener('wheel', function(e) {
+    e.preventDefault();
+    var rect = vp.getBoundingClientRect();
+    var mx = e.clientX - rect.left, my = e.clientY - rect.top;
+    var prev = scale;
+    scale = clamp(scale * (e.deltaY > 0 ? 0.9 : 1.1), 0.1, 10);
+    panX = mx - (mx - panX) * (scale / prev);
+    panY = my - (my - panY) * (scale / prev);
+    apply();
+  }, { passive: false });
+
+  vp.addEventListener('pointerdown', function(e) {
+    if (e.button !== 0) return;
+    dragging = true; startX = e.clientX - panX; startY = e.clientY - panY;
+    vp.setPointerCapture(e.pointerId);
+    vp.style.cursor = 'grabbing';
+  });
+  vp.addEventListener('pointermove', function(e) {
+    if (!dragging) return;
+    panX = e.clientX - startX; panY = e.clientY - startY;
+    apply();
+  });
+  vp.addEventListener('pointerup', function() {
+    dragging = false; vp.style.cursor = 'grab';
+  });
+
+  document.getElementById('btn-in').addEventListener('click', function() {
+    scale = clamp(scale * 1.25, 0.1, 10); apply();
+  });
+  document.getElementById('btn-out').addEventListener('click', function() {
+    scale = clamp(scale * 0.8, 0.1, 10); apply();
+  });
+  document.getElementById('btn-reset').addEventListener('click', function() {
+    scale = 1; panX = 0; panY = 0; apply();
+  });
+</script>
 </body>
 </html>`;
 }
