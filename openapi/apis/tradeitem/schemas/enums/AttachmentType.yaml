@@ -23,9 +23,9 @@ enum:
   - "ATX026"
   - "ATX099"
 description: |
-  ETIM standardized attachment/document type codes for product-level attachments.
+  ETIM standardized attachment/document type codes for trade item attachments.
 
-  Product-level codes (per ETIM xChange V2.0 schema):
+  Trade item codes (per ETIM xChange V2.0 schema):
   - `ATX001`: Product image
   - `ATX002`: Ambience photo
   - `ATX003`: Technical image
@@ -50,8 +50,8 @@ description: |
   - `ATX099`: Other attachment type
 
   **ETIM xChange**: `AttachmentType`  
-  **Path**: `Supplier[].Product[].ProductAttachments[].AttachmentType`
+  **Path**: `Supplier[].Product[].TradeItem[].ItemAttachments[].AttachmentType`
 examples:
   - "ATX001"
   - "ATX014"
-  - "ATX018"
+  - "ATX010"

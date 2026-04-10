@@ -67,6 +67,9 @@ paths:
   /products/{manufacturerIdGln}/{manufacturerProductNumber}/lca-environmental:
     $ref: paths/product-lca-environmental.yaml
   
+  /products/{manufacturerIdGln}/{manufacturerProductNumber}/attachments:
+    $ref: paths/product-attachments.yaml
+  
   /products/bulk/details:
     $ref: paths/bulk/details.yaml
   
@@ -78,6 +81,9 @@ paths:
   
   /products/bulk/lca-environmental:
     $ref: paths/bulk/lca-environmental.yaml
+  
+  /products/bulk/attachments:
+    $ref: paths/bulk/attachments.yaml
 
 components:
   schemas:
@@ -98,10 +104,12 @@ components:
     #   $ref: schemas/domain/ProductRelation.yaml
     # RelatedProduct:
     #   $ref: schemas/domain/RelatedProduct.yaml
-    # ProductAttachment:
-    #   $ref: schemas/domain/ProductAttachment.yaml
-    # AttachmentDetails:
-    #   $ref: schemas/domain/AttachmentDetails.yaml
+    ProductAttachment:
+      $ref: schemas/domain/ProductAttachment.yaml
+    AttachmentDetails:
+      $ref: schemas/domain/AttachmentDetails.yaml
+    ProductAttachmentSummary:
+      $ref: schemas/domain/ProductAttachmentSummary.yaml
     EtimClassification:
       $ref: schemas/domain/EtimClassification.yaml
     EtimFeature:
@@ -130,10 +138,10 @@ components:
       $ref: schemas/enums/ProductType.yaml
     # ProductRelationType:
     #   $ref: schemas/enums/ProductRelationType.yaml
-    # AttachmentType:
-    #   $ref: schemas/enums/AttachmentType.yaml
-    # AttachmentTypeSpecification:
-    #   $ref: schemas/enums/AttachmentTypeSpecification.yaml
+    AttachmentType:
+      $ref: schemas/enums/AttachmentType.yaml
+    AttachmentTypeSpecification:
+      $ref: schemas/enums/AttachmentTypeSpecification.yaml
     WeeeCategory:
       $ref: schemas/enums/WeeeCategory.yaml
     
@@ -170,6 +178,12 @@ components:
       $ref: schemas/responses/ProductLcaEnvironmentalResponseData.yaml
     BulkProductLcaDeclarationsResponse:
       $ref: schemas/responses/BulkProductLcaDeclarationsResponse.yaml
+    ProductAttachmentsResponse:
+      $ref: schemas/responses/ProductAttachmentsResponse.yaml
+    ProductAttachmentsResponseData:
+      $ref: schemas/responses/ProductAttachmentsResponseData.yaml
+    BulkProductAttachmentsResponse:
+      $ref: schemas/responses/BulkProductAttachmentsResponse.yaml
     
     # Shared schemas
     TechnicalId:
