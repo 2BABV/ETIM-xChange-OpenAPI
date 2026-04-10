@@ -2,7 +2,7 @@ get:
   operationId: getBulkProductEtimClassifications
   tags:
     - Products bulk
-  summary: Retrieve product ETIM classifications in bulk
+  summary: List product ETIM classifications
   description: |
     Retrieve product ETIM classification information in bulk with cursor-based pagination.
     Returns ETIM class codes, features, and version information.

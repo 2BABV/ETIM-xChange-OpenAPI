@@ -1,6 +1,6 @@
 get:
   operationId: getTradeItem
-  summary: Retrieve a single trade item by supplier GLN and item number
+  summary: Get trade item
   description: |
     Retrieve the full trade item payload for a single supplier item combination.
     Returns exactly one trade item document. No pagination, no cursor metadata.

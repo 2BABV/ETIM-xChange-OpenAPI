@@ -2,7 +2,7 @@ get:
   operationId: getTradeItemRelations
   tags:
     - TradeItems single
-  summary: Retrieve trade item relations
+  summary: Get trade item relations
   description: |
     Retrieve item relations for a specific trade item.
     

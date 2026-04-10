@@ -2,7 +2,7 @@ get:
   operationId: getProductLcaEnvironmental
   tags:
     - Products single
-  summary: Retrieve product LCA environmental data
+  summary: Get product LCA environmental
   description: |
     Retrieve Life Cycle Assessment (LCA) environmental data for a specific 
     manufacturer product combination.

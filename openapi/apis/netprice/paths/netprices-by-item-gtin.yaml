@@ -33,7 +33,7 @@ get:
         $ref: ../../../shared/schemas/common/CurrencyCode.yaml
         default: EUR
         example: EUR
-  summary: Get net price for trade item by supplierIdGln and itemGtin
+  summary: Get net price by item GTIN
   security:
       - oauth2:
           - 'read:netprices'

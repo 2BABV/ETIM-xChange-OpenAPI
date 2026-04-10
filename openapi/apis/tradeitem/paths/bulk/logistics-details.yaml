@@ -2,7 +2,7 @@ get:
   operationId: getBulkTradeItemLogisticsDetails
   tags:
     - TradeItems bulk
-  summary: Retrieve trade item logistics details in bulk
+  summary: List trade item logistics details
   description: |
     Retrieve trade item logistics details in bulk with cursor-based pagination.
     Returns a flattened structure where each row represents a single logistics entry

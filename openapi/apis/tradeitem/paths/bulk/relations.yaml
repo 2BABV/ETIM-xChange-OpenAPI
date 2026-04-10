@@ -2,7 +2,7 @@ get:
   operationId: getBulkTradeItemRelations
   tags:
     - TradeItems bulk
-  summary: Retrieve trade item relations in bulk
+  summary: List trade item relations
   description: |
     Retrieve trade item relations in bulk with cursor-based pagination.
     Returns a flattened structure where each row represents a single relation

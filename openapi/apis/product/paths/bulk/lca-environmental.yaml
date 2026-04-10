@@ -2,7 +2,7 @@ get:
   operationId: getBulkProductLcaDeclarations
   tags:
     - Products bulk
-  summary: Retrieve product LCA declarations in bulk
+  summary: List product LCA declarations
   description: |
     Retrieve product LCA (Life Cycle Assessment) declaration data in a flattened format 
     with cursor-based pagination.

@@ -2,7 +2,7 @@ get:
   operationId: getBulkTradeItemDescriptions
   tags:
     - TradeItems bulk
-  summary: Retrieve trade item descriptions in bulk
+  summary: List trade item descriptions
   description: |
     Retrieve trade item descriptions in bulk with cursor-based pagination.
     Returns a flattened structure where each row represents a single language description

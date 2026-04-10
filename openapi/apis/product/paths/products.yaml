@@ -2,7 +2,7 @@ get:
   operationId: getProduct
   tags:
     - Products single
-  summary: Retrieve a single product
+  summary: Get product
   description: |
     Retrieve the complete product information for a specific manufacturer product combination.
     

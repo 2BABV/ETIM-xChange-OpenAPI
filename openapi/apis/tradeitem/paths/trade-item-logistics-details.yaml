@@ -2,7 +2,7 @@ get:
   operationId: getTradeItemLogisticsDetails
   tags:
     - TradeItems single
-  summary: Retrieve trade item logistics details
+  summary: Get trade item logistics details
   description: |
     Retrieve item logistics details for a specific trade item.
     

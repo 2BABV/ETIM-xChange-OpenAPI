@@ -2,7 +2,7 @@ get:
   operationId: getProductEtimClassifications
   tags:
     - Products single
-  summary: Retrieve all ETIM classifications for a product
+  summary: Get product ETIM classifications
   description: |
     Retrieve all ETIM classification information for a specific manufacturer product combination.
     

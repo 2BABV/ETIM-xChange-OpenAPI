@@ -2,7 +2,7 @@ get:
   operationId: getProductDescriptions
   tags:
     - Products single
-  summary: Retrieve product descriptions
+  summary: Get product descriptions
   description: |
     Retrieve multilingual descriptions for a specific manufacturer product combination.
     

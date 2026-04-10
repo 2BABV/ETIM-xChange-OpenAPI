@@ -1,6 +1,6 @@
 get:
   operationId: getBulkAllowanceSurcharges
-  summary: Retrieve trade item allowances and surcharges in bulk
+  summary: List trade item allowances and surcharges
   description: |
     Retrieve trade item allowances and surcharges in bulk with cursor-based pagination.
     Returns discount allowances and additional charge surcharges applied to trade item pricing.

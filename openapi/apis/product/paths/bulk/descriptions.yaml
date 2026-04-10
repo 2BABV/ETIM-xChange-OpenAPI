@@ -2,7 +2,7 @@ get:
   operationId: getBulkProductDescriptions
   tags:
     - Products bulk
-  summary: Retrieve product descriptions in bulk
+  summary: List product descriptions
   description: |
     Retrieve product descriptions in bulk with cursor-based pagination.
     Returns a flattened structure where each row represents a single language description

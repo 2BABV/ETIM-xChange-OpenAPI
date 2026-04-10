@@ -1,6 +1,6 @@
 get:
   operationId: getStock
-  summary: Get stock by composite key
+  summary: Get stock
   description: |
     Retrieve stock availability and quantity information for a specific trade item
     by supplier GLN and supplier item number.

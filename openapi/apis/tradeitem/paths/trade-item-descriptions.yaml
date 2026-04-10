@@ -2,7 +2,7 @@ get:
   operationId: getTradeItemDescriptions
   tags:
     - TradeItems single
-  summary: Retrieve trade item descriptions
+  summary: Get trade item descriptions
   description: |
     Retrieve multilingual descriptions for a specific trade item.
     

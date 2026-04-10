@@ -2,7 +2,7 @@ get:
   operationId: getBulkProducts
   tags:
     - Products bulk
-  summary: Retrieve all products in bulk
+  summary: List products
   description: |
     Retrieve comprehensive product information in bulk with cursor-based pagination.
     Returns full product data including identifications, descriptions, classifications,

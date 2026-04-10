@@ -2,7 +2,7 @@ get:
   operationId: getTradeItemAllowanceSurcharges
   tags:
     - TradeItems single
-  summary: Retrieve trade item allowances and surcharges
+  summary: Get trade item allowances and surcharges
   description: |
     Retrieve allowances (discounts) and surcharges (additional charges) for a specific trade item.
     

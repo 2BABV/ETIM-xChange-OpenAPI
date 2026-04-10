@@ -2,7 +2,7 @@ get:
   operationId: getTradeItemPricings
   tags:
     - TradeItems single
-  summary: Retrieve trade item pricing information
+  summary: Get trade item pricings
   description: |
     Retrieve pricing information for a specific trade item.
     
