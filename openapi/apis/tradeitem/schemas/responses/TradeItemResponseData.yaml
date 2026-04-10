@@ -14,8 +14,8 @@ description: |
   - `itemCountrySpecificFields`: Country-specific extensibility fields
   
   This structure aligns with the subresource endpoints (`/details`, `/descriptions`,
-  `/orderings`, `/pricings`, `/relations`, `/logistics-details`, `/allowance-surcharges`)
-  which all include the composite key at the root level.
+  `/orderings`, `/pricings`, `/relations`, `/logistics-details`, `/allowance-surcharges`,
+  `/attachments`, `/enclosed-items`) which all include the composite key at the root level.
 required:
   - supplierIdGln
   - supplierItemNumber

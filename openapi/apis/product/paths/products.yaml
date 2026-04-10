@@ -13,11 +13,15 @@ get:
     - **details**: GTINs, brand, dates, customs data, status, warranties
     - **descriptions**: Multilingual product descriptions (nested array)
     - **etimClassifications**: ETIM classifications with embedded features (nested array)
+    - **lcaEnvironmental**: Life Cycle Assessment and Environmental Product Declaration (EPD) data
+    - **attachments**: Product documents, images, videos, and other attachments (nested array)
     
     **Subresources**: Each component is also available as a dedicated subresource:
     - `/details` - Core product information
     - `/descriptions` - Multilingual descriptions with language filtering
     - `/etim-classifications` - ETIM classifications with features
+    - `/lca-environmental` - Life Cycle Assessment and EPD data
+    - `/attachments` - Product documents, images, and certificates
     
     **ETIM Classification Filtering**: Use the optional `etimReleaseVersion` query parameter
     to filter ETIM classifications to a specific release version (e.g., "9.0", "10.0").
@@ -73,6 +77,12 @@ get:
                       etimFeatures:
                         - etimFeatureCode: "EF012345"
                           etimValueNumeric: 10
+                  attachments:
+                    - attachmentType: "ATX001"
+                      attachmentOrder: 1
+                      attachmentDetails:
+                        - attachmentUri: "https://images.manufacturer.com/products/LED-12345-front.jpg"
+                          attachmentFilename: "LED-12345-front.jpg"
             minimalProduct:
               summary: Minimal product with required fields only
               value:
