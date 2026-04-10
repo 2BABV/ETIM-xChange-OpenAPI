@@ -59,9 +59,9 @@ jobs:
           cp openapi/apis/tradeitem/generated/tradeitem-api.yaml  _site/tradeitem/latest/
           cp openapi/apis/tradeitem/CHANGELOG.md                  _site/tradeitem/latest/
 
-          # Landing page and Pages config from repo root
-          cp index.html   _site/
-          cp .nojekyll    _site/
+          # Landing page and Pages config
+          cp site/index.html   _site/
+          cp site/.nojekyll    _site/
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v4
