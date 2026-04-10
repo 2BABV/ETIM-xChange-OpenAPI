@@ -220,7 +220,7 @@ function generateMermaid(apiName, schemas, root) {
 
 // ── Page templates ─────────────────────────────────────────────────
 
-function treePageHtml(apiName, schemasHtml, rootNames) {
+function treePageHtml(apiName, apiKey, schemasHtml, rootNames) {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -251,6 +251,10 @@ color:var(--blue-700);text-decoration:none}
 padding:.3rem .7rem;border:1px solid var(--gray-300);border-radius:6px;
 background:var(--white);color:var(--gray-600);cursor:pointer;transition:all .15s}
 .topbar-actions button:hover{border-color:var(--blue-400);color:var(--blue-500)}
+.topbar-links{display:flex;gap:.75rem;align-items:center}
+.topbar-links a{font-size:.78rem;font-weight:500;color:var(--gray-500);text-decoration:none;transition:color .15s}
+.topbar-links a:hover{color:var(--blue-500)}
+.topbar-links a.active{color:var(--blue-700);font-weight:600}
 .container{max-width:960px;margin:0 auto;padding:1.5rem}
 h2.api-title{font-family:'Sora',sans-serif;font-size:1.3rem;font-weight:700;
 color:var(--gray-900);margin-bottom:.25rem}
@@ -310,6 +314,12 @@ background:var(--gray-100);padding:.1rem .4rem;border-radius:4px}
     <span class="topbar-sep">|</span>
     <span class="topbar-title">${apiName} — Domain Model</span>
   </div>
+  <div class="topbar-links">
+    <a href="${apiKey}-tree.html" class="active">Treeview</a>
+    <a href="${apiKey}-diagram.html">Diagram</a>
+    <span class="topbar-sep">|</span>
+    <a href="../">Home</a>
+  </div>
   <div class="topbar-actions">
     <button onclick="document.querySelectorAll('details').forEach(d=>d.open=true)">Expand All</button>
     <button onclick="document.querySelectorAll('details').forEach(d=>d.open=false)">Collapse All</button>
@@ -331,7 +341,7 @@ background:var(--gray-100);padding:.1rem .4rem;border-radius:4px}
 </html>`;
 }
 
-function mermaidPageHtml(apiName, mermaidCode) {
+function mermaidPageHtml(apiName, apiKey, mermaidCode) {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -354,10 +364,15 @@ function mermaidPageHtml(apiName, mermaidCode) {
 body{font-family:'DM Sans',system-ui,sans-serif;background:var(--gray-50);color:var(--gray-900)}
 .topbar{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.92);
 backdrop-filter:blur(12px);border-bottom:1px solid var(--gray-200);
-display:flex;align-items:center;padding:.6rem 1.5rem;gap:.75rem}
+display:flex;align-items:center;justify-content:space-between;padding:.6rem 1.5rem}
+.topbar-left{display:flex;align-items:center;gap:.75rem}
 .topbar-brand{font-family:'Sora',sans-serif;font-weight:700;font-size:.95rem;color:var(--blue-700)}
 .topbar-sep{color:var(--gray-200)}
 .topbar-title{font-family:'Sora',sans-serif;font-weight:600;font-size:.85rem;color:var(--gray-600)}
+.topbar-links{display:flex;gap:.75rem;align-items:center}
+.topbar-links a{font-size:.78rem;font-weight:500;color:var(--gray-500);text-decoration:none;transition:color .15s}
+.topbar-links a:hover{color:var(--blue-500)}
+.topbar-links a.active{color:var(--blue-700);font-weight:600}
 .container{max-width:100%;overflow-x:auto;padding:1.5rem;display:flex;flex-direction:column;align-items:center}
 h2{font-family:'Sora',sans-serif;font-size:1.3rem;margin-bottom:.25rem}
 .subtitle{font-size:.85rem;color:var(--gray-500);margin-bottom:1.5rem}
@@ -367,9 +382,17 @@ padding:1.5rem;overflow-x:auto;max-width:100%}
 </head>
 <body>
 <div class="topbar">
-  <span class="topbar-brand">Product Data OpenAPI</span>
-  <span class="topbar-sep">|</span>
-  <span class="topbar-title">${apiName} — Domain Model Diagram</span>
+  <div class="topbar-left">
+    <span class="topbar-brand">Product Data OpenAPI</span>
+    <span class="topbar-sep">|</span>
+    <span class="topbar-title">${apiName} — Domain Model Diagram</span>
+  </div>
+  <div class="topbar-links">
+    <a href="${apiKey}-tree.html">Treeview</a>
+    <a href="${apiKey}-diagram.html" class="active">Diagram</a>
+    <span class="topbar-sep">|</span>
+    <a href="../">Home</a>
+  </div>
 </div>
 <div class="container">
   <h2>${apiName} Domain Model</h2>
@@ -451,15 +474,17 @@ for (const api of APIS) {
 </details></div>\n`;
   }
 
-  const treeHtml = treePageHtml(api.name, treeSections, api.rootLabel);
-  writeFileSync(`${OUT_DIR}/${api.name.toLowerCase()}-tree.html`, treeHtml);
-  console.log(`  → ${api.name.toLowerCase()}-tree.html`);
+  const apiKey = api.name.toLowerCase();
+
+  const treeHtml = treePageHtml(api.name, apiKey, treeSections, api.rootLabel);
+  writeFileSync(`${OUT_DIR}/${apiKey}-tree.html`, treeHtml);
+  console.log(`  → ${apiKey}-tree.html`);
 
   // ── Mermaid diagram ──
   const mermaid = generateMermaid(api.name, allSchemas, api.root);
-  const diagramHtml = mermaidPageHtml(api.name, mermaid);
-  writeFileSync(`${OUT_DIR}/${api.name.toLowerCase()}-diagram.html`, diagramHtml);
-  console.log(`  → ${api.name.toLowerCase()}-diagram.html`);
+  const diagramHtml = mermaidPageHtml(api.name, apiKey, mermaid);
+  writeFileSync(`${OUT_DIR}/${apiKey}-diagram.html`, diagramHtml);
+  console.log(`  → ${apiKey}-diagram.html`);
 }
 
 // Index page
