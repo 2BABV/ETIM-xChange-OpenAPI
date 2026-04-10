@@ -533,13 +533,20 @@ ${mermaidCode}
   const vp = document.getElementById('viewport');
   const wrapper = document.getElementById('diagram-wrapper');
   const label = document.getElementById('zoom-level');
-  let scale = 1, panX = 0, panY = 0, dragging = false, startX, startY;
+
+  // Center the diagram in the viewport
+  var vpRect = vp.getBoundingClientRect();
+  var wRect = wrapper.getBoundingClientRect();
+  let panX = (vpRect.width - wRect.width) / 2;
+  let panY = (vpRect.height - wRect.height) / 2;
+  let scale = 1, dragging = false, startX, startY;
 
   function clamp(v, lo, hi) { return Math.min(hi, Math.max(lo, v)); }
   function apply() {
     wrapper.style.transform = 'translate(' + panX + 'px,' + panY + 'px) scale(' + scale + ')';
     label.textContent = Math.round(scale * 100) + '%';
   }
+  apply();
 
   vp.addEventListener('wheel', function(e) {
     e.preventDefault();
@@ -574,7 +581,16 @@ ${mermaidCode}
     scale = clamp(scale * 0.8, 0.1, 10); apply();
   });
   document.getElementById('btn-reset').addEventListener('click', function() {
-    scale = 1; panX = 0; panY = 0; apply();
+    scale = 1;
+    var r = vp.getBoundingClientRect(), w = wrapper.getBoundingClientRect();
+    panX = (r.width - w.width / (w.width ? scale : 1)) / 2;
+    panY = (r.height - w.height / (w.height ? scale : 1)) / 2;
+    // Recalc from original size
+    wrapper.style.transform = 'none';
+    var orig = wrapper.getBoundingClientRect();
+    panX = (r.width - orig.width) / 2;
+    panY = (r.height - orig.height) / 2;
+    apply();
   });
 </script>
 </body>
