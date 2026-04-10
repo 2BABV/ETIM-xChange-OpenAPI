@@ -206,6 +206,21 @@ properties:
       - GRM
       - KGM
       - null
+  tradeItemEnclosed:
+    type: ["array", "null"]
+    description: |
+      Array of trade items enclosed within this packaging unit.
+      Describes which other trade items are physically contained in this package.
+      **ETIM xChange**: `TradeItemEnclosed[]`
+      **Path**: `Supplier[].Product[].TradeItem[].PackagingUnit[].TradeItemEnclosed[]`
+    items:
+      $ref: ./TradeItemEnclosed.yaml
+    examples:
+      - - enclosedSupplierItemNumber: "WIDGET-001"
+          enclosedManufacturerItemNumber: "MFG-WIDGET-001"
+          enclosedItemGtins: ["4012345678901"]
+          enclosedItemQuantity: 5
+      - null
 examples:
   - supplierPackagingNumber: "PKG-001"
     manufacturerPackagingNumber: null
@@ -222,3 +237,12 @@ examples:
     grossDimensionUnit: CMT
     grossWeight: 5000.0
     grossWeightUnit: GRM
+    tradeItemEnclosed:
+      - enclosedSupplierItemNumber: "WIDGET-001"
+        enclosedManufacturerItemNumber: "MFG-WIDGET-001"
+        enclosedItemGtins: ["4012345678901"]
+        enclosedItemQuantity: 5
+      - enclosedSupplierItemNumber: "SCREW-M8-50"
+        enclosedManufacturerItemNumber: null
+        enclosedItemGtins: null
+        enclosedItemQuantity: 100

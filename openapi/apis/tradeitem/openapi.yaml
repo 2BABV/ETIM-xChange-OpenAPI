@@ -77,6 +77,9 @@ paths:
   /trade-items/{supplierIdGln}/{supplierItemNumber}/attachments:
     $ref: ./paths/trade-item-attachments.yaml
   
+  /trade-items/{supplierIdGln}/{supplierItemNumber}/enclosed-items:
+    $ref: ./paths/trade-item-enclosed-items.yaml
+  
   # Bulk operations
   # Note: /trade-items/bulk/details consolidates what would have been separate
   # trade-items and item-identifications endpoints since
@@ -97,6 +100,8 @@ paths:
     $ref: ./paths/bulk/logistics-details.yaml
   /trade-items/bulk/attachments:
     $ref: ./paths/bulk/attachments.yaml
+  /trade-items/bulk/enclosed-items:
+    $ref: ./paths/bulk/enclosed-items.yaml
     
 components:
   schemas:
@@ -137,6 +142,10 @@ components:
       $ref: ./schemas/domain/ItemAttachment.yaml
     ItemAttachmentSummary:
       $ref: ./schemas/domain/ItemAttachmentSummary.yaml
+    TradeItemEnclosed:
+      $ref: ./schemas/domain/TradeItemEnclosed.yaml
+    TradeItemEnclosedSummary:
+      $ref: ./schemas/domain/TradeItemEnclosedSummary.yaml
     AttachmentType:
       $ref: ./schemas/enums/AttachmentType.yaml
     AttachmentTypeSpecification:
@@ -203,6 +212,14 @@ components:
       $ref: ./schemas/responses/TradeItemAttachmentsResponseData.yaml
     BulkTradeItemAttachmentsResponse:
       $ref: ./schemas/responses/BulkTradeItemAttachmentsResponse.yaml
+    TradeItemEnclosedItemsResponse:
+      $ref: ./schemas/responses/TradeItemEnclosedItemsResponse.yaml
+    TradeItemEnclosedItemsResponseData:
+      $ref: ./schemas/responses/TradeItemEnclosedItemsResponseData.yaml
+    TradeItemEnclosedItem:
+      $ref: ./schemas/responses/TradeItemEnclosedItem.yaml
+    BulkTradeItemEnclosedItemsResponse:
+      $ref: ./schemas/responses/BulkTradeItemEnclosedItemsResponse.yaml
 
   parameters:
     SupplierIdGln:
