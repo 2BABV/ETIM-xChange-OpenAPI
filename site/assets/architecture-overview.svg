@@ -33,7 +33,7 @@
   <!-- Client A -->
   <rect x="50" y="96" width="180" height="68" class="client-box"/>
   <text x="80" y="126" class="icon">🏢</text>
-  <text x="102" y="126" class="box-title">ERP System</text>
+  <text x="102" y="126" class="box-title">PIM System</text>
   <text x="102" y="144" class="box-sub">Bulk sync, delta updates</text>
 
   <!-- Client B -->
@@ -52,13 +52,13 @@
   <rect x="590" y="96" width="180" height="68" class="server-box"/>
   <text x="620" y="126" class="icon">🌐</text>
   <text x="642" y="126" class="box-title">2BA</text>
-  <text x="642" y="144" class="box-sub">rest.2ba.nl</text>
+  <text x="642" y="144" class="box-sub">Datapool</text>
 
   <!-- Server 2 -->
   <rect x="590" y="192" width="180" height="68" class="server-box"/>
   <text x="620" y="222" class="icon">🔗</text>
-  <text x="642" y="222" class="box-title">DSGO Node</text>
-  <text x="642" y="240" class="box-sub">*.etimix.com</text>
+  <text x="642" y="222" class="box-title">PIM System</text>
+  <text x="642" y="240" class="box-sub">Manufacturer/Supplier</text>
 
   <!-- Server 3 -->
   <rect x="590" y="288" width="180" height="68" class="server-box"/>
