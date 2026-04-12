@@ -177,9 +177,11 @@ function escHtml(s) {
 
 function collectReachable(root, schemas, visited = new Set()) {
   if (visited.has(root) || !schemas[root]) return visited;
+  const schema = schemas[root];
+  // Skip leaf types (enums, simple string patterns, etc.) — they have no properties
+  if (!schema.properties) return visited;
   visited.add(root);
-  const props = schemas[root].properties || {};
-  for (const pDef of Object.values(props)) {
+  for (const pDef of Object.values(schema.properties)) {
     const ref = isRef(pDef);
     if (ref && schemas[ref]) collectReachable(ref, schemas, visited);
   }
