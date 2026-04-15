@@ -1,7 +1,0 @@
-name: cursor
-in: query
-description: Cursor for pagination to fetch the next set of results
-required: false
-schema:
-  type: string
-example: "eyJpZCI6MTIzNDU2Nzg5MCwic29ydCI6ImFzYyJ9"
